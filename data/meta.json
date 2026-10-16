@@ -1,0 +1,27 @@
+{
+ "status": {
+  "lastGameDate": "2026-10-15",
+  "source": "RealGM",
+  "updatedAt": "2026-10-16T08:59:34+11:00"
+ },
+ "shots_status": {
+  "basket": {
+   "x": 25,
+   "y": 0
+  },
+  "checkedAt": "2026-10-16T08:59:34+11:00",
+  "games": 31,
+  "medianErr": 0.24,
+  "mismatches": 28
+ },
+ "players_status": {
+  "checkedAt": "2026-10-16T08:59:34+11:00",
+  "games": 31,
+  "mismatches": 0
+ },
+ "lineups_status": {
+  "checkedAt": "2026-10-16T09:37:23+11:00",
+  "games": 31,
+  "invalid": 29
+ }
+}
