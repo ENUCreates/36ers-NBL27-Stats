@@ -2,26 +2,27 @@
  "status": {
   "lastGameDate": "2026-10-15",
   "source": "RealGM",
-  "updatedAt": "2026-10-16T08:59:34+11:00"
+  "updatedAt": "2026-10-17T09:38:54+11:00",
+  "warning": "RealGM box score 524405 (Adelaide 36ers at Tasmania JackJumpers, 2026-10-16) could not be fetched (server error); will retry next run."
  },
  "shots_status": {
   "basket": {
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-10-16T08:59:34+11:00",
+  "checkedAt": "2026-10-17T09:38:54+11:00",
   "games": 31,
   "medianErr": 0.24,
   "mismatches": 28
  },
  "players_status": {
-  "checkedAt": "2026-10-16T08:59:34+11:00",
-  "games": 31,
+  "checkedAt": "2026-10-17T09:38:54+11:00",
+  "games": 32,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-10-16T09:37:23+11:00",
-  "games": 31,
-  "invalid": 29
+  "checkedAt": "2026-10-17T09:38:54+11:00",
+  "games": 32,
+  "invalid": 30
  }
 }
