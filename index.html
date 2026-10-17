@@ -414,7 +414,7 @@ function shotSection(name){
     return `<tr><td class="tm" style="font-family:var(--body)">${l}</td><td>${f1(o.a/g)}</td><td>${isFt?"–":pct(o.a/fga(t.own))}</td><td>${pct(o.a?o.m/o.a:null)}</td><td><b>${f1(v*o.m/g)}</b></td><td>${pct(share(k))}</td><td>${pct(lshare(k))}</td><td>${f1(v*p.m/g)}</td><td>${pct(p.a?p.m/p.a:null)}</td></tr>`}).join("");
   const r=ROWS.find(x=>x.name===name);
   return `<div class="panel card"><h3>Shot locations</h3>
-    <p class="note">Points per game by zone, FG% beneath. Shading compares the team's share of points from each zone with the league: green = more of their scoring comes from there, red = less. Based on ${g} of their games. League-wide, ${SHOTOK} of ${SHOTOK+SHOTBAD.length} games have a complete shot log${SHOTBAD.length?`; left out because ESPN's log is missing shots: ${SHOTBAD.join(", ")}`:""}.</p>
+    ${SHOTBAD.length?`<p class="note" style="text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN shot log): ${SHOTBAD.join(", ")}</p>`:""}
     <div class="grid2" style="align-items:start">
       <div style="min-width:0">${svg}</div>
       <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
