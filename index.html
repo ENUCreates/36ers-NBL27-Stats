@@ -337,7 +337,7 @@ function renderLeague(){
       h+=`<td class="${cls}">${c.fmt(r[c.k])}</td>`});
     h+="</tr>";
   });
-  h+=`<tr class="avg"><td class="tm">League average</td><td></td>${COLS.map(c=>`<td class="${c.sep?'sep':''}">${c.fmt(LG[c.k])}</td>`).join("")}</tr></tbody></table>`;
+  h+=`<tr class="avg"><td class="tm" style="letter-spacing:.04em">LEAGUE AVERAGE</td><td></td>${COLS.map(c=>`<td class="${c.sep?'sep':''}">${c.fmt(LG[c.k])}</td>`).join("")}</tr></tbody></table>`;
   el.innerHTML=h;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=(k==="name"||(COLS.find(c=>c.k===k)||{}).better===-1)?1:-1}renderLeague()});
   el.querySelectorAll("td.tm button").forEach(b=>b.onclick=()=>{current=b.dataset.team;show("team")});
