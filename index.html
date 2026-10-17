@@ -648,7 +648,7 @@ function renderShotChart(){
   const B=PSHOTMETA?.basket||SHOTMETA?.basket||{x:25,y:0};
   // court: FIBA half court in feet, baseline at top, basket 5.17 ft from baseline
   const S=10,W=49.2,bx=W/2,by=5.17,R=22.15,cx=2.95,H=33;
-  const toXY=s=>{if(s[0]==null||s[1]==null)return null;const dx=s[0]-B.x,dy=s[1]-B.y;const X=bx+dx,Y=by+Math.abs(dy);if(X<0||X>W||Y<0||Y>H)return null;return [X*S,Y*S]};
+  const toXY=s=>{if(s[0]==null||s[1]==null)return null;const X=Math.min(W-0.4,Math.max(0.4,bx+(s[0]-B.x))),Y=Math.max(0.4,by+(s[1]-B.y));if(Y>H)return null;return [X*S,Y*S]};
   const zfg=k=>Z[k].a?Z[k].m/Z[k].a:null,lfg=k=>L[k].a?L[k].m/L[k].a:null;
   const shade=k=>{const a=Z[k].a;if(a<3)return `fill="var(--soft)" fill-opacity="0.35"`;const d=zfg(k)-lfg(k);const o=Math.min(Math.abs(d)/0.12,1)*0.5+0.12;return `fill="${d>=0?'var(--good)':'var(--bad)'}" fill-opacity="${o.toFixed(2)}"`};
   const arc=`M${cx*S},0 L${cx*S},${9.81*S} A${R*S},${R*S} 0 0 0 ${(W-cx)*S},${9.81*S} L${(W-cx)*S},0 Z`;

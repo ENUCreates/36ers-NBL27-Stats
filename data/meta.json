@@ -24,5 +24,16 @@
   "checkedAt": "2026-10-17T20:33:00+11:00",
   "games": 32,
   "invalid": 30
+ },
+ "pshots_status": {
+  "badTeamGames": 8,
+  "basket": {
+   "x": 25,
+   "y": 0
+  },
+  "checkedAt": "2026-10-17T20:35:25+11:00",
+  "frame": "x across court 0-50 ft (basket at 25), y = feet from baseline/basket toward halfway (0-47); both teams share one half-court frame, y>47 mirrored as safeguard",
+  "games": 32,
+  "notes": "4548 FGAs stored, 0 without coordinates, 5 with no shooter id (key \"0\"). Zones/attribution identical to meta/shotscript. 8 team-games not ok: games 401875244, 401875247, 401875260, 401875279 have incomplete ESPN play-by-play (both teams). Elsewhere per-player FGA may differ by 1-2 from box due to ESPN PBP attribution noise."
  }
 }
