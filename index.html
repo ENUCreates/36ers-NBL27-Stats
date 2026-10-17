@@ -616,7 +616,13 @@ function renderLineups(){
 document.getElementById("lmin").onchange=e=>{lminVal=+e.target.value;try{localStorage.setItem("nbl27-lmin",lminVal)}catch(e){}renderLineups()};
 
 let PSHOTS=[],PSHOTMETA=null,psel={};
-const ZNAMES=["Restricted area","Paint (non-RA)","Mid-range","Corner 3","Above-break 3"];
+// Regions: 0 RA, 1 paint, 2 mid, 3 left corner 3, 4 right corner 3, 5 left wing 3, 6 top 3 (between the lane lines), 7 right wing 3, 8 no zone
+const RNAMES=["Restricted area","Paint (non-RA)","Mid-range","Left corner 3","Right corner 3","Left wing 3","Top 3","Right wing 3"];
+const LANE=8.04; // half the FIBA key width in feet
+const shotBasket=()=>PSHOTMETA?.basket||SHOTMETA?.basket||{x:25,y:0};
+function region(s,B){const z=s[3];if(z==null||z===5)return 8;if(z<3)return z;const dx=s[0]==null?0:s[0]-B.x;
+  if(z===3)return dx<0?3:4;return dx<-LANE?5:dx>LANE?7:6}
+function tally9(shots,B){const r=Array.from({length:9},()=>({m:0,a:0}));shots.forEach(s=>{const k=region(s,B);r[k].a++;r[k].m+=s[2]?1:0});return r}
 function shotPool(team,pid){
   const out=[];let games=0,bad=[];
   PSHOTS.forEach(d=>{if(!d.date||d.date<SEASON_START)return;const T=d.teams?.[team];if(!T)return;
@@ -626,51 +632,55 @@ function shotPool(team,pid){
     if(played||!pid)games++;});
   return {shots:out,games,bad};
 }
-function leagueZones(){
-  const z=Array.from({length:6},()=>({m:0,a:0}));
-  PSHOTS.forEach(d=>{if(!d.date||d.date<SEASON_START)return;for(const T of Object.values(d.teams||{})){if(T.ok===false)continue;
-    for(const p of Object.values(T.p||{}))(p.s||[]).forEach(s=>{const k=s[3]??5;z[k].a++;z[k].m+=s[2]?1:0})}});
-  return z;
-}
-function zoneTally(shots){const z=Array.from({length:6},()=>({m:0,a:0}));shots.forEach(s=>{const k=s[3]??5;z[k].a++;z[k].m+=s[2]?1:0});return z}
+function leagueShots(){const out=[];PSHOTS.forEach(d=>{if(!d.date||d.date<SEASON_START)return;for(const T of Object.values(d.teams||{})){if(T.ok===false)continue;for(const p of Object.values(T.p||{}))(p.s||[]).forEach(s=>out.push(s))}});return out}
 function renderShotChart(){
   const el=document.getElementById("players"),name=byCode[current];
   if(!PSHOTS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Shot locations are loading</strong>${PSHOTMETA?.error?"Couldn't load shot data: "+PSHOTMETA.error:"Every player's shots are being placed on the court. The chart will appear here once that's done."}</div></div>`;return}
-  // players on this team, by attempts
   const tally={};PSHOTS.forEach(d=>{const T=d.teams?.[name];if(!T||T.ok===false||d.date<SEASON_START)return;for(const [id,p] of Object.entries(T.p||{})){const t=tally[id]||(tally[id]={n:p.n,a:0});t.a+=(p.s||[]).length;if(p.n)t.n=p.n}});
   const plist=Object.entries(tally).filter(([,t])=>t.a>0).sort((a,b)=>b[1].a-a[1].a);
   let sel=psel[name]||"";if(sel&&!tally[sel])sel="";
+  const B=shotBasket();
   const {shots,games,bad}=shotPool(name,sel||null);
-  const Z=zoneTally(shots),L=leagueZones();
-  const fga=Z.slice(0,6).reduce((t,z)=>t+z.a,0),fgm=Z.reduce((t,z)=>t+z.m,0);
-  const tpm=Z[3].m+Z[4].m,efg=fga?(fgm+0.5*tpm)/fga:null;
-  const lfga=L.reduce((t,z)=>t+z.a,0);
-  const B=PSHOTMETA?.basket||SHOTMETA?.basket||{x:25,y:0};
+  const Z=tally9(shots,B),L=tally9(leagueShots(),B);
+  const fga=Z.reduce((t,z)=>t+z.a,0),fgm=Z.reduce((t,z)=>t+z.m,0);
+  const tpa=[3,4,5,6,7].reduce((t,k)=>t+Z[k].a,0),tpm=[3,4,5,6,7].reduce((t,k)=>t+Z[k].m,0),efg=fga?(fgm+0.5*tpm)/fga:null;
+  const lfga=L.reduce((t,z)=>t+z.a,0),ltpa=[3,4,5,6,7].reduce((t,k)=>t+L[k].a,0),ltpm=[3,4,5,6,7].reduce((t,k)=>t+L[k].m,0);
   // court: FIBA half court in feet, baseline at top, basket 5.17 ft from baseline
   const S=10,W=49.2,bx=W/2,by=5.17,R=22.15,cx=2.95,H=33;
+  const arcY=by+Math.sqrt(R*R-LANE*LANE); // where the lane lines meet the 3pt arc
   const toXY=s=>{if(s[0]==null||s[1]==null)return null;const X=Math.min(W-0.4,Math.max(0.4,bx+(s[0]-B.x))),Y=Math.max(0.4,by+(s[1]-B.y));if(Y>H)return null;return [X*S,Y*S]};
-  const zfg=k=>Z[k].a?Z[k].m/Z[k].a:null,lfg=k=>L[k].a?L[k].m/L[k].a:null;
+  const zfg=k=>Z[k].a?Z[k].m/Z[k].a:null,lfg=k=>L[k].a?L[k].m/L[k].a:null,share=k=>fga?Math.round(100*Z[k].a/fga):0;
   const shade=k=>{const a=Z[k].a;if(a<3)return `fill="var(--soft)" fill-opacity="0.35"`;const d=zfg(k)-lfg(k);const o=Math.min(Math.abs(d)/0.12,1)*0.5+0.12;return `fill="${d>=0?'var(--good)':'var(--bad)'}" fill-opacity="${o.toFixed(2)}"`};
   const arc=`M${cx*S},0 L${cx*S},${9.81*S} A${R*S},${R*S} 0 0 0 ${(W-cx)*S},${9.81*S} L${(W-cx)*S},0 Z`;
   const ra=`M${(bx-4.1)*S},${(by-1.3)*S} L${(bx-4.1)*S},${by*S} A${4.1*S},${4.1*S} 0 0 0 ${(bx+4.1)*S},${by*S} L${(bx+4.1)*S},${(by-1.3)*S} Z`;
-  const lab=(x,y,k)=>`<g transform="translate(${x*S},${y*S})"><text text-anchor="middle" class="zp" y="-1">${Z[k].a?pct(zfg(k))+"%":"–"}</text><text text-anchor="middle" class="zq" y="13">${Z[k].m}/${Z[k].a} · ${fga?Math.round(100*Z[k].a/fga):0}%</text></g>`;
+  const lab=(x,y,k,anchor="middle",title="")=>`<g transform="translate(${x*S},${y*S})">${title?`<text text-anchor="${anchor}" class="zq" y="-15">${title}</text>`:""}<text text-anchor="${anchor}" class="zp" y="1">${Z[k].a?pct(zfg(k))+"%":"–"}</text><text text-anchor="${anchor}" class="zq" y="15">${Z[k].m}/${Z[k].a} · ${share(k)}%</text></g>`;
   const dots=shots.map(s=>{const p=toXY(s);if(!p)return "";return s[2]?`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4.2" fill="#3ddc84" fill-opacity=".85" stroke="#062012" stroke-width=".8"/>`:`<path d="M${(p[0]-3.4).toFixed(1)},${(p[1]-3.4).toFixed(1)}l6.8,6.8m0,-6.8l-6.8,6.8" stroke="#ff6b7d" stroke-width="1.7" stroke-opacity=".8"/>`}).join("");
+  const xl=(bx-LANE)*S,xr=(bx+LANE)*S;
   const svg=`<svg viewBox="-2 -2 ${W*S+4} ${H*S+4}" width="100%" role="img" aria-label="Shot chart">
     <rect x="0" y="0" width="${W*S}" height="${H*S}" fill="var(--soft)"/>
-    <rect x="0" y="0" width="${W*S}" height="${H*S}" ${shade(4)}/>
+    <rect x="0" y="0" width="${xl}" height="${H*S}" ${shade(5)}/>
+    <rect x="${xl}" y="0" width="${xr-xl}" height="${H*S}" ${shade(6)}/>
+    <rect x="${xr}" y="0" width="${W*S-xr}" height="${H*S}" ${shade(7)}/>
     <rect x="0" y="0" width="${cx*S}" height="${9.81*S}" fill="var(--panel)"/><rect x="${(W-cx)*S}" y="0" width="${cx*S}" height="${9.81*S}" fill="var(--panel)"/>
-    <rect x="0" y="0" width="${cx*S}" height="${9.81*S}" ${shade(3)}/><rect x="${(W-cx)*S}" y="0" width="${cx*S}" height="${9.81*S}" ${shade(3)}/>
+    <rect x="0" y="0" width="${cx*S}" height="${9.81*S}" ${shade(3)}/><rect x="${(W-cx)*S}" y="0" width="${cx*S}" height="${9.81*S}" ${shade(4)}/>
     <path d="${arc}" fill="var(--panel)"/><path d="${arc}" ${shade(2)}/>
-    <rect x="${(bx-8.04)*S}" y="0" width="${16.08*S}" height="${19.03*S}" fill="var(--panel)"/><rect x="${(bx-8.04)*S}" y="0" width="${16.08*S}" height="${19.03*S}" ${shade(1)}/>
+    <rect x="${xl}" y="0" width="${xr-xl}" height="${19.03*S}" fill="var(--panel)"/><rect x="${xl}" y="0" width="${xr-xl}" height="${19.03*S}" ${shade(1)}/>
     <path d="${ra}" fill="var(--panel)"/><path d="${ra}" ${shade(0)}/>
-    <g fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="0" y="0" width="${W*S}" height="${H*S}"/><path d="${arc}"/><rect x="${(bx-8.04)*S}" y="0" width="${16.08*S}" height="${19.03*S}"/><path d="${ra}"/>
+    <g fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="0" y="0" width="${W*S}" height="${H*S}"/><path d="${arc}"/><rect x="${xl}" y="0" width="${xr-xl}" height="${19.03*S}"/><path d="${ra}"/>
       <circle cx="${bx*S}" cy="${by*S}" r="7.5"/><line x1="${(bx-3)*S}" x2="${(bx+3)*S}" y1="${1.2*S}" y2="${1.2*S}" stroke-width="3"/></g>
+    <g stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="5 5" opacity=".8"><line x1="${xl}" x2="${xl}" y1="${arcY*S}" y2="${H*S}"/><line x1="${xr}" x2="${xr}" y1="${arcY*S}" y2="${H*S}"/>
+      <line x1="0" x2="${cx*S}" y1="${9.81*S}" y2="${9.81*S}"/><line x1="${(W-cx)*S}" x2="${W*S}" y1="${9.81*S}" y2="${9.81*S}"/></g>
     <g>${dots}</g>
-    ${lab(bx,by+2.9,0)}${lab(bx,14.6,1)}${lab(bx,23.6,2)}${lab(bx,30.4,4)}
-    <g transform="translate(${0.6*S},${12.4*S})"><text text-anchor="start" class="zq" y="-14">CORNER 3</text><text text-anchor="start" class="zp" y="2">${Z[3].a?pct(zfg(3))+"%":"–"}</text><text text-anchor="start" class="zq" y="16">${Z[3].m}/${Z[3].a} · ${fga?Math.round(100*Z[3].a/fga):0}%</text></g>
+    ${lab(bx,by+2.9,0)}${lab(bx,14.6,1)}${lab(bx,23.4,2)}
+    ${lab(bx,30.3,6,"middle","TOP")}
+    ${lab(0.6,30.3,5,"start","L WING")}${lab(W-0.6,30.3,7,"end","R WING")}
+    ${lab(0.6,13.4,3,"start","L CORNER")}${lab(W-0.6,13.4,4,"end","R CORNER")}
   </svg>`;
-  const rows=ZNAMES.map((zn,k)=>{const f=zfg(k),l=lfg(k),d=f!=null&&l!=null?f-l:null;
-    return `<tr><td class="tm" style="font-family:var(--body)">${zn}</td><td>${Z[k].m}/${Z[k].a}</td><td>${pct(f)}</td><td>${fga?pct(Z[k].a/fga):"–"}</td><td>${pct(l)}</td><td>${lfga?pct(L[k].a/lfga):"–"}</td><td class="${d==null||Z[k].a<5?'':d>=0?'up':'dn'}">${d==null?"–":(d>0?"+":"")+(d*100).toFixed(1)}</td></tr>`}).join("");
+  const row=(label,m,a,lm,la,isSub)=>{const f=a?m/a:null,l=la?lm/la:null,d=f!=null&&l!=null?f-l:null;
+    return `<tr${isSub?' class="avg"':''}><td class="tm" style="font-family:var(--body)">${label}</td><td>${m}/${a}</td><td>${pct(f)}</td><td>${fga?pct(a/fga):"–"}</td><td>${pct(l)}</td><td>${lfga?pct(la/lfga):"–"}</td><td class="${d==null||a<5?'':d>=0?'up':'dn'}">${d==null?"–":(d>0?"+":"")+(d*100).toFixed(1)}</td></tr>`};
+  const rows=[0,1,2].map(k=>row(RNAMES[k],Z[k].m,Z[k].a,L[k].m,L[k].a)).join("")
+    +[3,5,6,7,4].map(k=>row(RNAMES[k],Z[k].m,Z[k].a,L[k].m,L[k].a)).join("")
+    +row("All threes",tpm,tpa,ltpm,ltpa,true);
   const who=sel?tally[sel].n:disp(name)+" (team)";
   el.innerHTML=`<div class="panel card">
     <div class="sc-pick">${code(name)}<label for="sc-player" style="color:var(--muted);font-size:13px">Show</label>
@@ -678,13 +688,13 @@ function renderShotChart(){
       <span class="rec">${games} games · ${fga} FGA · ${pct(fga?fgm/fga:null)} FG% · ${pct(efg)} eFG%</span></div>
     <div class="sc-wrap">
       <div style="min-width:0">${svg}
-        <div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="#ff6b7d" stroke-width="2"/></svg> Missed</span><span>Zone shading: FG% vs league average (green better)</span></div>
+        <div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="#ff6b7d" stroke-width="2"/></svg> Missed</span><span>Each zone: FG%, makes/attempts · share of FGA. Shading: FG% vs league (green better)</span></div>
       </div>
       <div style="min-width:0">
         <h3 style="margin:0 0 8px">${who}</h3>
         <div class="scroll"><table><thead><tr><th class="tm">Zone</th><th>FGM/FGA</th><th>FG%</th><th>% of FGA</th><th>Lg FG%</th><th>Lg % FGA</th><th>vs Lg</th></tr></thead><tbody>${rows}
           <tr class="avg"><td class="tm">All field goals</td><td>${fgm}/${fga}</td><td>${pct(fga?fgm/fga:null)}</td><td>100.0</td><td>${pct(lfga?L.reduce((t,z)=>t+z.m,0)/lfga:null)}</td><td>100.0</td><td></td></tr></tbody></table></div>
-        <p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0">Zones on a FIBA court: restricted area = within 1.25 m of the basket; paint = rest of the key; corner 3 = the straight part of the line. Shots ESPN logged without a location count in the table but aren't drawn${Z[5].a?` (${Z[5].a} with no zone)`:""}.${bad.length?` Left out because ESPN's log for the game is incomplete: ${bad.join(", ")}.`:""}</p>
+        <p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0">Zones on a FIBA court. Three-point regions: corners are the straight part of the line; the top is the area between the lane lines extended out past the arc (slot to slot); the wings are either side of it. Left and right are as drawn on this chart (basket at the top). Restricted area = within 1.25 m of the basket; paint = rest of the key.${Z[8].a?` ${Z[8].a} shots had no zone.`:""}${bad.length?` Left out because ESPN's log for the game is incomplete: ${bad.join(", ")}.`:""}</p>
       </div>
     </div></div>`;
   document.getElementById("sc-player").onchange=e=>{psel[name]=e.target.value;renderShotChart()};
