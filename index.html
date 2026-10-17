@@ -116,6 +116,15 @@ tr.low td{opacity:.55}
 #lineups td.tm{white-space:nowrap;font-family:var(--body);font-weight:600;font-size:13px}
 @media (max-width:600px){#lineups td.tm,#lineups th.tm{position:static;font-size:12px}}
 .nbar{display:inline-block;height:8px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.sc-wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:860px){.sc-wrap{grid-template-columns:minmax(0,1fr)}}
+.sc-pick{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sc-pick select{font:500 14px var(--body);background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:7px 10px;max-width:100%}
+.sc-leg{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px;align-items:center}
+.sc-leg svg{vertical-align:middle}
+svg text.zp{font:700 16px var(--display);fill:#fff;paint-order:stroke;stroke:rgba(6,18,39,.85);stroke-width:3px}
+svg text.zq{font:500 10.5px var(--mono);fill:#fff;paint-order:stroke;stroke:rgba(6,18,39,.85);stroke-width:3px}
+td.up{color:var(--good)}td.dn{color:var(--bad)}
 footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:6px;max-width:90ch}
 @media (max-width:760px){.grid2{grid-template-columns:minmax(0,1fr)}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tile:nth-child(2){border-right:0}.tile:nth-child(-n+2){border-bottom:1px solid var(--line)}.ff{grid-template-columns:92px minmax(0,1fr) 54px 40px}}
 @media (prefers-reduced-motion:no-preference){.bar .fill{transition:width .3s,left .3s}}
@@ -160,8 +169,9 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
       <div class="seg" role="group" aria-label="Table">
         <button class="chip" id="pv-adv" aria-pressed="true">Advanced</button>
         <button class="chip" id="pv-box" aria-pressed="false">Per game</button>
+        <button class="chip" id="pv-shot" aria-pressed="false">Shot chart</button>
       </div>
-      <label class="pmin" for="pmin">Min. minutes per game
+      <label class="pmin" for="pmin" id="pmin-wrap">Min. minutes per game
         <select id="pmin"><option value="0">All players</option><option value="5">5+</option><option value="10" selected>10+</option><option value="15">15+</option><option value="20">20+</option></select>
       </label>
     </div>
@@ -501,7 +511,9 @@ function renderPlayers(){
   const pick=document.getElementById("ppicker");
   pick.innerHTML=Object.values(TEAMS).map(t=>`<button class="chip" aria-pressed="${t.c===current}" data-team="${t.c}">${t.c}</button>`).join("");
   pick.querySelectorAll("button").forEach(b=>b.onclick=()=>{current=b.dataset.team;try{localStorage.setItem("nbl27-team",current)}catch(e){}renderPlayers()});
-  document.getElementById("pv-adv").setAttribute("aria-pressed",pview==="adv");document.getElementById("pv-box").setAttribute("aria-pressed",pview==="box");
+  document.getElementById("pv-adv").setAttribute("aria-pressed",pview==="adv");document.getElementById("pv-box").setAttribute("aria-pressed",pview==="box");document.getElementById("pv-shot").setAttribute("aria-pressed",pview==="shot");
+  document.getElementById("pmin-wrap").hidden=pview==="shot";
+  if(pview==="shot"){renderShotChart();return}
   document.getElementById("pmin").value=String(pminVal);
   const el=document.getElementById("players"),name=byCode[current];
   if(!PLAYERDOCS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Player box scores are loading</strong>${PSTATUS?.error?"Couldn't load player data: "+PSTATUS.error:"Every player's advanced numbers will appear here once this season's player box scores are in."}</div></div>`;return}
@@ -602,6 +614,82 @@ function renderLineups(){
 }
 [5,3,2].forEach(n=>document.getElementById("ln"+n).onclick=()=>{lsize=n;try{localStorage.setItem("nbl27-lsize",n)}catch(e){}renderLineups()});
 document.getElementById("lmin").onchange=e=>{lminVal=+e.target.value;try{localStorage.setItem("nbl27-lmin",lminVal)}catch(e){}renderLineups()};
+
+let PSHOTS=[],PSHOTMETA=null,psel={};
+const ZNAMES=["Restricted area","Paint (non-RA)","Mid-range","Corner 3","Above-break 3"];
+function shotPool(team,pid){
+  const out=[];let games=0,bad=[];
+  PSHOTS.forEach(d=>{if(!d.date||d.date<SEASON_START)return;const T=d.teams?.[team];if(!T)return;
+    if(T.ok===false){bad.push(d.date.slice(8)+"/"+d.date.slice(5,7));return}
+    let played=false;
+    for(const [id,p] of Object.entries(T.p||{})){if(pid&&id!==pid)continue;if((p.s||[]).length)played=true;(p.s||[]).forEach(s=>out.push(s))}
+    if(played||!pid)games++;});
+  return {shots:out,games,bad};
+}
+function leagueZones(){
+  const z=Array.from({length:6},()=>({m:0,a:0}));
+  PSHOTS.forEach(d=>{if(!d.date||d.date<SEASON_START)return;for(const T of Object.values(d.teams||{})){if(T.ok===false)continue;
+    for(const p of Object.values(T.p||{}))(p.s||[]).forEach(s=>{const k=s[3]??5;z[k].a++;z[k].m+=s[2]?1:0})}});
+  return z;
+}
+function zoneTally(shots){const z=Array.from({length:6},()=>({m:0,a:0}));shots.forEach(s=>{const k=s[3]??5;z[k].a++;z[k].m+=s[2]?1:0});return z}
+function renderShotChart(){
+  const el=document.getElementById("players"),name=byCode[current];
+  if(!PSHOTS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Shot locations are loading</strong>${PSHOTMETA?.error?"Couldn't load shot data: "+PSHOTMETA.error:"Every player's shots are being placed on the court. The chart will appear here once that's done."}</div></div>`;return}
+  // players on this team, by attempts
+  const tally={};PSHOTS.forEach(d=>{const T=d.teams?.[name];if(!T||T.ok===false||d.date<SEASON_START)return;for(const [id,p] of Object.entries(T.p||{})){const t=tally[id]||(tally[id]={n:p.n,a:0});t.a+=(p.s||[]).length;if(p.n)t.n=p.n}});
+  const plist=Object.entries(tally).filter(([,t])=>t.a>0).sort((a,b)=>b[1].a-a[1].a);
+  let sel=psel[name]||"";if(sel&&!tally[sel])sel="";
+  const {shots,games,bad}=shotPool(name,sel||null);
+  const Z=zoneTally(shots),L=leagueZones();
+  const fga=Z.slice(0,6).reduce((t,z)=>t+z.a,0),fgm=Z.reduce((t,z)=>t+z.m,0);
+  const tpm=Z[3].m+Z[4].m,efg=fga?(fgm+0.5*tpm)/fga:null;
+  const lfga=L.reduce((t,z)=>t+z.a,0);
+  const B=PSHOTMETA?.basket||SHOTMETA?.basket||{x:25,y:0};
+  // court: FIBA half court in feet, baseline at top, basket 5.17 ft from baseline
+  const S=10,W=49.2,bx=W/2,by=5.17,R=22.15,cx=2.95,H=33;
+  const toXY=s=>{if(s[0]==null||s[1]==null)return null;const dx=s[0]-B.x,dy=s[1]-B.y;const X=bx+dx,Y=by+Math.abs(dy);if(X<0||X>W||Y<0||Y>H)return null;return [X*S,Y*S]};
+  const zfg=k=>Z[k].a?Z[k].m/Z[k].a:null,lfg=k=>L[k].a?L[k].m/L[k].a:null;
+  const shade=k=>{const a=Z[k].a;if(a<3)return `fill="var(--soft)" fill-opacity="0.35"`;const d=zfg(k)-lfg(k);const o=Math.min(Math.abs(d)/0.12,1)*0.5+0.12;return `fill="${d>=0?'var(--good)':'var(--bad)'}" fill-opacity="${o.toFixed(2)}"`};
+  const arc=`M${cx*S},0 L${cx*S},${9.81*S} A${R*S},${R*S} 0 0 0 ${(W-cx)*S},${9.81*S} L${(W-cx)*S},0 Z`;
+  const ra=`M${(bx-4.1)*S},${(by-1.3)*S} L${(bx-4.1)*S},${by*S} A${4.1*S},${4.1*S} 0 0 0 ${(bx+4.1)*S},${by*S} L${(bx+4.1)*S},${(by-1.3)*S} Z`;
+  const lab=(x,y,k)=>`<g transform="translate(${x*S},${y*S})"><text text-anchor="middle" class="zp" y="-1">${Z[k].a?pct(zfg(k))+"%":"–"}</text><text text-anchor="middle" class="zq" y="13">${Z[k].m}/${Z[k].a} · ${fga?Math.round(100*Z[k].a/fga):0}%</text></g>`;
+  const dots=shots.map(s=>{const p=toXY(s);if(!p)return "";return s[2]?`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4.2" fill="#3ddc84" fill-opacity=".85" stroke="#062012" stroke-width=".8"/>`:`<path d="M${(p[0]-3.4).toFixed(1)},${(p[1]-3.4).toFixed(1)}l6.8,6.8m0,-6.8l-6.8,6.8" stroke="#ff6b7d" stroke-width="1.7" stroke-opacity=".8"/>`}).join("");
+  const svg=`<svg viewBox="-2 -2 ${W*S+4} ${H*S+4}" width="100%" role="img" aria-label="Shot chart">
+    <rect x="0" y="0" width="${W*S}" height="${H*S}" fill="var(--soft)"/>
+    <rect x="0" y="0" width="${W*S}" height="${H*S}" ${shade(4)}/>
+    <rect x="0" y="0" width="${cx*S}" height="${9.81*S}" fill="var(--panel)"/><rect x="${(W-cx)*S}" y="0" width="${cx*S}" height="${9.81*S}" fill="var(--panel)"/>
+    <rect x="0" y="0" width="${cx*S}" height="${9.81*S}" ${shade(3)}/><rect x="${(W-cx)*S}" y="0" width="${cx*S}" height="${9.81*S}" ${shade(3)}/>
+    <path d="${arc}" fill="var(--panel)"/><path d="${arc}" ${shade(2)}/>
+    <rect x="${(bx-8.04)*S}" y="0" width="${16.08*S}" height="${19.03*S}" fill="var(--panel)"/><rect x="${(bx-8.04)*S}" y="0" width="${16.08*S}" height="${19.03*S}" ${shade(1)}/>
+    <path d="${ra}" fill="var(--panel)"/><path d="${ra}" ${shade(0)}/>
+    <g fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="0" y="0" width="${W*S}" height="${H*S}"/><path d="${arc}"/><rect x="${(bx-8.04)*S}" y="0" width="${16.08*S}" height="${19.03*S}"/><path d="${ra}"/>
+      <circle cx="${bx*S}" cy="${by*S}" r="7.5"/><line x1="${(bx-3)*S}" x2="${(bx+3)*S}" y1="${1.2*S}" y2="${1.2*S}" stroke-width="3"/></g>
+    <g>${dots}</g>
+    ${lab(bx,by+2.9,0)}${lab(bx,14.6,1)}${lab(bx,23.6,2)}${lab(bx,30.4,4)}
+    <g transform="translate(${0.6*S},${12.4*S})"><text text-anchor="start" class="zq" y="-14">CORNER 3</text><text text-anchor="start" class="zp" y="2">${Z[3].a?pct(zfg(3))+"%":"–"}</text><text text-anchor="start" class="zq" y="16">${Z[3].m}/${Z[3].a} · ${fga?Math.round(100*Z[3].a/fga):0}%</text></g>
+  </svg>`;
+  const rows=ZNAMES.map((zn,k)=>{const f=zfg(k),l=lfg(k),d=f!=null&&l!=null?f-l:null;
+    return `<tr><td class="tm" style="font-family:var(--body)">${zn}</td><td>${Z[k].m}/${Z[k].a}</td><td>${pct(f)}</td><td>${fga?pct(Z[k].a/fga):"–"}</td><td>${pct(l)}</td><td>${lfga?pct(L[k].a/lfga):"–"}</td><td class="${d==null||Z[k].a<5?'':d>=0?'up':'dn'}">${d==null?"–":(d>0?"+":"")+(d*100).toFixed(1)}</td></tr>`}).join("");
+  const who=sel?tally[sel].n:disp(name)+" (team)";
+  el.innerHTML=`<div class="panel card">
+    <div class="sc-pick">${code(name)}<label for="sc-player" style="color:var(--muted);font-size:13px">Show</label>
+      <select id="sc-player"><option value="">Whole team</option>${plist.map(([id,t])=>`<option value="${id}"${id===sel?" selected":""}>${t.n} (${t.a} FGA)</option>`).join("")}</select>
+      <span class="rec">${games} games · ${fga} FGA · ${pct(fga?fgm/fga:null)} FG% · ${pct(efg)} eFG%</span></div>
+    <div class="sc-wrap">
+      <div style="min-width:0">${svg}
+        <div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="#ff6b7d" stroke-width="2"/></svg> Missed</span><span>Zone shading: FG% vs league average (green better)</span></div>
+      </div>
+      <div style="min-width:0">
+        <h3 style="margin:0 0 8px">${who}</h3>
+        <div class="scroll"><table><thead><tr><th class="tm">Zone</th><th>FGM/FGA</th><th>FG%</th><th>% of FGA</th><th>Lg FG%</th><th>Lg % FGA</th><th>vs Lg</th></tr></thead><tbody>${rows}
+          <tr class="avg"><td class="tm">All field goals</td><td>${fgm}/${fga}</td><td>${pct(fga?fgm/fga:null)}</td><td>100.0</td><td>${pct(lfga?L.reduce((t,z)=>t+z.m,0)/lfga:null)}</td><td>100.0</td><td></td></tr></tbody></table></div>
+        <p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0">Zones on a FIBA court: restricted area = within 1.25 m of the basket; paint = rest of the key; corner 3 = the straight part of the line. Shots ESPN logged without a location count in the table but aren't drawn${Z[5].a?` (${Z[5].a} with no zone)`:""}.${bad.length?` Left out because ESPN's log for the game is incomplete: ${bad.join(", ")}.`:""}</p>
+      </div>
+    </div></div>`;
+  document.getElementById("sc-player").onchange=e=>{psel[name]=e.target.value;renderShotChart()};
+}
+document.getElementById("pv-shot").onclick=()=>{pview="shot";try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()};
 function show(v){
   ["league","team","players","lineups"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
   if(v!=="league"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
@@ -618,9 +706,9 @@ recalc();
   // GitHub Pages version: read the season data files published alongside this page.
   const bust="?v="+Math.floor(Date.now()/600000);
   const get=async f=>{try{const r=await fetch("data/"+f+bust,{cache:"no-store"});return r.ok?await r.json():null}catch(e){return null}};
-  const [g,sh,pl,lu,meta]=await Promise.all(["games.json","shots.json","players.json","lineups.json","meta.json"].map(get));
-  META=meta?.status||null;SHOTMETA=meta?.shots_status||null;PSTATUS=meta?.players_status||null;LSTATUS=meta?.lineups_status||null;
-  GAMES=(g||[]).filter(x=>x&&x.away&&x.home);SHOTS=(sh||[]).filter(d=>d&&d.teams);PLAYERDOCS=(pl||[]).filter(d=>d&&d.teams);LINEDOCS=(lu||[]).filter(d=>d&&d.teams);
+  const [g,sh,pl,lu,ps,meta]=await Promise.all(["games.json","shots.json","players.json","lineups.json","pshots.json","meta.json"].map(get));
+  META=meta?.status||null;SHOTMETA=meta?.shots_status||null;PSTATUS=meta?.players_status||null;LSTATUS=meta?.lineups_status||null;PSHOTMETA=meta?.pshots_status||null;
+  GAMES=(g||[]).filter(x=>x&&x.away&&x.home);SHOTS=(sh||[]).filter(d=>d&&d.teams);PLAYERDOCS=(pl||[]).filter(d=>d&&d.teams);LINEDOCS=(lu||[]).filter(d=>d&&d.teams);PSHOTS=(ps||[]).filter(d=>d&&d.teams);
   recalc();
 })();
 </script>
