@@ -419,14 +419,14 @@ function shotSection(name){
       <div style="min-width:0">${svg}</div>
       <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
         <div class="tiles" style="grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--line);border-radius:6px">
-          <div class="tile"><span class="k">Paint points</span><span class="v">${f1(r?.pitp)}</span><span class="r">${rkBadge("pitp",name)} · lg ${f1(LG.pitp)}</span></div>
-          <div class="tile" style="border-right:0"><span class="k">Opp paint points</span><span class="v">${f1(r?.opitp)}</span><span class="r">${rkBadge("opitp",name)} · lg ${f1(LG.opitp)}</span></div>
+          <div class="tile"><span class="k">Paint points</span><span class="v">${f1(r?.pitp)}</span><span class="r">${rkBadge("pitp",name)} <span style="white-space:nowrap">· League Ave ${f1(LG.pitp)}</span></span></div>
+          <div class="tile" style="border-right:0"><span class="k">Opp paint points</span><span class="v">${f1(r?.opitp)}</span><span class="r">${rkBadge("opitp",name)} <span style="white-space:nowrap">· League Ave ${f1(LG.opitp)}</span></span></div>
         </div>
         <p class="note">${pct(r?.pshare)}% of their points come in the paint (league ${pct(LG.pshare)}%).</p>
       </div>
     </div>
     <div class="scroll"><table>
-      <thead><tr><th class="tm">Zone</th><th>Att/g</th><th>% of FGA</th><th>FG%</th><th>Pts/g</th><th>% of pts</th><th>Lg % pts</th><th>Opp pts/g</th><th>Opp FG%</th></tr></thead>
+      <thead><tr><th class="tm">Zone</th><th>Att/g</th><th>% of FGA</th><th>FG%</th><th>Pts/g</th><th>% of pts</th><th>League Ave % pts</th><th>Opp pts/g</th><th>Opp FG%</th></tr></thead>
       <tbody>${rows}</tbody></table></div></div>`;
 }
 
@@ -437,7 +437,7 @@ function renderTeam(){
   const el=document.getElementById("team");
   const r=ROWS.find(x=>x.name===byCode[current]);
   if(!r){el.innerHTML=`<div class="panel">${emptyMsg()}</div>`;return}
-  const tile=(k,l,fmt)=>`<div class="tile"><span class="k">${l}</span><span class="v">${fmt(r[k])}</span><span class="r">${rkBadge(k,r.name)} · lg ${fmt(LG[k])}</span></div>`;
+  const tile=(k,l,fmt)=>`<div class="tile"><span class="k">${l}</span><span class="v">${fmt(r[k])}</span><span class="r">${rkBadge(k,r.name)} <span style="white-space:nowrap">· League Ave ${fmt(LG[k])}</span></span></div>`;
   el.innerHTML=`
   <div class="panel">
     <div class="team-head"><h2>${code(r.name)} ${disp(r.name)}</h2><span class="rec">${r.w}–${r.l} · ${r.gp} games · ${f1(r.ppg)} PPG / ${f1(r.oppg)} opp</span></div>
@@ -701,7 +701,7 @@ function renderShotChart(){
       </div>
       <div style="min-width:0">
         <h3 style="margin:0 0 8px">${who}</h3>
-        <div class="scroll"><table><thead><tr><th class="tm">Zone</th><th>FGM/FGA</th><th>FG%</th><th>% of FGA</th><th>Lg FG%</th><th>Lg % FGA</th><th>vs Lg</th></tr></thead><tbody>${rows}
+        <div class="scroll"><table><thead><tr><th class="tm">Zone</th><th>FGM/FGA</th><th>FG%</th><th>% of FGA</th><th>League Ave FG%</th><th>League Ave % FGA</th><th>vs League Ave</th></tr></thead><tbody>${rows}
           <tr class="avg"><td class="tm">All field goals</td><td>${fgm}/${fga}</td><td>${pct(fga?fgm/fga:null)}</td><td>100.0</td><td>${pct(lfga?L.reduce((t,z)=>t+z.m,0)/lfga:null)}</td><td>100.0</td><td></td></tr></tbody></table></div>
         <p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0">Zones on a FIBA court. Three-point regions: corners are the straight part of the line; the top is the area between the lane lines extended out past the arc (slot to slot); the wings are either side of it. Left and right are as drawn on this chart (basket at the top). Restricted area = within 1.25 m of the basket; paint = rest of the key.${Z[8].a?` ${Z[8].a} shots had no zone.`:""}${bad.length?` Left out because ESPN's log for the game is incomplete: ${bad.join(", ")}.`:""}</p>
       </div>
