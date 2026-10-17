@@ -125,7 +125,9 @@ tr.low td{opacity:.55}
 svg text.zp{font:700 16px var(--display);fill:#fff;paint-order:stroke;stroke:rgba(6,18,39,.85);stroke-width:3px}
 svg text.zq{font:500 10.5px var(--mono);fill:#fff;paint-order:stroke;stroke:rgba(6,18,39,.85);stroke-width:3px}
 td.up{color:var(--good)}td.dn{color:var(--bad)}
-footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:6px;max-width:90ch}
+.fblock{display:flex;flex-direction:column;gap:3px}
+.fblock b{font:600 13px var(--display);letter-spacing:.08em;color:var(--ink);margin-bottom:2px}
+footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:16px;max-width:90ch}
 @media (max-width:760px){.grid2{grid-template-columns:minmax(0,1fr)}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tile:nth-child(2){border-right:0}.tile:nth-child(-n+2){border-bottom:1px solid var(--line)}.ff{grid-template-columns:92px minmax(0,1fr) 54px 40px}}
 @media (prefers-reduced-motion:no-preference){.bar .fill{transition:width .3s,left .3s}}
 </style>
@@ -193,9 +195,24 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
   </section>
 
   <footer>
-    <span><b>Formulas.</b> Poss = FGA − OREB + TOV + 0.44·FTA, averaged across both teams in each game. ORtg/DRtg = points scored/allowed per 100 poss. eFG% = (FGM + 0.5·3PM)/FGA. TOV% = TOV/(FGA + 0.44·FTA + TOV). OREB% = OREB/(OREB + opp DREB). FT rate = FTA/FGA. 3PA rate = 3PA/FGA. TS% = PTS/(2·(FGA + 0.44·FTA)).</span>
-    <span><b>Shot zones.</b> From ESPN play-by-play shot coordinates on a FIBA court: restricted area = within 1.25 m of the basket; paint = rest of the key; corner 3 = threes from the straight part of the line. Paint points = 2 × made shots in the restricted area and paint, so and-one free throws sit under free throws.</span>
-    <span id="foot-note">Source: RealGM box scores. Updated automatically each morning.</span>
+    <div class="fblock"><b>FORMULAS</b>
+      <span>Poss = FGA − OREB + TOV + 0.44·FTA, averaged across both teams in each game.</span>
+      <span>ORtg / DRtg = points scored / allowed per 100 possessions.</span>
+      <span>eFG% = (FGM + 0.5·3PM) / FGA.</span>
+      <span>TOV% = TOV / (FGA + 0.44·FTA + TOV).</span>
+      <span>OREB% = OREB / (OREB + opp DREB).</span>
+      <span>FT rate = FTA / FGA.</span>
+      <span>3PA rate = 3PA / FGA.</span>
+      <span>TS% = PTS / (2·(FGA + 0.44·FTA)).</span>
+    </div>
+    <div class="fblock"><b>SHOT ZONES</b>
+      <span>From ESPN play-by-play shot coordinates on a FIBA court.</span>
+      <span>Restricted area = within 1.25 m of the basket.</span>
+      <span>Paint = rest of the key.</span>
+      <span>Corner 3 = threes from the straight part of the line.</span>
+      <span>Paint points = 2 × made shots in the restricted area and paint, so and-one free throws sit under free throws.</span>
+    </div>
+    <span id="foot-note">Source: ESPN API. Updated automatically twice a day.</span>
   </footer>
 </div>
 
@@ -463,7 +480,7 @@ function renderStatus(){
   const upd=META?.updatedAt?new Date(META.updatedAt).toLocaleString("en-AU",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"–";
   el.innerHTML=`<span><b>${GAMES.length}</b> games</span><span>through <b>${new Date(last+"T00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"})}</b></span><span>updated <b>${upd}</b></span>`;
   const notes=[...new Set(GAMES.filter(g=>g.note).map(g=>g.note))];
-  document.getElementById("foot-note").textContent="Source: RealGM box scores. Updated automatically each morning."+(notes.length?" "+notes.join(" "):"");
+  document.getElementById("foot-note").textContent="Source: ESPN API. Updated automatically twice a day."+(notes.length?" "+notes.join(" "):"");
 }
 
 function recalc(){const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();renderStatus();renderLeague();renderTeam();renderPlayers();renderLineups()}
