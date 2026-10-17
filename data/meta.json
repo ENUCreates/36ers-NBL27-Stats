@@ -2,7 +2,7 @@
  "status": {
   "lastGameDate": "2026-10-16",
   "source": "RealGM",
-  "updatedAt": "2026-10-17T20:30:00+11:00",
+  "updatedAt": "2026-10-17T20:33:00+11:00",
   "warning": "2026-10-17 Cairns Taipans at South East Melbourne Phoenix (RealGM 524406, ESPN 401875270): final on ESPN (83-115) but RealGM box score not yet final; waiting for next run."
  },
  "shots_status": {
@@ -10,18 +10,18 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-10-17T20:30:00+11:00",
+  "checkedAt": "2026-10-17T20:33:00+11:00",
   "games": 32,
   "medianErr": 0.24,
   "mismatches": 28
  },
  "players_status": {
-  "checkedAt": "2026-10-17T20:30:00+11:00",
+  "checkedAt": "2026-10-17T20:33:00+11:00",
   "games": 32,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-10-17T20:30:00+11:00",
+  "checkedAt": "2026-10-17T20:33:00+11:00",
   "games": 32,
   "invalid": 30
  }
