@@ -635,7 +635,7 @@ function tally9(shots,B){const r=Array.from({length:9},()=>({m:0,a:0}));shots.fo
 function shotPool(team,pid){
   const out=[];let games=0,bad=[];
   PSHOTS.forEach(d=>{if(!d.date||d.date<SEASON_START)return;const T=d.teams?.[team];if(!T)return;
-    if(T.ok===false){bad.push(d.date.slice(8)+"/"+d.date.slice(5,7));return}
+    if(T.ok===false){bad.push(d.date.slice(8)+"/"+d.date.slice(5,7)+" "+Object.keys(d.teams).map(n=>TEAMS[n]?.c||n).join("–"));return}
     let played=false;
     for(const [id,p] of Object.entries(T.p||{})){if(pid&&id!==pid)continue;if((p.s||[]).length)played=true;(p.s||[]).forEach(s=>out.push(s))}
     if(played||!pid)games++;});
@@ -703,7 +703,7 @@ function renderShotChart(){
         <h3 style="margin:0 0 8px">${who}</h3>
         <div class="scroll"><table><thead><tr><th class="tm">Zone</th><th>FGM/FGA</th><th>FG%</th><th>% of FGA</th><th>League Ave FG%</th><th>League Ave % FGA</th><th>vs League Ave</th></tr></thead><tbody>${rows}
           <tr class="avg"><td class="tm">All field goals</td><td>${fgm}/${fga}</td><td>${pct(fga?fgm/fga:null)}</td><td>100.0</td><td>${pct(lfga?L.reduce((t,z)=>t+z.m,0)/lfga:null)}</td><td>100.0</td><td></td></tr></tbody></table></div>
-        <p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0">Zones on a FIBA court. Three-point regions: corners are the straight part of the line; the top is the area between the lane lines extended out past the arc (slot to slot); the wings are either side of it. Left and right are as drawn on this chart (basket at the top). Restricted area = within 1.25 m of the basket; paint = rest of the key.${Z[8].a?` ${Z[8].a} shots had no zone.`:""}${bad.length?` Left out because ESPN's log for the game is incomplete: ${bad.join(", ")}.`:""}</p>
+        ${bad.length?`<p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN shot log): ${bad.join(", ")}</p>`:""}
       </div>
     </div></div>`;
   document.getElementById("sc-player").onchange=e=>{psel[name]=e.target.value;renderShotChart()};
