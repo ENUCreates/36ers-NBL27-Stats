@@ -575,7 +575,7 @@ function computeLineups(team,size){
   const L={},names={};let games=0,bad=[];
   LINEDOCS.forEach(doc=>{
     if(!doc.date||doc.date<SEASON_START||!doc.teams||!doc.teams[team])return;
-    if(!lineupTeamOk(doc,team)){const o=Object.keys(doc.teams).find(n=>n!==team);bad.push(doc.date.slice(8)+"/"+doc.date.slice(5,7)+" v "+(TEAMS[o]?.c||o));return}
+    if(!lineupTeamOk(doc,team)){bad.push(doc.date.slice(8)+"/"+doc.date.slice(5,7)+" "+Object.keys(doc.teams).map(n=>TEAMS[n]?.c||n).join("–"));return}
     games++;Object.assign(names,doc.names||{});
     doc.teams[team].forEach(st=>{
       if(!st.p||st.p.length!==5)return;
@@ -618,7 +618,7 @@ function renderLineups(){
     <div class="scroll"><table><thead><tr><th class="tm">${label}</th>${LCOLS.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
     <tbody>${shown.map(r=>`<tr class="${r.poss<20?'low':''}"><td class="tm"><div class="lu">${r.label.map(n=>`<span>${n}</span>`).join("<span aria-hidden=\"true\" style=\"color:var(--muted)\">·</span>")}</div></td>${LCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${LCOLS.length+1}" style="color:var(--muted)">No ${lsize}-man groups with ${lminVal}+ minutes yet.</td></tr>`}</tbody></table></div>
   </div>
-  <p style="color:var(--muted);font-size:12px;margin:10px 0 0;max-width:90ch">Ratings per 100 possessions while the group is on the floor; possessions estimated as FGA − OREB + TOV + 0.44·FTA, averaged across both teams. Net shaded once a group reaches 40 possessions; faded rows are under 20 possessions, so treat them as noise. Rebuilt from ESPN substitution logs and checked game by game against the official box score (points, shots and each player's minutes)${bad.length?`; left out because ESPN's log has gaps: ${bad.join(", ")}`:""}.</p>`;
+  ${bad.length?`<p style="color:var(--muted);font-size:12px;margin:10px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN substitution log): ${bad.join(", ")}</p>`:""}`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(lsort.k===k)lsort.d*=-1;else lsort={k,d:["drtg","oefg","tov"].includes(k)?1:-1};renderLineups()});
 }
 [5,3,2].forEach(n=>document.getElementById("ln"+n).onclick=()=>{lsize=n;try{localStorage.setItem("nbl27-lsize",n)}catch(e){}renderLineups()});
