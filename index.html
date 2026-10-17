@@ -607,6 +607,16 @@ function lineupTeamOk(doc,team){
     if(pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>5))return false}
   return true;
 }
+// Rotations and clutch only need floor time to be right: game length covered and every player's minutes within 5 of the box score.
+function lineupMinOk(doc,team){
+  const sts=doc.teams[team]||[];if(!sts.length||sts.some(s=>!s.p||s.p.length!==5))return false;
+  const g=GAMES.find(x=>x.date===doc.date&&(x.home.team===team||x.away.team===team));if(!g)return false;
+  const b=g.home.team===team?g.home:g.away,sec=sts.reduce((t,s)=>t+(+s.sec||0),0);
+  if(Math.abs(sec-(2400+((b.min||200)-200)*12))>30)return false;
+  const pd=PLAYERDOCS.find(p=>p.espnId===doc.espnId);if(!pd||!pd.teams?.[team])return false;
+  const on={};sts.forEach(s=>s.p.forEach(id=>on[id]=(on[id]||0)+(+s.sec||0)));
+  return !pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>5);
+}
 function computeLineups(team,size){
   const L={},names={};let games=0,bad=[];
   LINEDOCS.forEach(doc=>{
@@ -752,7 +762,7 @@ try{const v=localStorage.getItem("nbl27-lview");if(v)lview=v}catch(e){}
 const gtag=d=>d.date.slice(8)+"/"+d.date.slice(5,7)+" "+Object.keys(d.teams).map(n=>TEAMS[n]?.c||n).join("–");
 const seasonEv=()=>EVENTS.filter(d=>d.date&&d.date>=SEASON_START&&d.teams&&Object.keys(d.teams).length===2);
 const evOk=(d,team)=>!!d.teams?.[team]?.ok;
-const evLineOk=(d,team)=>{if(!evOk(d,team))return false;const l=LINEDOCS.find(x=>x.espnId===d.espnId);return !!l&&!!l.teams?.[team]&&lineupTeamOk(l,team)};
+const evLineOk=(d,team)=>{if(!evOk(d,team))return false;const l=LINEDOCS.find(x=>x.espnId===d.espnId);return !!l&&!!l.teams?.[team]&&lineupMinOk(l,team)};
 const possF=t=>(t.fga||0)-(t.oreb||0)+(t.tov||0)+0.44*(t.fta||0);
 const ppt=v=>v==null||!isFinite(v)?"–":(v>0?"+":"")+(v*100).toFixed(1);
 const f2=v=>v==null||!isFinite(v)?"–":v.toFixed(2);
