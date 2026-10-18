@@ -1,0 +1,39 @@
+name: Update NBL27 data
+
+on:
+  schedule:
+    # Every 15 min from 2pm to 2am Sydney (AEDT) on any day: covers every NBL tip-off window.
+    - cron: "*/15 3-14 * * *"
+    # Hourly catch-up the rest of the day (late ESPN corrections).
+    - cron: "7 0-2,15-23 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add any newly finished games
+        run: python3 updater/update.py . 4
+
+      - name: Commit and push if anything changed
+        run: |
+          if git diff --quiet -- data; then
+            echo "No new data."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git commit -m "Data update $(TZ=Australia/Sydney date +%F)"
+          git pull --rebase origin main
+          git push origin main
