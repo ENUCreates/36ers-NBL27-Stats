@@ -71,6 +71,8 @@ td.hi{background:var(--good-bg);color:var(--good)}
 td.lo{background:var(--bad-bg);color:var(--bad)}
 tr.avg td{color:var(--muted);font-style:normal;border-top:2px solid var(--line)}
 tr.avg td.tm{font-weight:500}
+tr.teamrow td{color:var(--ink);font-weight:600;border-top:2px solid var(--line);background:var(--soft)}
+tr.teamrow td.tm{background:var(--soft);letter-spacing:.04em}
 .legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:12px}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-2px;margin-right:5px}
 .team-head{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;padding:16px}
@@ -542,6 +544,23 @@ function computePlayers(team){
       fgag:x.fga/g,tpag:x.tpa/g,ftag:x.fta/g,p40:div(x.pts*40,x.min),pm40:div(x.pm*40,x.min),fgp:div(x.fgm,x.fga),tpp:div(x.tpm,x.tpa),ftp:div(x.ftm,x.fta)});
   });
 }
+// Whole-team row for the Players table: sums of every player line (all players, ignores the minutes filter).
+function computeTeamRow(team){
+  const K=["min","fgm","fga","tpm","tpa","ftm","fta","oreb","dreb","ast","stl","blk","tov","pf","pm","pts"];
+  const T=Object.fromEntries(K.map(k=>[k,0])),O=Object.fromEntries(K.map(k=>[k,0]));let g=0,offMin=0;
+  PLAYERDOCS.forEach(doc=>{if(!doc.date||doc.date<SEASON_START)return;const names=Object.keys(doc.teams||{});if(names.length!==2||!names.includes(team))return;
+    g++;const opp=names.find(n=>n!==team);
+    const gm_=GAMES.find(x=>x.date===doc.date&&[x.home.team,x.away.team].includes(team)&&[x.home.team,x.away.team].includes(opp));
+    offMin+=gm_?(gm_.home.team===team?gm_.home.min:gm_.away.min):null;
+    (doc.teams[team]||[]).forEach(p=>K.forEach(k=>T[k]+=+p[k]||0));(doc.teams[opp]||[]).forEach(p=>K.forEach(k=>O[k]+=+p[k]||0))});
+  if(!g)return null;
+  const div=(a,b)=>b>0?a/b:null,tsa=T.fga+0.44*T.fta,oppPoss=O.fga-O.oreb+O.tov+0.44*O.fta,tmin=offMin>0?offMin:T.min,gm=tmin/5; // official team minutes: 200 a game, +25 per OT
+  return Object.assign({},T,{name:"TEAM AVERAGE",gp:g,gs:"–",mpg:tmin/g,ppg:T.pts/g,rpg:(T.oreb+T.dreb)/g,orpg:T.oreb/g,drpg:T.dreb/g,apg:T.ast/g,spg:T.stl/g,bpg:T.blk/g,
+    tpg:T.tov/g,pfpg:T.pf/g,pmg:T.pm/5/g,fgp:div(T.fgm,T.fga),tpp:div(T.tpm,T.tpa),ftp:div(T.ftm,T.fta),
+    ts:div(T.pts,2*tsa),efg:div(T.fgm+0.5*T.tpm,T.fga),usg:null,tpar:div(T.tpa,T.fga),ftr:div(T.fta,T.fga),astp:div(T.ast,T.fgm),
+    tovp:div(T.tov,tsa+T.tov),ato:div(T.ast,T.tov),orbp:div(T.oreb,T.oreb+O.dreb),drbp:div(T.dreb,T.dreb+O.oreb),
+    stlp:div(T.stl,oppPoss),blkp:div(T.blk,O.fga-O.tpa),p40:div(T.pts*40,gm),pm40:div(T.pm/5*40,gm)});
+}
 const PCOLS={
  adv:[["gp","GP",v=>v,1],["mpg","MPG",f1,1],["ppg","PPG",f1,1],["ts","TS%",pct,1,"ts"],["efg","eFG%",pct,1],["usg","USG%",pct,1,"usg"],["tpar","3PA rate",pct,1],["ftr","FT rate",pct,1],
       ["astp","AST%",pct,1],["tovp","TOV%",pct,-1],["ato","AST/TO",v=>v==null?"–":v.toFixed(2),1],["orbp","OREB%",pct,1],["drbp","DREB%",pct,1],["stlp","STL%",pct,1],["blkp","BLK%",pct,1],["p40","PTS/40",f1,1],["pm40","+/- /40",sgn,1]],
@@ -575,13 +594,13 @@ function renderPlayers(){
     if(extra==="tp")return `<td title="${r.tpm}-${r.tpa}">${fmt(r[k])}</td>`;
     if(extra==="ft")return `<td title="${r.ftm}-${r.fta}">${fmt(r[k])}</td>`;
     return `<td>${fmt(r[k])}</td>`};
-  const shown=rows.filter(r=>r.mpg>=pminVal),hidden=rows.length-shown.length;
+  const shown=rows.filter(r=>r.mpg>=pminVal),hidden=rows.length-shown.length,teamRow=computeTeamRow(name);
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${rows.length} players used · ${shown.length} shown${hidden?` (${hidden} under ${pminVal} min/g)`:""}</span></div>
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${cols.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${shown.map(r=>`<tr class="${r.gp<2?'low':''}"><td class="tm pl">${r.name}<small>${r.pos}</small></td>${cols.map(c=>fmtCell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="text-align:left;color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}</tbody></table></div>
+    <tbody>${shown.map(r=>`<tr class="${r.gp<2?'low':''}"><td class="tm pl">${r.name}<small>${r.pos}</small></td>${cols.map(c=>fmtCell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="text-align:left;color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}${teamRow?`<tr class="teamrow"><td class="tm pl">TEAM AVERAGE</td>${cols.map(c=>(c[4]==="ts"||c[4]==="usg")?`<td>${c[2](teamRow[c[0]])}</td>`:fmtCell(teamRow,c)).join("")}</tr>`:""}</tbody></table></div>
   </div>
-  <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">${(pview==="adv"?["USG% = share of team possessions a player uses while on court","AST% = share of teammates' field goals he assisted while on court","OREB% = share of available offensive rebounds he grabbed","DREB% = share of available defensive rebounds he grabbed","STL% = steals per opponent possession","BLK% = blocks per opponent 2-point attempt","TS% shaded against League Ave (min. 20 shots)","Faded rows = 1 game"]:["Per-game averages","Makes/attempts are per game; sorting those columns sorts by attempts"]).map(t=>`<span>${t}</span>`).join("")}<span>Source: ESPN player box scores, ${PSTATUS?.games??PLAYERDOCS.length} games</span></div>`;
+  <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">${(pview==="adv"?["USG% = share of team possessions a player uses while on court","AST% = share of teammates' field goals he assisted while on court","OREB% = share of available offensive rebounds he grabbed","DREB% = share of available defensive rebounds he grabbed","STL% = steals per opponent possession","BLK% = blocks per opponent 2-point attempt","TS% shaded against League Ave (min. 20 shots)","Faded rows = 1 game","Team average = all players combined; AST% for the team = AST / FGM"]:["Per-game averages","Makes/attempts are per game; sorting those columns sorts by attempts","Team average = all players combined, per game (team rebounds and team turnovers are not credited to players, so they are not included)"]).map(t=>`<span>${t}</span>`).join("")}<span>Source: ESPN player box scores, ${PSTATUS?.games??PLAYERDOCS.length} games</span></div>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(psort.k===k)psort.d*=-1;else psort={k,d:k==="name"||k==="tovp"||k==="tpg"||k==="pfpg"?1:-1};renderPlayers()});
 }
 document.getElementById("pv-adv").onclick=()=>{pview="adv";try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()};
