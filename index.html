@@ -233,7 +233,7 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
       <span>Clutch = last 5:00 of the 4th quarter or OT with the margin 5 or fewer.</span>
       <span>On/Off = team ratings per 100 possessions with a player on / off the floor.</span>
     </div>
-    <span id="foot-note">Source: ESPN API. Updated automatically twice a day.</span>
+    <span id="foot-note">Source: ESPN API. Rebuilt from ESPN and verified once a day (8:58am Sydney).</span>
   </footer>
 </div>
 
@@ -505,7 +505,7 @@ function renderStatus(){
   const upd=META?.updatedAt?new Date(META.updatedAt).toLocaleString("en-AU",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"–";
   el.innerHTML=`<span><b>${GAMES.length}</b> games</span><span>through <b>${new Date(last+"T00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"})}</b></span><span>updated <b>${upd}</b></span>`;
   const notes=[...new Set(GAMES.filter(g=>g.note).map(g=>g.note))];
-  document.getElementById("foot-note").textContent="Source: ESPN API. Updated automatically twice a day."+(notes.length?" "+notes.join(" "):"");
+  document.getElementById("foot-note").textContent="Source: ESPN API. Rebuilt from ESPN and verified once a day (8:58am Sydney)."+(notes.length?" "+notes.join(" "):"");
 }
 
 function recalc(){const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();computeExtras();renderStatus();renderLeague();renderTeam();renderPlayers();renderLineups();renderRotations()}
