@@ -207,7 +207,7 @@ def main():
     meta.setdefault("events_status", {}).update(checkedAt=nowiso, games=len(data["events"]), badTeamGames=len(bad),
                                                  notes="Team-games failing reconciliation: " + ", ".join(bad))
     for c in COLS:
-        json.dump(data[c], open(os.path.join(root, "data", c + ".json"), "w"), separators=(",", ":"))
+        json.dump(data[c], open(os.path.join(root, "data", c + ".json"), "w"), separators=(",", ":"), sort_keys=True)
     json.dump(meta, open(os.path.join(root, "data", "meta.json"), "w"), indent=1)
     print(json.dumps({"games": len(data["games"]), "held": held, "pending": pending, "warnings": warnings,
                       "changes": changes}, indent=1))

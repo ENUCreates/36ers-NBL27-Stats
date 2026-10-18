@@ -131,7 +131,7 @@ def process(eid, d, pdoc, swap=False, tov_rule=None):
         for c in clubs:
             st = {a for a, k in first.items() if k != "in" and pteam.get(a) == c}
             if len(st) < 5:
-                for a in sorted(prev_end[c], key=lambda a: -budget(a)):
+                for a in sorted(prev_end[c], key=lambda a: (-budget(a), a)):  # player id breaks ties so runs are repeatable
                     if len(st) >= 5: break
                     if first.get(a) != "in": st.add(a)
             if len(st) != 5:
@@ -149,7 +149,7 @@ def process(eid, d, pdoc, swap=False, tov_rule=None):
                     if j is None: return (1, b, 0)
                     if k == "in": return (2, b, -j)
                     return (0, j, b)
-                cand = sorted((a for a in on[c] if a not in actors), key=score, reverse=True)
+                cand = sorted((a for a in on[c] if a not in actors), key=lambda a: (score(a), a), reverse=True)  # deterministic ties
                 if not cand: break
                 on[c].discard(cand[0]); fixes["drop_extra"] += 1
             while len(on[c]) < 5:
