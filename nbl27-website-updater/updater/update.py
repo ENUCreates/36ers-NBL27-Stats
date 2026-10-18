@@ -14,6 +14,7 @@ from zoneinfo import ZoneInfo
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import shotlib as S  # noqa: E402
+from teamtotals import official_totals  # noqa: E402
 
 SYD = ZoneInfo("Australia/Sydney")
 SEASON_START = datetime.date(2026, 9, 19)
@@ -58,6 +59,7 @@ def game_doc(eid, j, date):
     stats = {t["team"]["displayName"]: {s["name"]: s["displayValue"] for s in t["statistics"]}
              for t in j["boxscore"]["teams"]}
     out = {"id": f"espn-{eid}", "date": date, "source": f"https://www.espn.com/nbl/game/_/gameId/{eid}"}
+    OT = official_totals(j)  # team rebounds/turnovers included, matching the official box score
     for ha in ("away", "home"):
         name = side[ha]["team"]["displayName"]
         T = stats[name]
@@ -68,9 +70,9 @@ def game_doc(eid, j, date):
         if 2 * fgm + tpm + ftm != pts:
             return None, f"{name} points don't reconcile ({2 * fgm + tpm + ftm} vs {pts})"
         out[ha] = {"team": name, "min": mins, "fgm": fgm, "fga": fga, "tpm": tpm, "tpa": tpa, "ftm": ftm,
-                   "fta": fta, "oreb": int(num(T["offensiveRebounds"])), "dreb": int(num(T["defensiveRebounds"])),
+                   "fta": fta, "oreb": OT[name]["oreb"], "dreb": OT[name]["dreb"],
                    "ast": int(num(T["assists"])), "pf": int(num(T["fouls"])), "stl": int(num(T["steals"])),
-                   "tov": int(num(T["turnovers"])), "blk": int(num(T["blocks"])), "pts": pts}
+                   "tov": OT[name]["tov"], "blk": int(num(T["blocks"])), "pts": pts}
     return out, None
 
 
