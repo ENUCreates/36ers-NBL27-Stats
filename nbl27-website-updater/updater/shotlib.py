@@ -23,6 +23,11 @@ ZONES = ["ra", "paint", "mid", "c3", "ab3", "ft", "unk"]
 
 
 def get(url):
+    # optional on-disk cache for game summaries (set by rebuild.py) so every step reads the same ESPN snapshot
+    cache = os.environ.get("NBL_ESPN_CACHE")
+    m = re.search(r"/summary\?event=(\d+)", url)
+    if cache and m and os.path.exists(os.path.join(cache, m.group(1) + ".json")):
+        return json.load(open(os.path.join(cache, m.group(1) + ".json")))
     for k in range(5):
         r = subprocess.run(["curl", "-sS", "--compressed", url], capture_output=True, text=True).stdout
         try:

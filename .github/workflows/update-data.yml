@@ -1,12 +1,13 @@
-name: Update NBL27 data
+name: Rebuild NBL27 data (manual)
 
+# The daily rebuild runs from the Claude scheduled task (8:58am Sydney) so the Claude page and this site
+# always get the same verified data. This workflow is a manual backup only: Actions tab -> Run workflow.
 on:
-  schedule:
-    # Every 15 min from 2pm to 2am Sydney (AEDT) on any day: covers every NBL tip-off window.
-    - cron: "*/15 3-14 * * *"
-    # Hourly catch-up the rest of the day (late ESPN corrections).
-    - cron: "7 0-2,15-23 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      settle_hours:
+        description: "Only include games that tipped off at least this many hours ago"
+        default: "8"
 
 permissions:
   contents: write
@@ -16,24 +17,24 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  update:
+  rebuild:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
-      - name: Add any newly finished games
-        run: python3 nbl27-website-updater/updater/update.py . 4
+      - name: Full rebuild from ESPN with checks
+        run: python3 nbl27-website-updater/updater/rebuild.py . "${{ github.event.inputs.settle_hours }}"
 
       - name: Commit and push if anything changed
         run: |
           if git diff --quiet -- data; then
-            echo "No new data."
+            echo "No changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
-          git commit -m "Data update $(TZ=Australia/Sydney date +%F)"
+          git commit -m "Data rebuild $(TZ=Australia/Sydney date +%F)"
           git pull --rebase origin main
           git push origin main

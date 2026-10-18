@@ -1,26 +1,76 @@
 {
  "status": {
   "lastGameDate": "2026-10-18",
-  "source": "RealGM / ESPN",
-  "updatedAt": "2026-10-18T20:04:48+11:00"
+  "source": "ESPN (official team totals), full rebuild once a day",
+  "updatedAt": "2026-10-18T20:12:30+11:00",
+  "games": 36,
+  "changes": [
+   "corrected 2026-09-23 Tasmania JackJumpers: pf 16->18",
+   "corrected 2026-09-20 Sydney Kings: pf 10->12",
+   "corrected 2026-09-20 Cairns Taipans: pf 23->25",
+   "corrected 2026-09-19 Perth Wildcats: pf 16->19",
+   "corrected 2026-09-19 South East Melbourne Phoenix: pf 15->18",
+   "corrected 2026-09-22 Brisbane Bullets: pf 17->22",
+   "corrected 2026-09-22 New Zealand Breakers: pf 22->23",
+   "corrected 2026-09-24 Perth Wildcats: pf 18->21",
+   "corrected 2026-09-24 Adelaide 36ers: ast 22->23",
+   "corrected 2026-09-30 New Zealand Breakers: pf 12->15",
+   "corrected 2026-10-09 Illawarra Hawks: pf 24->26",
+   "corrected 2026-10-09 Tasmania JackJumpers: pf 19->21",
+   "corrected 2026-10-04 Adelaide 36ers: pf 19->21",
+   "corrected 2026-10-04 New Zealand Breakers: pf 12->18",
+   "corrected 2026-10-11 Sydney Kings: pf 14->16",
+   "corrected 2026-10-11 Adelaide 36ers: pf 15->17",
+   "corrected 2026-10-03 Brisbane Bullets: pf 20->22",
+   "corrected 2026-10-03 Tasmania JackJumpers: pf 14->15",
+   "corrected 2026-09-19 Melbourne United: pf 19->23",
+   "corrected 2026-09-19 Adelaide 36ers: pf 18->20",
+   "corrected 2026-09-25 Brisbane Bullets: pf 12->15",
+   "corrected 2026-09-21 Tasmania JackJumpers: pf 14->17",
+   "corrected 2026-09-21 South East Melbourne Phoenix: pf 20->24",
+   "corrected 2026-10-01 Tasmania JackJumpers: pf 24->29",
+   "corrected 2026-10-01 Melbourne United: pf 21->26",
+   "corrected 2026-10-02 Illawarra Hawks: pf 15->16",
+   "corrected 2026-10-02 Adelaide 36ers: pf 14->15",
+   "corrected 2026-09-27 Cairns Taipans: pf 16->19",
+   "corrected 2026-10-11 Illawarra Hawks: pf 16->19",
+   "corrected 2026-10-11 Cairns Taipans: pf 16->17",
+   "corrected 2026-10-07 Adelaide 36ers: pf 19->21",
+   "corrected 2026-10-07 Melbourne United: pf 16->18, stl 4->3, blk 6->7",
+   "corrected 2026-10-03 Cairns Taipans: pf 22->25",
+   "corrected 2026-10-04 South East Melbourne Phoenix: pf 17->18",
+   "corrected 2026-10-04 Illawarra Hawks: pf 22->24",
+   "corrected 2026-09-20 New Zealand Breakers: pf 22->23",
+   "corrected 2026-10-08 Cairns Taipans: pf 12->13",
+   "corrected 2026-10-08 Brisbane Bullets: pf 13->15",
+   "corrected 2026-09-24 South East Melbourne Phoenix: pf 14->15",
+   "corrected 2026-09-24 Melbourne United: pf 15->17",
+   "corrected 2026-10-10 Perth Wildcats: pf 20->21",
+   "corrected 2026-10-10 New Zealand Breakers: pf 13->15",
+   "corrected 2026-09-27 Sydney Kings: pf 16->19",
+   "corrected 2026-09-27 Illawarra Hawks: pf 19->23",
+   "corrected 2026-09-30 Brisbane Bullets: pf 19->23",
+   "corrected 2026-10-02 Perth Wildcats: pf 17->20",
+   "lineups: 1 game(s) updated from ESPN"
+  ]
  },
  "shots_status": {
   "basket": {
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-10-18T20:04:48+11:00",
+  "checkedAt": "2026-10-18T20:12:30+11:00",
   "games": 36,
   "medianErr": 0.24,
   "mismatches": 32
  },
  "players_status": {
-  "checkedAt": "2026-10-18T20:04:48+11:00",
+  "checkedAt": "2026-10-18T20:12:30+11:00",
   "games": 36,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-10-18T20:04:48+11:00",
+  "checkedAt": "2026-10-18T20:12:30+11:00",
   "games": 36,
   "invalid": 33
  },
@@ -30,13 +80,13 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-10-18T20:04:48+11:00",
+  "checkedAt": "2026-10-18T20:12:30+11:00",
   "frame": "x across court 0-50 ft (basket at 25), y = feet from baseline/basket toward halfway (0-47); both teams share one half-court frame, y>47 mirrored as safeguard",
   "games": 36,
   "notes": "4548 FGAs stored, 0 without coordinates, 5 with no shooter id (key \"0\"). Zones/attribution identical to meta/shotscript. 8 team-games not ok: games 401875244, 401875247, 401875260, 401875279 have incomplete ESPN play-by-play (both teams). Elsewhere per-player FGA may differ by 1-2 from box due to ESPN PBP attribution noise."
  },
  "events_status": {
-  "checkedAt": "2026-10-18T20:04:48+11:00",
+  "checkedAt": "2026-10-18T20:12:30+11:00",
   "games": 36,
   "badTeamGames": 9,
   "notes": "Team-games failing reconciliation: 401875244 Brisbane Bullets, 401875244 New Zealand Breakers, 401875247 Illawarra Hawks, 401875247 Tasmania JackJumpers, 401875260 Melbourne United, 401875260 Cairns Taipans, 401875269 New Zealand Breakers, 401875271 Sydney Kings, 401875279 Brisbane Bullets"

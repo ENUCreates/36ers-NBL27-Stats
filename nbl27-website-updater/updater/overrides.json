@@ -1,0 +1,27 @@
+{
+ "_about": "Verified official figures that the ESPN-derived team totals get slightly wrong. Keyed by ESPN event id, then team; fields replace the computed values. Sources: official box scores via RealGM (team rebound rows), checked to sum to ESPN's official rebound total. Edit this file to add any future manual correction.",
+ "401875251": {
+  "Adelaide 36ers": {
+   "oreb": 14,
+   "dreb": 22
+  }
+ },
+ "401875253": {
+  "South East Melbourne Phoenix": {
+   "oreb": 17,
+   "dreb": 27
+  }
+ },
+ "401875279": {
+  "Brisbane Bullets": {
+   "oreb": 15,
+   "dreb": 30
+  }
+ },
+ "401875250": {
+  "Brisbane Bullets": {
+   "oreb": 18,
+   "dreb": 29
+  }
+ }
+}
