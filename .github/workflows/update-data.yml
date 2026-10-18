@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Add any newly finished games
-        run: python3 updater/update.py . 4
+        run: python3 nbl27-website-updater/updater/update.py . 4
 
       - name: Commit and push if anything changed
         run: |
