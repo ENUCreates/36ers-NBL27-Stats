@@ -683,12 +683,14 @@ function lineupMinOk(doc,team){
   const on={};sts.forEach(s=>s.p.forEach(id=>on[id]=(on[id]||0)+(+s.sec||0)));
   return !pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>5);
 }
+// Merge a game's id->name map, skipping any entry that is just the player's ID (no name in that game's data).
+function addNames(names,src){for(const[id,n]of Object.entries(src||{}))if(n&&n!==id)names[id]=n}
 function computeLineups(team,size){
   const L={},names={};let games=0,bad=[];
   LINEDOCS.forEach(doc=>{
     if(!doc.date||doc.date<SEASON_START||!doc.teams||!doc.teams[team])return;
     if(!lineupTeamOk(doc,team)){bad.push(doc.date.slice(8)+"/"+doc.date.slice(5,7)+" "+Object.keys(doc.teams).map(n=>TEAMS[n]?.c||n).join("–"));return}
-    games++;Object.assign(names,doc.names||{});
+    games++;addNames(names,doc.names);
     doc.teams[team].forEach(st=>{
       if(!st.p||st.p.length!==5)return;
       const groups=size===5?[st.p.slice().sort()]:combos(st.p.slice().sort(),size);
@@ -979,7 +981,7 @@ function computeOnOff(team){
   const add=(x,st)=>{x.sec+=st.sec||0;for(const s of["f","a"])for(const[k,v]of Object.entries(st[s]||{}))x[s][k]=(x[s][k]||0)+(+v||0)};
   LINEDOCS.forEach(doc=>{if(!doc.date||doc.date<SEASON_START||!doc.teams?.[team])return;
     if(!lineupTeamOk(doc,team)){bad.push(gtag(doc));return}
-    games++;Object.assign(names,doc.names||{});
+    games++;addNames(names,doc.names);
     doc.teams[team].forEach(st=>{if(!st.p||st.p.length!==5)return;add(tot,st);
       st.p.forEach(id=>{const x=P[id]||(P[id]={id,sec:0,f:{},a:{},g:new Set()});add(x,st);x.g.add(doc.espnId)})})});
   const rate=(f,a)=>{const pp=(possF(f)+possF(a))/2;return {pp,o:dv(100*(f.pts||0),pp),d:dv(100*(a.pts||0),pp),n:dv(100*((f.pts||0)-(a.pts||0)),pp),
@@ -1080,7 +1082,7 @@ function computeRotations(team){
   seasonEv().forEach(d=>{const T=d.teams[team];if(!T)return;if(!evLineOk(d,team)){bad.push(gtag(d));return}games++;
     for(const[id,st]of Object.entries(T.rot||{})){if(!st.length)continue;
       const x=P[id]||(P[id]={id,name:d.names?.[id]||id,g:0,sec:0,stints:0,q:[0,0,0,0,0],bins:new Array(40).fill(0),s1:0,s3:0,cl:0});
-      x.g++;x.stints+=st.length;if(d.names?.[id])x.name=d.names[id];
+      x.g++;x.stints+=st.length;if(d.names?.[id]&&d.names[id]!==id)x.name=d.names[id];
       st.forEach(([s,e])=>{x.sec+=e-s;
         for(let q=0;q<5;q++){const a=q<4?q*600:2400,b=q<4?a+600:1e9;x.q[q]+=Math.max(0,Math.min(e,b)-Math.max(s,a))}
         for(let m=Math.floor(s/60);m<Math.min(40,Math.ceil(e/60));m++)x.bins[m]+=Math.max(0,Math.min(e,(m+1)*60)-Math.max(s,m*60))});

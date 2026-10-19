@@ -279,7 +279,12 @@ def process(eid, d, pdoc, swap=False, tov_rule=None):
         stats[c] = (ok, len(played), sum(x["f"]["tov"] for x in teams[c]), sum(p.get("tov", 0) for p in bp))
         if played and ok / len(played) < 0.9: reasons.append(f"{c} minutes within 90s {ok}/{len(played)}")
     used = {p for c in clubs for x in teams[c] for p in x["p"]}
-    nm = {p: names.get(p, p) for p in sorted(used)}
+    # Names: box score first, then ESPN's full game roster, and only then the bare ID. A player on court for
+    # under 30 seconds is in the play-by-play but has 0 minutes, so he is not in the box score (players doc).
+    roster = {a["athlete"]["id"]: a["athlete"].get("displayName")
+              for bt in d["boxscore"].get("players", []) for st in bt.get("statistics", [])
+              for a in st.get("athletes", []) if a.get("athlete", {}).get("id")}
+    nm = {p: names.get(p) or roster.get(p) or p for p in sorted(used)}
     sydney = datetime.datetime.fromisoformat(comp["date"].replace("Z", "+00:00")).astimezone(ZoneInfo("Australia/Sydney"))
     doc = {"espnId": eid, "date": sydney.strftime("%Y-%m-%d"), "home": home, "away": away, "names": nm,
            "teams": teams, "source": f"https://www.espn.com/nbl/game/_/gameId/{eid}"}
