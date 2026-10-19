@@ -172,6 +172,7 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
     </div>
     <div class="fblock" id="lnote" style="color:var(--muted);font-size:12px;margin-top:10px;text-transform:uppercase;letter-spacing:.02em" hidden></div>
     <p id="lbad" style="color:var(--muted);font-size:12px;margin:8px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em" hidden></p>
+    <div class="panel" id="tstats" style="margin-top:22px"></div>
   </section>
 
   <section id="view-team" hidden>
@@ -379,6 +380,52 @@ function renderLeague(){
   h+=`<tr class="avg"><td class="tm" style="letter-spacing:.04em">LEAGUE AVERAGE</td><td></td>${COLS.map(c=>`<td class="${c.sep?'sep':''}">${c.fmt(LG[c.k],LG)}</td>`).join("")}</tr></tbody></table>`;
   el.innerHTML=h;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=(k==="name"||(COLS.find(c=>c.k===k)||{}).better===-1)?1:-1}renderLeague()});
+  el.querySelectorAll("td.tm button").forEach(b=>b.onclick=()=>{current=b.dataset.team;show("team")});
+  renderTeamStats();
+}
+
+// ---- Team stats: per-game box score averages for every team (official team totals), sortable ----
+let tsort={k:"ppg",d:-1},tsMode="own";
+// [key, label, format, better for team, better for opponents, makes/attempts]
+const TSCOLS=[["gp","GP",v=>v,0,0],["ppg","PTS",f1,1,-1],["fga","FGM/FGA",null,0,0,"fgm:fga"],["fgp","FG%",pct,1,-1],["tpa","3PM/3PA",null,0,0,"tpm:tpa"],["tpp","3P%",pct,1,-1],
+  ["fta","FTM/FTA",null,1,-1,"ftm:fta"],["ftp","FT%",pct,1,0],["oreb","OREB",f1,1,-1],["dreb","DREB",f1,1,-1],["reb","REB",f1,1,-1],["ast","AST",f1,1,-1],["stl","STL",f1,1,-1],
+  ["blk","BLK",f1,1,-1],["tov","TOV",f1,-1,1],["pf","PF",f1,-1,0],["pm","+/-",sgn,1,null]];
+function computeTeamStats(){
+  const K=["pts","fgm","fga","tpm","tpa","ftm","fta","oreb","dreb","ast","stl","blk","tov","pf"],z=()=>Object.fromEntries(K.map(k=>[k,0]));
+  const T={},L={g:0,s:z()};
+  GAMES.forEach(g=>{if(!g.date||g.date<SEASON_START)return;
+    [[g.home,g.away],[g.away,g.home]].forEach(([me,op])=>{const t=T[me.team]||(T[me.team]={g:0,own:z(),opp:z()});t.g++;L.g++;
+      K.forEach(k=>{t.own[k]+=+me[k]||0;t.opp[k]+=+op[k]||0;L.s[k]+=+me[k]||0})})});
+  const row=(name,g,S,pm)=>{const d=(a,b)=>b>0?a/b:null,pg=k=>S[k]/g;
+    return {name,gp:g,ppg:pg("pts"),fgm:pg("fgm"),fga:pg("fga"),tpm:pg("tpm"),tpa:pg("tpa"),ftm:pg("ftm"),fta:pg("fta"),fgp:d(S.fgm,S.fga),tpp:d(S.tpm,S.tpa),ftp:d(S.ftm,S.fta),
+      oreb:pg("oreb"),dreb:pg("dreb"),reb:(S.oreb+S.dreb)/g,ast:pg("ast"),stl:pg("stl"),blk:pg("blk"),tov:pg("tov"),pf:pg("pf"),pm}};
+  const rows=Object.entries(T).map(([n,t])=>row(n,t.g,tsMode==="opp"?t.opp:t.own,tsMode==="opp"?null:(t.own.pts-t.opp.pts)/t.g));
+  return {rows,lg:L.g?row("League average",L.g,L.s,null):null};  // per team-game
+}
+function renderTeamStats(){
+  const el=document.getElementById("tstats");if(!el)return;
+  if(!GAMES.length){el.innerHTML="";return}
+  const {rows,lg}=computeTeamStats(),opp=tsMode==="opp";
+  const cols=TSCOLS.filter(c=>!(opp&&c[0]==="pm"));
+  const better=c=>opp?c[4]:c[3];
+  rows.sort((a,b)=>{const k=tsort.k;if(k==="name")return tsort.d*a.name.localeCompare(b.name);const x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return tsort.d*(x-y)});
+  const rank=(k,dir,v)=>{const s=rows.map(r=>r[k]).filter(x=>x!=null).sort((a,b)=>dir>0?b-a:a-b);return s.indexOf(v)+1};
+  const arrow=k=>tsort.k===k?` data-dir="${tsort.d>0?'▲':'▼'}"`:"";
+  const cell=(r,c,isLg)=>{const [k,,fmt]=c,ma=c[5];const txt=ma?(()=>{const[m,a]=ma.split(":");return `${r[m].toFixed(1)}/${r[a].toFixed(1)}`})():fmt(r[k]);
+    let cls=ma?"ma":"";const b=better(c);
+    if(!isLg&&b&&r[k]!=null){const rk=rank(k,b,r[k]);if(rk<=3)cls+=" hi";else if(rk>=rows.length-2)cls+=" lo"}
+    return `<td class="${cls}">${txt}</td>`};
+  el.innerHTML=`<div class="team-head" style="padding:14px 16px">
+      <h3 style="font:700 18px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;margin:0">${opp?"Opponent stats":"Team stats"} · per game</h3>
+      <div class="seg" role="group" aria-label="Whose stats"><button class="chip" data-ts="own" aria-pressed="${!opp}">Team</button><button class="chip" data-ts="opp" aria-pressed="${opp}">Opponents</button></div></div>
+    <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Team</button></th>${cols.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${opp&&c[0]!=="gp"?"Opp "+c[1]:c[1]}</button></th>`).join("")}</tr></thead>
+    <tbody>${rows.map(r=>`<tr><td class="tm"><button data-team="${TEAMS[r.name]?.c}">${code(r.name)}<span class="nm">${disp(r.name)}</span></button></td>${cols.map(c=>cell(r,c)).join("")}</tr>`).join("")}
+    ${lg?`<tr class="avg"><td class="tm" style="letter-spacing:.04em">LEAGUE AVERAGE</td>${cols.map(c=>c[0]==="gp"||c[0]==="pm"?"<td></td>":cell(lg,c,true)).join("")}</tr>`:""}</tbody></table></div>
+    <div class="fblock" style="color:var(--muted);font-size:12px;padding:10px 16px 14px;text-transform:uppercase;letter-spacing:.02em">
+      <span>Tap a column to sort · green = top 3, red = bottom 3${opp?" (for opponent stats, lower allowed is better)":""}</span>
+      <span>Official team totals per game, including team rebounds and team turnovers · makes/attempts columns sort by attempts</span></div>`;
+  el.querySelectorAll("[data-ts]").forEach(b=>b.onclick=()=>{tsMode=b.dataset.ts;renderTeamStats()});
+  el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(tsort.k===k)tsort.d*=-1;else{const c=TSCOLS.find(c=>c[0]===k);tsort={k,d:k==="name"?1:(c&&better(c)===-1)?1:-1}}renderTeamStats()});
   el.querySelectorAll("td.tm button").forEach(b=>b.onclick=()=>{current=b.dataset.team;show("team")});
 }
 
