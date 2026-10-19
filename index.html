@@ -660,7 +660,8 @@ const shortName=n=>{if(!n)return "?";const p=n.trim().split(/\s+/);return p.leng
 function combos(arr,k){const out=[];const rec=(i,acc)=>{if(acc.length===k){out.push(acc.slice());return}for(let j=i;j<arr.length;j++){acc.push(arr[j]);rec(j+1,acc);acc.pop()}};rec(0,[]);return out}
 
 // A team's lineups for a game count only if they reconcile with the official box score:
-// full game length covered, points exact, FGA/FTA within 3, and no player's floor time more than 5 min off his box-score minutes.
+// full game length covered, points exact, FGA/FTA within 3, and no player's floor time more than 2 min off his box-score minutes
+// (the on-court rebuild matches official minutes to within ~30 s, so a bigger gap means that game's data didn't reconcile).
 function lineupTeamOk(doc,team){
   const sts=doc.teams[team]||[];if(!sts.length||sts.some(s=>!s.p||s.p.length!==5))return false;
   const g=GAMES.find(x=>x.date===doc.date&&(x.home.team===team||x.away.team===team));if(!g)return false;
@@ -670,10 +671,10 @@ function lineupTeamOk(doc,team){
   if(Math.abs(sec-exp)>30||sum("pts")!==b.pts||Math.abs(sum("fga")-b.fga)>3||Math.abs(sum("fta")-b.fta)>3)return false;
   const pd=PLAYERDOCS.find(p=>p.espnId===doc.espnId);
   if(pd&&pd.teams?.[team]){const on={};sts.forEach(s=>s.p.forEach(id=>on[id]=(on[id]||0)+(+s.sec||0)));
-    if(pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>5))return false}
+    if(pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>2))return false}
   return true;
 }
-// Rotations and clutch only need floor time to be right: game length covered and every player's minutes within 5 of the box score.
+// Rotations and clutch only need floor time to be right: game length covered and every player's minutes within 2 of the box score.
 function lineupMinOk(doc,team){
   const sts=doc.teams[team]||[];if(!sts.length||sts.some(s=>!s.p||s.p.length!==5))return false;
   const g=GAMES.find(x=>x.date===doc.date&&(x.home.team===team||x.away.team===team));if(!g)return false;
@@ -681,7 +682,7 @@ function lineupMinOk(doc,team){
   if(Math.abs(sec-(2400+((b.min||200)-200)*12))>30)return false;
   const pd=PLAYERDOCS.find(p=>p.espnId===doc.espnId);if(!pd||!pd.teams?.[team])return false;
   const on={};sts.forEach(s=>s.p.forEach(id=>on[id]=(on[id]||0)+(+s.sec||0)));
-  return !pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>5);
+  return !pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>2);
 }
 // Merge a game's id->name map, skipping any entry that is just the player's ID (no name in that game's data).
 function addNames(names,src){for(const[id,n]of Object.entries(src||{}))if(n&&n!==id)names[id]=n}
@@ -732,7 +733,7 @@ function renderLineups(){
     <div class="scroll"><table><thead><tr><th class="tm">${label}</th>${LCOLS.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
     <tbody>${shown.map(r=>`<tr class="${r.poss<20?'low':''}"><td class="tm"><div class="lu">${r.label.map(n=>`<span>${n}</span>`).join("<span aria-hidden=\"true\" style=\"color:var(--muted)\">·</span>")}</div></td>${LCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${LCOLS.length+1}" style="color:var(--muted)">No ${lsize}-man groups with ${lminVal}+ minutes yet.</td></tr>`}</tbody></table></div>
   </div>
-  ${bad.length?`<p style="color:var(--muted);font-size:12px;margin:10px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN substitution log): ${bad.join(", ")}</p>`:""}`;
+  <p style="color:var(--muted);font-size:12px;margin:10px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em">Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-${bad.length?` · Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}`:""}</p>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(lsort.k===k)lsort.d*=-1;else lsort={k,d:["drtg","oefg","tov"].includes(k)?1:-1};renderLineups()});
 }
 [5,3,2].forEach(n=>document.getElementById("ln"+n).onclick=()=>{lsize=n;try{localStorage.setItem("nbl27-lsize",n)}catch(e){}renderLineups()});
@@ -1010,8 +1011,8 @@ function renderOnOff(el,name){
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${OCOLS.map(c=>`<th class="${c[4]==="sep"||c[4]==="diff"?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
     <tbody>${shown.map(r=>`<tr class="${r.poss<100?'low':''}"><td class="tm pl">${r.name}</td>${OCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${OCOLS.length+1}" style="color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
-    <span>On = team ratings per 100 possessions with him on the floor; Off = with him on the bench</span><span>On–Off Net = On Net − Off Net (shaded with 150+ possessions each way)</span><span>Faded rows = under 100 on-court possessions</span>
-    ${bad.length?`<span>Games left out (incomplete ESPN substitution log): ${bad.join(", ")}</span>`:""}</div>`;
+    <span>On = team ratings per 100 possessions with him on the floor; Off = with him on the bench</span><span>On–Off Net = On Net − Off Net (shaded with 150+ possessions each way)</span><span>Faded rows = under 100 on-court possessions</span><span>Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-</span>
+    ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(osort.k===k)osort.d*=-1;else osort={k,d:k==="name"||k==="onD"||k==="offD"?1:-1};renderPlayers()});
 }
 
@@ -1125,8 +1126,8 @@ function renderRotations(){
   <div class="panel" style="margin-top:18px"><div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${C.map(c=>`<th class="${c[3]?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
     <tbody>${shown.map(r=>`<tr class="${r.g<2?'low':''}"><td class="tm pl">${r.name}</td>${C.map(c=>`<td class="${c[3]?'sep':''}">${c[2](r[c[0]])}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
-    <span>Q1–Q4 = minutes per game in each quarter · stints run until he subs out (they carry across quarter breaks)</span><span>Starts Q1 / Q3 = share of games on the floor to open the half · On at end of Q4 = on the floor at the final buzzer of regulation</span>
-    ${bad.length?`<span>Games left out (incomplete ESPN substitution log): ${bad.join(", ")}</span>`:""}</div>`;
+    <span>Q1–Q4 = minutes per game in each quarter · stints run until he subs out (they carry across quarter breaks)</span><span>Starts Q1 / Q3 = share of games on the floor to open the half · On at end of Q4 = on the floor at the final buzzer of regulation</span><span>Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-</span>
+    ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(rsort.k===k)rsort.d*=-1;else rsort={k,d:k==="name"?1:-1};renderRotations()});
 }
 

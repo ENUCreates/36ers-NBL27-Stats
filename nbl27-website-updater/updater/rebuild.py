@@ -86,6 +86,8 @@ def main():
     tmp = tempfile.mkdtemp()
     espn = os.path.join(tmp, "espn"); os.makedirs(espn)
     os.environ["NBL_ESPN_CACHE"] = espn
+    # solved on-court lineups (oncourt.py), reused while a game's inputs are unchanged; committed with data/
+    os.environ["NBL_ONCOURT_CACHE"] = os.path.join(root, "data", "oncourt.json")
     db = os.path.join(tmp, "db"); os.makedirs(os.path.join(db, "players")); os.makedirs(os.path.join(db, "shots"))
     new = {c: {} for c in COLS}          # games keyed by (date, pair); others by espnId
     warnings, held = [], []
@@ -200,8 +202,16 @@ def main():
                                                 mismatches=sum(1 for d in data["shots"] if d.get("mismatch")))
     meta.setdefault("players_status", {}).update(checkedAt=nowiso, games=len(data["players"]),
                                                   mismatches=sum(1 for d in data["players"] if d.get("mismatch")))
+    fits = [f for d in data["lineups"] for f in (d.get("fit") or {}).values()]
     meta.setdefault("lineups_status", {}).update(checkedAt=nowiso, games=len(data["lineups"]),
-                                                  invalid=sum(1 for d in data["lineups"] if d.get("invalid")))
+                                                  invalid=sum(1 for d in data["lineups"] if d.get("invalid")),
+                                                  method="On-court five per play solved from ESPN play-by-play and matched to "
+                                                         "each player's official minutes and plus-minus (oncourt.py)",
+                                                  fit={"teamGames": len(fits),
+                                                       "minutesOver30s": sum(1 for f in fits if f.get("maxMinErr", 0) > 30),
+                                                       "plusMinusOff": sum(1 for f in fits if f.get("maxPmErr", 0) > 0),
+                                                       "actionsOffCourt": sum(f.get("offcourt", 0) for f in fits),
+                                                       "unrecordedSwapsPerTeamGame": round(sum(f.get("unrecorded", 0) for f in fits) / max(1, len(fits)), 1)})
     meta.setdefault("pshots_status", {}).update(checkedAt=nowiso, games=len(data["pshots"]))
     bad = [f"{d['espnId']} {t}" for d in data["events"] for t, x in d.get("teams", {}).items() if x.get("ok") is False]
     meta.setdefault("events_status", {}).update(checkedAt=nowiso, games=len(data["events"]), badTeamGames=len(bad),
