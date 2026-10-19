@@ -23,6 +23,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install solver dependencies (on-court rebuild uses numpy + scipy)
+        run: python3 -m pip install numpy "scipy>=1.9"
+
       - name: Full rebuild from ESPN with checks
         run: python3 nbl27-website-updater/updater/rebuild.py . "${{ github.event.inputs.settle_hours }}"
 
