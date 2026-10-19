@@ -660,7 +660,8 @@ const shortName=n=>{if(!n)return "?";const p=n.trim().split(/\s+/);return p.leng
 function combos(arr,k){const out=[];const rec=(i,acc)=>{if(acc.length===k){out.push(acc.slice());return}for(let j=i;j<arr.length;j++){acc.push(arr[j]);rec(j+1,acc);acc.pop()}};rec(0,[]);return out}
 
 // A team's lineups for a game count only if they reconcile with the official box score:
-// full game length covered, points exact, FGA/FTA within 3, and no player's floor time more than 5 min off his box-score minutes.
+// full game length covered, points exact, FGA/FTA within 3, and no player's floor time more than 2 min off his box-score minutes
+// (the on-court rebuild matches official minutes to within ~30 s, so a bigger gap means that game's data didn't reconcile).
 function lineupTeamOk(doc,team){
   const sts=doc.teams[team]||[];if(!sts.length||sts.some(s=>!s.p||s.p.length!==5))return false;
   const g=GAMES.find(x=>x.date===doc.date&&(x.home.team===team||x.away.team===team));if(!g)return false;
@@ -670,10 +671,10 @@ function lineupTeamOk(doc,team){
   if(Math.abs(sec-exp)>30||sum("pts")!==b.pts||Math.abs(sum("fga")-b.fga)>3||Math.abs(sum("fta")-b.fta)>3)return false;
   const pd=PLAYERDOCS.find(p=>p.espnId===doc.espnId);
   if(pd&&pd.teams?.[team]){const on={};sts.forEach(s=>s.p.forEach(id=>on[id]=(on[id]||0)+(+s.sec||0)));
-    if(pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>5))return false}
+    if(pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>2))return false}
   return true;
 }
-// Rotations and clutch only need floor time to be right: game length covered and every player's minutes within 5 of the box score.
+// Rotations and clutch only need floor time to be right: game length covered and every player's minutes within 2 of the box score.
 function lineupMinOk(doc,team){
   const sts=doc.teams[team]||[];if(!sts.length||sts.some(s=>!s.p||s.p.length!==5))return false;
   const g=GAMES.find(x=>x.date===doc.date&&(x.home.team===team||x.away.team===team));if(!g)return false;
@@ -681,7 +682,7 @@ function lineupMinOk(doc,team){
   if(Math.abs(sec-(2400+((b.min||200)-200)*12))>30)return false;
   const pd=PLAYERDOCS.find(p=>p.espnId===doc.espnId);if(!pd||!pd.teams?.[team])return false;
   const on={};sts.forEach(s=>s.p.forEach(id=>on[id]=(on[id]||0)+(+s.sec||0)));
-  return !pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>5);
+  return !pd.teams[team].some(p=>Math.abs((on[p.id]||0)/60-(+p.min||0))>2);
 }
 // Merge a game's id->name map, skipping any entry that is just the player's ID (no name in that game's data).
 function addNames(names,src){for(const[id,n]of Object.entries(src||{}))if(n&&n!==id)names[id]=n}

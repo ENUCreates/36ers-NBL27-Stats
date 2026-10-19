@@ -28,7 +28,7 @@ SOLVER_VERSION = "1"
 # unrecorded swap (in + out), swap at a period break, recorded sub ignored (per player), action by a benched player,
 # same for a plain 'Foul' row (can be a bench technical), cost per second outside +/-TOL of box minutes, cost per
 # point of plus-minus error, tie-break size, MIP gap, time limit per team (s)
-W = {"U": 1.0, "Ubrk": 0.5, "V": 2.0, "A": 8.0, "Asoft": 2.0, "Mout": 0.1, "pm": 1.0, "eps": 0.01, "gap": 1e-3, "tl": 30}
+W = {"U": 1.0, "Ubrk": 0.5, "V": 2.0, "A": 8.0, "Asoft": 2.0, "Mout": 0.1, "pm": 1.0, "eps": 0.01, "gap": 1e-3, "tl": 60}
 TOL = 30
 # seconds of solving per run; games still unsolved keep their previous version and are solved on the next run
 # (keeps a full re-solve of a long season inside the daily task's 10-minute command limit)
