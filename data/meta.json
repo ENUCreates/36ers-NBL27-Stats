@@ -1,33 +1,35 @@
 {
  "status": {
-  "lastGameDate": "2026-10-18",
+  "lastGameDate": "2026-10-21",
   "source": "ESPN (official team totals), full rebuild once a day",
-  "updatedAt": "2026-10-21T08:59:15+11:00",
-  "games": 36,
-  "changes": []
+  "updatedAt": "2026-10-22T08:59:48+11:00",
+  "games": 37,
+  "changes": [
+   "added 2026-10-21 Brisbane Bullets 85 at Tasmania JackJumpers 106"
+  ]
  },
  "shots_status": {
   "basket": {
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-10-21T08:59:15+11:00",
-  "games": 36,
+  "checkedAt": "2026-10-22T08:59:48+11:00",
+  "games": 37,
   "medianErr": 0.24,
   "mismatches": 32
  },
  "players_status": {
-  "checkedAt": "2026-10-21T08:59:15+11:00",
-  "games": 36,
+  "checkedAt": "2026-10-22T08:59:48+11:00",
+  "games": 37,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-10-21T08:59:15+11:00",
-  "games": 36,
+  "checkedAt": "2026-10-22T08:59:48+11:00",
+  "games": 37,
   "invalid": 8,
   "method": "On-court five per play solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
   "fit": {
-   "teamGames": 72,
+   "teamGames": 74,
    "minutesOver30s": 11,
    "plusMinusOff": 5,
    "actionsOffCourt": 0,
@@ -40,14 +42,14 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-10-21T08:59:15+11:00",
+  "checkedAt": "2026-10-22T08:59:48+11:00",
   "frame": "x across court 0-50 ft (basket at 25), y = feet from baseline/basket toward halfway (0-47); both teams share one half-court frame, y>47 mirrored as safeguard",
-  "games": 36,
+  "games": 37,
   "notes": "4548 FGAs stored, 0 without coordinates, 5 with no shooter id (key \"0\"). Zones/attribution identical to meta/shotscript. 8 team-games not ok: games 401875244, 401875247, 401875260, 401875279 have incomplete ESPN play-by-play (both teams). Elsewhere per-player FGA may differ by 1-2 from box due to ESPN PBP attribution noise."
  },
  "events_status": {
-  "checkedAt": "2026-10-21T08:59:15+11:00",
-  "games": 36,
+  "checkedAt": "2026-10-22T08:59:48+11:00",
+  "games": 37,
   "badTeamGames": 9,
   "notes": "Team-games failing reconciliation: 401875244 Brisbane Bullets, 401875244 New Zealand Breakers, 401875247 Illawarra Hawks, 401875247 Tasmania JackJumpers, 401875260 Melbourne United, 401875260 Cairns Taipans, 401875269 New Zealand Breakers, 401875271 Sydney Kings, 401875279 Brisbane Bullets"
  }
