@@ -1,0 +1,14 @@
+#url https://basketball.realgm.com/player/Matthew-Kenyon/Summary/95709
+#fetched 2026-10-22
+G League Regular Season Stats
+2019-20 | SBL, GOG | - | 18 | 9.8 | 1.3 | 2.0 | 0.5 | 0.3 | 0.1 | 0.6 | .300 | .143 | .333
+CAREER | | - | 18 | 9.8 | 1.3 | 2.0 | 0.5 | 0.3 | 0.1 | 0.6 | .300 | .143 | .333
+International Season Stats
+2016-17 | Brisbane | AUS NBL | 17 | 10.6 | 1.9 | 0.8 | 0.4 | 0.2 | 0.0 | 0.6 | .286 | .188 | .667
+2017-18 | Brisbane | AUS NBL | 4 | 4.5 | 0.5 | 0.5 | 0.0 | 0.2 | 0.0 | 0.2 | .500 | .000 | .000
+2021-22 | Tasmania | AUS NBL | 32 | 17.4 | 3.6 | 3.5 | 0.9 | 0.8 | 0.1 | 0.6 | .483 | .311 | .593
+2022-23 | Tasmania | AUS NBL, NBL Blitz | 23 | 17.1 | 4.1 | 3.5 | 0.7 | 0.5 | 0.0 | 0.6 | .363 | .321 | .647
+2023-24 | South East Melbourne | AUS NBL | 25 | 23.8 | 5.9 | 5.1 | 0.7 | 0.7 | 0.0 | 0.7 | .424 | .293 | .643
+2024-25 | South East Melbourne | AUS NBL, NBL Blitz | 28 | 10.1 | 1.9 | 2.4 | 0.4 | 0.6 | 0.2 | 0.4 | .367 | .313 | .417
+2025-26 | Adelaide | AUS NBL | 40 | 10.4 | 2.0 | 1.6 | 0.5 | 0.4 | 0.0 | 0.3 | .420 | .300 | .632
+2026-27 | Adelaide | AUS NBL | 8 | 16.6 | 4.0 | 2.9 | 1.2 | 1.1 | 0.2 | 0.0 | .455 | .455 | .875

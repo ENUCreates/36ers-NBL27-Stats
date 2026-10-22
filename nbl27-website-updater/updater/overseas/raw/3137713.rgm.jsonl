@@ -1,0 +1,9 @@
+{"_meta": {"url": "https://basketball.realgm.com/player/Zylan-Cheatham/Summary/52056", "fetched": "2026-10-22", "src": "rgm"}}
+{"name": "Zylan Cheatham", "born": "Nov 17, 1995", "nationality": "United States", "school": "Arizona State"}
+{"tbl": "NBA", "season": "2019-20", "age": 23, "teams": ["NOP"], "team_leagues": ["nba"], "leagues": null, "gp": 4, "gs": null, "min": 12.8, "pts": 3.0, "reb": 2.2, "ast": 0.8, "stl": 0.2, "blk": 0.2, "tov": 1.0, "fgp": 0.667, "tpp": 0.000, "ftp": 0.000}
+{"tbl": "NBA", "season": "2021-22", "age": 25, "teams": ["UTH"], "team_leagues": ["nba"], "leagues": null, "gp": 1, "gs": null, "min": 5.2, "pts": 0.0, "reb": 0.0, "ast": 0.0, "stl": 0.0, "blk": 0.0, "tov": 0.0, "fgp": 0.000, "tpp": 0.000, "ftp": 0.000}
+{"tbl": "G", "season": "2019-20", "age": 23, "teams": ["ERI"], "team_leagues": ["gleague"], "leagues": null, "gp": 34, "gs": null, "min": 32.5, "pts": 16.3, "reb": 11.9, "ast": 2.5, "stl": 1.0, "blk": 0.6, "tov": 2.9, "fgp": 0.530, "tpp": 0.333, "ftp": 0.740}
+{"tbl": "G", "season": "2020-21", "age": 25, "teams": ["IWA"], "team_leagues": ["gleague"], "leagues": null, "gp": 15, "gs": null, "min": 30.7, "pts": 10.5, "reb": 8.1, "ast": 2.3, "stl": 0.7, "blk": 0.5, "tov": 2.1, "fgp": 0.500, "tpp": 0.217, "ftp": 0.640}
+{"tbl": "G", "season": "2021-22", "age": 25, "teams": ["BIR", "SLC"], "team_leagues": ["gleague", "gleague"], "leagues": null, "gp": 36, "gs": null, "min": 31.4, "pts": 14.0, "reb": 10.7, "ast": 2.3, "stl": 1.0, "blk": 0.7, "tov": 2.3, "fgp": 0.533, "tpp": 0.402, "ftp": 0.771}
+{"tbl": "G", "season": "2022-23", "age": 26, "teams": ["BIR"], "team_leagues": ["gleague"], "leagues": null, "gp": 39, "gs": null, "min": 31.9, "pts": 13.8, "reb": 8.3, "ast": 3.1, "stl": 0.9, "blk": 0.6, "tov": 2.6, "fgp": 0.565, "tpp": 0.311, "ftp": 0.726}
+{"truncated": true}

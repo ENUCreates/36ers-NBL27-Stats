@@ -1,0 +1,120 @@
+{
+ "_about": "Hand-curated additions to the overseas build, each with the source it was read from. 'stints' are career-journey stops without stats (season, club, league, country), used where RealGM's International table was cut off; seasons of leagues played inside one calendar year (NZNBL, BSN, BAL, NBL1...) are that year.",
+ "5336714": {
+  "stints": [
+   {
+    "season": "2012-13",
+    "team": "Bakersfield Jam",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2013-14",
+    "team": "Fort Wayne Mad Ants",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2014-15",
+    "team": "Idaho Stampede",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2016-17",
+    "team": "Westchester Knicks",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2018-19",
+    "team": "Westchester Knicks / Capital City Go-Go",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2019-20",
+    "team": "Hapoel Eilat",
+    "league": "IBSL",
+    "country": "IL",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2022-23",
+    "team": "NBA G League Ignite",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2023-24",
+    "team": "NBA G League Ignite",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2024",
+    "team": "Criollos de Caguas",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2024-25",
+    "team": "Lokomotiv Kuban",
+    "league": "VTB",
+    "country": "RU",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2025",
+    "team": "Cangrejeros de Santurce",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2025-26",
+    "team": "CS Vâlcea 1924",
+    "league": "Liga Națională",
+    "country": "RO",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2026",
+    "team": "Santeros de Aguada",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   }
+  ],
+  "rename": {
+   "2015-16|NBA": "Dallas Mavericks / Phoenix Suns",
+   "2018-19|NBA": "Washington Wizards / New York Knicks"
+  }
+ },
+ "3137713": {
+  "stints": [
+   {
+    "season": "2022-23",
+    "team": "Bayern Munich",
+    "league": "BBL",
+    "country": "DE",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2024-25",
+    "team": "Nagoya Diamond Dolphins",
+    "league": "B.League",
+    "country": "JP",
+    "src": "Wikipedia"
+   }
+  ]
+ }
+}

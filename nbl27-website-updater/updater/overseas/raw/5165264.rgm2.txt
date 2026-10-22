@@ -1,0 +1,11 @@
+#url https://basketball.realgm.com/player/Keanu-Rasmussen/Summary/179775
+#fetched 2026-10-22
+NCAA Season Stats
+2021-22 | California Baptist | - | - | - | - | - | - | - | - | - | - | - | - | -
+2022-23 | California Baptist | - | 9 | 3.7 | 1.9 | 0.3 | 0.0 | 0.0 | 0.2 | 0.2 | .600 | .625 | .000
+CAREER | NCAA DI | - | 9 | 3.7 | 1.9 | 0.3 | 0.0 | 0.0 | 0.2 | 0.2 | .600 | .625 | .000
+International Season Stats
+2023-24 | Hawke's Bay Hawks, Adelaide | NZ NBL, AUS NBL | 22 | 27.6 | 15.5 | 3.6 | 1.7 | 0.9 | 0.2 | 1.6 | .450 | .355 | .756
+2024-25 | Adelaide | AUS NBL, NBL Blitz | 19 | 11.7 | 2.8 | 1.3 | 1.0 | 0.6 | 0.1 | 1.0 | .400 | .150 | .588
+2025-26 | Hawke's Bay Hawks, Adelaide | AUS NBL, NZ NBL, NBL Blitz | 32 | 19.3 | 9.9 | 2.7 | 3.1 | 0.9 | 0.1 | 1.7 | .428 | .243 | .725
+2026-27 | Adelaide | AUS NBL, NBL Blitz | 7 | 15.9 | 5.0 | 1.3 | 1.6 | 0.6 | 0.0 | 0.4 | .464 | .111 | 1.000

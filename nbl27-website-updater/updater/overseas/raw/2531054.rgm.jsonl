@@ -1,0 +1,12 @@
+{"_meta": {"url": "https://basketball.realgm.com/player/Bryce-Cotton/Summary/22416", "fetched": "2026-10-22", "src": "rgm"}}
+{"name": "Bryce Cotton", "born": "Aug 11, 1992", "nationality": "United States", "school": "Providence"}
+{"tbl":"NBA","season":"2014-15","age":22,"teams":["UTH"],"team_leagues":["nba"],"leagues":null,"gp":15,"gs":null,"min":10.6,"pts":5.3,"reb":1.2,"ast":1.0,"stl":0.3,"blk":0.0,"tov":0.8,"fgp":".420","tpp":".350","ftp":".833"}
+{"tbl":"NBA","season":"2015-16","age":23,"teams":["MEM","PHX"],"team_leagues":["nba"],"leagues":null,"gp":8,"gs":null,"min":4.8,"pts":1.0,"reb":0.0,"ast":0.4,"stl":0.4,"blk":0.0,"tov":0.6,"fgp":".400","tpp":".000","ftp":".000"}
+{"tbl":"G","season":"2014-15","age":22,"teams":["AUS"],"team_leagues":["gleague"],"leagues":null,"gp":34,"gs":null,"min":40.3,"pts":22.4,"reb":4.7,"ast":4.7,"stl":1.3,"blk":0.1,"tov":2.5,"fgp":".473","tpp":".452","ftp":".900"}
+{"tbl":"G","season":"2015-16","age":23,"teams":["AUS"],"team_leagues":["gleague"],"leagues":null,"gp":6,"gs":null,"min":32.9,"pts":19.3,"reb":3.3,"ast":4.0,"stl":1.2,"blk":0.2,"tov":1.8,"fgp":".521","tpp":".484","ftp":".931"}
+{"tbl":"NCAA","season":"2010-11","age":18,"teams":["Providence"],"team_leagues":["American-Conference"],"leagues":null,"gp":31,"gs":null,"min":15.3,"pts":4.0,"reb":1.5,"ast":0.5,"stl":0.7,"blk":0.0,"tov":0.3,"fgp":".387","tpp":".259","ftp":".784"}
+{"tbl":"NCAA","season":"2011-12","age":19,"teams":["Providence"],"team_leagues":["American-Conference"],"leagues":null,"gp":32,"gs":null,"min":38.6,"pts":14.3,"reb":2.5,"ast":2.2,"stl":1.0,"blk":0.2,"tov":1.6,"fgp":".413","tpp":".379","ftp":".891"}
+{"tbl":"NCAA","season":"2012-13","age":20,"teams":["Providence"],"team_leagues":["American-Conference"],"leagues":null,"gp":32,"gs":null,"min":37.8,"pts":19.7,"reb":3.6,"ast":2.9,"stl":0.9,"blk":0.1,"tov":1.5,"fgp":".437","tpp":".364","ftp":".793"}
+{"tbl":"NCAA","season":"2013-14","age":21,"teams":["Providence"],"team_leagues":["Big-East-Conference"],"leagues":null,"gp":35,"gs":null,"min":39.9,"pts":21.8,"reb":3.5,"ast":5.9,"stl":1.0,"blk":0.1,"tov":2.4,"fgp":".419","tpp":".367","ftp":".853"}
+{"tbl":"INT","season":"2026-27","age":null,"teams":null,"team_leagues":null,"leagues":null,"gp":null,"gs":null,"min":null,"pts":25.2,"reb":2.1,"ast":6.1,"stl":1.2,"blk":0.1,"tov":null,"fgp":null,"tpp":null,"ftp":null,"cut":true}
+{"truncated": true, "_note": "fetcher reported truncated=false but the International table came back as a single partial row: treated as cut off"}

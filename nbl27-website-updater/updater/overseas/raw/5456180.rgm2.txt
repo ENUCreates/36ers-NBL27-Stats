@@ -1,0 +1,18 @@
+#url https://basketball.realgm.com/player/Corey-Webster/Summary/25229
+#fetched 2026-10-22
+International Season Stats
+2012-13 | New Zealand, Wellington Saints | AUS NBL, NZ NBL | 40 | 19.1 | 11.7 | 1.9 | 1.5 | 0.7 | 0.1 | 1.8 | .443 | .340 | .808
+2013-14 | New Zealand, Wellington Saints | AUS NBL, NZ NBL | 45 | 25.7 | 15.0 | 2.6 | 2.6 | 1.0 | 0.2 | 2.0 | .447 | .412 | .802
+2014-15 | New Zealand, KK Mega Bemax | AUS NBL, KLS | 47 | 26.6 | 14.1 | 2.1 | 2.0 | 1.1 | 0.3 | 1.4 | .422 | .407 | .768
+2015-16 | New Zealand, Super City Rangers, ASA Koroivos Amaliadas | AUS NBL, NZ NBL, HEBA A1 | 43 | 33.0 | 19.6 | 2.4 | 2.5 | 1.3 | 0.3 | 2.4 | .397 | .340 | .791
+2016-17 | Wellington Saints, New Zealand | NZ NBL, AUS NBL | 34 | 31.3 | 19.3 | 3.1 | 4.2 | 1.3 | 0.2 | 2.2 | .440 | .332 | .821
+2017-18 | Ironi Nahariya | I-BSL | 23 | 30.9 | 15.3 | 2.2 | 4.0 | 1.3 | 0.1 | 2.3 | .419 | .411 | .907
+2018-19 | New Zealand | AUS NBL | 27 | 22.3 | 10.4 | 2.0 | 2.4 | 0.7 | 0.2 | 1.3 | .377 | .352 | .788
+2019-20 | Zhejiang Guangsha, New Zealand, Virtus Roma | AUS NBL, CBA, NBL Blitz, Lega A | 21 | 29.7 | 18.4 | 3.6 | 3.8 | 0.9 | 0.2 | 2.0 | .433 | .415 | .875
+2020-21 | New Zealand | AUS NBL | 28 | 25.9 | 13.4 | 3.2 | 2.9 | 0.9 | 0.0 | 1.9 | .429 | .354 | .848
+2021-22 | Franklin Bulls | NZ NBL | 9 | 37.6 | 25.4 | 4.9 | 7.2 | 1.9 | 0.1 | 3.6 | .396 | .295 | .796
+2022-23 | Al Ahly, Canterbury Rams, KK Mornar, Perth | AUS NBL, BAL, NZ NBL, Liga ABA, NBL Blitz | 51 | 24.8 | 13.1 | 3.0 | 2.5 | 0.7 | 0.1 | 1.7 | .443 | .387 | .789
+2023-24 | Aukland Tuatara, Perth | AUS NBL, NZ NBL, NBL Blitz | 41 | 23.3 | 13.1 | 3.0 | 4.0 | 1.0 | 0.2 | 1.7 | .442 | .359 | .779
+2024-25 | Manawatu Jets | NZ NBL | 10 | 37.5 | 23.7 | 4.7 | 6.9 | 1.3 | 0.5 | 2.7 | .433 | .400 | .676
+2025-26 | Manawatu Jets | NZ NBL | 10 | 30.0 | 18.7 | 2.8 | 3.4 | 1.0 | 0.4 | 1.8 | .428 | .402 | .783
+2026-27 | Adelaide | AUS NBL | 3 | 4.6 | 0.0 | 0.3 | 0.0 | 0.0 | 0.0 | 0.0 | .000 | .000 | .000

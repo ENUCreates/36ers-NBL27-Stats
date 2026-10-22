@@ -1,0 +1,11 @@
+#url https://basketball.realgm.com/player/Ben-Griscti/Summary/183848
+#fetched 2026-10-22
+NCAA Season Stats
+2021-22 | Incarnate Word | - | 32 | 22.7 | 7.7 | 3.5 | 0.6 | 0.4 | 0.5 | 1.0 | .437 | .351 | .667
+2022-23 | Incarnate Word | - | 30 | 14.4 | 5.3 | 3.4 | 0.4 | 0.4 | 0.5 | 0.6 | .469 | .387 | .563
+2023-24 | UC Riverside | - | 33 | 17.6 | 7.8 | 3.3 | 0.2 | 0.4 | 0.5 | 0.7 | .495 | .381 | .711
+CAREER | NCAA DI | - | 95 | 18.3 | 7.0 | 3.4 | 0.4 | 0.4 | 0.5 | 0.8 | .466 | .369 | .667
+International Season Stats
+2024-25 | Adelaide | AUS NBL, NBL Blitz | 9 | 6.1 | 1.6 | 1.0 | 0.1 | 0.2 | 0.3 | 0.2 | .412 | .000 | .000
+2025-26 | Adelaide | NBL Blitz | 1 | 19.8 | 13.0 | 4.0 | 2.0 | 1.0 | 1.0 | 0.0 | .833 | 1.000 | 1.000
+2026-27 | Adelaide | AUS NBL, NBL Blitz | 7 | 8.4 | 2.1 | 0.9 | 0.6 | 0.3 | 0.3 | 0.4 | .500 | .400 | .714

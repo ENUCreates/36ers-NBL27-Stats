@@ -182,6 +182,9 @@ ol.conn li{font-size:13px}ol.conn .ma{font-family:var(--mono);color:var(--muted)
 .stop.now{border-color:var(--accent);background:rgba(228,0,43,.18)}
 .stop small{color:var(--muted);font:500 11px var(--mono);margin-left:6px}
 .jarr{color:var(--muted);font-size:13px}
+.journey.offs{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.journey.offs>.k{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.journey.offs .stop{background:transparent}
 .carrow td{font-weight:700;border-top:2px solid var(--line)}
 .sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
 .sgrid>div{background:var(--panel);padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -1259,7 +1262,7 @@ const wtTxt=b=>{const kg=b?.weightKg??(b?.weightLb?Math.round(b.weightLb*0.45359
 const POSNAME={G:"Guard",F:"Forward",C:"Centre","G-F":"Guard-Forward","F-C":"Forward-Centre"};
 const jno=b=>b&&b.jersey!=null&&String(b.jersey).replace(/^#/,"")!==""?String(b.jersey).replace(/^#/,""):null;
 const SRCLAB={heightCm:"height",heightIn:"height",weightKg:"weight",weightLb:"weight",dob:"date of birth",birthPlace:"birthplace",college:"college",nationality:"nationality",photo:"photo",pos:"position",posName:"position",jersey:"number"};
-const SRCNAME={NBL:"NBL official",ESPN:"ESPN"};
+const SRCNAME={NBL:"NBL official",ESPN:"ESPN",RealGM:"RealGM",BBR:"Basketball-Reference",Wikipedia:"Wikipedia"};
 
 // every NBL27 player (one row per player per team) for league ranks / percentiles
 function allPlayerRows(){const out=[];Object.keys(TEAMS).forEach(n=>computePlayers(n).forEach(r=>out.push({...r,team:n})));return out}
@@ -1269,27 +1272,43 @@ function rankIn(rows,k,v,dir){if(v==null)return null;const s=rows.map(r=>r[k]).f
 function pctileIn(rows,k,v,dir){if(v==null)return null;const s=rows.map(r=>r[k]).filter(x=>x!=null);if(!s.length)return null;
   const lo=s.filter(x=>dir>0?x<v:x>v).length,eq=s.filter(x=>x===v).length;return Math.round(100*(lo+0.5*eq)/s.length)}
 
-// earlier seasons from every source (official NBL box scores, curated extras, ESPN NBA/NCAA); when one
-// season/team/league comes from several sources the most official one is kept
-const HSRC={NBL:0,extra:1,ESPN:2};
+// earlier seasons from every source (official NBL box scores, the one-off overseas file - Basketball-Reference and
+// RealGM -, ESPN NBA/NCAA); when one season/team/league comes from several sources the most official one is kept
+const HSRC={NBL:0,BBR:1,RealGM:1,extra:1,ESPN:2};
 function pastRows(b){
   const rows=[].concat((b?.historyNBL||[]).map(h=>({...h,src:"NBL"})),(b?.historyExtra||[]).map(h=>({...h,src:h.src||"extra"})),(b?.history||[]).map(h=>({...h,src:h.src||"ESPN"})))
     .filter(h=>!(h.season==="2026-27"&&h.league==="NBL"));
   const best=new Map();rows.forEach(h=>{const k=h.season+"|"+h.team+"|"+h.league,o=best.get(k);if(!o||(HSRC[h.src]??1)<(HSRC[o.src]??1))best.set(k,h)});
   return rows.filter(h=>best.get(h.season+"|"+h.team+"|"+h.league)===h);
 }
+// order inside one season label: college, G League, NBA, other leagues, NBL
+const PHASE=l=>/^(NCAA|NJCAA)/.test(l||"")?0:l==="G League"?1:l==="NBA"?2:l==="NBL"?4:3;
+// leagues played inside one calendar year (NZNBL, BSN, BAL...) carry that year as their season: the NBL off-season
+const CALYEAR=s=>/^\d{4}$/.test(s||"");
+// the main journey: college, NBA, NBL and other leagues; G League and off-season (calendar-year) clubs get their own lines
+const SIDETRACK=r=>CALYEAR(r.season)?"Off-season":r.league==="G League"?"G League":null;
 function careerStops(b,team){
   // one group per season+league; several teams in one season are listed together (official NBL rows are in game order)
-  const groups=[];pastRows(b).slice().sort((x,y)=>(x.season||"").localeCompare(y.season||"")).forEach(r=>{
+  const items=pastRows(b).concat(b?.careerExtra||[]).filter(r=>!SIDETRACK(r));
+  const groups=[];items.sort((x,y)=>(x.season||"").localeCompare(y.season||"")||PHASE(x.league)-PHASE(y.league)).forEach(r=>{
     const g=groups.find(g=>g.season===r.season&&g.league===r.league);if(g){if(!g.teams.includes(r.team))g.teams.push(r.team);return}
     groups.push({season:r.season,league:r.league,teams:[r.team],cc:rowCC(r)})});
   const stops=[];
   groups.forEach(g=>{const t=g.teams.join(" / "),last=stops[stops.length-1];
-    if(last&&last.team===t&&last.league===g.league){last.to=g.season;return}
+    if(last&&last.team===t&&last.cc===g.cc){last.to=g.season;return}
     stops.push({team:t,league:g.league,cc:g.cc,from:g.season,to:g.season})});
   const cur=stops[stops.length-1];
   if(!cur||cur.team!==team||cur.league!=="NBL")stops.push({team,league:"NBL",cc:NBLCC(team),from:"2026-27",to:"2026-27",now:1});else{cur.now=1;cur.to="2026-27"}
   return stops;
+}
+// G League and off-season clubs: one chip per club with its seasons (consecutive seasons joined)
+function sideTracks(b){
+  const tracks={};pastRows(b).concat(b?.careerExtra||[]).forEach(r=>{const t=SIDETRACK(r);if(!t)return;
+    const by=tracks[t]||(tracks[t]=new Map()),k=r.team+"|"+rowCC(r),o=by.get(k)||{team:r.team,cc:rowCC(r),league:r.league,ys:new Map()};
+    o.ys.set(parseInt(r.season),r.season);by.set(k,o)});
+  const span=o=>{const a=[...o.ys.keys()].sort((x,y)=>x-y),out=[];a.forEach(y=>{const l=out[out.length-1];if(l&&y===l[1]+1)l[1]=y;else out.push([y,y])});
+    return out.map(([x,y])=>x===y?o.ys.get(x):`${x}–${o.ys.get(y).slice(-2)}`).join(", ")};
+  return ["G League","Off-season"].filter(t=>tracks[t]).map(t=>({label:t,clubs:[...tracks[t].values()].map(o=>({...o,yrs:span(o),first:Math.min(...o.ys.keys())})).sort((x,y)=>x.first-y.first)}));
 }
 const yrs=(a,b)=>{const y=s=>s?s.slice(0,4):"";return a===b?a:`${y(a)}–${(b||"").slice(-2)}`};
 
@@ -1332,9 +1351,14 @@ function playerCard(team,pid){
   const nat=b.nationality?`${ccFlag(b.nationalityCode)} ${b.nationality}`:null;
   const bio=[field("Position",pos),field("Height",htTxt(b)),field("Weight",wtTxt(b)),field("Age",age!=null?`${age} <span class="mu">· ${fmtDate(b.dob)}</span>`:null),
     field("Born",b.birthPlace||null),field("Alma mater",b.college||null)].concat(nat?[field("Nationality",nat)]:[]).join("");
-  const stops=careerStops(b,team);
-  const hasExtra=(b.historyExtra||[]).length>0,hasNBL=(b.historyNBL||[]).length>0,hasHist=(b.history||[]).length>0;
+  const stops=careerStops(b,team),tracks=sideTracks(b);
+  const hasExtra=(b.historyExtra||[]).length>0||(b.careerExtra||[]).length>0,hasNBL=(b.historyNBL||[]).length>0,hasHist=(b.history||[]).length>0;
   const journey=stops.map(s=>`<span class="stop${s.now?" now":""}">${s.team} (${ccFlag(s.cc)||s.cc||"?"})<small>${yrs(s.from,s.to)}</small></span>`).join('<span class="jarr" aria-hidden="true">→</span>');
+  const offHTML=tracks.map(t=>`<div class="journey offs"><span class="k">${t.label}</span>${t.clubs.map(o=>`<span class="stop">${o.team} (${ccFlag(o.cc)||o.cc||"?"})<small>${t.label==="G League"?"":o.league+" · "}${o.yrs}</small></span>`).join("")}</div>`).join("");
+  const usedSrc=new Set(pastRows(b).concat(b.careerExtra||[]).map(h=>h.src));
+  const jNote=b.overseasChecked
+    ?`Clubs outside the NBL, NBA and US college: ${["BBR","RealGM","Wikipedia"].filter(s=>usedSrc.has(s)).map(s=>SRCNAME[s]).join(", ")||"none found on RealGM or Basketball-Reference"} (one-off check, ${fmtDate(b.overseasChecked)})`
+    :(hasNBL||hasHist?"Covers the NBL since 2015-16, the NBA and US college. Other leagues aren't included yet.":"No NBL (since 2015-16), NBA or US college seasons on record before NBL27. Other leagues aren't included yet.");
   // NBL27 averages with league rank among qualified players (3+ games, 10+ mpg)
   const tile=(k,l,fmt,dir,sub)=>{const rk=QUAL(r)&&dir?rankIn(q,k,r[k],dir):null;
     return `<div><span class="k">${l}</span><span class="v">${fmt(r[k])}</span><span class="r">${sub||""}${rk?`${sub?" · ":""}<b class="${rk.rank<=10?"top":""}">${ordinal(rk.rank)}</b> of ${rk.of}`:""}</span></div>`};
@@ -1352,20 +1376,25 @@ function playerCard(team,pid){
   // season history: NBL27 (live) + stored seasons
   const cur=all.filter(x=>x.id===pid).map(x=>({season:"2026-27",team:x.team,league:"NBL",country:NBLCC(x.team),gp:x.gp,mpg:x.mpg,pts:x.ppg,reb:x.rpg,ast:x.apg,stl:x.spg,blk:x.bpg,fgp:x.fgp,tpp:x.tpp,ftp:x.ftp,live:1}));
   const past=pastRows(b);
-  // de-duplicate identical season/team/league rows (extra sources first)
+  // de-duplicate identical season/team/league rows (extra sources first); newest first, and inside a season the later stage first
   const seen=new Set(),hist=cur.concat(past).filter(h=>{const k=h.season+"|"+h.team+"|"+h.league;if(seen.has(k))return false;seen.add(k);return true})
-    .sort((x,y)=>(y.season||"").localeCompare(x.season||"")||(x.live?-1:0));
-  const lgOrder=["NBA","G League","NBL"];
-  const hrow=h=>`<tr${h.live?' class="teamrow"':""}><td class="tm">${h.season}</td><td style="text-align:left;font-family:var(--body)">${h.team} <span class="mu">(${ccFlag(rowCC(h))||rowCC(h)})</span></td><td style="text-align:left;font-family:var(--body)">${h.league}</td>
+    .sort((x,y)=>(y.season||"").localeCompare(x.season||"")||(x.live?-1:y.live?1:0)||PHASE(y.league)-PHASE(x.league));
+  const hrow=h=>`<tr${h.live?' class="teamrow"':""}><td class="tm">${h.season}</td><td style="text-align:left;font-family:var(--body)">${h.team} <span class="mu">(${ccFlag(rowCC(h))||rowCC(h)})</span></td><td style="text-align:left;font-family:var(--body)" title="${h.live?"This site's NBL27 data":"Source: "+(SRCNAME[h.src]||h.src||"")}">${h.league}${h.allGames?'<sup class="mu" title="RealGM season line: all games that season (playoffs included)">†</sup>':""}</td>
     <td>${h.gp??"–"}</td><td>${f1(h.mpg)}</td><td>${f1(h.pts)}</td><td>${f1(h.reb)}</td><td>${f1(h.ast)}</td><td>${f1(h.stl)}</td><td>${f1(h.blk)}</td><td>${pct(h.fgp)}</td><td>${pct(h.tpp)}</td><td>${pct(h.ftp)}</td></tr>`;
-  // NBL career line: official NBL seasons (exact totals) + NBL27 so far
-  const nblPast=past.filter(h=>h.league==="NBL"&&h.tot);let carRow="";
+  const histSrc=new Set(past.map(h=>h.src));
+  const histNote=["Regular season","2026-27 = NBL27 so far (this site's data)","earlier NBL seasons: official NBL box scores (from 2015-16)"]
+    .concat(histSrc.has("ESPN")?["NBA and NCAA: ESPN"]:[])
+    .concat(histSrc.has("BBR")?["other leagues"+(past.some(h=>h.src==="BBR"&&h.league==="NBL")?" and NBL before 2015-16":"")+": Basketball-Reference season totals"]:[])
+    .concat(histSrc.has("RealGM")?[[past.some(h=>h.src==="RealGM"&&h.league==="G League")?"G League":"",past.some(h=>h.src==="RealGM"&&(h.league==="NBA"||PHASE(h.league)===0))?"NBA / college seasons ESPN lacks":"",past.some(h=>h.allGames)?"leagues Basketball-Reference doesn't cover":""].filter(Boolean).join(", ")+": RealGM"]:[])
+    .concat(past.some(h=>h.allGames)?["† all games that season, playoffs included (RealGM)"]:[]).join(" · ");
+  // NBL career line: official NBL seasons (exact totals, 2015-16 on) + Basketball-Reference totals for earlier seasons + NBL27 so far
+  const nblPast=past.filter(h=>h.league==="NBL"&&(h.src==="NBL"||h.src==="BBR")&&h.tot);let carRow="";
   if(nblPast.length){
     const T={gp:0,sec:0,pts:0,fgm:0,fga:0,tpm:0,tpa:0,ftm:0,fta:0,oreb:0,dreb:0,ast:0,stl:0,blk:0};
     nblPast.forEach(h=>{T.gp+=h.gp;Object.keys(T).forEach(k=>{if(k!=="gp"&&h.tot[k]!=null)T[k]+=h.tot[k]})});
     all.filter(x=>x.id===pid).forEach(x=>{T.gp+=x.gp;T.sec+=x.min*60;["pts","fgm","fga","tpm","tpa","ftm","fta","oreb","dreb","ast","stl","blk"].forEach(k=>T[k]+=x[k])});
     const first=nblPast.map(h=>h.season).sort()[0],ns=new Set(nblPast.map(h=>h.season)).size+1,g=T.gp;
-    carRow=`<tfoot><tr class="carrow"><td class="tm" colspan="3" style="text-align:left;font-family:var(--body)">${first==="2015-16"?"NBL since 2015-16":"NBL career"} <span class="mu">· ${ns} seasons</span></td>
+    carRow=`<tfoot><tr class="carrow"><td class="tm" colspan="3" style="text-align:left;font-family:var(--body)">${b.extraSources?.bbr?(first<="2011-12"?"NBL since 2011-12":"NBL career"):(first==="2015-16"?"NBL since 2015-16":"NBL career")} <span class="mu">· ${ns} seasons</span></td>
       <td>${g}</td><td>${f1(T.sec/60/g)}</td><td>${f1(T.pts/g)}</td><td>${f1((T.oreb+T.dreb)/g)}</td><td>${f1(T.ast/g)}</td><td>${f1(T.stl/g)}</td><td>${f1(T.blk/g)}</td><td>${pct(dv(T.fgm,T.fga))}</td><td>${pct(dv(T.tpm,T.tpa))}</td><td>${pct(dv(T.ftm,T.fta))}</td></tr></tfoot>`;
   }
   const histTable=`<div class="scroll"><table><thead><tr><th class="tm">Season</th><th style="text-align:left">Team</th><th style="text-align:left">League</th><th>GP</th><th>MIN</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>FG%</th><th>3P%</th><th>FT%</th></tr></thead><tbody>${hist.map(hrow).join("")}</tbody>${carRow}</table></div>`;
@@ -1387,15 +1416,15 @@ function playerCard(team,pid){
         <div class="bio">${bio}</div>
       </div>
     </div>
-    <div class="card"><h3>Career journey</h3><div class="journey">${journey}</div>
-      ${hasExtra?"":`<p class="note">${hasNBL||hasHist?"Covers the NBL since 2015-16, the NBA and US college. Other leagues aren't included yet.":"No NBL (since 2015-16), NBA or US college seasons on record before NBL27. Other leagues aren't included yet."}</p>`}</div>
+    <div class="card"><h3>Career journey</h3><div class="journey">${journey}</div>${offHTML}
+      <p class="note">${jNote}</p></div>
   </article>
   <div class="grid2" style="margin-top:18px">
     <div class="panel card"><h3>NBL27 averages</h3><p class="note">Per game · rank among NBL players with 3+ games and 10+ minutes per game</p>${avg}</div>
     <div class="panel card"><h3>Advanced</h3><p class="note">Bar = percentile among the same qualified players (green = top third)</p><div class="pctl">${advRows}</div>${onoff}</div>
   </div>
   <div class="panel card" style="margin-top:18px"><h3>Season averages</h3>${histTable}
-    <p class="note" style="text-transform:uppercase;letter-spacing:.03em">Regular season · 2026-27 = NBL27 so far (this site's data) · earlier NBL seasons: official NBL box scores (from 2015-16) · NBA and NCAA: ESPN${hasExtra?" · other leagues: curated records":""}</p></div>
+    <p class="note" style="text-transform:uppercase;letter-spacing:.03em">${histNote}</p></div>
   <div class="panel card" style="margin-top:18px"><div class="card-head"><h3>Shot chart · NBL27</h3>${sc?`<span class="rec">${sc.fga} FGA · ${pct(sc.fga?sc.fgm/sc.fga:null)} FG% · ${pct(sc.efg)} eFG%</span>`:""}</div>
     ${sc?`<div class="sc-wrap"><div style="min-width:0">${sc.svg}<div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="#ff6b7d" stroke-width="2"/></svg> Missed</span><span>Zone: FG%, makes/attempts · share of FGA. Shading: FG% vs League Ave</span></div></div>
       <div style="min-width:0">${sc.table}${sc.bad.length?`<p class="note" style="margin-top:10px;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN shot log): ${sc.bad.join(", ")}</p>`:""}</div></div>`:`<p class="note">Shot locations are loading.</p>`}</div>

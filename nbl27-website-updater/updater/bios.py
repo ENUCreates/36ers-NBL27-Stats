@@ -15,6 +15,9 @@ For every player who has appeared in an NBL27 game (data/players.json):
     (id, source URL, file, content hash); re-downloaded only when the NBL changes the picture
 Official fields take precedence over ESPN's (ESPN's dates of birth are sometimes a day out). A curated
 updater/bios_extra.json (keyed by ESPN athlete id) can add or override fields last; each field keeps its source.
+updater/overseas.json - one-off career data built by overseas/build.py (overseas leagues and G League from
+Basketball-Reference and RealGM, NBL seasons before 2015-16, NBA / college seasons ESPN couldn't link, clubs without
+stats) - is merged as historyExtra / careerExtra; it is only read here, never refreshed by the daily rebuild.
 Fields nobody has are left empty (never guessed).
 
 Usage: python3 bios.py <repo_root> [max_age_days=7] [budget=25]
@@ -230,6 +233,10 @@ def main():
     old = {b["id"]: b for b in (json.load(open(fp)) if os.path.exists(fp) else [])}
     extra_fp = os.path.join(HERE, "bios_extra.json")
     extra = {k: v for k, v in (json.load(open(extra_fp)) if os.path.exists(extra_fp) else {}).items() if not k.startswith("_")}
+    # one-off curated career data (overseas leagues, G League, NBL before 2015-16, NBA/college seasons ESPN couldn't
+    # link): built once by overseas/build.py, only read here - the daily rebuild never refreshes or edits it
+    ovs_fp = os.path.join(HERE, "overseas.json")
+    ovs = {k: v for k, v in (json.load(open(ovs_fp)) if os.path.exists(ovs_fp) else {}).items() if not k.startswith("_")}
     seen = {}
     for d in sorted(players, key=lambda d: d["date"]):
         for team, L in d["teams"].items():
@@ -354,15 +361,30 @@ def main():
             b["espnLinks"] = [ln["id"] for ln in links]
             b["linksChecked"], b["linksV"] = today.isoformat(), LINK_V
             linked += 1 if links else 0
-        # merge curated extras (e.g. RealGM), field by field, last
+        # merge curated extras, field by field, last (rebuilt from the files every run, so nothing stale survives)
+        hx, cx = [], []
         for k, v in (extra.get(pid) or {}).items():
-            if k in ("history", "career"):
-                b[k + "Extra"] = v
+            if k == "history":
+                hx += v
+            elif k == "career":
+                cx += v
             elif k == "src":
                 continue
             else:
                 b[k] = v
                 b["src"][k] = (extra[pid].get("src") or {}).get(k, "extra")
+        o = ovs.get(pid) or {}
+        have = {(h.get("league"), h.get("season")) for h in b.get("history") or []}
+        have |= {("NBL", h.get("season")) for h in b.get("historyNBL") or []}
+        hx += [h for h in o.get("history") or [] if (h.get("league"), h.get("season")) not in have]
+        cx += o.get("career") or []
+        if o.get("college") and not b.get("college"):
+            b["college"] = o["college"]; b["src"]["college"] = (o.get("src") or {}).get("college", "extra")
+        for k, v in (("historyExtra", hx), ("careerExtra", cx), ("overseasChecked", o.get("checked")), ("extraSources", o.get("sources"))):
+            if v:
+                b[k] = v
+            else:
+                b.pop(k, None)
         out.append(b)
     out.sort(key=lambda b: b["id"])
     json.dump(out, open(fp, "w"), separators=(",", ":"), sort_keys=True)
