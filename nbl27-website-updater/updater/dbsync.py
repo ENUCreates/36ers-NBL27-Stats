@@ -1,7 +1,7 @@
 """Make the Claude page's database an exact copy of the verified website data (data/*.json).
 
 Usage:
-  python3 dbsync.py <repo_root> <db_export_dir> <out_dir> [versions.json]
+  python3 dbsync.py <repo_root> <db_export_dir> <out_dir> [versions.json|-] [assets_uploaded.json]
 
 <db_export_dir> is where ArtifactData "list ... out_dir" saved the database (<dir>/<collection>/<doc_id>.json,
 data objects only). The script compares every document and writes ArtifactData batch files to <out_dir>:
@@ -9,35 +9,57 @@ data objects only). The script compares every document and writes ArtifactData b
   action "batch" (pass the list as `writes`). Document bodies are written to <out_dir>/docs/.
 Writes to documents that already exist need their current version: the first run lists them in
 <out_dir>/needs_versions.json; put {"<collection>/<doc_id>": <version>, ...} in versions.json and run again.
-Doc ids: games, bios and photos -> "id"; shots/players/lineups/pshots/events -> "espnId";
+Headshots: the database keeps a pointer to an image in the artifact's asset store, not the image itself
+(photos/<id> = {id, from, sha, asset, url}). A new or changed headshot (data/photos.json lists each file and its
+content hash) is listed in <out_dir>/assets_needed.json; upload those files to the artifact's asset store, write
+{"<id>": {"asset": <asset id>, "url": <url>, "sha": <sha from assets_needed.json>}} to assets_uploaded.json and run
+again with it. Until then the previous picture (if any) is kept.
+Doc ids: games and bios -> "id"; shots/players/lineups/pshots/events -> "espnId";
 meta -> status, shots_status, players_status, lineups_status, pshots_status, events_status.
 """
 import json, os, sys, glob
 
-COLS = ["games", "shots", "players", "lineups", "pshots", "events", "bios", "photos"]
+COLS = ["games", "shots", "players", "lineups", "pshots", "events", "bios"]
 META = ["status", "shots_status", "players_status", "lineups_status", "pshots_status", "events_status"]
 
 
 def main():
     root, exp, out = sys.argv[1:4]
-    versions = json.load(open(sys.argv[4])) if len(sys.argv) > 4 else None
+    versions = json.load(open(sys.argv[4])) if len(sys.argv) > 4 and sys.argv[4] != "-" else None
+    uploaded = json.load(open(sys.argv[5])) if len(sys.argv) > 5 else {}
     os.makedirs(os.path.join(out, "docs"), exist_ok=True)
     want = {}
     for c in COLS:
         fp_ = os.path.join(root, "data", c + ".json")
         for d in (json.load(open(fp_)) if os.path.exists(fp_) else []):
-            want[(c, d["id"] if c in ("games", "bios", "photos") else d["espnId"])] = d
+            want[(c, d["id"] if c in ("games", "bios") else d["espnId"])] = d
     meta = json.load(open(os.path.join(root, "data", "meta.json")))
     for k in META:
         if k in meta:
             want[("meta", k)] = meta[k]
     have = {}
-    for c in COLS + ["meta"]:
+    for c in COLS + ["meta", "photos"]:
         for f in glob.glob(os.path.join(exp, c, "*.json")):
             i = os.path.basename(f)[:-5]
             if c == "meta" and i not in META:
                 continue
             have[(c, i)] = json.load(open(f))
+    # headshots: asset pointers; new or changed pictures must be uploaded first
+    idx_fp = os.path.join(root, "data", "photos.json")
+    needed = []
+    for e in (json.load(open(idx_fp)) if os.path.exists(idx_fp) else []):
+        i, cur, up = e["id"], have.get(("photos", e["id"])) or {}, uploaded.get(e["id"]) or {}
+        if up.get("asset") and up.get("sha") == e["sha"]:
+            want[("photos", i)] = {"id": i, "from": e["from"], "sha": e["sha"], "asset": up["asset"], "url": up["url"]}
+        elif cur.get("asset") and cur.get("sha") == e["sha"]:
+            want[("photos", i)] = cur
+        else:
+            needed.append({"id": i, "sha": e["sha"], "file": os.path.abspath(os.path.join(root, "data", e["file"]))})
+            if cur:
+                want[("photos", i)] = cur          # keep the previous picture until the new one is uploaded
+    json.dump(needed, open(os.path.join(out, "assets_needed.json"), "w"), indent=0)
+    if needed:
+        print(f"{len(needed)} headshot(s) to upload to the asset store -> {out}/assets_needed.json")
     writes, need = [], []
     for (c, i), d in sorted(want.items()):
         if (c, i) in have and have[(c, i)] == d:

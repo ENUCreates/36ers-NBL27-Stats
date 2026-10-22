@@ -1425,8 +1425,8 @@ recalc();
   const [g,sh,pl,lu,ps,ev,meta,bi]=await Promise.all(["games.json","shots.json","players.json","lineups.json","pshots.json","events.json","meta.json","bios.json"].map(get));
   META=meta?.status||null;SHOTMETA=meta?.shots_status||null;PSTATUS=meta?.players_status||null;LSTATUS=meta?.lineups_status||null;PSHOTMETA=meta?.pshots_status||null;ESTATUS=meta?.events_status||null;
   GAMES=(g||[]).filter(x=>x&&x.away&&x.home);SHOTS=(sh||[]).filter(d=>d&&d.teams);PLAYERDOCS=(pl||[]).filter(d=>d&&d.teams);LINEDOCS=(lu||[]).filter(d=>d&&d.teams);PSHOTS=(ps||[]).filter(d=>d&&d.teams);EVENTS=(ev||[]).filter(d=>d&&d.teams);BIOS={};(bi||[]).forEach(b=>{if(b&&b.id)BIOS[b.id]=b});
-  // headshots (data/photos.json) are only fetched the first time the Player cards tab is opened
-  loadPhotos=async()=>{const ph=await get("photos.json");PHOTOS={};(ph||[]).forEach(x=>{if(x&&x.id)PHOTOS[x.id]=x.photo});if(!document.getElementById("view-cards").hidden)renderCards()};
+  // headshot list (data/photos.json -> data/photos/<id>.webp) is fetched the first time the Player cards tab is opened
+  loadPhotos=async()=>{const ph=await get("photos.json");PHOTOS={};(ph||[]).forEach(x=>{if(x&&x.id&&x.file)PHOTOS[x.id]="data/"+x.file+"?v="+x.sha});if(!document.getElementById("view-cards").hidden)renderCards()};
   recalc();
   if(!document.getElementById("view-cards").hidden)wantPhotos();
 })();

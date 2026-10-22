@@ -5,12 +5,14 @@ For every player who has appeared in an NBL27 game (data/players.json):
   - bio: position, jersey, height, weight, date of birth, birthplace, college   (nbl athlete endpoint)
   - NBA regular-season averages by season and team                             (nba athlete stats)
   - NCAA averages by season and school                                         (mens-college-basketball athlete stats)
+  - ESPN often gives an NBL player a new athlete id, separate from his NBA / college record: those records are
+    found with ESPN's player search and linked only when the name and the date of birth both match       (espnLinks)
   Official NBL data (official.py: the league's own box scores and profiles, republished by nblR on GitHub):
   - the official spelling of the player's name and his official player id
   - every earlier NBL regular season (2015-16 on), averaged from the official game lines   -> historyNBL
   - date of birth, height (cm), weight (kg), nationality from the official profile (players up to 2024-25)
-  - official NBL27 headshot, stored as a small embedded image in data/photos.json (loaded by the page only when
-    the Player cards tab is opened), re-downloaded only when the NBL changes the picture
+  - official NBL27 headshot, saved as a small WebP in data/photos/<id>.webp and listed in data/photos.json
+    (id, source URL, file, content hash); re-downloaded only when the NBL changes the picture
 Official fields take precedence over ESPN's (ESPN's dates of birth are sometimes a day out). A curated
 updater/bios_extra.json (keyed by ESPN athlete id) can add or override fields last; each field keeps its source.
 Fields nobody has are left empty (never guessed).
@@ -20,7 +22,7 @@ New players are always fetched from ESPN; entries older than max_age_days are re
 `budget` per run. The official layer is rebuilt on every run (one download of a few MB); if it can't be loaded,
 the previous official fields are kept as they were.
 """
-import json, os, sys, re, time, datetime, subprocess, io, base64
+import json, os, sys, re, time, datetime, subprocess, io, hashlib, urllib.parse
 
 API = "https://site.api.espn.com/apis/common/v3/sports/basketball"
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -89,6 +91,7 @@ def season_rows(d, league):
                 return None, None
         fgm, fga = pair("FG"); tpm, tpa = pair("3PT"); ftm, fta = pair("FT")
         team = (teams.get(slug) or {}).get("displayName") or slug.replace("-", " ").title()
+        school = (teams.get(slug) or {}).get("location")
         cc = "CA" if team.startswith("Toronto") else "US"   # NBA / NCAA: every team is in the USA except Toronto
         frac = lambda k: (round(num(k) / 100, 4) if num(k) is not None else None)
         out.append({"season": st.get("season", {}).get("displayName"), "team": team, "league": league, "country": cc,
@@ -96,7 +99,7 @@ def season_rows(d, league):
                     "pts": num("PTS"), "reb": num("REB"), "oreb": num("OR"), "dreb": num("DR"), "ast": num("AST"),
                     "stl": num("STL"), "blk": num("BLK"), "tov": num("TO"),
                     "fgm": fgm, "fga": fga, "fgp": frac("FG%"), "tpm": tpm, "tpa": tpa, "tpp": frac("3P%"),
-                    "ftm": ftm, "fta": fta, "ftp": frac("FT%"), "src": "ESPN"})
+                    "ftm": ftm, "fta": fta, "ftp": frac("FT%"), "src": "ESPN", **({"school": school} if league == "NCAA" and school else {})})
     return out
 
 
@@ -118,8 +121,51 @@ def bio(pid):
     return b, src, hist, code
 
 
-def photo_uri(url, box=(160, 200)):
-    """Download an official headshot and return a small embedded WebP (transparency kept), or None."""
+ESPN_LEAGUE = {"46": "nba", "69": "nba-development", "41": "mens-college-basketball", "53": "fiba"}
+LINK_V = 3          # bump to re-run the record linking for every player
+
+
+def espn_links(name, pid, dob):
+    """Other ESPN athlete records of the same person (NBA, G League, US college or FIBA ids): found with ESPN's two
+    player searches, kept only when the name and the date of birth both match (a day's difference allowed: ESPN's
+    dates are sometimes a day out). -> list of {id, league, college, birthPlace}."""
+    if not dob or not name:
+        return []
+    import official as O
+    cands = []
+    _, d = get("https://site.api.espn.com/apis/common/v3/search?type=player&limit=20&query=" + urllib.parse.quote(name))
+    for it in (d or {}).get("items") or []:
+        if it.get("sport") == "basketball" and O.norm(it.get("displayName")) == O.norm(name):
+            cands.append((str(it.get("id")), it.get("league")))
+    _, d = get("https://site.api.espn.com/apis/search/v2?limit=20&query=" + urllib.parse.quote(name))
+    for r in (d or {}).get("results") or []:
+        for c in (r.get("contents") or []) if r.get("type") == "player" else []:
+            m = re.match(r"s:40~l:(\d+)~a:(\d+)$", c.get("uid") or "")
+            if m and O.norm(c.get("displayName")) == O.norm(name):
+                cands.append((m.group(2), ESPN_LEAGUE.get(m.group(1), "")))
+    out, seen = [], {pid}
+    for aid, lg in cands:
+        if aid in seen or lg in ("nbl", "wnba", "womens-college-basketball"):
+            continue
+        seen.add(aid)
+        for slug in dict.fromkeys([s_ for s_ in (lg, "nba", "mens-college-basketball") if s_ in ESPN_LEAGUE.values()]):
+            c, a = get(f"{API}/{slug}/athletes/{aid}")
+            a = (a or {}).get("athlete") or {}
+            adob = dob_iso(a.get("displayDOB"))
+            if not adob:
+                continue
+            try:
+                ok = abs((datetime.date.fromisoformat(adob) - datetime.date.fromisoformat(dob)).days) <= 1
+            except Exception:
+                ok = False
+            if ok:
+                out.append({"id": aid, "league": slug, "college": (a.get("college") or {}).get("name"), "birthPlace": a.get("displayBirthPlace")})
+            break
+    return out
+
+
+def photo_webp(url, box=(160, 200)):
+    """Download an official headshot -> small portrait WebP bytes (transparency kept), or None."""
     r = subprocess.run(["curl", "-sSL", "--fail", "-m", "30", url], capture_output=True)
     if r.returncode != 0 or len(r.stdout) < 500:
         return None
@@ -139,7 +185,7 @@ def photo_uri(url, box=(160, 200)):
         im = im.resize(box, Image.LANCZOS)
         buf = io.BytesIO()
         im.save(buf, "WEBP", quality=72, method=4)
-        return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode()
+        return buf.getvalue()
     except Exception as ex:
         print("photo conversion failed:", url, ex)
         return None
@@ -194,9 +240,11 @@ def main():
     stale = sorted((pid for pid in seen if pid in old and age(old[pid]) >= max_age), key=lambda p: (-age(old[p]), p))
     refresh = set(stale[:budget])
     offl, notes = official_layer(root, seen)
-    ph_fp = os.path.join(root, "data", "photos.json")
-    photos = {d["id"]: d for d in (json.load(open(ph_fp)) if os.path.exists(ph_fp) else [])}
-    out, fetched, pics_new, pics_failed = [], 0, 0, 0
+    ph_fp, ph_dir = os.path.join(root, "data", "photos.json"), os.path.join(root, "data", "photos")
+    os.makedirs(ph_dir, exist_ok=True)
+    photos = {d["id"]: d for d in (json.load(open(ph_fp)) if os.path.exists(ph_fp) else []) if d.get("file")}
+    photos = {k: d for k, d in photos.items() if os.path.exists(os.path.join(root, "data", d["file"]))}
+    out, fetched, pics_new, pics_failed, linked = [], 0, 0, 0, 0
     for pid, (name, team) in sorted(seen.items()):
         o = old.get(pid)
         fresh = o is not None and pid not in refresh
@@ -267,9 +315,12 @@ def main():
             if url:
                 b["photoUrl"] = url
                 if (photos.get(pid) or {}).get("from") != url:
-                    uri = photo_uri(url)
-                    if uri:
-                        photos[pid] = {"id": pid, "photo": uri, "from": url}; pics_new += 1
+                    img = photo_webp(url)
+                    if img:
+                        open(os.path.join(ph_dir, f"{pid}.webp"), "wb").write(img)
+                        photos[pid] = {"id": pid, "from": url, "file": f"photos/{pid}.webp",
+                                       "sha": hashlib.sha1(img).hexdigest()[:12]}
+                        pics_new += 1
                     else:
                         pics_failed += 1
         b.pop("photo", None); b.pop("photoFrom", None)
@@ -279,6 +330,30 @@ def main():
             b["src"].pop("photo", None)
         b["name"] = b.get("nblName") or b.get("name") or name
         b["team"] = team
+        # NBA / college seasons kept under another ESPN athlete id (checked once per ESPN refresh)
+        if b.get("linksV") != LINK_V and b.get("dob"):
+            links = espn_links(b["name"], pid, b["dob"])
+            if not links and b.get("nblName") and name != b["name"]:
+                links = espn_links(name, pid, b["dob"])
+            have_rows = {(h.get("season"), h.get("team"), h.get("league")) for h in b.get("history") or []}
+            for ln in links:
+                for lg, nm in (("nba", "NBA"), ("mens-college-basketball", "NCAA")):
+                    c, st = get(f"{API}/{lg}/athletes/{ln['id']}/stats")
+                    if c == 200:
+                        for h in season_rows(st, nm):
+                            k = (h["season"], h["team"], h["league"])
+                            if k not in have_rows:
+                                have_rows.add(k); b.setdefault("history", []).append(h)
+                for k in ("college", "birthPlace"):
+                    if ln.get(k) and not b.get(k):
+                        b[k] = ln[k]; b["src"][k] = "ESPN"
+            if not b.get("college"):            # alma mater from the last US college season on record
+                ncaa = sorted((h for h in b.get("history") or [] if h.get("league") == "NCAA" and h.get("school")), key=lambda h: h.get("season") or "")
+                if ncaa:
+                    b["college"] = ncaa[-1]["school"]; b["src"]["college"] = "ESPN"
+            b["espnLinks"] = [ln["id"] for ln in links]
+            b["linksChecked"], b["linksV"] = today.isoformat(), LINK_V
+            linked += 1 if links else 0
         # merge curated extras (e.g. RealGM), field by field, last
         for k, v in (extra.get(pid) or {}).items():
             if k in ("history", "career"):
@@ -292,12 +367,16 @@ def main():
     out.sort(key=lambda b: b["id"])
     json.dump(out, open(fp, "w"), separators=(",", ":"), sort_keys=True)
     json.dump([photos[k] for k in sorted(photos) if k in seen], open(ph_fp, "w"), separators=(",", ":"), sort_keys=True)
+    for f in os.listdir(ph_dir):                   # headshots of players no longer in NBL27 data
+        if f.endswith(".webp") and f[:-5] not in seen:
+            os.remove(os.path.join(ph_dir, f))
     have = lambda k: sum(1 for b in out if b.get(k))
     print(json.dumps({"players": len(out), "fetched": fetched, "official": offl is not None,
                       "with_height": have("heightCm"), "with_weight": have("weightKg"), "with_dob": have("dob"),
                       "with_nationality": have("nationality"), "with_college": have("college"),
                       "with_nba_or_ncaa": have("history"), "with_nbl_history": have("historyNBL"),
                       "with_photo": sum(1 for k in photos if k in seen), "photos_new": pics_new, "photos_unreachable": pics_failed,
+                      "espn_records_linked": linked,
                       "notes": notes}, indent=1))
 
 
