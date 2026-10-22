@@ -166,6 +166,9 @@ ol.conn li{font-size:13px}ol.conn .ma{font-family:var(--mono);color:var(--muted)
 .av{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:700 15px/1 var(--display);letter-spacing:.04em;color:#fff;overflow:hidden;background:var(--soft);box-shadow:0 0 0 1px rgba(255,255,255,.22)}
 .av img{width:100%;height:100%;object-fit:cover;display:block}
 .av.lg{width:132px;height:132px;font-size:48px;border-radius:16px;box-shadow:0 0 0 2px rgba(255,255,255,.28)}
+.av.ph img{object-fit:cover;object-position:50% 0}
+.av.ph:not(.lg) img{transform:scale(1.5);transform-origin:50% 2%}
+.av.lg.ph{height:165px}
 .pcard{overflow:hidden}
 .pc-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;padding:20px;align-items:start;border-bottom:1px solid var(--line)}
 .pc-name{font:700 clamp(30px,4.6vw,46px)/1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:2px 0 0}
@@ -179,6 +182,7 @@ ol.conn li{font-size:13px}ol.conn .ma{font-family:var(--mono);color:var(--muted)
 .stop.now{border-color:var(--accent);background:rgba(228,0,43,.18)}
 .stop small{color:var(--muted);font:500 11px var(--mono);margin-left:6px}
 .jarr{color:var(--muted);font-size:13px}
+.carrow td{font-weight:700;border-top:2px solid var(--line)}
 .sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
 .sgrid>div{background:var(--panel);padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .sgrid .k{font:600 11px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -201,7 +205,7 @@ ol.conn li{font-size:13px}ol.conn .ma{font-family:var(--mono);color:var(--muted)
 .cxn .mu{font:500 11px var(--mono)}
 .cxbar{height:7px;border-radius:4px;background:var(--accent)}
 .cxrow .num{font:600 15px var(--display);text-align:right}
-@media (max-width:640px){.pc-head{grid-template-columns:minmax(0,1fr)}.av.lg{width:104px;height:104px;font-size:38px}.cx{grid-template-columns:minmax(0,1fr)}.oo{grid-template-columns:repeat(2,minmax(0,1fr))}.roster{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+@media (max-width:640px){.pc-head{grid-template-columns:minmax(0,1fr)}.av.lg{width:104px;height:104px;font-size:38px}.av.lg.ph{height:130px}.rtile{gap:8px;padding:8px}.rtile .av{width:34px;height:34px;font-size:13px}.rtile .mt{font-size:10px}.cx{grid-template-columns:minmax(0,1fr)}.oo{grid-template-columns:repeat(2,minmax(0,1fr))}.roster{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
 footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:16px;max-width:90ch}
 @media (max-width:760px){.grid2{grid-template-columns:minmax(0,1fr)}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tile:nth-child(2){border-right:0}.tile:nth-child(-n+2){border-bottom:1px solid var(--line)}.ff{grid-template-columns:92px minmax(0,1fr) 54px 40px}}
 @media (prefers-reduced-motion:no-preference){.bar .fill{transition:width .3s,left .3s}}
@@ -626,7 +630,9 @@ function renderStatus(){
   const upd=META?.updatedAt?new Date(META.updatedAt).toLocaleString("en-AU",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"–";
   el.innerHTML=`<span><b>${GAMES.length}</b> games</span><span>through <b>${new Date(last+"T00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"})}</b></span><span>updated <b>${upd}</b></span>`;
   const notes=[...new Set(GAMES.filter(g=>g.note).map(g=>g.note))];
-  document.getElementById("foot-note").textContent="Source: ESPN API. Rebuilt from ESPN and verified once a day (8:58am Sydney)."+(notes.length?" "+notes.join(" "):"");
+  const O=META?.official,fx=(O?.applied||[]).length;
+  const offTxt=O&&O.games!=null?` Checked against the NBL's official box scores: ${O.games} game${O.games===1?"":"s"}${O.pending?` (${O.pending} not published by the NBL yet)`:""}, ${fx?`${fx} figure${fx===1?"":"s"} corrected to the official value (assists, rebounds and similar; points, shooting, minutes and +/- already match)`:"no differences"}.`:"";
+  document.getElementById("foot-note").textContent="Source: ESPN API, rebuilt and verified once a day (8:58am Sydney)."+offTxt+(notes.length?" "+notes.join(" "):"");
 }
 
 function recalc(){const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();computeExtras();renderStatus();renderLeague();renderTeam();renderPlayers();renderLineups();renderRotations();if(!document.getElementById("view-cards").hidden)renderCards()}
@@ -636,6 +642,8 @@ let PLAYERDOCS=[],PSTATUS=null,pview="adv",pminVal=10,psort={k:"min",d:-1};
 // Per game view: "avg" = per-game averages, "tot" = season totals (switch top right of the panel). paggFrom = state the switch slides from on the next render.
 let pagg="avg",paggFrom=null;
 try{const v=localStorage.getItem("nbl27-pview");if(v)pview=v;const m=localStorage.getItem("nbl27-pmin");if(m!=null)pminVal=+m;const a=localStorage.getItem("nbl27-pagg");if(a==="avg"||a==="tot")pagg=a}catch(e){}
+// position: the official NBL roster's (via the bios) when known, else ESPN's box-score position
+const posOf=r=>{const b=BIOS[r.id];return b&&b.pos&&b.pos!=="NA"?b.pos:(r.pos&&r.pos!=="NA"?r.pos:"")};
 function computePlayers(team){
   const P={};
   PLAYERDOCS.forEach(doc=>{
@@ -729,7 +737,7 @@ function renderPlayers(){
   el.innerHTML=`<div class="panel">
     <div class="team-head${sw?" ph":""}"><h2>${code(name)} ${disp(name)}</h2>${sw}<span class="rec">${rows.length} players used · ${shown.length} shown${hidden?` (${hidden} under ${pminVal} min/g)`:""}</span></div>
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${cols.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${shown.map(r=>`<tr class="${r.gp<2?'low':''}"><td class="tm pl">${r.name}<small>${r.pos}</small></td>${cols.map(c=>fmtCell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="text-align:left;color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}${teamRow?`<tr class="teamrow"><td class="tm pl">${tot?"TEAM TOTAL":"TEAM AVERAGE"}</td>${cols.map(c=>(c[4]==="ts"||c[4]==="usg")?`<td>${c[2](teamRow[c[0]])}</td>`:fmtCell(teamRow,c)).join("")}</tr>`:""}</tbody></table></div>
+    <tbody>${shown.map(r=>`<tr class="${r.gp<2?'low':''}"><td class="tm pl">${r.name}<small>${posOf(r)}</small></td>${cols.map(c=>fmtCell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="text-align:left;color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}${teamRow?`<tr class="teamrow"><td class="tm pl">${tot?"TEAM TOTAL":"TEAM AVERAGE"}</td>${cols.map(c=>(c[4]==="ts"||c[4]==="usg")?`<td>${c[2](teamRow[c[0]])}</td>`:fmtCell(teamRow,c)).join("")}</tr>`:""}</tbody></table></div>
   </div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">${(pview==="adv"?["USG% = share of team possessions a player uses while on court","AST% = share of teammates' field goals he assisted while on court","OREB% = share of available offensive rebounds he grabbed","DREB% = share of available defensive rebounds he grabbed","STL% = steals per opponent possession","BLK% = blocks per opponent 2-point attempt","TS% shaded against League Ave (min. 20 shots)","Faded rows = 1 game","Team average = all players combined; AST% for the team = AST / FGM"]:tot?["Season totals","Makes/attempts are season totals; sorting those columns sorts by attempts","Team total = all players combined (team rebounds and team turnovers are not credited to players, so they are not included)"]:["Per-game averages","Makes/attempts are per game; sorting those columns sorts by attempts","Team average = all players combined, per game (team rebounds and team turnovers are not credited to players, so they are not included)"]).map(t=>`<span>${t}</span>`).join("")}<span>Source: ESPN player box scores, ${PSTATUS?.games??PLAYERDOCS.length} games</span></div>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(psort.k===k)psort.d*=-1;else psort={k,d:["name","tovp","tpg","pfpg","tov","pf"].includes(k)?1:-1};renderPlayers()});
@@ -1231,14 +1239,16 @@ function renderRotations(){
 
 // ===== Player cards: bio, career journey, NBL27 averages + ranks, season history, advanced, shot chart, assist connections =====
 // Bio + history come from the "bios" collection (built daily from ESPN; extra verified sources are merged field by field).
-let BIOS={},csel={};
+let BIOS={},csel={},PHOTOS={},loadPhotos=null,photosAsked=false;
+// headshots are a separate, larger collection: fetched the first time the Player cards tab is shown
+function wantPhotos(){if(photosAsked||!loadPhotos)return;photosAsked=true;try{loadPhotos()}catch(e){photosAsked=false}}
 const ccFlag=cc=>cc&&/^[A-Za-z]{2}$/.test(cc)?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt(0))):"";
 const NBLCC=n=>n==="New Zealand Breakers"?"NZ":"AU";
 const LEAGUECC={NBA:"US",NCAA:"US","G League":"US",NBL:"AU",NBL1:"AU"};
 const rowCC=r=>r.country||(r.league==="NBL"?NBLCC(r.team):LEAGUECC[r.league])||"";
 const initials=n=>(n||"?").replace(/[^A-Za-z' -]/g,"").split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join("").toUpperCase();
-function avatar(b,team,big){const col=TEAMS[team]?.col||"#555";
-  return b?.photo?`<span class="av${big?" lg":""}"><img src="${b.photo}" alt=""></span>`:`<span class="av${big?" lg":""}" style="background:${col}" aria-hidden="true">${initials(b?.name)}</span>`}
+function avatar(b,team,big){const col=TEAMS[team]?.col||"#555",ph=b?.id?PHOTOS[b.id]:null;
+  return ph?`<span class="av ph${big?" lg":""}" style="background:${col}"><img src="${ph}" alt="${big?(b.name||"")+" headshot":""}"></span>`:`<span class="av${big?" lg":""}" style="background:${col}" aria-hidden="true">${initials(b?.name)}</span>`}
 function ageOf(dob){if(!dob)return null;const d=new Date(dob+"T00:00:00"),n=new Date();let a=n.getFullYear()-d.getFullYear();
   if(n.getMonth()<d.getMonth()||(n.getMonth()===d.getMonth()&&n.getDate()<d.getDate()))a--;return a}
 const fmtDate=iso=>iso?new Date(iso+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"}):"";
@@ -1249,6 +1259,7 @@ const wtTxt=b=>{const kg=b?.weightKg??(b?.weightLb?Math.round(b.weightLb*0.45359
 const POSNAME={G:"Guard",F:"Forward",C:"Centre","G-F":"Guard-Forward","F-C":"Forward-Centre"};
 const jno=b=>b&&b.jersey!=null&&String(b.jersey).replace(/^#/,"")!==""?String(b.jersey).replace(/^#/,""):null;
 const SRCLAB={heightCm:"height",heightIn:"height",weightKg:"weight",weightLb:"weight",dob:"date of birth",birthPlace:"birthplace",college:"college",nationality:"nationality",photo:"photo",pos:"position",posName:"position",jersey:"number"};
+const SRCNAME={NBL:"NBL official",ESPN:"ESPN"};
 
 // every NBL27 player (one row per player per team) for league ranks / percentiles
 function allPlayerRows(){const out=[];Object.keys(TEAMS).forEach(n=>computePlayers(n).forEach(r=>out.push({...r,team:n})));return out}
@@ -1258,10 +1269,18 @@ function rankIn(rows,k,v,dir){if(v==null)return null;const s=rows.map(r=>r[k]).f
 function pctileIn(rows,k,v,dir){if(v==null)return null;const s=rows.map(r=>r[k]).filter(x=>x!=null);if(!s.length)return null;
   const lo=s.filter(x=>dir>0?x<v:x>v).length,eq=s.filter(x=>x===v).length;return Math.round(100*(lo+0.5*eq)/s.length)}
 
+// earlier seasons from every source (official NBL box scores, curated extras, ESPN NBA/NCAA); when one
+// season/team/league comes from several sources the most official one is kept
+const HSRC={NBL:0,extra:1,ESPN:2};
+function pastRows(b){
+  const rows=[].concat((b?.historyNBL||[]).map(h=>({...h,src:"NBL"})),(b?.historyExtra||[]).map(h=>({...h,src:h.src||"extra"})),(b?.history||[]).map(h=>({...h,src:h.src||"ESPN"})))
+    .filter(h=>!(h.season==="2026-27"&&h.league==="NBL"));
+  const best=new Map();rows.forEach(h=>{const k=h.season+"|"+h.team+"|"+h.league,o=best.get(k);if(!o||(HSRC[h.src]??1)<(HSRC[o.src]??1))best.set(k,h)});
+  return rows.filter(h=>best.get(h.season+"|"+h.team+"|"+h.league)===h);
+}
 function careerStops(b,team){
-  const src=(b?.historyExtra&&b.historyExtra.length?b.historyExtra:(b?.history||[]));
-  // one group per season+league; several teams in one season are listed together because the order within a season isn't reliable
-  const groups=[];src.slice().sort((x,y)=>(x.season||"").localeCompare(y.season||"")).forEach(r=>{
+  // one group per season+league; several teams in one season are listed together (official NBL rows are in game order)
+  const groups=[];pastRows(b).slice().sort((x,y)=>(x.season||"").localeCompare(y.season||"")).forEach(r=>{
     const g=groups.find(g=>g.season===r.season&&g.league===r.league);if(g){if(!g.teams.includes(r.team))g.teams.push(r.team);return}
     groups.push({season:r.season,league:r.league,teams:[r.team],cc:rowCC(r)})});
   const stops=[];
@@ -1269,7 +1288,7 @@ function careerStops(b,team){
     if(last&&last.team===t&&last.league===g.league){last.to=g.season;return}
     stops.push({team:t,league:g.league,cc:g.cc,from:g.season,to:g.season})});
   const cur=stops[stops.length-1];
-  if(!cur||cur.team!==team)stops.push({team,league:"NBL",cc:NBLCC(team),from:"2026-27",to:"2026-27",now:1});else cur.now=1;
+  if(!cur||cur.team!==team||cur.league!=="NBL")stops.push({team,league:"NBL",cc:NBLCC(team),from:"2026-27",to:"2026-27",now:1});else{cur.now=1;cur.to="2026-27"}
   return stops;
 }
 const yrs=(a,b)=>{const y=s=>s?s.slice(0,4):"";return a===b?a:`${y(a)}–${(b||"").slice(-2)}`};
@@ -1286,6 +1305,7 @@ function connectionsFor(team,pid){
 
 function renderCards(){
   const pick=document.getElementById("cpicker");if(!pick)return;
+  wantPhotos();
   pick.innerHTML=Object.values(TEAMS).map(t=>`<button class="chip" aria-pressed="${t.c===current}" data-team="${t.c}">${t.c}</button>`).join("");
   pick.querySelectorAll("button").forEach(b=>b.onclick=()=>{current=b.dataset.team;try{localStorage.setItem("nbl27-team",current)}catch(e){}renderCards()});
   const el=document.getElementById("cards"),name=byCode[current];
@@ -1294,7 +1314,7 @@ function renderCards(){
   if(!roster.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>No games yet</strong></div></div>`;return}
   let pid=csel[name];if(!pid||!roster.some(r=>r.id===pid))pid=roster[0].id;csel[name]=pid;
   const tiles=roster.map(r=>{const b=BIOS[r.id]||{name:r.name};const pos=b.pos&&b.pos!=="NA"?b.pos:(r.pos&&r.pos!=="NA"?r.pos:"");
-    return `<button class="rtile" data-pid="${r.id}" aria-pressed="${r.id===pid}">${avatar(b.name?b:{...b,name:r.name},name)}<span style="min-width:0"><span class="nm2">${r.name}</span>
+    return `<button class="rtile" data-pid="${r.id}" aria-pressed="${r.id===pid}">${avatar({...b,id:r.id,name:b.name||r.name},name)}<span style="min-width:0"><span class="nm2">${r.name}</span>
       <span class="mt">${jno(b)?"#"+jno(b)+" · ":""}${pos||"–"} · ${r.gp} GP</span><span class="mt">${f1(r.ppg)} · ${f1(r.rpg)} · ${f1(r.apg)}</span></span></button>`}).join("");
   el.innerHTML=`<div class="panel card"><div class="card-head"><h3>${code(name)} ${disp(name)} · roster</h3><span class="rec">${roster.length} players · PTS · REB · AST per game</span></div>
     <div class="roster">${tiles}</div></div><div id="pcard" style="margin-top:18px">${playerCard(name,pid)}</div>`;
@@ -1313,7 +1333,7 @@ function playerCard(team,pid){
   const bio=[field("Position",pos),field("Height",htTxt(b)),field("Weight",wtTxt(b)),field("Age",age!=null?`${age} <span class="mu">· ${fmtDate(b.dob)}</span>`:null),
     field("Born",b.birthPlace||null),field("Alma mater",b.college||null)].concat(nat?[field("Nationality",nat)]:[]).join("");
   const stops=careerStops(b,team);
-  const hasExtra=(b.historyExtra||[]).length>0,hasHist=(b.history||[]).length>0;
+  const hasExtra=(b.historyExtra||[]).length>0,hasNBL=(b.historyNBL||[]).length>0,hasHist=(b.history||[]).length>0;
   const journey=stops.map(s=>`<span class="stop${s.now?" now":""}">${s.team} (${ccFlag(s.cc)||s.cc||"?"})<small>${yrs(s.from,s.to)}</small></span>`).join('<span class="jarr" aria-hidden="true">→</span>');
   // NBL27 averages with league rank among qualified players (3+ games, 10+ mpg)
   const tile=(k,l,fmt,dir,sub)=>{const rk=QUAL(r)&&dir?rankIn(q,k,r[k],dir):null;
@@ -1331,14 +1351,24 @@ function playerCard(team,pid){
   const onoff=oo?`<div class="oo"><div><span class="k">On-court net</span><b>${sgn(oo.onN)}</b></div><div><span class="k">Off-court net</span><b>${sgn(oo.offN)}</b></div><div><span class="k">On–Off</span><b class="${oo.diff>=0?"up":"dn"}">${sgn(oo.diff)}</b></div><div><span class="k">Poss on / off</span><b>${Math.round(oo.poss)} / ${Math.round(oo.offPoss)}</b></div></div>`:"";
   // season history: NBL27 (live) + stored seasons
   const cur=all.filter(x=>x.id===pid).map(x=>({season:"2026-27",team:x.team,league:"NBL",country:NBLCC(x.team),gp:x.gp,mpg:x.mpg,pts:x.ppg,reb:x.rpg,ast:x.apg,stl:x.spg,blk:x.bpg,fgp:x.fgp,tpp:x.tpp,ftp:x.ftp,live:1}));
-  const past=(b.historyExtra&&b.historyExtra.length?b.historyExtra:[]).concat(b.history||[]).filter(h=>!(h.season==="2026-27"&&h.league==="NBL"));
+  const past=pastRows(b);
   // de-duplicate identical season/team/league rows (extra sources first)
   const seen=new Set(),hist=cur.concat(past).filter(h=>{const k=h.season+"|"+h.team+"|"+h.league;if(seen.has(k))return false;seen.add(k);return true})
     .sort((x,y)=>(y.season||"").localeCompare(x.season||"")||(x.live?-1:0));
   const lgOrder=["NBA","G League","NBL"];
   const hrow=h=>`<tr${h.live?' class="teamrow"':""}><td class="tm">${h.season}</td><td style="text-align:left;font-family:var(--body)">${h.team} <span class="mu">(${ccFlag(rowCC(h))||rowCC(h)})</span></td><td style="text-align:left;font-family:var(--body)">${h.league}</td>
     <td>${h.gp??"–"}</td><td>${f1(h.mpg)}</td><td>${f1(h.pts)}</td><td>${f1(h.reb)}</td><td>${f1(h.ast)}</td><td>${f1(h.stl)}</td><td>${f1(h.blk)}</td><td>${pct(h.fgp)}</td><td>${pct(h.tpp)}</td><td>${pct(h.ftp)}</td></tr>`;
-  const histTable=`<div class="scroll"><table><thead><tr><th class="tm">Season</th><th style="text-align:left">Team</th><th style="text-align:left">League</th><th>GP</th><th>MIN</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>FG%</th><th>3P%</th><th>FT%</th></tr></thead><tbody>${hist.map(hrow).join("")}</tbody></table></div>`;
+  // NBL career line: official NBL seasons (exact totals) + NBL27 so far
+  const nblPast=past.filter(h=>h.league==="NBL"&&h.tot);let carRow="";
+  if(nblPast.length){
+    const T={gp:0,sec:0,pts:0,fgm:0,fga:0,tpm:0,tpa:0,ftm:0,fta:0,oreb:0,dreb:0,ast:0,stl:0,blk:0};
+    nblPast.forEach(h=>{T.gp+=h.gp;Object.keys(T).forEach(k=>{if(k!=="gp"&&h.tot[k]!=null)T[k]+=h.tot[k]})});
+    all.filter(x=>x.id===pid).forEach(x=>{T.gp+=x.gp;T.sec+=x.min*60;["pts","fgm","fga","tpm","tpa","ftm","fta","oreb","dreb","ast","stl","blk"].forEach(k=>T[k]+=x[k])});
+    const first=nblPast.map(h=>h.season).sort()[0],ns=new Set(nblPast.map(h=>h.season)).size+1,g=T.gp;
+    carRow=`<tfoot><tr class="carrow"><td class="tm" colspan="3" style="text-align:left;font-family:var(--body)">${first==="2015-16"?"NBL since 2015-16":"NBL career"} <span class="mu">· ${ns} seasons</span></td>
+      <td>${g}</td><td>${f1(T.sec/60/g)}</td><td>${f1(T.pts/g)}</td><td>${f1((T.oreb+T.dreb)/g)}</td><td>${f1(T.ast/g)}</td><td>${f1(T.stl/g)}</td><td>${f1(T.blk/g)}</td><td>${pct(dv(T.fgm,T.fga))}</td><td>${pct(dv(T.tpm,T.tpa))}</td><td>${pct(dv(T.ftm,T.fta))}</td></tr></tfoot>`;
+  }
+  const histTable=`<div class="scroll"><table><thead><tr><th class="tm">Season</th><th style="text-align:left">Team</th><th style="text-align:left">League</th><th>GP</th><th>MIN</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>FG%</th><th>3P%</th><th>FT%</th></tr></thead><tbody>${hist.map(hrow).join("")}</tbody>${carRow}</table></div>`;
   // shot chart
   const sc=PSHOTS.length?shotChartParts(team,pid):null;
   // connections
@@ -1347,10 +1377,10 @@ function playerCard(team,pid){
   const cxHTML=cx?`<div class="cx"><div><h4>Assisted by</h4>${bars(cx.by,Math.max(1,...cx.by.map(x=>x.n)),"No assisted makes yet.")}</div>
       <div><h4>Assists to</h4>${bars(cx.to,Math.max(1,...cx.to.map(x=>x.n)),"No assists yet.")}</div></div>
     <p class="note" style="text-transform:uppercase;letter-spacing:.03em">${cx.fgm} made FG · ${cx.asd} assisted (${pct(dv(cx.asd,cx.fgm))}%) · ${cx.ast} assists → ${cx.apts} pts created · ${cx.games} games</p>`:`<p class="note">Play-by-play data is loading.</p>`;
-  const srcBits=[];if(b.src&&Object.keys(b.src).length){const by={};Object.entries(b.src).forEach(([k,v])=>{const l=SRCLAB[k];if(l)(by[v]=by[v]||new Set()).add(l)});Object.entries(by).forEach(([v,ls])=>srcBits.push(`${v} (${[...ls].join(", ")})`))}
+  const srcBits=[];if(b.src&&Object.keys(b.src).length){const by={};Object.entries(b.src).forEach(([k,v])=>{const l=SRCLAB[k];if(l)(by[v]=by[v]||new Set()).add(l)});Object.entries(by).forEach(([v,ls])=>srcBits.push(`${SRCNAME[v]||v} (${[...ls].join(", ")})`))}
   return `<article class="panel pcard">
     <div class="pc-head" style="background:linear-gradient(120deg,${col} 0%,rgba(0,0,0,0) 62%)">
-      ${avatar({...b,name:nm},team,true)}
+      ${avatar({...b,id:pid,name:nm},team,true)}
       <div style="min-width:0">
         <h2 class="pc-name">${nm}</h2>
         <div class="pc-sub">${code(team)}<span>${disp(team)}</span>${jno(b)?`<span class="pill">#${jno(b)}</span>`:""}${posAb?`<span class="pill">${posAb}</span>`:""}</div>
@@ -1358,19 +1388,19 @@ function playerCard(team,pid){
       </div>
     </div>
     <div class="card"><h3>Career journey</h3><div class="journey">${journey}</div>
-      ${hasExtra?"":`<p class="note">${hasHist?"NBA and college seasons from ESPN; other leagues not loaded yet.":"No earlier seasons on record from ESPN yet."}</p>`}</div>
+      ${hasExtra?"":`<p class="note">${hasNBL||hasHist?"Covers the NBL since 2015-16, the NBA and US college. Other leagues aren't included yet.":"No NBL (since 2015-16), NBA or US college seasons on record before NBL27. Other leagues aren't included yet."}</p>`}</div>
   </article>
   <div class="grid2" style="margin-top:18px">
     <div class="panel card"><h3>NBL27 averages</h3><p class="note">Per game · rank among NBL players with 3+ games and 10+ minutes per game</p>${avg}</div>
     <div class="panel card"><h3>Advanced</h3><p class="note">Bar = percentile among the same qualified players (green = top third)</p><div class="pctl">${advRows}</div>${onoff}</div>
   </div>
   <div class="panel card" style="margin-top:18px"><h3>Season averages</h3>${histTable}
-    <p class="note" style="text-transform:uppercase;letter-spacing:.03em">2026-27 row = NBL27 so far (this site's data) · earlier seasons: ${hasExtra?"official records":"ESPN (NBA regular season, NCAA)"}</p></div>
+    <p class="note" style="text-transform:uppercase;letter-spacing:.03em">Regular season · 2026-27 = NBL27 so far (this site's data) · earlier NBL seasons: official NBL box scores (from 2015-16) · NBA and NCAA: ESPN${hasExtra?" · other leagues: curated records":""}</p></div>
   <div class="panel card" style="margin-top:18px"><div class="card-head"><h3>Shot chart · NBL27</h3>${sc?`<span class="rec">${sc.fga} FGA · ${pct(sc.fga?sc.fgm/sc.fga:null)} FG% · ${pct(sc.efg)} eFG%</span>`:""}</div>
     ${sc?`<div class="sc-wrap"><div style="min-width:0">${sc.svg}<div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="#ff6b7d" stroke-width="2"/></svg> Missed</span><span>Zone: FG%, makes/attempts · share of FGA. Shading: FG% vs League Ave</span></div></div>
       <div style="min-width:0">${sc.table}${sc.bad.length?`<p class="note" style="margin-top:10px;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN shot log): ${sc.bad.join(", ")}</p>`:""}</div></div>`:`<p class="note">Shot locations are loading.</p>`}</div>
   <div class="panel card" style="margin-top:18px"><h3>NBL27 connections</h3>${cxHTML}</div>
-  <p class="note" style="margin-top:10px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.03em">Bio sources: ${srcBits.join(" · ")||"none yet"}${b.checked?` · checked ${fmtDate(b.checked)}`:""} · NBL27 stats: ESPN box scores and play-by-play</p>`;
+  <p class="note" style="margin-top:10px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.03em">Bio sources: ${srcBits.join(" · ")||"none yet"}${b.checked?` · checked ${fmtDate(b.checked)}`:""} · NBL27 stats: ESPN box scores and play-by-play, checked against the NBL's official box scores</p>`;
 }
 
 ["onoff","clutch","ast"].forEach(v=>document.getElementById("pv-"+v).onclick=()=>{pview=v;try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()});
@@ -1395,7 +1425,10 @@ recalc();
   const [g,sh,pl,lu,ps,ev,meta,bi]=await Promise.all(["games.json","shots.json","players.json","lineups.json","pshots.json","events.json","meta.json","bios.json"].map(get));
   META=meta?.status||null;SHOTMETA=meta?.shots_status||null;PSTATUS=meta?.players_status||null;LSTATUS=meta?.lineups_status||null;PSHOTMETA=meta?.pshots_status||null;ESTATUS=meta?.events_status||null;
   GAMES=(g||[]).filter(x=>x&&x.away&&x.home);SHOTS=(sh||[]).filter(d=>d&&d.teams);PLAYERDOCS=(pl||[]).filter(d=>d&&d.teams);LINEDOCS=(lu||[]).filter(d=>d&&d.teams);PSHOTS=(ps||[]).filter(d=>d&&d.teams);EVENTS=(ev||[]).filter(d=>d&&d.teams);BIOS={};(bi||[]).forEach(b=>{if(b&&b.id)BIOS[b.id]=b});
+  // headshots (data/photos.json) are only fetched the first time the Player cards tab is opened
+  loadPhotos=async()=>{const ph=await get("photos.json");PHOTOS={};(ph||[]).forEach(x=>{if(x&&x.id)PHOTOS[x.id]=x.photo});if(!document.getElementById("view-cards").hidden)renderCards()};
   recalc();
+  if(!document.getElementById("view-cards").hidden)wantPhotos();
 })();
 </script>
 

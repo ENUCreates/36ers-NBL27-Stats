@@ -9,12 +9,12 @@ data objects only). The script compares every document and writes ArtifactData b
   action "batch" (pass the list as `writes`). Document bodies are written to <out_dir>/docs/.
 Writes to documents that already exist need their current version: the first run lists them in
 <out_dir>/needs_versions.json; put {"<collection>/<doc_id>": <version>, ...} in versions.json and run again.
-Doc ids: games and bios -> "id"; shots/players/lineups/pshots/events -> "espnId";
+Doc ids: games, bios and photos -> "id"; shots/players/lineups/pshots/events -> "espnId";
 meta -> status, shots_status, players_status, lineups_status, pshots_status, events_status.
 """
 import json, os, sys, glob
 
-COLS = ["games", "shots", "players", "lineups", "pshots", "events", "bios"]
+COLS = ["games", "shots", "players", "lineups", "pshots", "events", "bios", "photos"]
 META = ["status", "shots_status", "players_status", "lineups_status", "pshots_status", "events_status"]
 
 
@@ -26,7 +26,7 @@ def main():
     for c in COLS:
         fp_ = os.path.join(root, "data", c + ".json")
         for d in (json.load(open(fp_)) if os.path.exists(fp_) else []):
-            want[(c, d["id"] if c in ("games", "bios") else d["espnId"])] = d
+            want[(c, d["id"] if c in ("games", "bios", "photos") else d["espnId"])] = d
     meta = json.load(open(os.path.join(root, "data", "meta.json")))
     for k in META:
         if k in meta:

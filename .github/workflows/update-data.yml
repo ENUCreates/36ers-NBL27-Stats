@@ -27,10 +27,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install solver dependencies (on-court rebuild uses numpy + scipy)
-        run: python3 -m pip install numpy "scipy>=1.9"
+      - name: Install dependencies (on-court solver: numpy + scipy; official NBL files: pyreadr; headshots: pillow)
+        run: python3 -m pip install numpy "scipy>=1.9" pyreadr pillow
 
-      - name: Full rebuild from ESPN with checks
+      - name: Full rebuild from ESPN, checked against the official NBL box scores
         run: python3 nbl27-website-updater/updater/rebuild.py . "${{ github.event.inputs.settle_hours }}"
 
       - name: Commit and push if anything changed

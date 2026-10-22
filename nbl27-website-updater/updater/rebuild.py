@@ -158,6 +158,46 @@ def main():
         print("ABORT: rebuild lost too many games; nothing written. Held:", held)
         sys.exit(2)
 
+    # Official NBL box scores (official.py, via nblR on GitHub, about a week behind): the official spelling of every
+    # player's name, and a few counting fields where ESPN's box score differs from the league's (assists, turnovers,
+    # steals, blocks, rebounds and team rebound splits). Scoring, minutes and +/- are only compared, never changed.
+    # If the official files can't be read, the corrections and spellings from the previous run are reused.
+    prev_off = (meta.get("status") or {}).get("official") or {}
+    off_status = {}
+    try:
+        import official as O
+        os.environ["NBL_OFFICIAL_CACHE"] = os.path.join(tmp, "official")
+        off = O.load(os.environ["NBL_OFFICIAL_CACHE"])
+        glist, plist = list(new["games"].values()), list(new["players"].values())
+        cmp = O.compare(glist, plist, off)
+        fixes = O.apply(glist, plist, cmp)
+        names = {i: p["name"] for i, p in cmp["pairs"].items()}
+        for i, n in (prev_off.get("names") or {}).items():
+            names.setdefault(i, n)          # keep spellings learned from games the official files no longer list
+        off_status = {"games": len(cmp["checked"]), "pending": len(cmp["missing"]), "names": names,
+                      "fixes": cmp["fix_players"] + cmp["fix_teams"], "applied": fixes, "notes": cmp["notes"]}
+    except Exception as ex:
+        warnings.append(f"official NBL box scores unavailable ({ex}); previous official corrections reused")
+        off_status = {k: prev_off.get(k) for k in ("games", "pending", "names", "fixes", "applied", "notes")}
+        off_status["error"] = str(ex)[:300]
+        G_ = {g["id"].replace("espn-", ""): g for g in new["games"].values()}
+        for c in prev_off.get("fixes") or []:      # re-apply only where ESPN still has the value we corrected
+            g = G_.get(c["eid"])
+            if not g:
+                continue
+            if "id" in c:
+                for x in (new["players"].get(c["eid"]) or {}).get("teams", {}).get(c["team"], []):
+                    if x["id"] == c["id"] and x.get(c["field"]) == c["ours"]:
+                        x[c["field"]] = c["official"]
+            else:
+                T = g["home"] if g["home"]["team"] == c["team"] else g["away"]
+                if T.get(c["field"]) == c["ours"]:
+                    T[c["field"]] = c["official"]
+    if off_status.get("names"):
+        O_names = off_status["names"]
+        import official as O
+        O.rename({c: list(new[c].values()) for c in COLS[1:]}, O_names)
+
     # change report
     changes = []
     for k, g in new["games"].items():
@@ -186,8 +226,12 @@ def main():
     nowiso = now.replace(microsecond=0).isoformat()
     st = meta.setdefault("status", {})
     st.update(updatedAt=nowiso, lastGameDate=max(g["date"] for g in data["games"]),
-              source="ESPN (official team totals), full rebuild once a day", games=len(data["games"]),
-              changes=changes[:60])
+              source="ESPN box scores and play-by-play, checked against the NBL's official box scores; full rebuild once a day",
+              games=len(data["games"]), changes=changes[:60])
+    if off_status:
+        st["official"] = {**{k: v for k, v in off_status.items() if v is not None}, "checkedAt": nowiso}
+    else:
+        st.pop("official", None)
     msgs = [f"held (failed checks, previous version kept): {h}" for h in held] + warnings
     if msgs:
         st["warning"] = "; ".join(msgs)
