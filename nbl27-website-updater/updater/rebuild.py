@@ -221,6 +221,12 @@ def main():
     json.dump(meta, open(os.path.join(root, "data", "meta.json"), "w"), indent=1)
     print(json.dumps({"games": len(data["games"]), "held": held, "pending": pending, "warnings": warnings,
                       "changes": changes}, indent=1))
+    # Player cards: bios + NBA/NCAA history (bios.py; refreshes new players and a few stale ones per run).
+    # A failure here never affects the game data written above.
+    try:
+        U.run_script("bios.py", [root])
+    except Exception as ex:
+        print("bios step failed:", ex)
 
 
 if __name__ == "__main__":
