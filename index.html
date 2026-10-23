@@ -113,7 +113,7 @@ td.pl{text-align:left;font-family:var(--body);font-weight:600}
 td.pl small{font-weight:400;color:var(--muted);margin-left:6px;font-family:var(--mono);font-size:11px}
 tr.low td{opacity:.55}
 .usg{display:inline-block;height:6px;border-radius:3px;background:var(--accent);vertical-align:middle;margin-right:6px;opacity:.85}
-.lu{display:flex;flex-wrap:nowrap;gap:6px;white-space:nowrap}
+.lu{display:flex;flex-wrap:nowrap;gap:6px;white-space:nowrap;align-items:center}
 .lu span{white-space:nowrap}
 #lineups td.tm{white-space:nowrap;font-family:var(--body);font-weight:600;font-size:13px}
 @media (max-width:600px){#lineups td.tm,#lineups th.tm{position:static;font-size:12px}}
@@ -150,6 +150,7 @@ table.st tr.sg td{font:600 12px/1.2 var(--display);letter-spacing:.08em;text-tra
 table.net td{text-align:center;min-width:44px}table.net th{text-align:center}
 svg text.rq{font:600 13px var(--display);letter-spacing:.08em;fill:var(--muted)}
 svg text.rn{font:600 12px var(--body);fill:var(--ink)}
+svg text.ri{font:700 8px var(--display);fill:#fff;letter-spacing:.02em}
 svg text.rv{font:500 11px var(--mono);fill:var(--muted)}
 ol.conn{margin:0;padding-left:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 18px}
 ol.conn li{font-size:13px}ol.conn .ma{font-family:var(--mono);color:var(--muted);margin-left:4px}
@@ -169,6 +170,10 @@ ol.conn li{font-size:13px}ol.conn .ma{font-family:var(--mono);color:var(--muted)
 .av.ph img{object-fit:cover;object-position:50% 0}
 .av.ph:not(.lg) img{transform:scale(1.5);transform-origin:50% 2%}
 .av.lg.ph{height:165px}
+.av.sm{width:26px;height:26px;font-size:10px;letter-spacing:.02em;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
+.pn{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;vertical-align:middle}
+td.pl{white-space:nowrap}
+table.net th .pn{flex-direction:column;gap:4px}
 .pcard{overflow:hidden}
 .pc-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;padding:20px;align-items:start;border-bottom:1px solid var(--line)}
 .pc-name{font:700 clamp(30px,4.6vw,46px)/1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:2px 0 0}
@@ -749,7 +754,7 @@ function renderPlayers(){
   el.innerHTML=`<div class="panel">
     <div class="team-head${sw?" ph":""}"><h2>${code(name)} ${disp(name)}</h2>${sw}<span class="rec">${rows.length} players used · ${shown.length} shown${hidden?` (${hidden} under ${pminVal} min/g)`:""}</span></div>
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${cols.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${shown.map(r=>`<tr class="${r.gp<2?'low':''}"><td class="tm pl">${r.name}<small>${posOf(r)}</small></td>${cols.map(c=>fmtCell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="text-align:left;color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}${teamRow?`<tr class="teamrow"><td class="tm pl">${tot?"TEAM TOTAL":"TEAM AVERAGE"}</td>${cols.map(c=>(c[4]==="ts"||c[4]==="usg")?`<td>${c[2](teamRow[c[0]])}</td>`:fmtCell(teamRow,c)).join("")}</tr>`:""}</tbody></table></div>
+    <tbody>${shown.map(r=>`<tr class="${r.gp<2?'low':''}"><td class="tm pl">${pname(r.id,r.name,name)}<small>${posOf(r)}</small></td>${cols.map(c=>fmtCell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="text-align:left;color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}${teamRow?`<tr class="teamrow"><td class="tm pl">${tot?"TEAM TOTAL":"TEAM AVERAGE"}</td>${cols.map(c=>(c[4]==="ts"||c[4]==="usg")?`<td>${c[2](teamRow[c[0]])}</td>`:fmtCell(teamRow,c)).join("")}</tr>`:""}</tbody></table></div>
   </div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">${(pview==="adv"?["USG% = share of team possessions a player uses while on court","AST% = share of teammates' field goals he assisted while on court","OREB% = share of available offensive rebounds he grabbed","DREB% = share of available defensive rebounds he grabbed","STL% = steals per opponent possession","BLK% = blocks per opponent 2-point attempt","TS% shaded against League Ave (min. 20 shots)","Faded rows = 1 game","Team average = all players combined; AST% for the team = AST / FGM"]:tot?["Season totals","Makes/attempts are season totals; sorting those columns sorts by attempts","Team total = all players combined (team rebounds and team turnovers are not credited to players, so they are not included)"]:["Per-game averages","Makes/attempts are per game; sorting those columns sorts by attempts","Team average = all players combined, per game (team rebounds and team turnovers are not credited to players, so they are not included)"]).map(t=>`<span>${t}</span>`).join("")}<span>Source: ESPN player box scores, ${PSTATUS?.games??PLAYERDOCS.length} games</span></div>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(psort.k===k)psort.d*=-1;else psort={k,d:["name","tovp","tpg","pfpg","tov","pf"].includes(k)?1:-1};renderPlayers()});
@@ -842,7 +847,7 @@ function renderLineups(){
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${rows.length} ${lsize}-man groups · ${shown.length} shown · ${games} games</span></div>
     <div class="scroll"><table><thead><tr><th class="tm">${label}</th>${LCOLS.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${shown.map(r=>`<tr class="${r.poss<20?'low':''}"><td class="tm"><div class="lu">${r.label.map(n=>`<span>${n}</span>`).join("<span aria-hidden=\"true\" style=\"color:var(--muted)\">·</span>")}</div></td>${LCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${LCOLS.length+1}" style="color:var(--muted)">No ${lsize}-man groups with ${lminVal}+ minutes yet.</td></tr>`}</tbody></table></div>
+    <tbody>${shown.map(r=>`<tr class="${r.poss<20?'low':''}"><td class="tm"><div class="lu">${r.label.map((n,i)=>pname(r.p[i],n,name)).join("<span aria-hidden=\"true\" style=\"color:var(--muted)\">·</span>")}</div></td>${LCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${LCOLS.length+1}" style="color:var(--muted)">No ${lsize}-man groups with ${lminVal}+ minutes yet.</td></tr>`}</tbody></table></div>
   </div>
   <p style="color:var(--muted);font-size:12px;margin:10px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em">Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-${bad.length?` · Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}`:""}</p>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(lsort.k===k)lsort.d*=-1;else lsort={k,d:["drtg","oefg","tov"].includes(k)?1:-1};renderLineups()});
@@ -936,7 +941,7 @@ function renderShotChart(){
         <div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="#ff6b7d" stroke-width="2"/></svg> Missed</span><span>Each zone: FG%, makes/attempts · share of FGA. Shading: FG% vs league (green better)</span></div>
       </div>
       <div style="min-width:0">
-        <h3 style="margin:0 0 8px">${who}</h3>
+        <h3 style="margin:0 0 8px">${sel?pname(sel,tally[sel].n,name):who}</h3>
         <div class="scroll"><table><thead><tr><th class="tm">Zone</th><th>FGM/FGA</th><th>FG%</th><th>% of FGA</th><th>League Ave FG%</th><th>League Ave % FGA</th><th>vs League Ave</th></tr></thead><tbody>${rows}
           <tr class="avg"><td class="tm">All field goals</td><td>${fgm}/${fga}</td><td>${pct(fga?fgm/fga:null)}</td><td>100.0</td><td>${pct(lfga?L.reduce((t,z)=>t+z.m,0)/lfga:null)}</td><td>100.0</td><td></td></tr></tbody></table></div>
         ${bad.length?`<p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN shot log): ${bad.join(", ")}</p>`:""}
@@ -1130,7 +1135,7 @@ function renderOnOff(el,name){
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${games} games · ${shown.length} players shown</span></div>
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${OCOLS.map(c=>`<th class="${c[4]==="sep"||c[4]==="diff"?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${shown.map(r=>`<tr class="${r.poss<100?'low':''}"><td class="tm pl">${r.name}</td>${OCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${OCOLS.length+1}" style="color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}</tbody></table></div></div>
+    <tbody>${shown.map(r=>`<tr class="${r.poss<100?'low':''}"><td class="tm pl">${pname(r.id,r.name,name)}</td>${OCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${OCOLS.length+1}" style="color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
     <span>On = team ratings per 100 possessions with him on the floor; Off = with him on the bench</span><span>On–Off Net = On Net − Off Net (shaded with 150+ possessions each way)</span><span>Faded rows = under 100 on-court possessions</span><span>Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-</span>
     ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
@@ -1155,7 +1160,7 @@ function renderPClutch(el,name){
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${cg} clutch games of ${games} · season totals</span></div>
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${C.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${rows.map(r=>`<tr><td class="tm pl">${r.name}</td>${C.map(c=>`<td>${c[2](r)}</td>`).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${C.length+1}" style="color:var(--muted)">No clutch minutes yet.</td></tr>`}</tbody></table></div></div>
+    <tbody>${rows.map(r=>`<tr><td class="tm pl">${pname(r.id,r.name,name)}</td>${C.map(c=>`<td>${c[2](r)}</td>`).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${C.length+1}" style="color:var(--muted)">No clutch minutes yet.</td></tr>`}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
     <span>Clutch = last 5:00 of the 4th quarter or overtime with the margin 5 or fewer</span><span>Totals, not per game · +/- = team points margin while on the floor</span>
     ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
@@ -1180,14 +1185,14 @@ function renderAssists(el,name){
   // network: top players by involvement
   const top=Object.values(P).sort((a,b)=>(b.ast+b.asd)-(a.ast+a.asd)).filter(x=>x.ast+x.asd>0).slice(0,9);
   const mx=Math.max(1,...Object.values(pair));
-  const net=top.length<2?"":`<div class="scroll"><table class="net"><thead><tr><th class="tm">Passer ↓ · Scorer →</th>${top.map(s=>`<th title="${s.name}">${shortName(s.name)}</th>`).join("")}<th class="sep">Total</th></tr></thead><tbody>
-    ${top.map(a=>`<tr><td class="tm pl">${shortName(a.name)}</td>${top.map(s=>{const n=pair[a.id+"|"+s.id]||0;if(a.id===s.id)return `<td class="ma">·</td>`;
+  const net=top.length<2?"":`<div class="scroll"><table class="net"><thead><tr><th class="tm">Passer ↓ · Scorer →</th>${top.map(s=>`<th title="${s.name}">${pname(s.id,s.name,name,shortName(s.name))}</th>`).join("")}<th class="sep">Total</th></tr></thead><tbody>
+    ${top.map(a=>`<tr><td class="tm pl">${pname(a.id,a.name,name,shortName(a.name))}</td>${top.map(s=>{const n=pair[a.id+"|"+s.id]||0;if(a.id===s.id)return `<td class="ma">·</td>`;
       return `<td style="${n?`background:rgba(228,0,43,${(0.12+0.68*n/mx).toFixed(2)});color:#fff`:''}" title="${a.name} → ${s.name}: ${n}">${n||""}</td>`}).join("")}<td class="sep"><b>${a.ast}</b></td></tr>`).join("")}</tbody></table></div>`;
-  const conns=Object.entries(pair).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,n])=>{const[a,s]=k.split("|");return `<li><b>${shortName(P[a]?.name)}</b> → ${shortName(P[s]?.name)} <span class="ma">${n}</span></li>`}).join("");
+  const conns=Object.entries(pair).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,n])=>{const[a,s]=k.split("|");return `<li><b>${pname(a,P[a]?.name,name,shortName(P[a]?.name))}</b> → ${pname(s,P[s]?.name,name,shortName(P[s]?.name))} <span class="ma">${n}</span></li>`}).join("");
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${games} games · season totals</span></div>
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${C.map(c=>`<th class="${c[3]?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${rows.map(r=>`<tr><td class="tm pl">${r.name}</td>${C.map(c=>`<td class="${c[3]?'sep':''}">${c[2](r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
+    <tbody>${rows.map(r=>`<tr><td class="tm pl">${pname(r.id,r.name,name)}</td>${C.map(c=>`<td class="${c[3]?'sep':''}">${c[2](r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
   <div class="grid2" style="margin-top:18px">
     <div class="panel card" style="grid-column:1/-1"><h3>Assist network</h3><p class="note">Assists from each passer (row) to each scorer (column). Darker = more.</p>${net}</div>
   </div>
@@ -1225,12 +1230,15 @@ function renderRotations(){
   if(!games){el.innerHTML=`<div class="panel"><div class="empty"><strong>No usable games yet</strong></div></div>`;return}
   // heat chart order: starters first (by Q1 start share), then by minutes
   const order=rows.filter(r=>r.mpg>=1&&(r.g>=2||games<3)).sort((a,b)=>(b.s1p>=0.5)-(a.s1p>=0.5)||b.mpg-a.mpg);
-  const nameW=128,cw=15,rh=24,top=26,W=nameW+40*cw+48,H=top+order.length*rh+6;
+  const nameW=168,cw=15,rh=24,top=26,W=nameW+40*cw+48,H=top+order.length*rh+6,col=TEAMS[name]?.col||"#555";
   let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:640px" role="img" aria-label="Rotation chart: share of games each player is on the floor, minute by minute">`;
   ["Q1","Q2","Q3","Q4"].forEach((q,i)=>{svg+=`<text x="${nameW+i*10*cw+5*cw}" y="14" text-anchor="middle" class="rq">${q}</text>`});
   svg+=`<text x="${nameW+40*cw+24}" y="14" text-anchor="middle" class="rq">MPG</text>`;
-  order.forEach((r,i)=>{const y=top+i*rh;
-    svg+=`<text x="${nameW-8}" y="${y+rh/2+4}" text-anchor="end" class="rn">${shortName(r.name)}</text>`;
+  order.forEach((r,i)=>{const y=top+i*rh,cy=y+rh/2,d=20,cx=d/2+2,ph=PHOTOS[r.id];
+    // headshot as on the Player cards: the photo clipped to a circle in the team colour (initials until photos load)
+    svg+=`<circle cx="${cx}" cy="${cy}" r="${d/2}" fill="${col}"/>`+(ph?`<clipPath id="rotph${i}"><circle cx="${cx}" cy="${cy}" r="${d/2}"/></clipPath><image href="${ph}" x="${cx-0.75*d}" y="${cy-d/2-0.01*d}" width="${1.5*d}" height="${1.5*d}" preserveAspectRatio="xMidYMin slice" clip-path="url(#rotph${i})"/>`
+      :`<text x="${cx}" y="${cy+3}" text-anchor="middle" class="ri">${initials(r.name)}</text>`)+`<circle cx="${cx}" cy="${cy}" r="${d/2}" fill="none" stroke="rgba(255,255,255,.22)"/>`;
+    svg+=`<text x="${d+10}" y="${cy+4}" class="rn">${shortName(r.name)}</text>`;
     r.bins.forEach((v,m)=>{const f=Math.min(1,v/(60*games));
       svg+=`<rect x="${nameW+m*cw+.5}" y="${y+1}" width="${cw-1}" height="${rh-2}" rx="2" fill="${f>0?'var(--accent)':'var(--soft)'}" fill-opacity="${f>0?(0.08+0.92*f).toFixed(2):1}"><title>${r.name} · Q${Math.floor(m/10)+1} ${10-m%10}:00–${9-m%10}:00 · on floor ${Math.round(100*f)}% of games</title></rect>`});
     svg+=`<text x="${nameW+40*cw+24}" y="${y+rh/2+4}" text-anchor="middle" class="rv">${f1(r.mpg)}</text>`});
@@ -1245,7 +1253,7 @@ function renderRotations(){
     <h3>Rotation chart</h3><p class="note">Each square is one game minute. Darker = on the floor in more of the team's games during that minute.</p>
     <div class="scroll">${svg}</div></div>
   <div class="panel" style="margin-top:18px"><div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${C.map(c=>`<th class="${c[3]?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${shown.map(r=>`<tr class="${r.g<2?'low':''}"><td class="tm pl">${r.name}</td>${C.map(c=>`<td class="${c[3]?'sep':''}">${c[2](r[c[0]])}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
+    <tbody>${shown.map(r=>`<tr class="${r.g<2?'low':''}"><td class="tm pl">${pname(r.id,r.name,name)}</td>${C.map(c=>`<td class="${c[3]?'sep':''}">${c[2](r[c[0]])}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
     <span>Q1–Q4 = minutes per game in each quarter · stints run until he subs out (they carry across quarter breaks)</span><span>Starts Q1 / Q3 = share of games on the floor to open the half · On at end of Q4 = on the floor at the final buzzer of regulation</span><span>Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-</span>
     ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
@@ -1255,15 +1263,18 @@ function renderRotations(){
 // ===== Player cards: bio, career journey, NBL27 averages + ranks, season history, advanced, shot chart, assist connections =====
 // Bio + history come from the "bios" collection (built daily from ESPN; extra verified sources are merged field by field).
 let BIOS={},csel={},PHOTOS={},loadPhotos=null,photosAsked=false;
-// headshots are a separate, larger collection: fetched the first time the Player cards tab is shown
+// headshots are a separate collection, fetched once at start-up: every player name on the page shows his photo
 function wantPhotos(){if(photosAsked||!loadPhotos)return;photosAsked=true;try{loadPhotos()}catch(e){photosAsked=false}}
 const ccFlag=cc=>cc&&/^[A-Za-z]{2}$/.test(cc)?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt(0))):"";
 const NBLCC=n=>n==="New Zealand Breakers"?"NZ":"AU";
 const LEAGUECC={NBA:"US",NCAA:"US","G League":"US",NBL:"AU",NBL1:"AU"};
 const rowCC=r=>r.country||(r.league==="NBL"?NBLCC(r.team):LEAGUECC[r.league])||"";
 const initials=n=>(n||"?").replace(/[^A-Za-z' -]/g,"").split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join("").toUpperCase();
-function avatar(b,team,big){const col=TEAMS[team]?.col||"#555",ph=b?.id?PHOTOS[b.id]:null;
-  return ph?`<span class="av ph${big?" lg":""}" style="background:${col}"><img src="${ph}" alt="${big?(b.name||"")+" headshot":""}"></span>`:`<span class="av${big?" lg":""}" style="background:${col}" aria-hidden="true">${initials(b?.name)}</span>`}
+// size: true / "lg" = the card's big photo, "sm" = the small one next to a name in tables and lists
+function avatar(b,team,size){const col=TEAMS[team]?.col||"#555",ph=b?.id?PHOTOS[b.id]:null,cls=size==="sm"?" sm":size?" lg":"",big=cls===" lg";
+  return ph?`<span class="av ph${cls}" style="background:${col}"><img src="${ph}" alt="${big?(b.name||"")+" headshot":""}" decoding="async"></span>`:`<span class="av${cls}" style="background:${col}" aria-hidden="true">${initials(b?.name)}</span>`}
+// a player's name with his headshot (the Player cards' photos) in front; label = the text shown (defaults to the name)
+const pname=(id,name,team,label)=>`<span class="pn">${avatar({id,name},team,"sm")}<span>${label??name??""}</span></span>`;
 function ageOf(dob){if(!dob)return null;const d=new Date(dob+"T00:00:00"),n=new Date();let a=n.getFullYear()-d.getFullYear();
   if(n.getMonth()<d.getMonth()||(n.getMonth()===d.getMonth()&&n.getDate()<d.getDate()))a--;return a}
 const fmtDate=iso=>iso?new Date(iso+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"}):"";
@@ -1427,7 +1438,7 @@ function playerCard(team,pid){
   const sc=PSHOTS.length?shotChartParts(team,pid):null;
   // connections
   const cx=EVENTS.length?connectionsFor(team,pid):null;
-  const bars=(L,max,empty)=>L.length?L.slice(0,6).map(x=>`<div class="cxrow"><div><div class="cxn">${x.name} <span class="mu">${x.n} · ${x.p} pts</span></div><div class="cxbar" style="width:${Math.max(4,Math.round(100*x.n/max))}%"></div></div><div class="num">${x.n}</div></div>`).join(""):`<p class="note">${empty}</p>`;
+  const bars=(L,max,empty)=>L.length?L.slice(0,6).map(x=>`<div class="cxrow"><div><div class="cxn">${pname(x.id,x.name,team)} <span class="mu">${x.n} · ${x.p} pts</span></div><div class="cxbar" style="width:${Math.max(4,Math.round(100*x.n/max))}%"></div></div><div class="num">${x.n}</div></div>`).join(""):`<p class="note">${empty}</p>`;
   const cxHTML=cx?`<div class="cx"><div><h4>Assisted by</h4>${bars(cx.by,Math.max(1,...cx.by.map(x=>x.n)),"No assisted makes yet.")}</div>
       <div><h4>Assists to</h4>${bars(cx.to,Math.max(1,...cx.to.map(x=>x.n)),"No assists yet.")}</div></div>
     <p class="note" style="text-transform:uppercase;letter-spacing:.03em">${cx.fgm} made FG · ${cx.asd} assisted (${pct(dv(cx.asd,cx.fgm))}%) · ${cx.ast} assists → ${cx.apts} pts created · ${cx.games} games</p>`:`<p class="note">Play-by-play data is loading.</p>`;
@@ -1458,6 +1469,9 @@ function playerCard(team,pid){
 }
 
 ["onoff","clutch","ast"].forEach(v=>document.getElementById("pv-"+v).onclick=()=>{pview=v;try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()});
+// re-draw the open tab (used when the headshots arrive)
+function renderVisible(){const on=x=>!document.getElementById("view-"+x).hidden;
+  if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("rotations"))renderRotations();if(on("cards"))renderCards()}
 function show(v){
   ["league","team","players","cards","lineups","rotations"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
   if(v!=="league"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
@@ -1479,10 +1493,10 @@ recalc();
   const [g,sh,pl,lu,ps,ev,meta,bi]=await Promise.all(["games.json","shots.json","players.json","lineups.json","pshots.json","events.json","meta.json","bios.json"].map(get));
   META=meta?.status||null;SHOTMETA=meta?.shots_status||null;PSTATUS=meta?.players_status||null;LSTATUS=meta?.lineups_status||null;PSHOTMETA=meta?.pshots_status||null;ESTATUS=meta?.events_status||null;
   GAMES=(g||[]).filter(x=>x&&x.away&&x.home);SHOTS=(sh||[]).filter(d=>d&&d.teams);PLAYERDOCS=(pl||[]).filter(d=>d&&d.teams);LINEDOCS=(lu||[]).filter(d=>d&&d.teams);PSHOTS=(ps||[]).filter(d=>d&&d.teams);EVENTS=(ev||[]).filter(d=>d&&d.teams);BIOS={};(bi||[]).forEach(b=>{if(b&&b.id)BIOS[b.id]=b});
-  // headshot list (data/photos.json -> data/photos/<id>.webp) is fetched the first time the Player cards tab is opened
-  loadPhotos=async()=>{const ph=await get("photos.json");PHOTOS={};(ph||[]).forEach(x=>{if(x&&x.id&&x.file)PHOTOS[x.id]="data/"+x.file+"?v="+x.sha});if(!document.getElementById("view-cards").hidden)renderCards()};
+  // headshot list (data/photos.json -> data/photos/<id>.webp), fetched at start-up: every player name shows his photo
+  loadPhotos=async()=>{const ph=await get("photos.json");PHOTOS={};(ph||[]).forEach(x=>{if(x&&x.id&&x.file)PHOTOS[x.id]="data/"+x.file+"?v="+x.sha});renderVisible()};
   recalc();
-  if(!document.getElementById("view-cards").hidden)wantPhotos();
+  wantPhotos();
 })();
 </script>
 
