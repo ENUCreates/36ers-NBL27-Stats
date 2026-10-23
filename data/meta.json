@@ -1,14 +1,14 @@
 {
  "status": {
-  "lastGameDate": "2026-10-22",
+  "lastGameDate": "2026-10-23",
   "source": "ESPN box scores and play-by-play, checked against the NBL's official box scores; full rebuild once a day",
-  "updatedAt": "2026-10-23T20:39:59+11:00",
-  "games": 38,
+  "updatedAt": "2026-10-24T08:59:41+11:00",
+  "games": 39,
   "changes": [
-   "added 2026-10-22 Sydney Kings 108 at Illawarra Hawks 82"
+   "added 2026-10-23 Melbourne United 102 at Perth Wildcats 103"
   ],
   "official": {
-   "games": 38,
+   "games": 39,
    "pending": 0,
    "names": {
     "4278777": "Shaun Bruce",
@@ -259,6 +259,20 @@
      "official": 31
     },
     {
+     "eid": "401875274",
+     "team": "Melbourne United",
+     "field": "oreb",
+     "ours": 14,
+     "official": 15
+    },
+    {
+     "eid": "401875274",
+     "team": "Melbourne United",
+     "field": "dreb",
+     "ours": 26,
+     "official": 25
+    },
+    {
      "eid": "401875281",
      "team": "New Zealand Breakers",
      "field": "oreb",
@@ -288,6 +302,8 @@
     "2026-10-07 Adelaide 36ers team dreb 25->23",
     "2026-10-17 South East Melbourne Phoenix team oreb 29->28",
     "2026-10-17 South East Melbourne Phoenix team dreb 30->31",
+    "2026-10-23 Melbourne United team oreb 14->15",
+    "2026-10-23 Melbourne United team dreb 26->25",
     "2026-10-18 New Zealand Breakers team oreb 8->9",
     "2026-10-18 New Zealand Breakers team dreb 29->28"
    ],
@@ -298,7 +314,7 @@
     "2026-10-21 Tasmania JackJumpers: official box has Ryley Haywood (00:21, 0 pts), ESPN does not",
     "2026-10-21 Tasmania JackJumpers: official box has Jed Richardson (00:21, 0 pts), ESPN does not"
    ],
-   "checkedAt": "2026-10-23T20:39:59+11:00"
+   "checkedAt": "2026-10-24T08:59:41+11:00"
   }
  },
  "shots_status": {
@@ -306,23 +322,23 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-10-23T20:39:59+11:00",
-  "games": 38,
+  "checkedAt": "2026-10-24T08:59:41+11:00",
+  "games": 39,
   "medianErr": 0.24,
-  "mismatches": 32
+  "mismatches": 33
  },
  "players_status": {
-  "checkedAt": "2026-10-23T20:39:59+11:00",
-  "games": 38,
+  "checkedAt": "2026-10-24T08:59:41+11:00",
+  "games": 39,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-10-23T20:39:59+11:00",
-  "games": 38,
+  "checkedAt": "2026-10-24T08:59:41+11:00",
+  "games": 39,
   "invalid": 8,
   "method": "On-court five per play solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
   "fit": {
-   "teamGames": 76,
+   "teamGames": 78,
    "minutesOver30s": 11,
    "plusMinusOff": 5,
    "actionsOffCourt": 0,
@@ -335,14 +351,14 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-10-23T20:39:59+11:00",
+  "checkedAt": "2026-10-24T08:59:41+11:00",
   "frame": "x across court 0-50 ft (basket at 25), y = feet from baseline/basket toward halfway (0-47); both teams share one half-court frame, y>47 mirrored as safeguard",
-  "games": 38,
+  "games": 39,
   "notes": "4548 FGAs stored, 0 without coordinates, 5 with no shooter id (key \"0\"). Zones/attribution identical to meta/shotscript. 8 team-games not ok: games 401875244, 401875247, 401875260, 401875279 have incomplete ESPN play-by-play (both teams). Elsewhere per-player FGA may differ by 1-2 from box due to ESPN PBP attribution noise."
  },
  "events_status": {
-  "checkedAt": "2026-10-23T20:39:59+11:00",
-  "games": 38,
+  "checkedAt": "2026-10-24T08:59:41+11:00",
+  "games": 39,
   "badTeamGames": 9,
   "notes": "Team-games failing reconciliation: 401875244 Brisbane Bullets, 401875244 New Zealand Breakers, 401875247 Illawarra Hawks, 401875247 Tasmania JackJumpers, 401875260 Melbourne United, 401875260 Cairns Taipans, 401875269 New Zealand Breakers, 401875271 Sydney Kings, 401875279 Brisbane Bullets"
  }
