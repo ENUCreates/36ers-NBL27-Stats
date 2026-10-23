@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies (on-court solver: numpy + scipy; official NBL files: pyreadr; headshots: pillow)
+      - name: "Install dependencies (on-court solver: numpy + scipy; official NBL files: pyreadr; headshots: pillow)"
         run: python3 -m pip install numpy "scipy>=1.9" pyreadr pillow
 
       - name: Full rebuild from ESPN, checked against the official NBL box scores
