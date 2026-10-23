@@ -1,0 +1,5 @@
+{"_meta": {"url": "https://basketball.realgm.com/player/Tom-Wilson/Summary/76273", "fetched": "2026-10-23", "src": "rgm"}}
+{"name": "Tom Wilson", "born": "Jun 24, 1997", "nationality": "Australia", "school": "Southern Methodist"}
+{"tbl": "NCAA", "season": "2016-17", "teams": [{"name": "Southern Methodist", "href": "https://basketball.realgm.com/ncaa/conferences/American-Conference/4/Southern-Methodist/303/Rosters/2017"}], "leagues": null, "gp": 10, "min": 6.1, "pts": 1.6, "reb": 1.0, "ast": 0.5, "stl": 0.1, "blk": 0.0, "tov": 0.6, "fgp": ".333", "tpp": ".357", "ftp": ".250"}
+{"tbl": "INT", "season": "2025-26", "teams": [{"name": "All Teams", "href": null}], "leagues": ["All Leagues"], "gp": 29, "min": 6.5, "pts": 2.4, "reb": 1.3, "ast": 0.6, "stl": 0.3, "blk": 0.0, "tov": 0.2, "fgp": ".323", "tpp": ".270", "ftp": ".731", "total": true}
+{"truncated": false, "_note": "this read returned only the 2025-26 season total of the International table (the second read has every line); his International seasons are all NBL"}

@@ -1,0 +1,8 @@
+#url https://basketball.realgm.com/player/Malith-Machar/Summary/166055
+#fetched 2026-10-23
+International Season Stats
+2022-23 | Melbourne | AUS NBL | 6 | 2.0 | 1.0 | 0.5 | 0.2 | 0.2 | 0.0 | 0.2 | .600 | .000 | .000
+2023-24 | Melbourne | AUS NBL | 3 | 3.2 | 0.0 | 0.7 | 0.0 | 0.0 | 0.0 | 0.3 | .000 | .000 | .000
+2025-26 * | All Teams | All Leagues | 24 | 4.8 | 1.6 | 0.5 | 0.1 | 0.0 | 0.1 | 0.2 | .361 | .333 | .600
+2025-26 * | Melbourne | AUS NBL | 23 | 4.6 | 1.6 | 0.6 | 0.1 | 0.0 | 0.1 | 0.1 | .353 | .316 | .600
+2025-26 * | Melbourne | NBL Blitz | 1 | 8.5 | 3.0 | 0.0 | 0.0 | 0.0 | 0.0 | 1.0 | .500 | .500 | .000

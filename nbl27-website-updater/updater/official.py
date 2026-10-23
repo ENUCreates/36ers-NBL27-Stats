@@ -40,6 +40,9 @@ NICK = {"mitch": "mitchell", "matt": "matthew", "nick": "nicholas", "will": "wil
         "nate": "nathan", "jon": "jonathan", "tony": "anthony", "andy": "andrew", "rob": "robert", "jim": "james",
         "jimmy": "james", "joe": "joseph", "dave": "david", "steve": "steven", "pat": "patrick", "lachie": "lachlan",
         "cam": "cameron", "fred": "frederick", "freddie": "frederick", "harry": "harrison", "jono": "jonathan"}
+# earlier official names of players whose name changed in the official box scores: current name key -> earlier keys.
+# Each one checked by hand against the player's other records before it was added.
+ALIAS = {"izayahleafa": {"izayahmauriohooholeafa"}}   # 2020-21 South East Melbourne box scores: "Izayah Mauriohooho-Le Afa"
 COUNTRY = {"AUSTRALIA": ("Australia", "AU"), "NEW ZEALAND": ("New Zealand", "NZ"), "UNITED STATES": ("United States", "US"),
            "UNITED STATES OF AMERICA": ("United States", "US"), "CANADA": ("Canada", "CA"), "SUDAN": ("Sudan", "SD"),
            "SOUTH SUDAN": ("South Sudan", "SS"), "FRANCE": ("France", "FR"), "CHINA": ("China", "CN"), "GERMANY": ("Germany", "DE"),
@@ -467,7 +470,7 @@ def history(off, want, before=CUR):
         keys.setdefault(nkey(first, fam), set()).add(pid)
     alt = {}
     for pid, (first, fam) in want.items():
-        for v in variants(first, fam):
+        for v in variants(first, fam) | ALIAS.get(nkey(first, fam), set()):
             alt.setdefault(v, set()).add(pid)
     agg = {}
     for r in off["box"]:

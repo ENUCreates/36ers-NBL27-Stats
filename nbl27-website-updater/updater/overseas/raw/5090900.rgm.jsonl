@@ -1,0 +1,6 @@
+{"_meta": {"url": "https://basketball.realgm.com/player/Malith-Machar/Summary/166055", "fetched": "2026-10-23", "src": "rgm"}}
+{"name": "Malith Machar", "born": "Jun 8, 1999", "nationality": "Australia", "school": "Midland College (TX)"}
+{"tbl": "INT", "season": "2025-26", "teams": [{"name": "All Teams", "href": null}], "leagues": ["All Leagues"], "total": true, "gp": 24, "min": 4.8, "pts": 1.6, "reb": 0.5, "ast": 0.1, "stl": 0.0, "blk": 0.1, "tov": 0.2, "fgp": ".361", "tpp": ".333", "ftp": ".600"}
+{"tbl": "INT", "season": "2025-26", "teams": [{"name": "Melbourne", "href": "https://basketball.realgm.com/international/league/5/Australian-NBL/team/648/Melbourne"}], "leagues": ["AUS NBL"], "gp": 23, "min": 4.6, "pts": 1.6, "reb": 0.6, "ast": 0.1, "stl": 0.0, "blk": 0.1, "tov": 0.1, "fgp": ".353", "tpp": ".316", "ftp": ".600"}
+{"tbl": "INT", "season": "2025-26", "teams": [{"name": "Melbourne", "href": "https://basketball.realgm.com/international/league/136/NBL-Blitz/team/648/Melbourne"}], "leagues": ["NBL Blitz"], "gp": 1, "min": 8.5, "pts": 3.0, "reb": 0.0, "ast": 0.0, "stl": 0.0, "blk": 0.0, "tov": 1.0, "fgp": ".500", "tpp": ".500", "ftp": ".000"}
+{"truncated": false, "_note": "this read left out his 2022-23 and 2023-24 Melbourne lines (the second read has them); no college table on the page"}

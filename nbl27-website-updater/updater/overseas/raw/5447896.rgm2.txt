@@ -1,0 +1,16 @@
+#url https://basketball.realgm.com/player/Arnas-Velicka/Summary/90302
+#fetched 2026-10-22
+International Season Stats
+2014-15 | Zalgiris U18 | ANGT | 3 | 5.1 | 1.0 | 0.7 | 0.7 | 0.3 | 0.0 | 0.3 | .167 | .200 | .000
+2015-16 | Zalgiris U18 | Kaunas, ANGT | 7 | 30.5 | 14.7 | 4.4 | 8.0 | 1.7 | 0.3 | 3.1 | .398 | .270 | .551
+2016-17 | FC Barcelona II, FC Barcelona Regal U18 | Primera FEB, Ciutat De L'Hospitalet, ANGT | 18 | 21.4 | 9.0 | 3.4 | 3.1 | 0.7 | 0.3 | 2.2 | .340 | .298 | .565
+2017-18 | 7Bet-Lietkabelis Panevezys, FC Barcelona II | LKL, Primera FEB | 23 | 12.2 | 4.5 | 1.6 | 1.9 | 0.3 | 0.0 | 1.2 | .351 | .246 | .724
+2018-19 | Tartu Ulikool Maks&Moorits | ELBL | 28 | 32.9 | 19.2 | 4.2 | 5.6 | 1.8 | 0.2 | 2.9 | .358 | .292 | .714
+2019-20 | Vytautas Prienu | LKL | 24 | 26.9 | 12.2 | 3.2 | 4.7 | 1.0 | 0.2 | 3.2 | .386 | .291 | .657
+2020-21 | Basketball Lowen Braunschweig, Champagne Chalons-Reims CB | G-BBL, Jeep Elite | 32 | 26.5 | 12.6 | 3.3 | 5.4 | 0.8 | 0.2 | 2.7 | .438 | .337 | .698
+2021-22 | Napoli Basket | Lega A | 29 | 23.6 | 9.6 | 3.3 | 2.9 | 1.0 | 0.1 | 2.0 | .363 | .323 | .661
+2022-23 | BV Chemnitz 99 | G-BBL, Europe Cup, BCL-Eu Qual, German Cup | 53 | 26.5 | 10.8 | 3.0 | 7.1 | 1.1 | 0.3 | 2.9 | .371 | .337 | .691
+2023-24 | Lietuvos Rytas | LKL, BCL-Eu, Lithuanian Citadele | 50 | 19.8 | 7.9 | 2.3 | 4.3 | 1.1 | 0.3 | 2.3 | .411 | .347 | .770
+2024-25 | Basketball Lowen Braunschweig | G-BBL, Europe Cup, German Cup | 44 | 24.1 | 12.8 | 3.3 | 5.7 | 1.1 | 0.2 | 2.7 | .384 | .304 | .718
+2025-26 | Neptunas | LKL, Eurocup, Lithuanian Citadele | 61 | 28.5 | 13.3 | 3.9 | 7.2 | 1.5 | 0.1 | 3.2 | .412 | .352 | .654
+2026-27 | Brisbane | AUS NBL, NBL Blitz | 7 | 33.3 | 14.7 | 4.3 | 10.1 | 2.1 | 0.1 | 2.6 | .354 | .297 | .471

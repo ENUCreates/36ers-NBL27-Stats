@@ -1,0 +1,9 @@
+#url https://basketball.realgm.com/player/Joshua-Duach/Summary/183387
+#fetched 2026-10-22
+NCAA Season Stats
+2021-22 | Iona | - | 12 | 3.8 | 1.7 | 0.7 | 0.1 | 0.2 | 0.2 | 0.2 | .500 | .333 | .750
+CAREER | NCAA DI | - | 12 | 3.8 | 1.7 | 0.7 | 0.1 | 0.2 | 0.2 | 0.2 | .500 | .333 | .750
+International Season Stats
+2022-23 | Melbourne | AUS NBL | 4 | 2.1 | 0.2 | 0.0 | 0.0 | 0.0 | 0.0 | 0.2 | .000 | .000 | .500
+2025-26 | Raiffeisen Flyers Wels | A Bundeslig | 34 | 22.1 | 12.6 | 2.9 | 2.2 | 0.8 | 0.2 | 2.2 | .452 | .374 | .752
+2026-27 * | Brisbane | AUS NBL, NBL Blitz | 4 | 5.8 | 2.8 | 0.5 | 0.2 | 0.2 | 0.0 | 0.5 | .500 | .400 | 1.000

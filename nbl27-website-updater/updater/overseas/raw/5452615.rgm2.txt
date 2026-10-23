@@ -1,0 +1,5 @@
+#url https://basketball.realgm.com/player/Austin-Shelley/Summary/184445
+#fetched 2026-10-23
+NCAA Season Stats
+2021-22 | West Texas A&M | - | 28 | 6.2 | 2.2 | 0.6 | 0.4 | 0.2 | 0.1 | 0.3 | .321 | .333 | .700
+CAREER | NCAA DII | - | 28 | 6.2 | 2.2 | 0.6 | 0.4 | 0.2 | 0.1 | 0.3 | .321 | .333 | .700

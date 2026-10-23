@@ -1288,15 +1288,26 @@ const CALYEAR=s=>/^\d{4}$/.test(s||"");
 // the main journey: college, NBA, NBL and other leagues; G League and off-season (calendar-year) clubs get their own lines
 const SIDETRACK=r=>CALYEAR(r.season)?"Off-season":r.league==="G League"?"G League":null;
 function careerStops(b,team){
-  // one group per season+league; several teams in one season are listed together (official NBL rows are in game order)
-  const items=pastRows(b).concat(b?.careerExtra||[]).filter(r=>!SIDETRACK(r));
-  const groups=[];items.sort((x,y)=>(x.season||"").localeCompare(y.season||"")||PHASE(x.league)-PHASE(y.league)).forEach(r=>{
-    const g=groups.find(g=>g.season===r.season&&g.league===r.league);if(g){if(!g.teams.includes(r.team))g.teams.push(r.team);return}
-    groups.push({season:r.season,league:r.league,teams:[r.team],cc:rowCC(r)})});
-  const stops=[];
-  groups.forEach(g=>{const t=g.teams.join(" / "),last=stops[stops.length-1];
-    if(last&&last.team===t&&last.cc===g.cc){last.to=g.season;return}
-    stops.push({team:t,league:g.league,cc:g.cc,from:g.season,to:g.season})});
+  // one stop per club, season by season (inside a season: college, NBA, other leagues, NBL). Official NBL box scores and
+  // ESPN list a season's clubs in the order they were played. Other sources don't, so there the club carried over from
+  // the previous stop comes first, the club that carries on into the next one comes last, and any club that can't be
+  // placed between them shares one stop ("A / B")
+  const items=pastRows(b).concat(b?.careerExtra||[]).filter(r=>!SIDETRACK(r)),inOrder=s=>s==="NBL"||s==="ESPN";
+  const same=(a,c)=>!!(a&&c&&!a.parts&&!c.parts&&a.team===c.team&&a.cc===c.cc),groups=[],stops=[];
+  items.sort((x,y)=>(x.season||"").localeCompare(y.season||"")||PHASE(x.league)-PHASE(y.league)).forEach(r=>{
+    const t={team:r.team,cc:rowCC(r),league:r.league},ph=PHASE(r.league),g=groups.find(g=>g.season===r.season&&g.ph===ph);
+    if(!g){groups.push({season:r.season,ph,teams:[t],ordered:inOrder(r.src)});return}
+    if(!g.teams.some(u=>same(u,t)))g.teams.push(t);if(!inOrder(r.src))g.ordered=false});
+  const add=(t,season)=>{const last=stops[stops.length-1];if(same(last,t)){last.to=season;return}
+    stops.push({team:t.team,league:t.league,cc:t.cc,from:season,to:season,parts:t.parts})};
+  groups.forEach((g,i)=>{const ts=g.teams.slice();
+    if(g.ordered||ts.length===1){ts.forEach(t=>add(t,g.season));return}
+    const prev=stops[stops.length-1],next=groups[i+1];
+    const a=ts.findIndex(t=>same(t,prev)),first=a>=0?ts.splice(a,1)[0]:null;
+    const z=next?ts.findIndex(t=>next.teams.some(u=>same(t,u))):-1,end=z>=0?ts.splice(z,1)[0]:null;
+    if(first)add(first,g.season);
+    if(ts.length)add(ts.length===1?ts[0]:{team:ts.map(t=>t.team).join(" / "),cc:ts[0].cc,league:ts[0].league,parts:ts},g.season);
+    if(end)add(end,g.season)});
   const cur=stops[stops.length-1];
   if(!cur||cur.team!==team||cur.league!=="NBL")stops.push({team,league:"NBL",cc:NBLCC(team),from:"2026-27",to:"2026-27",now:1});else{cur.now=1;cur.to="2026-27"}
   return stops;
@@ -1353,7 +1364,7 @@ function playerCard(team,pid){
     field("Born",b.birthPlace||null),field("Alma mater",b.college||null)].concat(nat?[field("Nationality",nat)]:[]).join("");
   const stops=careerStops(b,team),tracks=sideTracks(b);
   const hasExtra=(b.historyExtra||[]).length>0||(b.careerExtra||[]).length>0,hasNBL=(b.historyNBL||[]).length>0,hasHist=(b.history||[]).length>0;
-  const journey=stops.map(s=>`<span class="stop${s.now?" now":""}">${s.team} (${ccFlag(s.cc)||s.cc||"?"})<small>${yrs(s.from,s.to)}</small></span>`).join('<span class="jarr" aria-hidden="true">→</span>');
+  const journey=stops.map(s=>`<span class="stop${s.now?" now":""}">${(s.parts||[s]).map(p=>`${p.team} (${ccFlag(p.cc)||p.cc||"?"})`).join(" / ")}<small>${yrs(s.from,s.to)}</small></span>`).join('<span class="jarr" aria-hidden="true">→</span>');
   const offHTML=tracks.map(t=>`<div class="journey offs"><span class="k">${t.label}</span>${t.clubs.map(o=>`<span class="stop">${o.team} (${ccFlag(o.cc)||o.cc||"?"})<small>${t.label==="G League"?"":o.league+" · "}${o.yrs}</small></span>`).join("")}</div>`).join("");
   const usedSrc=new Set(pastRows(b).concat(b.careerExtra||[]).map(h=>h.src));
   const jNote=b.overseasChecked

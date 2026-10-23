@@ -1,5 +1,5 @@
 {
- "_about": "Hand-curated additions to the overseas build, each with the source it was read from. 'stints' are career-journey stops without stats (season, club, league, country), used where RealGM's International table was cut off; seasons of leagues played inside one calendar year (NZNBL, BSN, BAL, NBL1...) are that year.",
+ "_about": "Hand-curated additions to the overseas build, each with the source it was read from. 'stints' are career-journey stops without stats (season, club, league, country), used where RealGM's International table was cut off; seasons of leagues played inside one calendar year (NZNBL, BSN, BAL, NBL1...) are that year. 'noBBR' records that no Basketball-Reference page could be found for a player whose leagues it covers, so those seasons stay journey-only. 'checked' (with a 'note') marks a player searched for on 23 Oct 2026 with no RealGM, Basketball-Reference or Wikipedia page to read.",
  "5336714": {
   "stints": [
    {
@@ -116,5 +116,288 @@
     "src": "Wikipedia"
    }
   ]
+ },
+ "2531054": {
+  "stints": [
+   {
+    "season": "2025",
+    "team": "Mets de Guaynabo",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   }
+  ]
+ },
+ "5463015": {
+  "stints": [
+   {
+    "season": "2008-09",
+    "team": "Minas Tênis Clube",
+    "league": "NBB",
+    "country": "BR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2009-10",
+    "team": "Minas Tênis Clube",
+    "league": "NBB",
+    "country": "BR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2010-11",
+    "team": "Minas Tênis Clube",
+    "league": "NBB",
+    "country": "BR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2016-17",
+    "team": "Salt Lake City Stars",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2024-25",
+    "team": "Pinheiros",
+    "league": "NBB",
+    "country": "BR",
+    "src": "Wikipedia"
+   }
+  ]
+ },
+ "5447894": {
+  "stints": [
+   {
+    "season": "2024-25",
+    "team": "Ratiopharm Ulm",
+    "league": "BBL",
+    "country": "DE",
+    "src": "Wikipedia"
+   }
+  ]
+ },
+ "3911893": {
+  "stints": [
+   {
+    "season": "2026",
+    "team": "Capitanes de Arecibo",
+    "league": "BSN",
+    "country": "PR",
+    "src": "RealGM",
+    "note": "RealGM's 2025-26 line (cut off) lists Capitanes de Arecibo with a Puerto Rican BSN link"
+   }
+  ]
+ },
+ "5177191": {
+  "identity": "RealGM has 17 Nov 2003, the NBL 11 Nov 2003; same Cairns seasons (2025-26, 2026-27) and Buffalo college as ours"
+ },
+ "5402798": {
+  "identity": "our official date (1 Jan 2000) looks like a placeholder; RealGM's NBL seasons (Tasmania 2022-23 to 2024-25, Cairns 2026-27) match ours"
+ },
+ "3155533": {
+  "stints": [
+   {
+    "season": "2016-17",
+    "team": "FMP",
+    "league": "ABA",
+    "country": "RS",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2017-18",
+    "team": "Maccabi Tel Aviv",
+    "league": "IBSL",
+    "country": "IL",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2024",
+    "team": "Capitanes de Arecibo",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2025",
+    "team": "Capitanes de Arecibo",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2025",
+    "team": "Cangrejeros de Santurce",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   }
+  ]
+ },
+ "5447257": {
+  "noBBR": "not found by search on 2026-10-23"
+ },
+ "2488721": {
+  "stints": [
+   {
+    "season": "2014-15",
+    "team": "Tofaş",
+    "league": "BSL",
+    "country": "TR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2017",
+    "team": "Santeros de Aguada",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2018",
+    "team": "Lhasa Pure Land",
+    "league": "China NBL",
+    "country": "CN",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2019",
+    "team": "Wuhan Dangdai",
+    "league": "China NBL",
+    "country": "CN",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2020",
+    "team": "Piratas de Quebradillas",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2022",
+    "team": "Cariduros de Fajardo",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2025",
+    "team": "Mumbai Titans",
+    "league": "INBL",
+    "country": "IN",
+    "src": "Wikipedia"
+   }
+  ]
+ },
+ "2992564": {
+  "stints": [
+   {
+    "season": "2024",
+    "team": "Indios de Mayagüez",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2025",
+    "team": "Indios de Mayagüez",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   }
+  ]
+ },
+ "5404880": {
+  "stints": [
+   {
+    "season": "2024",
+    "team": "Winnipeg Sea Bears",
+    "league": "CEBL",
+    "country": "CA",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2025-26",
+    "team": "San-en NeoPhoenix",
+    "league": "B.League",
+    "country": "JP",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2026",
+    "team": "TNT Tropang 5G",
+    "league": "PBA",
+    "country": "PH",
+    "src": "Wikipedia",
+    "note": "signed 6 June 2026 (Wikipedia gives the year only)"
+   }
+  ]
+ },
+ "5447958": {
+  "stints": [
+   {
+    "season": "2018-19",
+    "team": "MHP Riesen Ludwigsburg",
+    "league": "BBL",
+    "country": "DE",
+    "src": "Wikipedia"
+   }
+  ]
+ },
+ "5404883": {
+  "checked": "2026-10-23",
+  "note": "no RealGM, Basketball-Reference or Wikipedia page found by search; his only other club is NBL1 North's Gold Coast Rollers (state league)"
+ },
+ "5404882": {
+  "checked": "2026-10-23",
+  "note": "no RealGM or Basketball-Reference page found by search; ESPN lists his US college seasons under a separate athlete id that the daily ESPN data doesn't link"
+ },
+ "5456356": {
+  "checked": "2026-10-23",
+  "note": "no RealGM, Basketball-Reference or Wikipedia page found by search"
+ },
+ "5230864": {
+  "identity": "RealGM has 24 Jun 1997, the NBL 27 Jun 1997; same Sydney 2018-19 and Melbourne 2025-26 seasons as our official record, and Melbourne-born"
+ },
+ "5402938": {
+  "stints": [
+   {
+    "season": "2006-07",
+    "team": "South Dragons",
+    "league": "NBL",
+    "country": "AU",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2007-08",
+    "team": "South Dragons",
+    "league": "NBL",
+    "country": "AU",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2008-09",
+    "team": "South Dragons",
+    "league": "NBL",
+    "country": "AU",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2013-14",
+    "team": "Maccabi Tel Aviv",
+    "league": "IBSL",
+    "country": "IL",
+    "src": "Wikipedia"
+   }
+  ]
+ },
+ "5452615": {
+  "identity": "RealGM gives no date of birth; Basketball Victoria's 'Player in Focus' says the Victorian committed to West Texas A&M, the Australian on this RealGM page (2021-22)"
+ },
+ "5402936": {
+  "checked": "2026-10-23",
+  "note": "no RealGM, Basketball-Reference or Wikipedia page found by search; his other club is NBL1 South's Nunawading Spectres (state league)"
  }
 }

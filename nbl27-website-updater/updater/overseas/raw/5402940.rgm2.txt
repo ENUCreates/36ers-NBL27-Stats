@@ -1,0 +1,15 @@
+#url https://basketball.realgm.com/player/Luke-Travers/Summary/133808
+#fetched 2026-10-23
+NBA Regular Season Stats
+2024-25 | CLE | NBA | 12 | 7.3 | 1.0 | 1.7 | 0.7 | 0.1 | 0.1 | 0.7 | .250 | .000 | 1.000
+2025-26 | CLE | NBA | 12 | 8.6 | 2.3 | 2.0 | 0.8 | 0.6 | 0.3 | 0.2 | .250 | .063 | 1.000
+CAREER | - | - | 24 | 8.0 | 1.7 | 1.8 | 0.7 | 0.3 | 0.2 | 0.5 | .250 | .040 | 1.000
+
+G League Regular Season Stats
+2024-25 | CLE | G League | 21 | 34.0 | 17.0 | 9.9 | 7.0 | 1.5 | 1.2 | 3.7 | .495 | .258 | .672
+2025-26 | CLE | G League | 15 | 31.5 | 17.1 | 9.1 | 4.7 | 1.9 | 1.4 | 3.7 | .425 | .283 | .618
+CAREER | - | - | 36 | 33.0 | 17.0 | 9.6 | 6.0 | 1.6 | 1.3 | 3.7 | .463 | .273 | .653
+
+International Season Stats
+2022-23 * | All Teams | All Leagues | 32 | 24.6 | 9.8 | 5.6 | 2.9 | 1.2 | 0.6 | 1.6 | .504 | .374 | .730
+CUT

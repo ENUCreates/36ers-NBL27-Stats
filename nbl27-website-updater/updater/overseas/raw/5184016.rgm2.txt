@@ -1,0 +1,11 @@
+#url https://basketball.realgm.com/player/Malique-Lewis/Summary/189653
+#fetched 2026-10-22
+G League Regular Season Stats
+2023-24 | CAP | - | 50 | 25.2 | 8.3 | 5.8 | 1.3 | 0.8 | 1.0 | 1.2 | .488 | .344 | .674
+- | - | - | 50 | 25.2 | 8.3 | 5.8 | 1.3 | 0.8 | 1.0 | 1.2 | .488 | .344 | .674
+International Season Stats
+2021-22 | Baloncesto Fuenlabrada | ACB | 3 | 1.9 | 0.0 | 0.3 | 0.0 | 0.0 | 0.3 | 0.0 | .000 | .000 | .000
+2022-23 | Baloncesto Fuenlabrada | ACB | 19 | 17.2 | 4.8 | 3.5 | 0.8 | 0.7 | 0.3 | 1.1 | .480 | .208 | .682
+2024-25 | South East Melbourne | AUS NBL, NBL Blitz | 37 | 21.0 | 6.9 | 4.2 | 1.0 | 0.4 | 0.5 | 0.4 | .429 | .311 | .667
+2025-26 | South East Melbourne | AUS NBL, NBL Blitz | 31 | 21.2 | 7.3 | 4.4 | 2.0 | 1.1 | 0.6 | 0.7 | .452 | .375 | .826
+2026-27 | Cairns | AUS NBL, NBL Blitz | 8 | 28.2 | 10.4 | 4.8 | 2.8 | 1.0 | 1.0 | 1.1 | .577 | .429 | .846

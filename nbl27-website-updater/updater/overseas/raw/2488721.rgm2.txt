@@ -1,0 +1,14 @@
+#url https://basketball.realgm.com/player/Lamar-Patterson/Summary/6235
+#fetched 2026-10-23
+NBA Regular Season Stats
+Season | Team | League | GP | MIN | PTS | REB | AST | STL | BLK | TOV | FG% | 3P% | FT%
+2015-16 | ATL | NBA | 35 | 11.3 | 2.4 | 1.4 | 1.1 | 0.3 | 0.1 | 0.7 | .350 | .245 | .727
+2016-17 | ATL | NBA | 5 | 8.1 | 1.8 | 1.4 | 1.2 | 0.2 | 0.0 | 0.8 | .200 | .167 | .667
+CAREER | - | NBA | 40 | 10.9 | 2.3 | 1.4 | 1.1 | 0.2 | 0.1 | 0.7 | .326 | .236 | .720
+
+G League Regular Season Stats
+Season | Team | League | GP | MIN | PTS | REB | AST | STL | BLK | TOV | FG% | 3P% | FT%
+2015-16 | AUS, CLE | G League | 19 | 26.9 | 12.8 | 3.9 | 4.3 | 0.9 | 0.2 | 3.1 | .432 | .257 | .783
+2016-17 | RNO | G League | 28 | 35.7 | 24.0 | 6.3 | 4.5 | 2.0 | 0.2 | 3.5 | .432 | .346 | .780
+CAREER | - | G League | 47 | 32.2 | 19.5 | 5.3 | 4.4 | 1.6 | 0.2 | 3.4 | .432 | .321 | .781
+CUT
