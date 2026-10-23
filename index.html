@@ -113,8 +113,12 @@ td.pl{text-align:left;font-family:var(--body);font-weight:600}
 td.pl small{font-weight:400;color:var(--muted);margin-left:6px;font-family:var(--mono);font-size:11px}
 tr.low td{opacity:.55}
 .usg{display:inline-block;height:6px;border-radius:3px;background:var(--accent);vertical-align:middle;margin-right:6px;opacity:.85}
-.lu{display:flex;flex-wrap:nowrap;gap:6px;white-space:nowrap;align-items:center}
-.lu span{white-space:nowrap}
+/* a lineup: one fixed-width slot per player (photo above the name), so the 1st..5th players line up down the table */
+.lu{display:grid;grid-template-columns:repeat(var(--n,5),104px);gap:6px;align-items:start}
+.lu .lp{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;text-align:center}
+.lu .lp .av.sm{width:34px;height:34px;font-size:12px}
+.lu .lpn{white-space:normal;overflow-wrap:break-word;line-height:1.2;max-width:100%}
+@media (max-width:600px){.lu{grid-template-columns:repeat(var(--n,5),82px);gap:4px}.lu .lpn{font-size:11.5px}.lu .lp .av.sm{width:30px;height:30px}}
 #lineups td.tm{white-space:nowrap;font-family:var(--body);font-weight:600;font-size:13px}
 @media (max-width:600px){#lineups td.tm,#lineups th.tm{position:static;font-size:12px}}
 .nbar{display:inline-block;height:8px;border-radius:2px;vertical-align:middle;margin-right:6px}
@@ -817,7 +821,7 @@ function computeLineups(team,size){
   });
   const poss=t=>(t.fga||0)-(t.oreb||0)+(t.tov||0)+0.44*(t.fta||0);
   const rows=Object.values(L).map(x=>{const f=x.f,a=x.a,pp=(poss(f)+poss(a))/2,div=(n,d)=>d>0?n/d:null;
-    return {p:x.p,label:x.p.map(id=>shortName(names[id])),min:x.sec/60,gp:x.gset.size,poss:pp,pf:f.pts||0,pa:a.pts||0,pm:(f.pts||0)-(a.pts||0),
+    return {p:x.p,label:x.p.map(id=>shortName(names[id])),full:x.p.map(id=>names[id]||""),min:x.sec/60,gp:x.gset.size,poss:pp,pf:f.pts||0,pa:a.pts||0,pm:(f.pts||0)-(a.pts||0),
       ortg:div(100*(f.pts||0),pp),drtg:div(100*(a.pts||0),pp),net:div(100*((f.pts||0)-(a.pts||0)),pp),
       efg:div((f.fgm||0)+0.5*(f.tpm||0),f.fga),oefg:div((a.fgm||0)+0.5*(a.tpm||0),a.fga),
       orb:div(f.oreb||0,(f.oreb||0)+(a.dreb||0)),drb:div(f.dreb||0,(f.dreb||0)+(a.oreb||0)),
@@ -847,7 +851,7 @@ function renderLineups(){
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${rows.length} ${lsize}-man groups · ${shown.length} shown · ${games} games</span></div>
     <div class="scroll"><table><thead><tr><th class="tm">${label}</th>${LCOLS.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${shown.map(r=>`<tr class="${r.poss<20?'low':''}"><td class="tm"><div class="lu">${r.label.map((n,i)=>pname(r.p[i],n,name)).join("<span aria-hidden=\"true\" style=\"color:var(--muted)\">·</span>")}</div></td>${LCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${LCOLS.length+1}" style="color:var(--muted)">No ${lsize}-man groups with ${lminVal}+ minutes yet.</td></tr>`}</tbody></table></div>
+    <tbody>${shown.map(r=>`<tr class="${r.poss<20?'low':''}"><td class="tm"><div class="lu" style="--n:${lsize}">${r.label.map((n,i)=>`<span class="lp" title="${r.full[i]||n}">${avatar({id:r.p[i],name:n},name,"sm")}<span class="lpn">${n}</span></span>`).join("")}</div></td>${LCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${LCOLS.length+1}" style="color:var(--muted)">No ${lsize}-man groups with ${lminVal}+ minutes yet.</td></tr>`}</tbody></table></div>
   </div>
   <p style="color:var(--muted);font-size:12px;margin:10px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em">Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-${bad.length?` · Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}`:""}</p>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(lsort.k===k)lsort.d*=-1;else lsort={k,d:["drtg","oefg","tov"].includes(k)?1:-1};renderLineups()});
