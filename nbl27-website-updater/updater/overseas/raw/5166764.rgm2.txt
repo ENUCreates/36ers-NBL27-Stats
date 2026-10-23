@@ -1,0 +1,18 @@
+#url https://basketball.realgm.com/player/Carlin-Davison/Summary/168682
+#fetched 2026-10-23
+International Season Stats
+2019-20 | Taranaki Mountain Airs | NZ NBL | 5 | 5.6 | 3.2 | 0.4 | 0.0 | 0.2 | 0.2 | 0.0 | .700 | .667 | .000
+2020-21 | Taranaki Mountain Airs | NZ NBL | 17 | 25.9 | 8.1 | 4.4 | 2.5 | 1.2 | 0.6 | 2.8 | .491 | .200 | .654
+2021-22 | Taranaki Mountain Airs | NZ NBL | 19 | 27.3 | 8.5 | 4.4 | 2.2 | 1.2 | 0.8 | 2.2 | .432 | .235 | .579
+2022-23 | Taranaki Mountain Airs | NZ NBL | 9 | 27.7 | 11.2 | 7.0 | 3.0 | 2.3 | 0.4 | 2.1 | .538 | .154 | .682
+2023-24 | Taranaki Mountain Airs | NZ NBL | 21 | 29.4 | 17.1 | 8.0 | 3.3 | 1.5 | 1.0 | 2.0 | .513 | .286 | .680
+2024-25 * | All Teams | All Leagues | 31 | 25.4 | 13.5 | 5.7 | 4.3 | 1.5 | 0.5 | 2.6 | .480 | .319 | .640
+2024-25 * | Taranaki Mountain Airs | NZ NBL | 21 | 34.2 | 18.9 | 7.7 | 6.0 | 2.0 | 0.7 | 3.6 | .479 | .312 | .643
+2024-25 * | New Zealand | AUS NBL | 10 | 7.1 | 2.0 | 1.4 | 0.6 | 0.6 | 0.2 | 0.4 | .500 | .429 | .500
+2025-26 * | All Teams | All Leagues | 57 | 22.1 | 8.6 | 4.7 | 3.6 | 1.1 | 0.5 | 1.9 | .517 | .320 | .527
+2025-26 * | New Zealand | AUS NBL | 33 | 15.8 | 5.2 | 3.3 | 1.2 | 0.5 | 0.3 | 0.8 | .511 | .282 | .500
+2025-26 * | Wellington Saints | NZ NBL | 22 | 31.5 | 14.0 | 7.0 | 7.4 | 1.9 | 0.7 | 3.5 | .521 | .341 | .545
+2025-26 * | New Zealand | NBL Blitz | 2 | 23.9 | 4.5 | 2.5 | 1.5 | 0.5 | 0.5 | 1.0 | .500 | .000 | .500
+2026-27 * | All Teams | All Leagues | 10 | 23.3 | 9.0 | 3.1 | 4.9 | 1.2 | 0.5 | 2.3 | .540 | .318 | .625
+2026-27 * | New Zealand | AUS NBL | 8 | 22.2 | 9.0 | 3.2 | 5.4 | 1.4 | 0.6 | 2.4 | .587 | .429 | .600
+2026-27 * | New Zealand | NBL Blitz | 2 | 27.9 | 9.0 | 2.5 | 3.0 | 0.5 | 0.0 | 2.0 | .412 | .125 | .750

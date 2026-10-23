@@ -34,10 +34,10 @@ OFFICIAL_FROM = "2015-16"          # first season of the official NBL box scores
 
 # ---------- leagues ----------
 # Basketball-Reference league codes -> (label, country or None when it depends on the club)
-BBR_LEAGUE = {"NBL": ("NBL", "AU"), "Liga ACB": ("ACB", "ES"), "ACB": ("ACB", "ES"), "LNB Pro A": ("LNB", "FR"),
+BBR_LEAGUE = {"NBL": ("NBL", "AU"), "Liga ACB": ("ACB", "ES"), "ACB": ("ACB", "ES"), "LNB Pro A": ("LNB", "FR"), "LNB Élite": ("LNB", "FR"),
               "LBA": ("LBA", "IT"), "GBL": ("GBL", "GR"), "CBA": ("CBA", "CN"), "ABA": ("ABA", None),
               "EuroLeague": ("EuroLeague", None), "Euroleague": ("EuroLeague", None), "EuroCup": ("EuroCup", None), "Eurocup": ("EuroCup", None), "BSL": ("BSL", "TR"),
-              "IPL": ("IBSL", "IL"), "Israeli BSL": ("IBSL", "IL"), "VTB": ("VTB", None)}
+              "IPL": ("IBSL", "IL"), "Israeli BSL": ("IBSL", "IL"), "IBSL": ("IBSL", "IL"), "VTB": ("VTB", None)}
 BBR_TOURNAMENT = {"FIBA", "WC", "OLY", "Olympics", "World Cup"}
 is_tournament = lambda lg: lg in BBR_TOURNAMENT or bool(re.search(r"\b(19|20)\d\d$", lg or ""))
 COUNTRY = {"Spain": "ES", "Brazil": "BR", "France": "FR", "Italy": "IT", "Greece": "GR", "Turkey": "TR", "Israel": "IL",
@@ -68,6 +68,7 @@ LG = {
     "LEB DivA": ("Lebanon D1", "LB", "dom", False), "Lebanese-Division-A": ("Lebanon D1", "LB", "dom", False),
     "BSN": ("BSN", "PR", "dom", True), "Puerto-Rican-BSN": ("BSN", "PR", "dom", True),
     "G Pro A": ("ProA", "DE", "dom", False), "German-Pro-A": ("ProA", "DE", "dom", False),
+    "G Pro B": ("ProB", "DE", "dom", False), "German-Pro-B": ("ProB", "DE", "dom", False),
     "G-BBL": ("BBL", "DE", "dom", False), "German-BBL": ("BBL", "DE", "dom", False),
     "LKL": ("LKL", "LT", "dom", False), "Lithuanian-LKL": ("LKL", "LT", "dom", False),
     "ELBL": ("ELBL", None, "dom", False), "Estonian-Latvian-Basketball-League": ("ELBL", None, "dom", False),
@@ -75,28 +76,37 @@ LG = {
     "Primera FEB": ("Primera FEB", "ES", "dom", False), "Spanish-Primera-FEB": ("Primera FEB", "ES", "dom", False),
     "CEBL": ("CEBL", "CA", "dom", True), "Canadian-Elite-Basketball-League": ("CEBL", "CA", "dom", True),
     "A Bundeslig": ("Austria BSL", "AT", "dom", False), "Austrian-A-Bundesliga": ("Austria BSL", "AT", "dom", False),
+    "LNA": ("SB League", "CH", "dom", False), "Swiss-LNA": ("SB League", "CH", "dom", False),
     "Korisliiga": ("Korisliiga", "FI", "dom", False), "Finnish-Korisliiga": ("Korisliiga", "FI", "dom", False),
     "Ma Superleague": ("Macedonia SL", "MK", "dom", False), "Macedonian-Superleague": ("Macedonia SL", "MK", "dom", False),
     "T-BSL": ("BSL", "TR", "dom", False), "Turkish-BSL": ("BSL", "TR", "dom", False),
+    "T-TBL": ("TBL", "TR", "dom", False), "Turkish-TBL": ("TBL", "TR", "dom", False),
+    "Extraliga": ("Slovak Extraliga", "SK", "dom", False), "Slovakian-Extraliga": ("Slovak Extraliga", "SK", "dom", False),
     "ACB": ("ACB", "ES", "dom", False), "Spanish-ACB": ("ACB", "ES", "dom", False),
     "P-OBL": ("PLK", "PL", "dom", False), "Polish-OBL": ("PLK", "PL", "dom", False),
     "B.League": ("B.League", "JP", "dom", False), "Japanese-BLeague": ("B.League", "JP", "dom", False),
     "KBL": ("KBL", "KR", "dom", False), "South-Korean-KBL": ("KBL", "KR", "dom", False),
     "B-BBL": ("British BBL", "GB", "dom", False), "British-BBL": ("British BBL", "GB", "dom", False),
     "LNB Pro B": ("LNB Pro B", "FR", "dom", False), "French-LNB-Pro-B": ("LNB Pro B", "FR", "dom", False),
+    "BAL - Qual": ("BAL qualifiers", None, "dom", False), "Basketball-Africa-League--Qualification": ("BAL qualifiers", None, "dom", False),
     "Basketball-Champions-League-Europe": ("BCL", None, "cont", False),
     "Leaders Cup LNB B": (None, None, "cup", False), "French-Leaders-Cup-LNB-B": (None, None, "cup", False),
+    "Leaders Cup LNB A": (None, None, "cup", False), "French-Leaders-Cup-LNB-A": (None, None, "cup", False),
+    "FBC": (None, None, "cup", False), "French-Basketball-Cup": (None, None, "cup", False),
     "Turkish Cup": (None, None, "cup", False), "Spanish Cup": (None, None, "cup", False), "Spanish-Cup": (None, None, "cup", False),
     "Intercontinental Cup": ("Intercontinental Cup", None, "cup", False), "Intercontinental-Cup": ("Intercontinental Cup", None, "cup", False),
     "ROM DivA": ("Liga Națională", "RO", "dom", False), "Romanian-Divizia-A": ("Liga Națională", "RO", "dom", False),
     "Euroleague": ("EuroLeague", None, "cont", False), "Eurocup": ("EuroCup", None, "cont", False),
     "BCL-Eu": ("BCL", None, "cont", False), "Europe Cup": ("FIBA Europe Cup", None, "cont", False),
     "FIBA-Europe-Cup": ("FIBA Europe Cup", None, "cont", False),
+    "Eurochallenge": ("FIBA EuroChallenge", None, "cont", False),
     "BCL-Eu Qual": (None, None, "cup", False), "Basketball-Champions-League-Europe--Qualification": (None, None, "cup", False),
     "German Cup": (None, None, "cup", False), "German-Cup": (None, None, "cup", False),
     "Lithuanian Citadele": (None, None, "cup", False),
     "ANGT": (None, None, "youth", False), "adidas-Next-Generation-Tournament": (None, None, "youth", False),
     "Kaunas": (None, None, "youth", False), "Kaunas-Tournament-ANGT": (None, None, "youth", False),
+    "Belgrade": (None, None, "youth", False), "Belgrade-Tournament-ANGT": (None, None, "youth", False),
+    "Costa del Sol": (None, None, "youth", False), "Costa-del-Sol-Tournament-ANGT": (None, None, "youth", False),
     "Ciutat De L'Hospitalet": (None, None, "youth", False), "Ciutat-De-LHospitalet-Tournament-ANGT": (None, None, "youth", False),
 }
 # club -> country, for leagues that span countries (ABA, ELBL, BAL, VTB) and continental competitions
@@ -104,7 +114,10 @@ CLUB_CC = {"Mornar": "ME", "KK Mornar": "ME", "Mornar Bar": "ME", "Bayern": "DE"
            "Anadolu Efes": "TR", "Al Ahly": "EG", "Lokomotiv Kuban": "RU", "Tartu Ulikool Maks&Moorits": "EE",
            "FC Barcelona": "ES", "Neptūnas Klaipėda": "LT", "Maccabi Tel Aviv": "IL", "Al Ahli Tripoli": "LY",
            "Ratiopharm Ulm": "DE", "Beşiktaş": "TR", "Auxilium Torino": "IT", "Basket Zaragoza": "ES",
-           "Tasmania Southern Huskies": "AU", "ASVEL": "FR"}
+           "Tasmania Southern Huskies": "AU", "ASVEL": "FR", "Bangui Sporting Club": "CF",
+           "Hapoel Bank Yahav Jerusalem": "IL", "Hapoel Jerusalem": "IL", "Al Ahly Benghazi": "LY", "Al Ittihad Alexandria": "EG",
+           "Rigas Zelli": "LV", "Rīgas Zeļļi": "LV", "Budućnost": "ME", "Fenerbahçe": "TR", "Cholet Basket": "FR",
+           "Dubai Basketball": "AE", "Dubai": "AE"}
 # RealGM club -> its domestic league (League-cell name), for lines read without team links or where the link
 # points at a cup or continental competition and the line has more than one domestic league
 RGM_CLUB = {"Wellington Saints": "NZ NBL", "Super City Rangers": "NZ NBL", "Franklin Bulls": "NZ NBL",
@@ -116,8 +129,14 @@ RGM_CLUB = {"Wellington Saints": "NZ NBL", "Super City Rangers": "NZ NBL", "Fran
             "Santeros de Aguada": "BSN", "Capitanes de Arecibo": "BSN", "Guangdong Dongguan": "CBA",
             "Taranaki Mountain Airs": "NZ NBL", "Hawke's Bay Hawks": "NZ NBL", "Art Giants Dusseldorf": "G Pro A",
             "Karpos Sokoli": "Ma Superleague", "Al Ahli Tripoli": "Intercontinental Cup"}
-# (RealGM club, season) -> (name, country) for a club that relocated or played under another name that season
-SEASON_CLUB = {("Tasmania Southern Huskies", "2020"): ("Auckland Huskies", "NZ")}   # moved from Hobart to Auckland for 2020
+# RealGM club -> [(first season, last season, name, country)] for a club that moved or changed its name; RealGM files
+# every season under one name (sources: Wikipedia's club and season pages)
+CLUB_ERA = {"Tasmania Southern Huskies": [("2020", "2020", "Auckland Huskies", "NZ")],   # Hobart club played 2020 in Auckland
+            "Taranaki Mountain Airs": [("2010", "2021", "Taranaki Mountainairs", "NZ"),  # renamed Taranaki Airs for 2022
+                                       ("2022", "9999", "Taranaki Airs", "NZ")],
+            # Fraport's name came off the club at the start of 2024-25 (hessenschau.de, 29 Oct 2024)
+            "Fraport Skyliners": [("0000", "2023-24", "Fraport Skyliners", "DE"),
+                                  ("2024-25", "9999", "Skyliners Frankfurt", "DE")]}
 NBL_CLUBS = {"New Zealand", "Adelaide", "Perth", "Brisbane", "Cairns", "Illawarra", "Melbourne", "Sydney", "Tasmania",
              "South East Melbourne", "Wollongong", "Townsville", "Gold Coast"}
 RGM_NAME = {"Aukland Tuatara": "Auckland Tuatara", "Art Giants Dusseldorf": "ART Giants Düsseldorf",
@@ -135,7 +154,16 @@ RGM_NAME = {"Aukland Tuatara": "Auckland Tuatara", "Art Giants Dusseldorf": "ART
             "Phoenix Hagen": "Phoenix Hagen", "Sporting Al Riyadi Beirut": "Al Riyadi Beirut",
             "LZ Harbour Heat": "Harbour Heat", "Whai": "Whai", "Atleticos de San German": "Atléticos de San Germán",
             "Xinjiang Guanghui": "Xinjiang Flying Tigers", "AS Karditsas": "AS Karditsas",
-            "Saint-Quentin Basketball": "Saint-Quentin Basketball", "Besiktas Icrypex": "Beşiktaş"}
+            "Saint-Quentin Basketball": "Saint-Quentin Basketball", "Besiktas Icrypex": "Beşiktaş",
+            "Eisbaren Bremerhaven": "Eisbären Bremerhaven", "Nurnberg Falcons BC": "Nürnberg Falcons",
+            "FC Bayern Munchen II": "FC Bayern München II", "Brose Baskets Bamberg": "Brose Bamberg",
+            "BG Goettingen": "BG Göttingen", "Hapoel Bank Yahav Jerusalem": "Hapoel Jerusalem",
+            "Vaqueros de Bayamon": "Vaqueros de Bayamón", "Osos de Manati": "Osos de Manatí", "Korfez Mansia": "Manisa",
+            "Fenerbache Koleji 2nd Team": "Fenerbahçe Koleji", "BC Komarno": "BC Komárno", "Rigas Zelli": "Rīgas Zeļļi",
+            "UCAM Murcia CB": "UCAM Murcia", "Lenovo Tenerife": "La Laguna Tenerife",
+            "s.Oliver Baskets": "s.Oliver Würzburg", "Chiba Jets": "Chiba Jets Funabashi", "Monbus Obradoiro": "Obradoiro CAB",
+            "Mersin BSB": "Mersin MSK", "CSP Limoges": "Limoges CSP", "Pallacanestro Trieste 2004": "Pallacanestro Trieste",
+            "Dubai": "Dubai Basketball", "PAOK BC": "PAOK", "Strasbourg IG": "SIG Strasbourg"}
 
 # Basketball-Reference team link slug -> club name shown on the cards
 BBR_CLUB = {"xinjiang": "Xinjiang Flying Tigers", "anadolu-efes": "Anadolu Efes", "brescia": "Germani Brescia",
@@ -151,7 +179,13 @@ BBR_CLUB = {"xinjiang": "Xinjiang Flying Tigers", "anadolu-efes": "Anadolu Efes"
             "ulm": "Ratiopharm Ulm", "shanghai": "Shanghai Sharks", "liaoning": "Liaoning Flying Leopards",
             "karsiyaka": "Pınar Karşıyaka", "besiktas": "Beşiktaş", "zaragoza": "Basket Zaragoza", "paris-basket": "Paris Basketball",
             "granada": "CB Granada", "mykonos": "Mykonos", "villeurbanne": "ASVEL", "galatasaray": "Galatasaray",
-            "jiangsu-tongxi": "Nanjing Tongxi Monkey Kings"}
+            "jiangsu-tongxi": "Nanjing Tongxi Monkey Kings", "aek-athens": "AEK Athens", "pistoia": "Pistoia Basket",
+            "manisa": "Manisa", "hapoel-eilat": "Hapoel Eilat", "le-mans": "Le Mans Sarthe Basket",
+            "ulker-fenerbahce": "Fenerbahçe", "buducnost": "Budućnost", "cholet": "Cholet Basket", "joventut": "Joventut Badalona",
+            "tenerife": "La Laguna Tenerife", "roanne": "Chorale Roanne Basket", "strasbourg": "SIG Strasbourg",
+            "nanterre": "Nanterre 92", "le-havre": "STB Le Havre", "paok": "PAOK", "chalons-en-champagne": "Champagne Châlons-Reims",
+            "limoges": "Limoges CSP", "dubai": "Dubai Basketball", "obradoiro": "Obradoiro CAB", "mersin": "Mersin MSK",
+            "canarias": "La Laguna Tenerife"}
 # NBL clubs before 2015-16 (Basketball-Reference slug -> official name)
 BBR_NBL = {"nbl-new-zealand": "New Zealand Breakers", "perth": "Perth Wildcats", "adelaide": "Adelaide 36ers",
            "cairns": "Cairns Taipans", "sydney": "Sydney Kings", "townsville": "Townsville Crocodiles",
@@ -163,9 +197,28 @@ NBA_ABBR = {"UTH": "Utah Jazz", "UTA": "Utah Jazz", "MEM": "Memphis Grizzlies", 
             "WAS": "Washington Wizards"}
 G_ABBR = {"AUS": "Austin Spurs", "ERI": "Erie BayHawks", "IWA": "Iowa Wolves", "BIR": "Birmingham Squadron",
           "SLC": "Salt Lake City Stars", "SBL": "South Bay Lakers", "GOG": "Capital City Go-Go"}
-JUCO = {"South Georgia Technical College", "Chipola"}
+JUCO = {"South Georgia Technical College", "Chipola", "Neosho County CC", "Indian Hills"}
+# schools RealGM lists without a link whose level its career lines give: school -> [(first season, last season, level)]
+COLLEGE_ERA = {"Rocky Mountain": [("0000", "9999", "NAIA")],            # Rocky Mountain College (Billings, MT)
+               "Menlo College": [("0000", "2023-24", "NAIA"), ("2024-25", "9999", "D2")],   # NCAA Division II from 2024-25
+               "Clarke University": [("0000", "9999", "NAIA")]}                          # Dubuque, Iowa
+LEVEL_LABEL = {"D2": "NCAA D2", "JUCO": "NJCAA", "NAIA": "NAIA"}
+NCAA_NAME = {"Detroit-Mercy": "Detroit Mercy", "Texas-RGV": "UT Rio Grande Valley", "Montana St.-Billings": "Montana State Billings",
+             "Indian Hills": "Indian Hills CC"}   # RealGM short forms
+
+
+def college_level(nm, href, season):
+    if "/ncaa-dii/" in (href or ""):
+        return "D2"
+    if nm in JUCO:
+        return "JUCO"
+    for a, z, lv in COLLEGE_ERA.get(nm, []):
+        if a <= season <= z:
+            return lv
+    return "D1"
 NBA_FIX = {"Philadelphia-Sixers": "Philadelphia 76ers"}
-G_FIX = {"Capital-City-Go-Go": "Capital City Go-Go", "Erie-BayHawks-2008": "Erie BayHawks"}
+G_FIX = {"Capital-City-Go-Go": "Capital City Go-Go", "Erie-BayHawks-2008": "Erie BayHawks", "Erie-BayHawks-2019": "Erie BayHawks"}
+G_CC = {"Mexico City Capitanes": "MX", "Raptors 905": "CA"}      # G League clubs based outside the US
 
 
 # ---------- helpers ----------
@@ -232,9 +285,16 @@ def jsonl(fp):
     return out
 
 
+BBR_NUM = ("g", "gs", "mp", "fg", "fga", "tp", "tpa", "twop", "twopa", "ft", "fta", "orb", "drb", "trb", "ast", "stl", "blk", "tov", "pf", "pts")
+
+
 def load_bbr(fp):
     meta, head, rows, career, trunc = {}, {}, [], None, None
     for d in jsonl(fp):
+        for k in BBR_NUM:                        # some reads give the numbers as text ("6"): same values, as numbers
+            v = d.get(k)
+            if isinstance(v, str) and re.fullmatch(r"-?\d+(\.\d+)?", v.strip()):
+                d[k] = float(v) if "." in v else int(v)
         if "_meta" in d:
             meta = d["_meta"]
         elif "truncated" in d and len(d) <= 2:
@@ -336,7 +396,8 @@ def main():
                     rep(f"{kind}: born {bd}, ours {dob} (a day apart) - same player")
         if not ok_ident:
             continue
-        espn = {(h.get("league"), h.get("season")) for h in b.get("history") or []}
+        drop_ = set((curated.get(pid) or {}).get("espnDrop") or [])        # ESPN lines left out on the cards (see curated.json)
+        espn = {(h.get("league"), h.get("season")) for h in b.get("history") or [] if f"{h.get('season')}|{h.get('league')}" not in drop_}
         official = {h.get("season") for h in b.get("historyNBL") or []}
 
         # ----- Basketball-Reference -----
@@ -459,10 +520,16 @@ def main():
                 tb = B.get(tbl)
                 if not tb:
                     rep(f"RealGM {tbl}: no second read - not used"); continue
-                rb = {season_lbl(r["season"]): r for r in tb["rows"]}
+                rb = {}
+                for r in tb["rows"]:
+                    rb.setdefault(season_lbl(r["season"]), []).append(r)
                 okt = True
                 for r in ra:
-                    o = rb.get(season_lbl(r["season"]))
+                    cands = rb.get(season_lbl(r["season"])) or []
+                    if len(cands) > 1:                    # several teams in one season: match the team too
+                        tn = ", ".join((t.get("name") if isinstance(t, dict) else t) or "" for t in r.get("teams") or [])
+                        cands = [x for x in cands if (x.get("team") or "") == tn]
+                    o = cands[0] if len(cands) == 1 else None
                     if not o:
                         rep(f"RealGM {tbl} {r['season']}: missing from the second read - table not used"); okt = False; continue
                     for k in ("gp", "min", "pts", "reb", "ast", "stl", "blk", "tov"):
@@ -482,14 +549,14 @@ def main():
                             continue
                         t0 = (r.get("teams") or [{}])[0]
                         nm, href = (t0.get("name"), t0.get("href") or "") if isinstance(t0, dict) else (t0, "")
-                        lvl_of[season_lbl(r["season"])] = "D2" if "/ncaa-dii/" in href else "JUCO" if nm in JUCO else "D1"
+                        lvl_of[season_lbl(r["season"])] = college_level(nm, href, season_lbl(r["season"]))
                     groups = {}
                     for r in lines:
                         groups.setdefault(lvl_of.get(season_lbl(r["season"]), "D1"), []).append(r)
                     cars = {}
                     for c in tb["career"]:
-                        t = c["team"].upper()
-                        cars["JUCO" if t.startswith("NJCAA") else "D2" if t in ("NCAA DII", "NCAA D2") else "D1"] = [c]
+                        t = " ".join(x for x in (c.get("team"), c.get("league")) if x and x != "-").upper()
+                        cars["JUCO" if "NJCAA" in t else "NAIA" if "NAIA" in t else "D2" if ("NCAA DII" in t or "NCAA D2" in t) else "D1"] = [c]
                     for g in groups:
                         if g not in cars:
                             rep(f"RealGM NCAA: no career line for the {g} seasons - those rows rest on the two reads only")
@@ -500,6 +567,14 @@ def main():
                     rows_g = groups.get(g, [])
                     tot_gp = sum(num(r["gp"]) for r in rows_g)
                     car_gp = sum(num(c["gp"]) or 0 for c in cl)
+                    if len(cl) == 1 and tot_gp > car_gp:
+                        # a career line that stops before the latest season(s): check it against the seasons it covers
+                        srt = sorted(rows_g, key=lambda r: season_lbl(r["season"]))
+                        k_ = next((k for k in range(1, len(srt)) if sum(num(r["gp"]) for r in srt[:k]) == car_gp), None)
+                        if k_:
+                            rep(f"RealGM {tbl}{' ' + g if g else ''}: the career line leaves out {', '.join(season_lbl(r['season']) for r in srt[k_:])} - "
+                                f"checked against the seasons before; those rows rest on the two reads")
+                            rows_g, tot_gp = srt[:k_], car_gp
                     if len(cl) != 1 or car_gp != tot_gp:
                         rep(f"RealGM {tbl}{' ' + g if g else ''}: seasons add up to {tot_gp:g} games, career line says {car_gp:g} - table not used"); okt = False
                         continue
@@ -530,12 +605,12 @@ def main():
                             if nm == "Cleveland Charge" and s < "2021-22":
                                 nm = "Canton Charge"          # the club's name until 2021
                         else:
-                            if "/ncaa-dii/" in href:
-                                lvl = "NCAA D2"
-                            elif nm in JUCO:
-                                lvl = "NJCAA"
+                            lv = college_level(nm, href, s)
+                            if lv != "D1":
+                                lvl = LEVEL_LABEL[lv]
                             elif isinstance(t, dict) and t.get("href") is None:
-                                rep(f"RealGM NCAA {s}: {nm!r} has no link (not NCAA Division I?) - add it to JUCO or skip")
+                                rep(f"RealGM NCAA {s}: {nm!r} has no link (not NCAA Division I?) - add it to JUCO or COLLEGE_ERA, or skip")
+                            nm = NCAA_NAME.get(nm, nm)
                         if tbl == "G" and (not nm or (isinstance(t, dict) and "/teams/-/" in (t.get("href") or ""))):
                             continue                      # the empty 'several teams' entry RealGM puts first
                         names.append(nm)
@@ -543,7 +618,7 @@ def main():
                         rep(f"RealGM {tbl} {s}: no team name - row skipped"); continue
                     team = " / ".join(n.replace(", ", " / ") for n in names)
                     gp = int(num(r["gp"]))
-                    rows.append({"season": s, "team": team, "league": lvl, "country": "US", "gp": gp, "gs": None,
+                    rows.append({"season": s, "team": team, "league": lvl, "country": G_CC.get(team, "US") if tbl == "G" else "US", "gp": gp, "gs": None,
                                  "mpg": num(r.get("min")), "pts": num(r.get("pts")), "reb": num(r.get("reb")), "oreb": None,
                                  "dreb": None, "ast": num(r.get("ast")), "stl": num(r.get("stl")), "blk": num(r.get("blk")),
                                  "tov": num(r.get("tov")), "fgm": None, "fga": None, "fgp": pct(r.get("fgp")), "tpm": None,
@@ -558,7 +633,7 @@ def main():
                               if x in LG and LG[x][0] in BBR_FROM and LG[x][0] != "NBL" and season_lbl(r["season"]) >= BBR_FROM[LG[x][0]]})
                 nob = (curated.get(pid) or {}).get("noBBR")
                 if (need or cov) and nob:
-                    rep(f"no Basketball-Reference page ({nob}) - {', '.join(need + cov)} shown as clubs only")
+                    rep(f"no Basketball-Reference page ({nob}) - {', '.join(need + cov)}: RealGM's line where both reads agree, otherwise club only")
                 elif need or cov:
                     rep(f"NEEDS Basketball-Reference: {', '.join(need + cov)}")
             if A.get("truncated") and not os.path.exists(f("wiki.jsonl")) and pid not in curated:
@@ -610,7 +685,7 @@ def main():
                     elif len([d for d in doms if LG[d][2] == "dom"]) == 1:
                         lg = doms[0]
                     else:
-                        lg = RGM_CLUB.get(nm)
+                        lg = RGM_CLUB.get(nm) or (leagues[0] if len(leagues) == 1 and LG[leagues[0]][2] == "cont" else None)
                     if not lg:
                         rep(f"RealGM INT {s}: club {nm!r} has no league - left out"); continue
                     clubs.append((nm, lg))
@@ -624,7 +699,9 @@ def main():
                     disp = RGM_NAME.get(nm, nm)
                     cc = CLUB_CC.get(nm) or CLUB_CC.get(disp) or cc     # a club playing in another country's league
                     ss = cal_year(s) if cal else s
-                    disp, cc = SEASON_CLUB.get((nm, ss), (disp, cc))      # a club that moved or played under another name that season
+                    for a, z, nm2, cc2 in CLUB_ERA.get(nm, []):             # a club that moved or played under another name
+                        if a <= ss <= z:
+                            disp, cc = nm2, cc2
                     if not cc:
                         rep(f"RealGM {disp}: no country - left out"); continue
                     covered = label in BBR_FROM and ss >= BBR_FROM[label]
@@ -642,9 +719,12 @@ def main():
                                          "mpg": num(r.get("min")), "pts": num(r.get("pts")), "reb": num(r.get("reb")), "oreb": None, "dreb": None,
                                          "ast": num(r.get("ast")), "stl": num(r.get("stl")), "blk": num(r.get("blk")), "tov": num(r.get("tov")),
                                          "fgm": None, "fga": None, "fgp": pct(r.get("fgp")), "tpm": None, "tpa": None, "tpp": pct(r.get("tpp")),
-                                         "ftm": None, "fta": None, "ftp": pct(r.get("ftp")), "src": "RealGM", "allGames": True, "url": url})
+                                         "ftm": None, "fta": None, "ftp": pct(r.get("ftp")), "src": "RealGM", "allGames": True, "url": url,
+                                         # a league Basketball-Reference covers, but no line could be had from it (no
+                                         # page found or readable, or the page has no row for the season)
+                                         **({"bbrGap": True} if covered else {})})
                             if covered:
-                                rep(f"RealGM INT {s} {disp} ({label}): Basketball-Reference covers this league but has no row - RealGM's line used")
+                                rep(f"RealGM INT {s} {disp} ({label}): " + ("no Basketball-Reference page" if not reads else "Basketball-Reference covers this league but has no row") + " - RealGM's line used")
                             continue
                         rep(f"RealGM INT {s} {disp}: " + ("no second read" if not o else "the two reads differ") + " - journey only")
                     stints.append({"season": ss, "team": disp, "league": label, "country": cc, "src": "RealGM", "url": url})
@@ -684,6 +764,8 @@ def main():
             entry["src"] = {"college": "RealGM"}
         if sources:
             entry["sources"] = sources
+        if (curated.get(pid) or {}).get("espnDrop"):
+            entry["espnDrop"] = curated[pid]["espnDrop"]
         if entry:
             out[pid] = entry
         if not rows and not st2:
@@ -693,7 +775,7 @@ def main():
     about = ("One-off curated career data (overseas leagues, G League, NBL before 2015-16, college/NBA seasons ESPN "
              f"couldn't link), built by overseas/build.py from page reads saved in overseas/raw/ ({when}). "
              "Sources: Basketball-Reference (season totals, every row checked), RealGM (season lines read twice), "
-             "Wikipedia (clubs only). Not refreshed by the daily rebuild.")
+             "Wikipedia and clubs' own announcements (clubs only). Not refreshed by the daily rebuild.")
     res = {"_about": about, **{k: out[k] for k in sorted(out)}}
     fp = os.path.join(os.path.dirname(HERE), "overseas.json")
     json.dump(res, open(fp, "w"), indent=1, ensure_ascii=False, sort_keys=False)

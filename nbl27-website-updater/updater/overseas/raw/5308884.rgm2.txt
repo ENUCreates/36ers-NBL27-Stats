@@ -1,0 +1,11 @@
+#url https://basketball.realgm.com/player/Dash-Daniels/Summary/205341
+#fetched 2026-10-23
+#profile Dash Daniels | Dec 18, 2007 (18 years old) | Australia | -
+International Season Stats
+Season | Team | League | GP | MIN | PTS | REB | AST | STL | BLK | TOV | FG% | 3P% | FT%
+2025-26 | All Teams | All Leagues | 37 | 14.5 | 4.2 | 2.3 | 0.8 | 0.7 | 0.2 | 0.7 | .428 | .365 | .355
+2025-26 | Melbourne | AUS NBL | 35 | 14.3 | 4.1 | 2.4 | 0.9 | 0.7 | 0.3 | 0.7 | .416 | .360 | .379
+2025-26 | Melbourne | NBL Blitz | 2 | 17.8 | 5.5 | 1.5 | 0.5 | 0.5 | 0.0 | 1.5 | .625 | .500 | .000
+2026-27 | All Teams | All Leagues | 9 | 23.1 | 12.9 | 5.4 | 2.0 | 1.2 | 0.1 | 1.1 | .478 | .354 | .647
+2026-27 | South East Melbourne | AUS NBL | 7 | 23.3 | 13.0 | 5.4 | 2.0 | 0.9 | 0.1 | 1.1 | .507 | .364 | .647
+2026-27 | South East Melbourne | NBL Blitz | 2 | 22.2 | 12.5 | 5.5 | 2.0 | 2.5 | 0.0 | 1.0 | .400 | .333 | .000

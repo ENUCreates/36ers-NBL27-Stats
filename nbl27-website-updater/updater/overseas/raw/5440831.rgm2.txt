@@ -1,0 +1,11 @@
+#url https://basketball.realgm.com/player/Skylar-Mays/Summary/85943
+#fetched 2026-10-23
+G League Regular Season Stats
+Season | Team | League | GP | MIN | PTS | REB | AST | STL | BLK | TOV | FG% | 3P% | FT%
+2021-22 | COL | G League | 8 | 33.6 | 18.0 | 4.5 | 4.5 | 1.6 | 0.2 | 2.6 | .456 | .341 | .947
+2022-23 * | All Teams | G League | 47 | 27.5 | 13.7 | 3.8 | 4.8 | 0.9 | 0.1 | 1.8 | .417 | .304 | .846
+2022-23 * | DEL | G League | 31 | 23.9 | 10.9 | 3.3 | 4.1 | 0.8 | 0.1 | 1.6 | .382 | .279 | .830
+2022-23 * | CAP | G League | 16 | 34.5 | 19.2 | 4.7 | 6.1 | 0.9 | 0.1 | 2.1 | .458 | .341 | .868
+2023-24 | SBL | G League | 7 | 33.1 | 21.1 | 5.0 | 5.6 | 1.0 | 0.3 | 2.4 | .486 | .432 | .842
+2024-25 | IWA | G League | 19 | 29.4 | 12.5 | 3.4 | 4.4 | 1.4 | 0.2 | 1.3 | .421 | .390 | .808
+CAREER | - | G League | 81 | 29.0 | 14.5 | 3.9 | 4.7 | 1.1 | 0.2 | 1.8 | .430 | .342 | .852

@@ -374,6 +374,9 @@ def main():
                 b[k] = v
                 b["src"][k] = (extra[pid].get("src") or {}).get(k, "extra")
         o = ovs.get(pid) or {}
+        if o.get("espnDrop"):           # ESPN lines the one-off overseas check found partial (listed there with the reason)
+            drop = set(o["espnDrop"])
+            b["history"] = [h for h in b.get("history") or [] if f"{h.get('season')}|{h.get('league')}" not in drop]
         have = {(h.get("league"), h.get("season")) for h in b.get("history") or []}
         have |= {("NBL", h.get("season")) for h in b.get("historyNBL") or []}
         hx += [h for h in o.get("history") or [] if (h.get("league"), h.get("season")) not in have]

@@ -1,0 +1,16 @@
+#url https://basketball.realgm.com/player/Sam-Davidson/Summary/174728
+#fetched 2026-10-23
+International Season Stats
+Season | Team | League | GP | MIN | PTS | REB | AST | STL | BLK | TOV | FG% | 3P% | FT%
+2026-27 * | All Teams | All Leagues | 6 | 3.6 | 1.8 | 1.2 | 0.0 | 0.2 | 0.0 | 0.5 | .273 | .111 | .444
+2026-27 * | South East Melbourne | AUS NBL | 4 | 2.6 | 0.8 | 1.0 | 0.0 | 0.0 | 0.0 | 0.5 | .250 | .000 | .500
+2026-27 * | South East Melbourne | NBL Blitz | 2 | 5.7 | 4.0 | 1.5 | 0.0 | 0.5 | 0.0 | 0.5 | .286 | .167 | .429
+
+NCAA Season Stats
+Season | Team | League | GP | MIN | PTS | REB | AST | STL | BLK | TOV | FG% | 3P% | FT%
+2020-21 | Spring Hill | - | 9 | 29.3 | 10.1 | 3.7 | 2.8 | 0.8 | 0.0 | 1.9 | .373 | .380 | .667
+2021-22 | Spring Hill | - | 28 | 31.1 | 10.5 | 2.8 | 3.2 | 1.3 | 0.1 | 3.3 | .378 | .301 | .783
+2022-23 | Rogers State | - | 29 | 11.2 | 4.0 | 0.6 | 0.5 | 0.3 | 0.0 | 0.6 | .444 | .441 | .750
+2023-24 | Rogers State | - | 29 | 12.6 | 4.7 | 1.2 | 0.4 | 0.6 | 0.1 | 0.4 | .475 | .288 | .771
+2024-25 | Rogers State | - | 32 | 21.7 | 7.9 | 2.4 | 1.3 | 0.8 | 0.1 | 1.0 | .488 | .370 | .548
+CAREER | NCAA DII | - | 95 | 19.2 | 6.7 | 1.7 | 1.5 | 0.7 | 0.1 | 1.4 | .405 | .338 | .759

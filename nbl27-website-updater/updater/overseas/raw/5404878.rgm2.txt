@@ -1,0 +1,15 @@
+#url https://basketball.realgm.com/player/Harry-Wessels/Summary/177214
+#fetched 2026-10-23
+Harry Wessels | Aug 6, 2002 | Australia | Saint Mary's
+
+NCAA Season Stats
+2022-23 | Saint Mary's | - | 34 | 6.9 | 2.6 | 1.8 | 0.3 | 0.1 | 0.1 | 0.5 | .596 | .000 | .618
+2023-24 | Saint Mary's | - | 29 | 9.1 | 4.2 | 3.4 | 0.3 | 0.2 | 0.7 | 0.6 | .628 | .000 | .774
+2024-25 | Saint Mary's | - | 34 | 13.1 | 5.3 | 3.4 | 0.3 | 0.2 | 1.0 | 1.1 | .546 | .000 | .824
+2025-26 | Saint Mary's | - | 32 | 16.7 | 4.8 | 5.1 | 0.6 | 0.4 | 1.0 | 0.7 | .514 | .000 | .672
+CAREER | NCAA DI | - | 129 | 11.5 | 4.2 | 3.4 | 0.4 | 0.2 | 0.7 | 0.7 | .563 | .000 | .735
+
+International Season Stats
+2026-27 * | All Teams | All Leagues | 8 | 10.3 | 3.9 | 2.8 | 0.0 | 0.1 | 0.2 | 1.1 | .571 | .000 | .636
+2026-27 * | Sydney | AUS NBL | 6 | 8.6 | 3.7 | 2.0 | 0.0 | 0.2 | 0.2 | 1.0 | .571 | .000 | .667
+2026-27 * | Sydney | NBL Blitz | 2 | 15.3 | 4.5 | 5.0 | 0.0 | 0.0 | 0.5 | 1.5 | .571 | .000 | .500

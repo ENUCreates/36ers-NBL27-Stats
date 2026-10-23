@@ -1,0 +1,18 @@
+#url https://basketball.realgm.com/player/Dylan-Windler/Summary/87241
+#fetched 2026-10-23
+NBA Regular Season Stats
+Season | Team | League | GP | MIN | PTS | REB | AST | STL | BLK | TOV | FG% | 3P% | FT%
+2020-21 | CLE | NBA | 31 | 16.5 | 5.2 | 3.5 | 1.1 | 0.6 | 0.4 | 1.0 | .438 | .338 | .778
+2021-22 | CLE | NBA | 50 | 9.2 | 2.2 | 1.8 | 0.7 | 0.3 | 0.1 | 0.3 | .378 | .300 | .833
+2022-23 | CLE | NBA | 3 | 3.5 | 1.7 | 0.0 | 0.3 | 0.3 | 0.0 | 0.3 | .667 | .500 | .000
+2023-24 | LAL, ATL, NYK | NBA | 17 | 6.4 | 2.5 | 0.9 | 0.6 | 0.1 | 0.0 | 0.1 | .500 | .481 | .000
+CAREER | - | NBA | 101 | 10.8 | 3.2 | 2.1 | 0.8 | 0.4 | 0.1 | 0.5 | .425 | .347 | .800
+
+G League Regular Season Stats
+Season | Team | League | GP | MIN | PTS | REB | AST | STL | BLK | TOV | FG% | 3P% | FT%
+2019-20 | CLE | G League | 2 | 18.5 | 6.5 | 4.0 | 0.0 | 0.5 | 0.0 | 2.5 | .444 | .286 | 1.000
+2021-22 | CLE | G League | 13 | 34.7 | 15.6 | 9.6 | 2.6 | 1.5 | 0.5 | 2.2 | .470 | .395 | .667
+2022-23 | CLE | G League | 11 | 22.2 | 12.2 | 5.9 | 1.1 | 0.5 | 0.5 | 1.3 | .523 | .407 | .632
+2023-24 | WES, SBL | G League | 16 | 28.5 | 13.3 | 8.2 | 2.4 | 1.0 | 0.9 | 1.6 | .435 | .349 | .722
+CAREER | - | G League | 42 | 28.3 | 13.4 | 7.8 | 2.0 | 1.0 | 0.6 | 1.7 | .466 | .375 | .683
+CUT

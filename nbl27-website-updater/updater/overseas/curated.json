@@ -1,5 +1,5 @@
 {
- "_about": "Hand-curated additions to the overseas build, each with the source it was read from. 'stints' are career-journey stops without stats (season, club, league, country), used where RealGM's International table was cut off; seasons of leagues played inside one calendar year (NZNBL, BSN, BAL, NBL1...) are that year. 'noBBR' records that no Basketball-Reference page could be found for a player whose leagues it covers, so those seasons stay journey-only. 'checked' (with a 'note') marks a player searched for on 23 Oct 2026 with no RealGM, Basketball-Reference or Wikipedia page to read.",
+ "_about": "Hand-curated additions to the overseas build, each with the source it was read from. 'stints' are career-journey stops without stats (season, club, league, country), used where RealGM's International table was cut off or a player has no RealGM career page (src 'Wikipedia', or 'Club' for the clubs' own announcements, listed in 'sources'); seasons of leagues played inside one calendar year (NZNBL, BSN, BAL, NBL1...) are that year. 'noBBR' records that no Basketball-Reference page could be found for a player whose leagues it covers, so those seasons stay journey-only. 'checked' (with a 'note') marks a player searched for on 23 Oct 2026 with no RealGM, Basketball-Reference or Wikipedia page to read.",
  "5336714": {
   "stints": [
    {
@@ -399,5 +399,335 @@
  "5402936": {
   "checked": "2026-10-23",
   "note": "no RealGM, Basketball-Reference or Wikipedia page found by search; his other club is NBL1 South's Nunawading Spectres (state league)"
+ },
+ "5332182": {
+  "stints": [
+   {
+    "season": "2021",
+    "team": "Manawatu Jets",
+    "league": "NZNBL",
+    "country": "NZ",
+    "src": "Club"
+   },
+   {
+    "season": "2022",
+    "team": "Manawatu Jets",
+    "league": "NZNBL",
+    "country": "NZ",
+    "src": "Club"
+   },
+   {
+    "season": "2023",
+    "team": "Manawatu Jets",
+    "league": "NZNBL",
+    "country": "NZ",
+    "src": "Club"
+   },
+   {
+    "season": "2024",
+    "team": "Auckland Tuatara",
+    "league": "NZNBL",
+    "country": "NZ",
+    "src": "Club"
+   },
+   {
+    "season": "2025",
+    "team": "Southland Sharks",
+    "league": "NZNBL",
+    "country": "NZ",
+    "src": "Club"
+   },
+   {
+    "season": "2026",
+    "team": "Southland Sharks",
+    "league": "NZNBL",
+    "country": "NZ",
+    "src": "Club"
+   }
+  ],
+  "note": "RealGM has no career page for him (its International page only has this season). Auckland Tuatara signed him for the 2024 season after 'the past three seasons' with the Manawatu Jets (the Jets' 2022 preview lists him in 2021 and 2022); Southland Sharks signed him for 2025 and re-signed him for 2026 (NZNBL champions, per the Breakers).",
+  "sources": [
+   "https://tuatarabasketball.com/tukaha-cooper-joins-auckland-tuatara/",
+   "https://central.rookieme.com/basketball/?p=28834",
+   "https://www.sharksbasketball.co.nz/single-post/tukaha-cooper-swims-south-to-sharks",
+   "https://www.sharksbasketball.co.nz/single-post/cooper-swims-south-for-second-season",
+   "https://www.nzbreakers.basketball/news/young-kiwi-guard-returns-on-development-contract"
+  ]
+ },
+ "5448475": {
+  "note": "RealGM's page has no per-team international table, only a 2026-27 summary (his NBL games): nothing outside the NBL, G League and US college"
+ },
+ "5454075": {
+  "stints": [
+   {
+    "season": "2018-19",
+    "team": "Rio Grande Valley Vipers",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2021-22",
+    "team": "Sioux Falls Skyforce",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2023",
+    "team": "Piratas de Quebradillas",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2025",
+    "team": "Capitanes de Arecibo",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2026",
+    "team": "Mets de Guaynabo",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   }
+  ]
+ },
+ "4394330": {
+  "stints": [
+   {
+    "season": "2009-10",
+    "team": "Perth Wildcats",
+    "league": "NBL",
+    "country": "AU",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2010-11",
+    "team": "Perth Wildcats",
+    "league": "NBL",
+    "country": "AU",
+    "src": "Wikipedia"
+   }
+  ],
+  "note": "Wikipedia: signed with Perth in June 2009, won the 2010 title, injured in December of the 2010-11 season; Basketball-Reference's NBL pages start at 2011-12"
+ },
+ "3906786": {
+  "stints": [
+   {
+    "season": "2023-24",
+    "team": "Westchester Knicks",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2023-24",
+    "team": "South Bay Lakers",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   }
+  ],
+  "note": "RealGM's G League line for 2023-24 (Westchester and South Bay, 16 games) was read as a several-teams line, so those two clubs are listed from Wikipedia"
+ },
+ "5402793": {
+  "note": "basketball.com.au (Aug 2026) quotes Perth's coach saying he 'played a season in Mexico' - club and season not named, so not shown; his NBL1 North club (Gold Coast Rollers) is a state league"
+ },
+ "5452643": {
+  "checked": "2026-10-23",
+  "note": "no RealGM, Basketball-Reference or Wikipedia page found by search (born 2008, development player)"
+ },
+ "4910882": {
+  "espnDrop": [
+   "2021-22|NCAA",
+   "2022-23|NCAA"
+  ],
+  "note": "ESPN lists 1 game for each of his 2021-22 and 2022-23 Menlo seasons (its college data covers games against Division I teams); RealGM's full seasons (NAIA to 2023-24, NCAA Division II in 2024-25, per its career lines) are shown instead"
+ },
+ "5311918": {
+  "stints": [
+   {
+    "season": "2026",
+    "team": "Franklin Bulls",
+    "league": "NZNBL",
+    "country": "NZ",
+    "src": "Club"
+   }
+  ],
+  "note": "no RealGM, Basketball-Reference or Wikipedia page found by search; the Franklin Bulls' player page lists him for the 2026 NZNBL season (his first stint with the club); Melbourne Tigers (NBL1 South) is a state league",
+  "sources": [
+   "https://www.bullsbasketball.nz/players/ellis-biggar",
+   "https://www.semphoenix.com.au/news/phoenix-sign-ellis-biggar-as-development-player-for-nbl26"
+  ],
+  "checked": "2026-10-23"
+ },
+ "4702155": {
+  "identity": "RealGM has 18 Nov 2001; Basketball-Reference and our data have 18 Sep 2001 - same player: Southern Utah and Bowling Green college seasons, Sydney 2024-25 on both pages"
+ },
+ "5404874": {
+  "identity": "RealGM gives no date of birth; the NBL's signing story (25 Aug 2026) lists the same path as this RealGM page: South Georgia Technical College, Texas-Rio Grande Valley (2022-23), Loyola Marymount, Richmond",
+  "sources": [
+   "https://nbl.com.au/news/sydney-kings-complete-roster-with-home-grown-talent-will-johnston"
+  ]
+ },
+ "2489716": {
+  "identity": "the Wikipedia article's first sentence currently says born 8 September 2001 (RealGM and our data: 8 Sep 1990); same player - Saint Mary's from 2009-10, graduated 2013, Melbourne United in 2021",
+  "stints": [
+   {
+    "season": "2009-10",
+    "team": "Saint Mary's",
+    "league": "NCAA",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2010-11",
+    "team": "Saint Mary's",
+    "league": "NCAA",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2011-12",
+    "team": "Saint Mary's",
+    "league": "NCAA",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2012-13",
+    "team": "Saint Mary's",
+    "league": "NCAA",
+    "country": "US",
+    "src": "Wikipedia"
+   }
+  ],
+  "note": "RealGM's page text ends inside its NBA tables, before the NCAA and International tables, and ESPN has no college seasons for him: Saint Mary's seasons from Wikipedia ('signed with the Gaels before the 2009-10 season', 'graduated from Saint Mary's in 2013'), no stats. No club outside the NBA and NBL; the AIS (SEABL, 2007-09) is a state league"
+ },
+ "5336709": {
+  "stints": [
+   {
+    "season": "2015",
+    "team": "Wellington Saints",
+    "league": "NZNBL",
+    "country": "NZ",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2016",
+    "team": "Wellington Saints",
+    "league": "NZNBL",
+    "country": "NZ",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2017-18",
+    "team": "Sioux Falls Skyforce",
+    "league": "G League",
+    "country": "US",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2026",
+    "team": "Mets de Guaynabo",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   }
+  ],
+  "note": "RealGM's page text ends after the NBA table, so its G League, NCAA and International tables can't be read: clubs from Wikipedia (2015 and 2016 NZNBL seasons with Wellington, most of 2017-18 with Sioux Falls on assignment from Denver, Mets de Guaynabo from 28 Apr 2026), no stats; Cairns 2014-15 from Basketball-Reference. Gold Coast Rollers (QBL, 2017) is a state league"
+ },
+ "4397066": {
+  "stints": [
+   {
+    "season": "2026",
+    "team": "Osos de Manatí",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   }
+  ],
+  "note": "RealGM's page text ends at the start of its International table: Nanjing (CBA) from Basketball-Reference, Osos de Manatí (BSN 2026) from Wikipedia, no stats"
+ },
+ "5090629": {
+  "stints": [
+   {
+    "season": "2026",
+    "team": "Vaqueros de Bayamón",
+    "league": "BSN",
+    "country": "PR",
+    "src": "Wikipedia"
+   }
+  ],
+  "note": "RealGM's page text ends inside its 2025-26 International lines (51 games that season, the Sydney and Bayamón lines cut off): Vaqueros de Bayamón (BSN 2026) from Wikipedia, no stats. Illawarra Hawks (Waratah League, 2013) and BA Centre of Excellence (SEABL, 2014) are state leagues"
+ },
+ "5447340": {
+  "stints": [
+   {
+    "season": "2024-25",
+    "team": "Triton College",
+    "league": "NJCAA",
+    "country": "US",
+    "src": "Club"
+   },
+   {
+    "season": "2025-26",
+    "team": "McNeese State",
+    "league": "NCAA",
+    "country": "US",
+    "src": "Club"
+   }
+  ],
+  "note": "search finds only RealGM's Teammates page for him (McNeese State 2025-26, Sydney 2026-27), no career page, and no Basketball-Reference or Wikipedia page. McNeese's signing story (13 May 2025): Triton College last season (29 games), Indian Hills Community College as a freshman (14 games; season not given, so not shown); McNeese's roster page: all 33 games in 2025-26",
+  "sources": [
+   "https://mcneesesports.com/news/2025/5/13/mens-basketball-cowboys-sign-6-10-australian-transfer-peitok-machar.aspx",
+   "https://mcneesesports.com/sports/mens-basketball/roster/peitok-machar/11036"
+  ],
+  "checked": "2026-10-23"
+ },
+ "5451068": {
+  "checked": "2026-10-23",
+  "note": "no RealGM, Basketball-Reference or Wikipedia page found by search (born 2008, development player); NBL1's signing story (2 Sep 2026): 21 games for the Norths Bears in NBL1 East in 2026, a state league",
+  "sources": [
+   "https://www.nbl1.com.au/news/under20s-mvp-bailey-hanson-signs-as-dp-for-sydney-kings"
+  ]
+ },
+ "2451257": {
+  "note": "RealGM's page text ends at the start of its International table; Wikipedia lists no club outside the NBA, G League and NBL (Toronto 2021-22, Raptors 905 2021-23, Memphis Hustle 2023-25, Tasmania from 2025-26)"
+ },
+ "3136991": {
+  "note": "RealGM's page text ends inside its G League tables, before the NCAA and International tables: Joventut (2018-19), Tenerife (2022-23) and Ulm (2023-24, EuroCup) from Basketball-Reference, which doesn't cover the German Bundesliga, so Ulm shows his EuroCup line only; Wikipedia lists no other club outside the NBA and G League"
+ },
+ "5332168": {
+  "checked": "2026-10-23",
+  "note": "no RealGM page found by search, and Basketball-Reference's page could not be read (site error, 23 Oct 2026); Pulse Tasmania (2 Aug 2026): a former Australian rules footballer who committed fully to basketball in 2024; his NZ Breakers-hosted NBL player page lists only Cairns 2025-26 (development player)",
+  "sources": [
+   "https://pulsetasmania.com.au/news/jed-richardson-turned-down-st-kilda-to-join-tasmania-jackjumpers/",
+   "https://www.nzbreakers.basketball/player/jed-richardson"
+  ]
+ },
+ "5447898": {
+  "checked": "2026-10-23",
+  "note": "no RealGM, Basketball-Reference or Wikipedia page found by search (development player from Penguin, Tasmania); Pulse Tasmania's signing story (29 Jul 2026) names no club before the JackJumpers",
+  "sources": [
+   "https://pulsetasmania.com.au/news/penguin-product-ryley-haywood-signs-with-jackjumpers-for-nbl27/"
+  ]
+ },
+ "2991383": {
+  "noBBR": "page could not be read - site error on four tries, 23 Oct 2026",
+  "stints": [
+   {
+    "season": "2014-15",
+    "team": "Cairns Taipans",
+    "league": "NBL",
+    "country": "AU",
+    "src": "Wikipedia"
+   }
+  ],
+  "note": "Basketball-Reference's page for him (nathan-sobey-1) returned a site error on every try, so his 2016-17 PAOK (GBL) and 2018-19 Strasbourg (LNB) seasons show RealGM's season lines (both reads agree; all games), and 2014-15 with Cairns (a training player, before the official NBL box scores) is a journey stop from Wikipedia. Ballarat Miners (SEABL), Cairns Marlins (QBL) and Ipswich Force (QSL/NBL1 North) are state leagues"
  }
 }

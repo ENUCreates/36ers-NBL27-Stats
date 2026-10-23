@@ -463,8 +463,18 @@ def _regular(off):
 
 def history(off, want, before=CUR):
     """Earlier NBL regular seasons for the players in `want` ({espn id: (first, family)}).
-    -> {espn id: [season rows]}, review notes. Per-game averages are computed from the official game lines."""
+    -> {espn id: [season rows]}, review notes. Per-game averages are computed from the official game lines; 'first' is
+    the date of his first game that season; 'lateStart' marks a season he joined more than ten weeks after the opening
+    game - a mid-season signing, so a club he played for abroad that season most likely came first (Cotton, Perth 2016-17,
+    after Anadolu Efes). Players who join earlier than that and also play abroad in the same season go abroad after the
+    NBL season (Magnay to Obradoiro in Feb 2023, King to Mykonos in Mar 2026), which is the page's default order."""
     reg = _regular(off)
+    opening = {}                                    # each season's first regular-season game
+    for r in off["res"]:
+        if sv(r["match_type"]) == "REGULAR" and sv(r["match_status"]) == "COMPLETE":
+            t, s = tip_syd(r["match_time_utc"]), sv(r["season"])
+            if t and (s not in opening or t < opening[s]):
+                opening[s] = t
     keys = {}
     for pid, (first, fam) in want.items():
         keys.setdefault(nkey(first, fam), set()).add(pid)
@@ -515,6 +525,8 @@ def history(off, want, before=CUR):
                "tov": pg(a["tov"]), "fgm": pg(a["fgm"]), "fga": pg(a["fga"]), "fgp": frac(a["fgm"], a["fga"]),
                "tpm": pg(a["tpm"]), "tpa": pg(a["tpa"]), "tpp": frac(a["tpm"], a["tpa"]), "ftm": pg(a["ftm"]), "fta": pg(a["fta"]),
                "ftp": frac(a["ftm"], a["fta"]), "src": "NBL",
+               "first": a["first"].date().isoformat() if a["first"] else None,     # his first game that season (Sydney date)
+               **({"lateStart": True} if a["first"] and s in opening and (a["first"] - opening[s]).days > 70 else {}),
                "tot": {"sec": a["sec"], **{f: a[f] for f in ("pts", "fgm", "fga", "tpm", "tpa", "ftm", "fta", "oreb", "dreb", "ast", "stl", "blk", "tov")}}}
         for p in sorted(pids):
             out.setdefault(p, []).append(row)

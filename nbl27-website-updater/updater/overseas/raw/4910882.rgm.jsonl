@@ -1,0 +1,8 @@
+{"_meta": {"url": "https://basketball.realgm.com/player/Patrick-Ryan/Summary/152105", "fetched": "2026-10-23", "src": "rgm"}}
+{"name": "Patrick Ryan", "born": "Sep 30, 2002", "nationality": "Australia", "school": "Menlo College"}
+{"tbl": "NCAA", "season": "2021-22", "teams": [{"name": "Menlo College", "href": null}], "leagues": null, "gp": 25, "min": 19.0, "pts": 5.8, "reb": 2.3, "ast": 1.2, "stl": 0.4, "blk": 0.1, "tov": 1.5, "fgp": ".533", "tpp": ".314", "ftp": ".724"}
+{"tbl": "NCAA", "season": "2022-23", "teams": [{"name": "Menlo College", "href": null}], "leagues": null, "gp": 21, "min": 29.3, "pts": 12.6, "reb": 6.1, "ast": 2.1, "stl": 0.9, "blk": 0.5, "tov": 2.0, "fgp": ".537", "tpp": ".286", "ftp": ".746"}
+{"tbl": "NCAA", "season": "2023-24", "teams": [{"name": "Menlo College", "href": null}], "leagues": null, "gp": 22, "min": 30.2, "pts": 9.9, "reb": 6.0, "ast": 2.0, "stl": 0.8, "blk": 0.5, "tov": 2.5, "fgp": ".438", "tpp": ".309", "ftp": ".608"}
+{"tbl": "NCAA", "season": "2024-25", "teams": [{"name": "Menlo College", "href": null}], "leagues": null, "gp": 13, "min": 21.9, "pts": 7.7, "reb": 5.5, "ast": 1.4, "stl": 0.4, "blk": 0.2, "tov": 1.8, "fgp": ".519", "tpp": ".214", "ftp": ".536"}
+{"tbl": "INT", "season": "2025-26", "teams": [{"name": "South East Melbourne", "href": "https://basketball.realgm.com/international/league/5/Australian-NBL/team/88/South-East-Melbourne"}], "leagues": ["AUS NBL"], "gp": 14, "min": 3.2, "pts": 1.6, "reb": 0.2, "ast": 0.1, "stl": 0.1, "blk": 0.0, "tov": 0.1, "fgp": ".533", "tpp": ".545", "ftp": ".000"}
+{"truncated": false}
