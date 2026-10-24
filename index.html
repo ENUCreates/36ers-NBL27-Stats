@@ -1414,15 +1414,16 @@ function playerCard(team,pid){
     return `<div class="lab">${l}</div><div class="pbarw" title="${p==null?"":p+"th percentile of qualified NBL players"}">${p==null?"":`<i style="width:${p}%;background:${dir===0?"var(--muted)":p>=67?"var(--good)":p<=33?"var(--bad)":"#6f8fbf"}"></i>`}</div><div class="num">${fmt(r[k])}</div><div class="pc">${p==null?"":ordinal(p)}</div>`}).join("");
   const onoff=oo?`<div class="oo"><div><span class="k">On-court net</span><b>${sgn(oo.onN)}</b></div><div><span class="k">Off-court net</span><b>${sgn(oo.offN)}</b></div><div><span class="k">On–Off</span><b class="${oo.diff>=0?"up":"dn"}">${sgn(oo.diff)}</b></div><div><span class="k">Poss on / off</span><b>${Math.round(oo.poss)} / ${Math.round(oo.offPoss)}</b></div></div>`:"";
   // season history: NBL27 (live) + stored seasons
-  const cur=all.filter(x=>x.id===pid).map(x=>({season:"2026-27",team:x.team,league:"NBL",country:NBLCC(x.team),gp:x.gp,mpg:x.mpg,pts:x.ppg,reb:x.rpg,ast:x.apg,stl:x.spg,blk:x.bpg,fgp:x.fgp,tpp:x.tpp,ftp:x.ftp,live:1}));
+  const cur=all.filter(x=>x.id===pid).map(x=>({season:"2026-27",team:x.team,league:"NBL",country:NBLCC(x.team),gp:x.gp,mpg:x.mpg,pts:x.ppg,reb:x.rpg,ast:x.apg,stl:x.spg,blk:x.bpg,fgm:x.fgm/x.gp,fga:x.fga/x.gp,tpm:x.tpm/x.gp,tpa:x.tpa/x.gp,ftm:x.ftm/x.gp,fta:x.fta/x.gp,pm:x.pmg,fgp:x.fgp,tpp:x.tpp,ftp:x.ftp,live:1}));
   const past=pastRows(b);
   // de-duplicate identical season/team/league rows (extra sources first); newest first, and inside a season the later stage first
   const seen=new Set(),hist=cur.concat(past).filter(h=>{const k=h.season+"|"+h.team+"|"+h.league;if(seen.has(k))return false;seen.add(k);return true})
     .sort((x,y)=>(y.season||"").localeCompare(x.season||"")||(x.live?-1:y.live?1:0)||PHASE(y)-PHASE(x));
+  const MA=(m,a)=>m==null||a==null||!isFinite(m)||!isFinite(a)?"–":`${m.toFixed(1)}/${a.toFixed(1)}`;
   const hrow=h=>`<tr${h.live?' class="teamrow"':""}><td class="tm">${h.season}</td><td style="text-align:left;font-family:var(--body)">${h.team} <span class="mu">(${ccFlag(rowCC(h))||rowCC(h)})</span></td><td style="text-align:left;font-family:var(--body)" title="${h.live?"This site's NBL27 data":"Source: "+(SRCNAME[h.src]||h.src||"")}">${h.league}${h.allGames?'<sup class="mu" title="RealGM season line: all games that season (playoffs included)">†</sup>':""}</td>
-    <td>${h.gp??"–"}</td><td>${f1(h.mpg)}</td><td>${f1(h.pts)}</td><td>${f1(h.reb)}</td><td>${f1(h.ast)}</td><td>${f1(h.stl)}</td><td>${f1(h.blk)}</td><td>${pct(h.fgp)}</td><td>${pct(h.tpp)}</td><td>${pct(h.ftp)}</td></tr>`;
+    <td>${h.gp??"–"}</td><td>${f1(h.mpg)}</td><td>${f1(h.pts)}</td><td>${f1(h.reb)}</td><td>${f1(h.ast)}</td><td>${f1(h.stl)}</td><td>${f1(h.blk)}</td><td>${MA(h.fgm,h.fga)}</td><td>${pct(h.fgp)}</td><td>${MA(h.tpm,h.tpa)}</td><td>${pct(h.tpp)}</td><td>${MA(h.ftm,h.fta)}</td><td>${pct(h.ftp)}</td><td>${sgn(h.pm)}</td></tr>`;
   const histSrc=new Set(past.map(h=>h.src));
-  const histNote=["Regular season","2026-27 = NBL27 so far (this site's data)","earlier NBL seasons: official NBL box scores (from 2015-16)"]
+  const histNote=["Regular season","made/attempted are per game","+/- per game: NBL27 only","2026-27 = NBL27 so far (this site's data)","earlier NBL seasons: official NBL box scores (from 2015-16)"]
     .concat(histSrc.has("ESPN")?["NBA and NCAA: ESPN"]:[])
     .concat(histSrc.has("BBR")?["other leagues"+(past.some(h=>h.src==="BBR"&&h.league==="NBL")?" and NBL before 2015-16":"")+": Basketball-Reference season totals"]:[])
     .concat(histSrc.has("RealGM")?[[past.some(h=>h.src==="RealGM"&&h.league==="G League")?"G League":"",past.some(h=>h.src==="RealGM"&&(h.league==="NBA"||PHASE(h)===0))?"NBA / college seasons ESPN lacks":"",past.some(h=>h.allGames&&!h.bbrGap)?"leagues Basketball-Reference doesn't cover":"",past.some(h=>h.bbrGap)?"seasons not available from Basketball-Reference":""].filter(Boolean).join(", ")+": RealGM"]:[])
@@ -1435,9 +1436,9 @@ function playerCard(team,pid){
     all.filter(x=>x.id===pid).forEach(x=>{T.gp+=x.gp;T.sec+=x.min*60;["pts","fgm","fga","tpm","tpa","ftm","fta","oreb","dreb","ast","stl","blk"].forEach(k=>T[k]+=x[k])});
     const first=nblPast.map(h=>h.season).sort()[0],ns=new Set(nblPast.map(h=>h.season)).size+1,g=T.gp;
     carRow=`<tfoot><tr class="carrow"><td class="tm" colspan="3" style="text-align:left;font-family:var(--body)">${b.extraSources?.bbr?(first<="2011-12"?"NBL since 2011-12":"NBL career"):(first==="2015-16"?"NBL since 2015-16":"NBL career")} <span class="mu">· ${ns} seasons</span></td>
-      <td>${g}</td><td>${f1(T.sec/60/g)}</td><td>${f1(T.pts/g)}</td><td>${f1((T.oreb+T.dreb)/g)}</td><td>${f1(T.ast/g)}</td><td>${f1(T.stl/g)}</td><td>${f1(T.blk/g)}</td><td>${pct(dv(T.fgm,T.fga))}</td><td>${pct(dv(T.tpm,T.tpa))}</td><td>${pct(dv(T.ftm,T.fta))}</td></tr></tfoot>`;
+      <td>${g}</td><td>${f1(T.sec/60/g)}</td><td>${f1(T.pts/g)}</td><td>${f1((T.oreb+T.dreb)/g)}</td><td>${f1(T.ast/g)}</td><td>${f1(T.stl/g)}</td><td>${f1(T.blk/g)}</td><td>${MA(T.fgm/g,T.fga/g)}</td><td>${pct(dv(T.fgm,T.fga))}</td><td>${MA(T.tpm/g,T.tpa/g)}</td><td>${pct(dv(T.tpm,T.tpa))}</td><td>${MA(T.ftm/g,T.fta/g)}</td><td>${pct(dv(T.ftm,T.fta))}</td><td title="+/- isn't available for earlier seasons">–</td></tr></tfoot>`;
   }
-  const histTable=`<div class="scroll"><table><thead><tr><th class="tm">Season</th><th style="text-align:left">Team</th><th style="text-align:left">League</th><th>GP</th><th>MIN</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>FG%</th><th>3P%</th><th>FT%</th></tr></thead><tbody>${hist.map(hrow).join("")}</tbody>${carRow}</table></div>`;
+  const histTable=`<div class="scroll"><table><thead><tr><th class="tm">Season</th><th style="text-align:left">Team</th><th style="text-align:left">League</th><th>GP</th><th>MIN</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>FGM/A</th><th>FG%</th><th>3PM/A</th><th>3P%</th><th>FTM/A</th><th>FT%</th><th title="Plus-minus per game (NBL27 only)">+/-</th></tr></thead><tbody>${hist.map(hrow).join("")}</tbody>${carRow}</table></div>`;
   // shot chart
   const sc=PSHOTS.length?shotChartParts(team,pid):null;
   // connections
