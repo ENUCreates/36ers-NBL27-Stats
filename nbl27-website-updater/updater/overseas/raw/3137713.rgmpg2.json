@@ -1,0 +1,19 @@
+{"id":"3137713","url":"https://basketball.realgm.com/player/Zylan-Cheatham/Summary/52056","status":"ok",
+"rows":[
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2019-20","team":"NOP","league":"-","gp":"4","pts":"3.0","fgm":"1.5","fga":"2.2","fgp":".667","tpm":"0.0","tpa":"0.2","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2021-22","team":"UTH","league":"-","gp":"1","pts":"0.0","fgm":"0.0","fga":"3.0","fgp":".000","tpm":"0.0","tpa":"2.0","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2019-20","team":"NOP","league":"NBA Summer League","gp":"5","pts":"5.8","fgm":"1.8","fga":"6.0","fgp":".300","tpm":"0.0","tpa":"0.4","tpp":".000","ftm":"2.2","fta":"3.2","ftp":".688"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2021-22","team":"DEN","league":"NBA Summer League","gp":"5","pts":"9.6","fgm":"3.8","fga":"6.2","fgp":".613","tpm":"0.4","tpa":"1.2","tpp":".333","ftm":"1.6","fta":"2.6","ftp":".615"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2022-23","team":"MIL","league":"NBA 2k23 Summer League","gp":"5","pts":"6.2","fgm":"2.2","fga":"3.4","fgp":".647","tpm":"0.2","tpa":"0.6","tpp":".333","ftm":"1.6","fta":"2.6","ftp":".615"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2024-25","team":"BRK","league":"NBA2K Summer League","gp":"5","pts":"3.6","fgm":"1.2","fga":"2.2","fgp":".545","tpm":"0.0","tpa":"0.4","tpp":".000","ftm":"1.2","fta":"2.4","ftp":".500"},
+{"tbl":"NBA Preseason Stats (Per Game)","season":"2019-20","team":"NOP","league":"-","gp":"2","pts":"2.0","fgm":"1.0","fga":"1.0","fgp":"1.000","tpm":"0.0","tpa":"0.0","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Preseason Stats (Per Game)","season":"2022-23","team":"NOP","league":"-","gp":"4","pts":"1.8","fgm":"0.8","fga":"1.8","fgp":".429","tpm":"0.0","tpa":"0.2","tpp":".000","ftm":"0.2","fta":"0.5","ftp":".500"},
+{"tbl":"NBA Preseason Stats (Per Game)","season":"2023-24","team":"New Zealand Breakers","league":"-","gp":"2","pts":"11.0","fgm":"2.5","fga":"9.5","fgp":".263","tpm":"0.0","tpa":"3.0","tpp":".000","ftm":"6.0","fta":"7.0","ftp":".857"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2019-20","team":"ERI","league":"-","gp":"34","pts":"16.3","fgm":"6.0","fga":"11.3","fgp":".530","tpm":"0.9","tpa":"2.6","tpp":".333","ftm":"2.1","fta":"2.8","ftp":".740"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2020-21","team":"IWA","league":"-","gp":"15","pts":"10.5","fgm":"4.2","fga":"8.4","fgp":".500","tpm":"0.3","tpa":"1.5","tpp":".217","ftm":"1.1","fta":"1.7","ftp":".640"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2021-22 *","team":"All Teams","league":"-","gp":"36","pts":"14.0","fgm":"4.8","fga":"9.0","fgp":".533","tpm":"1.1","tpa":"2.8","tpp":".402","ftm":"2.1","fta":"2.7","ftp":".771"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2021-22 *","team":"BIR","league":"-","gp":"34","pts":"14.1","fgm":"4.8","fga":"9.0","fgp":".531","tpm":"1.2","tpa":"3.0","tpp":".402","ftm":"2.1","fta":"2.7","ftp":".769"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2021-22 *","team":"SLC","league":"-","gp":"2","pts":"12.5","fgm":"4.5","fga":"8.0","fgp":".563","tpm":"0.0","tpa":"0.0","tpp":".000","ftm":"2.0","fta":"2.5","ftp":".800"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2022-23","team":"BIR","league":"-","gp":"39","pts":"13.8","fgm":"4.9","fga":"8.7","fgp":".565","tpm":"0.7","tpa":"2.3","tpp":".311","ftm":"2.0","fta":"2.7","ftp":".726"},
+{"tbl":"G League Showcase Cup Stats (Per Game)","season":"2022-23","team":"BIR","league":"-","gp":"16","pts":"16.2","fgm":"5.8","fga":"9.5","fgp":".612","tpm":"1.1","tpa":"2.4","tpp":".436","ftm":"2.0","fta":"2.6","ftp":".762"}
+]}

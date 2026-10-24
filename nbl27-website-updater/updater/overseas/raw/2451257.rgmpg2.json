@@ -1,0 +1,17 @@
+{"id":"2451257","url":"https://basketball.realgm.com/player/David-Johnson/Summary/132437","status":"cut",
+"rows":[
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2021-22","team":"TOR","league":"-","gp":"2","pts":"0.0","fgm":"0.0","fga":"0.5","fgp":".000","tpm":"0.0","tpa":"0.5","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2021-22","team":"TOR","league":"NBA Summer League","gp":"3","pts":"5.7","fgm":"1.7","fga":"5.7","fgp":".294","tpm":"1.0","tpa":"4.0","tpp":".250","ftm":"1.3","fta":"1.3","ftp":"1.000"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2022-23","team":"TOR","league":"NBA 2k23 Summer League","gp":"4","pts":"3.8","fgm":"1.5","fga":"5.5","fgp":".273","tpm":"0.5","tpa":"2.8","tpp":".182","ftm":"0.2","fta":"1.0","ftp":".250"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2023-24","team":"TOR","league":"NBA 2K24 Summer League","gp":"4","pts":"1.8","fgm":"0.5","fga":"3.5","fgp":".143","tpm":"0.0","tpa":"1.0","tpp":".000","ftm":"0.8","fta":"2.0","ftp":".375"},
+{"tbl":"NBA Preseason Stats (Per Game)","season":"2021-22","team":"TOR","league":"-","gp":"3","pts":"2.3","fgm":"1.0","fga":"3.0","fgp":".333","tpm":"0.3","tpa":"1.7","tpp":".200","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2021-22","team":"RAP","league":"-","gp":"32","pts":"12.2","fgm":"4.6","fga":"11.4","fgp":".400","tpm":"2.1","tpa":"6.5","tpp":".316","ftm":"0.6","fta":"0.8","ftp":".769"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2022-23","team":"RAP","league":"-","gp":"41","pts":"9.5","fgm":"3.8","fga":"8.2","fgp":".460","tpm":"1.1","tpa":"3.2","tpp":".346","ftm":"0.5","fta":"0.7","ftp":".733"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2023-24","team":"MHU","league":"-","gp":"24","pts":"16.9","fgm":"5.8","fga":"14.1","fgp":".414","tpm":"2.9","tpa":"8.2","tpp":".354","ftm":"1.4","fta":"1.8","ftp":".750"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2024-25","team":"MHU","league":"-","gp":"28","pts":"16.1","fgm":"5.6","fga":"11.9","fgp":".467","tpm":"3.0","tpa":"7.1","tpp":".419","ftm":"1.1","fta":"1.5","ftp":".762"},
+{"tbl":"G League Showcase Cup Stats (Per Game)","season":"2022-23","team":"RAP","league":"-","gp":"13","pts":"6.8","fgm":"2.8","fga":"7.3","fgp":".389","tpm":"0.7","tpa":"2.8","tpp":".250","ftm":"0.3","fta":"0.4","ftp":".800"},
+{"tbl":"G League Showcase Cup Stats (Per Game)","season":"2023-24","team":"MHU","league":"-","gp":"16","pts":"17.0","fgm":"5.7","fga":"13.9","fgp":".410","tpm":"2.8","tpa":"8.3","tpp":".331","ftm":"1.7","fta":"2.0","ftp":".844"},
+{"tbl":"G League Showcase Cup Stats (Per Game)","season":"2024-25","team":"MHU","league":"-","gp":"6","pts":"14.3","fgm":"4.7","fga":"10.3","fgp":".452","tpm":"2.5","tpa":"6.3","tpp":".395","ftm":"1.5","fta":"2.2","ftp":".692"},
+{"tbl":"NCAA Season Stats (Per Game)","season":"2019-20","team":"Louisville","league":"-","gp":"26","pts":"6.6","fgm":"2.7","fga":"5.5","fgp":".493","tpm":"0.2","tpa":"0.9","tpp":".217","ftm":"0.9","fta":"1.5","ftp":".600"},
+{"tbl":"NCAA Season Stats (Per Game)","season":"2020-21","team":"Louisville","league":"-","gp":"19","pts":"12.6","fgm":"4.7","fga":"11.5","fgp":".411","tpm":"1.7","tpa":"4.4","tpp":".386","ftm":"1.5","fta":"2.1","ftp":".700"}
+]}

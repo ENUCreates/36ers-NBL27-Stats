@@ -1,0 +1,18 @@
+{"id":"5404880","url":"https://basketball.realgm.com/player/Darius-Days/Summary/120261","status":"cut","note":"International per-game table not in page text (text ends in NCAA section)",
+"rows":[
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2022-23","team":"HOU","league":"-","gp":"4","pts":"3.8","fgm":"1.2","fga":"3.0","fgp":".417","tpm":"0.8","tpa":"2.5","tpp":".300","ftm":"0.5","fta":"0.5","ftp":"1.000"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2022-23","team":"SAN","league":"NBA 2k23 Summer League","gp":"3","pts":"13.7","fgm":"5.0","fga":"9.0","fgp":".556","tpm":"2.0","tpa":"5.3","tpp":".375","ftm":"1.7","fta":"1.7","ftp":"1.000"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2023-24","team":"HOU","league":"NBA 2K24 Summer League","gp":"5","pts":"8.0","fgm":"2.8","fga":"6.6","fgp":".424","tpm":"2.2","tpa":"5.6","tpp":".393","ftm":"0.2","fta":"0.2","ftp":"1.000"},
+{"tbl":"NBA Preseason Stats (Per Game)","season":"2022-23","team":"MIA","league":"-","gp":"2","pts":"1.0","fgm":"0.5","fga":"1.5","fgp":".333","tpm":"0.0","tpa":"1.0","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Preseason Stats (Per Game)","season":"2023-24","team":"HOU","league":"-","gp":"4","pts":"4.0","fgm":"1.2","fga":"2.5","fgp":".500","tpm":"0.8","tpa":"2.0","tpp":".375","ftm":"0.8","fta":"1.5","ftp":".500"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2022-23","team":"RGV","league":"-","gp":"47","pts":"21.8","fgm":"8.1","fga":"16.6","fgp":".490","tpm":"3.4","tpa":"9.3","tpp":".362","ftm":"1.3","fta":"1.6","ftp":".816"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2023-24","team":"RGV","league":"-","gp":"45","pts":"16.0","fgm":"5.7","fga":"13.3","fgp":".428","tpm":"2.3","tpa":"7.5","tpp":".302","ftm":"1.6","fta":"2.2","ftp":".735"},
+{"tbl":"G League Playoff Stats (Per Game)","season":"2022-23","team":"RGV","league":"-","gp":"5","pts":"16.4","fgm":"6.2","fga":"14.4","fgp":".431","tpm":"2.4","tpa":"7.4","tpp":".324","ftm":"1.0","fta":"1.2","ftp":".833"},
+{"tbl":"G League Playoff Stats (Per Game)","season":"2023-24","team":"RGV","league":"-","gp":"1","pts":"16.0","fgm":"5.0","fga":"15.0","fgp":".333","tpm":"5.0","tpa":"14.0","tpp":".357","ftm":"1.0","fta":"2.0","ftp":".500"},
+{"tbl":"G League Showcase Cup Stats (Per Game)","season":"2022-23","team":"RGV","league":"-","gp":"18","pts":"17.6","fgm":"6.8","fga":"13.7","fgp":".496","tpm":"2.3","tpa":"6.8","tpp":".333","ftm":"1.1","fta":"1.5","ftp":".741"},
+{"tbl":"G League Showcase Cup Stats (Per Game)","season":"2023-24","team":"RGV","league":"-","gp":"15","pts":"17.4","fgm":"6.3","fga":"13.7","fgp":".461","tpm":"1.8","tpa":"6.5","tpp":".278","ftm":"1.9","fta":"2.6","ftp":".744"},
+{"tbl":"NCAA Season Stats (Per Game)","season":"2018-19","team":"LSU","league":"-","gp":"35","pts":"5.3","fgm":"1.9","fga":"3.9","fgp":".485","tpm":"0.7","tpa":"1.9","tpp":".382","ftm":"0.7","fta":"1.0","ftp":".743"},
+{"tbl":"NCAA Season Stats (Per Game)","season":"2019-20","team":"LSU","league":"-","gp":"31","pts":"11.1","fgm":"4.0","fga":"8.3","fgp":".486","tpm":"1.3","tpa":"4.3","tpp":".295","ftm":"1.8","fta":"2.3","ftp":".786"},
+{"tbl":"NCAA Season Stats (Per Game)","season":"2020-21","team":"LSU","league":"-","gp":"28","pts":"11.6","fgm":"4.4","fga":"8.5","fgp":".519","tpm":"1.9","tpa":"4.6","tpp":".400","ftm":"0.9","fta":"1.3","ftp":".703"},
+{"tbl":"NCAA Season Stats (Per Game)","season":"2021-22","team":"LSU","league":"-","gp":"33","pts":"13.7","fgm":"5.0","fga":"11.5","fgp":".434","tpm":"2.1","tpa":"6.0","tpp":".350","ftm":"1.7","fta":"2.4","ftp":".700"}
+]}

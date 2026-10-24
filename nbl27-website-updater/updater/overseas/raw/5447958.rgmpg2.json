@@ -1,0 +1,22 @@
+{"id":"5447958","url":"https://basketball.realgm.com/player/Kelan-Martin/Summary/80516","status":"cut",
+"note":"Read 2 said the G League Showcase Cup per-game row is cut off (values given as CUT) and that International, NCAA, National and AAU sections do not appear in the page text.",
+"rows":[
+{"tbl":"NBA Regular Season Stats","season":"2019-20","team":"MIN","league":"-","gp":"31","pts":"6.4","fgm":"2.3","fga":"5.8","fgp":".392","tpm":"0.8","tpa":"3.1","tpp":".260","ftm":"1.0","fta":"1.0","ftp":".968"},
+{"tbl":"NBA Regular Season Stats","season":"2020-21","team":"IND","league":"-","gp":"35","pts":"4.5","fgm":"1.8","fga":"3.9","fgp":".449","tpm":"0.7","tpa":"1.7","tpp":".400","ftm":"0.3","fta":"0.3","ftp":".900"},
+{"tbl":"NBA Regular Season Stats","season":"2021-22 *","team":"All Teams","league":"-","gp":"30","pts":"5.7","fgm":"2.3","fga":"5.7","fgp":".409","tpm":"0.7","tpa":"2.5","tpp":".293","ftm":"0.3","fta":"0.4","ftp":".692"},
+{"tbl":"NBA Regular Season Stats","season":"2021-22 *","team":"IND","league":"-","gp":"27","pts":"6.3","fgm":"2.6","fga":"6.2","fgp":".417","tpm":"0.8","tpa":"2.7","tpp":".297","ftm":"0.3","fta":"0.5","ftp":".692"},
+{"tbl":"NBA Regular Season Stats","season":"2021-22 *","team":"BOS","league":"-","gp":"3","pts":"0.0","fgm":"0.0","fga":"1.0","fgp":".000","tpm":"0.0","tpa":"0.3","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Play-In Stats","season":"2020-21","team":"IND","league":"-","gp":"1","pts":"14.0","fgm":"6.0","fga":"14.0","fgp":".429","tpm":"2.0","tpa":"4.0","tpp":".500","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Summer League Stats","season":"2018-19 *","team":"All Teams","league":"All Leagues","gp":"7","pts":"7.9","fgm":"3.1","fga":"8.0","fgp":".393","tpm":"1.0","tpa":"3.7","tpp":".269","ftm":"0.6","fta":"0.7","ftp":".800"},
+{"tbl":"NBA Summer League Stats","season":"2018-19 *","team":"UTH","league":"NBA Summer League","gp":"4","pts":"6.8","fgm":"2.8","fga":"8.2","fgp":".333","tpm":"0.5","tpa":"3.5","tpp":".143","ftm":"0.8","fta":"1.0","ftp":".750"},
+{"tbl":"NBA Summer League Stats","season":"2018-19 *","team":"UTH","league":"Utah Jazz Summer League","gp":"3","pts":"9.3","fgm":"3.7","fga":"7.7","fgp":".478","tpm":"1.7","tpa":"4.0","tpp":".417","ftm":"0.3","fta":"0.3","ftp":"1.000"},
+{"tbl":"NBA Summer League Stats","season":"2019-20","team":"MIN","league":"NBA Summer League","gp":"7","pts":"12.9","fgm":"4.6","fga":"9.4","fgp":".485","tpm":"2.0","tpa":"5.0","tpp":".400","ftm":"1.7","fta":"2.0","ftp":".857"},
+{"tbl":"NBA Preseason Stats","season":"2019-20","team":"MIN","league":"-","gp":"2","pts":"9.5","fgm":"4.0","fga":"9.0","fgp":".444","tpm":"1.0","tpa":"5.0","tpp":".200","ftm":"0.5","fta":"1.0","ftp":".500"},
+{"tbl":"NBA Preseason Stats","season":"2020-21","team":"IND","league":"-","gp":"3","pts":"7.3","fgm":"2.7","fga":"7.3","fgp":".364","tpm":"1.0","tpa":"4.3","tpp":".231","ftm":"1.0","fta":"2.0","ftp":".500"},
+{"tbl":"NBA Preseason Stats","season":"2021-22","team":"IND","league":"-","gp":"2","pts":"6.5","fgm":"2.5","fga":"5.0","fgp":".500","tpm":"1.0","tpa":"2.5","tpp":".400","ftm":"0.5","fta":"1.0","ftp":".500"},
+{"tbl":"NBA Preseason Stats","season":"2022-23","team":"NOP","league":"-","gp":"2","pts":"1.0","fgm":"0.5","fga":"2.0","fgp":".250","tpm":"0.0","tpa":"1.0","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"G League Regular Season Stats","season":"2019-20","team":"IWA","league":"-","gp":"23","pts":"18.4","fgm":"7.0","fga":"14.9","fgp":".472","tpm":"2.4","tpa":"6.3","tpp":".377","ftm":"1.3","fta":"1.7","ftp":".769"},
+{"tbl":"G League Regular Season Stats","season":"2021-22","team":"GRG","league":"-","gp":"2","pts":"14.0","fgm":"4.5","fga":"12.0","fgp":".375","tpm":"2.0","tpa":"8.0","tpp":".250","ftm":"1.5","fta":"1.5","ftp":"1.000"},
+{"tbl":"G League Regular Season Stats","season":"2022-23","team":"BIR","league":"-","gp":"46","pts":"20.0","fgm":"7.3","fga":"14.8","fgp":".496","tpm":"2.2","tpa":"5.6","tpp":".395","ftm":"2.0","fta":"2.3","ftp":".887"},
+{"tbl":"G League Showcase Cup Stats","season":"2022-23","team":"BIR","league":"-","gp":"CUT","pts":"CUT","fgm":"CUT","fga":"CUT","fgp":"CUT","tpm":"CUT","tpa":"CUT","tpp":"CUT","ftm":"CUT","fta":"CUT","ftp":"CUT"}
+]}

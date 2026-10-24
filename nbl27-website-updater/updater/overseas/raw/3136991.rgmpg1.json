@@ -1,0 +1,10 @@
+{"id":"3136991","url":"https://basketball.realgm.com/player/Dakota-Mathias/Summary/79908","status":"cut","note":"page text ends at char 68080 inside G League Misc table; NCAA/International sections not reached even with offset",
+"rows":[
+{"tbl":"NBA Regular Season Stats, Per Game","season":"2020-21","team":"PHL","league":"","gp":"8","pts":"6.0","fgm":"2.4","fga":"6.0","fgp":".396","tpm":"1.0","tpa":"3.2","tpp":".308","ftm":"0.2","fta":"0.8","ftp":".333"},
+{"tbl":"NBA Regular Season Stats, Per Game","season":"2021-22","team":"MEM","league":"","gp":"6","pts":"1.0","fgm":"0.3","fga":"1.0","fgp":".333","tpm":"0.3","tpa":"1.0","tpp":".333","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"G League Regular Season Stats, Per Game","season":"2019-20","team":"TEX","league":"","gp":"42","pts":"18.1","fgm":"6.0","fga":"13.9","fgp":".432","tpm":"3.5","tpa":"8.8","tpp":".395","ftm":"1.5","fta":"1.8","ftp":".831"},
+{"tbl":"G League Regular Season Stats, Per Game","season":"2021-22","team":"TEX","league":"","gp":"4","pts":"14.0","fgm":"4.8","fga":"12.8","fgp":".373","tpm":"2.8","tpa":"6.5","tpp":".423","ftm":"0.8","fta":"1.2","ftp":".600"},
+{"tbl":"G League Regular Season Stats, Per Game","season":"2022-23","team":"MHU","league":"","gp":"49","pts":"16.0","fgm":"5.7","fga":"12.4","fgp":".462","tpm":"3.1","tpa":"7.7","tpp":".407","ftm":"0.9","fta":"1.1","ftp":".846"},
+{"tbl":"G League Regular Season Stats, Per Game","season":"2024-25","team":"IND","league":"","gp":"45","pts":"17.9","fgm":"6.0","fga":"13.7","fgp":".441","tpm":"3.1","tpa":"8.1","tpp":".387","ftm":"1.6","fta":"1.7","ftp":".949"},
+{"tbl":"G League Regular Season Stats, Per Game","season":"2025-26","team":"NBL","league":"","gp":"9","pts":"21.9","fgm":"7.9","fga":"16.0","fgp":".493","tpm":"4.0","tpa":"9.1","tpp":".439","ftm":"1.3","fta":"1.3","ftp":"1.000"}
+]}

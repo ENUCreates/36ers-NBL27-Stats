@@ -1,0 +1,22 @@
+{"id":"5440831","url":"https://basketball.realgm.com/player/Skylar-Mays/Summary/85943","status":"cut",
+"rows":[
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2020-21","team":"ATL","league":"-","gp":"33","pts":"3.8","fgm":"1.3","fga":"3.0","fgp":".449","tpm":"0.4","tpa":"1.2","tpp":".350","ftm":"0.7","fta":"0.8","ftp":".880"},
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2021-22","team":"ATL","league":"-","gp":"28","pts":"2.9","fgm":"1.1","fga":"2.3","fgp":".500","tpm":"0.3","tpa":"0.9","tpp":".320","ftm":"0.3","fta":"0.3","ftp":".889"},
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2022-23","team":"POR","league":"-","gp":"6","pts":"15.3","fgm":"5.7","fga":"11.3","fgp":".500","tpm":"2.0","tpa":"4.3","tpp":".462","ftm":"2.0","fta":"2.2","ftp":".923"},
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2023-24 *","team":"All Teams","league":"-","gp":"38","pts":"4.1","fgm":"1.7","fga":"4.2","fgp":".396","tpm":"0.4","tpa":"1.4","tpp":".296","ftm":"0.3","fta":"0.4","ftp":".765"},
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2023-24 *","team":"POR","league":"-","gp":"21","pts":"6.3","fgm":"2.5","fga":"6.6","fgp":".384","tpm":"0.7","tpa":"2.3","tpp":".286","ftm":"0.6","fta":"0.8","ftp":".765"},
+{"tbl":"NBA Regular Season Stats (Per Game)","season":"2023-24 *","team":"LAL","league":"-","gp":"17","pts":"1.3","fgm":"0.6","fga":"1.2","fgp":".476","tpm":"0.1","tpa":"0.3","tpp":".400","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Playoff Stats (Per Game)","season":"2020-21","team":"ATL","league":"-","gp":"7","pts":"1.1","fgm":"0.6","fga":"0.7","fgp":".800","tpm":"0.0","tpa":"0.0","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Playoff Stats (Per Game)","season":"2021-22","team":"ATL","league":"-","gp":"2","pts":"1.0","fgm":"0.5","fga":"0.5","fgp":"1.000","tpm":"0.0","tpa":"0.0","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Play-In Stats (Per Game)","season":"2021-22","team":"ATL","league":"-","gp":"1","pts":"2","fgm":"1.0","fga":"1.0","fgp":"1.000","tpm":"0.0","tpa":"0.0","tpp":".000","ftm":"0.0","fta":"0.0","ftp":".000"},
+{"tbl":"NBA Summer League Stats (Per Game)","season":"2021-22","team":"ATL","league":"NBA Summer League","gp":"4","pts":"18.8","fgm":"6.2","fga":"13.5","fgp":".463","tpm":"2.2","tpa":"6.8","tpp":".333","ftm":"4.0","fta":"4.0","ftp":"1.000"},
+{"tbl":"NBA Preseason Stats (Per Game)","season":"2020-21","team":"ATL","league":"-","gp":"3","pts":"1.7","fgm":"0.3","fga":"1.7","fgp":".200","tpm":"0.0","tpa":"0.3","tpp":".000","ftm":"1.0","fta":"1.3","ftp":".750"},
+{"tbl":"NBA Preseason Stats (Per Game)","season":"2021-22","team":"ATL","league":"-","gp":"4","pts":"3.5","fgm":"1.2","fga":"3.5","fgp":".357","tpm":"0.5","tpa":"1.5","tpp":".333","ftm":"0.5","fta":"0.5","ftp":"1.000"},
+{"tbl":"NBA Preseason Stats (Per Game)","season":"2023-24","team":"POR","league":"-","gp":"4","pts":"7.8","fgm":"2.8","fga":"6.0","fgp":".458","tpm":"0.8","tpa":"2.0","tpp":".375","ftm":"1.5","fta":"2.0","ftp":".750"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2021-22","team":"COL","league":"-","gp":"8","pts":"18.0","fgm":"6.5","fga":"14.2","fgp":".456","tpm":"1.9","tpa":"5.5","tpp":".341","ftm":"2.2","fta":"2.4","ftp":".947"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2022-23 *","team":"All Teams","league":"-","gp":"47","pts":"13.7","fgm":"4.7","fga":"11.3","fgp":".417","tpm":"1.5","tpa":"4.8","tpp":".304","ftm":"1.6","fta":"1.9","ftp":".846"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2022-23 *","team":"DEL","league":"-","gp":"31","pts":"10.9","fgm":"3.6","fga":"9.5","fgp":".382","tpm":"1.2","tpa":"4.4","tpp":".279","ftm":"1.4","fta":"1.7","ftp":".830"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2022-23 *","team":"CAP","league":"-","gp":"16","pts":"19.2","fgm":"6.9","fga":"15.0","fgp":".458","tpm":"1.9","tpa":"5.7","tpp":".341","ftm":"2.1","fta":"2.4","ftp":".868"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2023-24","team":"SBL","league":"-","gp":"7","pts":"21.1","fgm":"7.6","fga":"15.6","fgp":".486","tpm":"2.7","tpa":"6.3","tpp":".432","ftm":"2.3","fta":"2.7","ftp":".842"},
+{"tbl":"G League Regular Season Stats (Per Game)","season":"2024-25","team":"IWA","league":"-","gp":"19","pts":"12.5","fgm":"4.4","fga":"10.4","fgp":".421","tpm":"2.1","tpa":"5.3","tpp":".390","ftm":"1.1","fta":"1.4","ftp":".808"}
+]}
