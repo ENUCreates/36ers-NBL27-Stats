@@ -1,0 +1,32 @@
+#url https://basketball.realgm.com/player/Mangok-Mathiang/Summary/41959
+#fetched 2026-10-25
+#note read B: the International table's title is written as RealGM prints it (read A); this read echoed the prompt's wording
+Mangok Mathiang | Oct 8, 1992 | Australia / South Sudan | IMG Academy
+NBA Regular Season Stats
+2017-18 | CHA | - | 4 | 5.0 | 2.0 | 2.5 | 0.0 | 0.2 | 0.0 | 0.0 | .571 | .000 | .000
+CAREER | - | - | 4 | 5.0 | 2.0 | 2.5 | 0.0 | 0.2 | 0.0 | 0.0 | .571 | .000 | .000
+G League Regular Season Stats
+2017-18 | GBO | - | 43 | 25.3 | 10.8 | 9.2 | 1.0 | 0.7 | 1.4 | 1.9 | .519 | .000 | .643
+CAREER | - | - | 43 | 25.3 | 10.8 | 9.2 | 1.0 | 0.7 | 1.4 | 1.9 | .519 | .000 | .643
+NCAA Season Stats
+2012-13 | Louisville | - | - | - | - | - | - | - | - | - | - | - | -
+2013-14 | Louisville | - | 37 | 14.7 | 3.6 | 3.6 | 0.4 | 0.4 | 1.4 | 0.6 | .528 | .000 | .619
+2014-15 | Louisville | - | 34 | 18.7 | 2.6 | 4.7 | 0.5 | 0.6 | 1.4 | 0.8 | .388 | .000 | .481
+2015-16 | Louisville | - | 10 | 18.8 | 7.1 | 5.7 | 0.5 | 0.7 | 1.2 | 1.1 | .563 | .000 | .586
+2016-17 | Louisville | - | 33 | 20.8 | 7.8 | 6.0 | 0.7 | 0.5 | 1.1 | 1.2 | .531 | .000 | .671
+CAREER | NCAA DI | - | 114 | 18.0 | 4.8 | 4.8 | 0.5 | 0.5 | 1.3 | 0.9 | .506 | .000 | .599
+International Season Stats
+2018-19 * | All Teams | All Leagues | 42 | 25.9 | 11.2 | 10.1 | 0.6 | 0.7 | 0.7 | 2.3 | .625 | .000 | .531
+2018-19 * | Roma SPQR | Lega A | 39 | 25.9 | 11.3 | 10.2 | 0.6 | 0.7 | 0.7 | 2.3 | .623 | .000 | .515
+2018-19 * | Roma SPQR | Italian Cup | 3 | 25.3 | 10.7 | 9.7 | 0.3 | 1.0 | 0.7 | 2.0 | .667 | .000 | .727
+2019-20 * | All Teams | All Leagues | 32 | 31.3 | 12.5 | 10.9 | 1.3 | 0.8 | 1.4 | 1.8 | .563 | .143 | .676
+2019-20 * | Bahcesehir Koleji | T-BSL | 18 | 33.3 | 12.7 | 10.6 | 1.7 | 1.1 | 1.4 | 1.7 | .543 | .000 | .679
+2019-20 * | Bahcesehir Koleji | Europe Cup | 14 | 28.7 | 12.3 | 11.2 | 0.9 | 0.4 | 1.3 | 2.0 | .591 | .500 | .672
+2022-23 * | All Teams | All Leagues | 39 | 21.5 | 8.8 | 7.4 | 0.8 | 0.8 | 1.2 | 1.8 | .574 | .231 | .589
+2022-23 * | Illawarra | AUS NBL | 25 | 18.6 | 7.7 | 5.1 | 0.7 | 0.5 | 1.0 | 1.6 | .556 | .100 | .667
+2022-23 * | Hapoel Eilat | I-BSL | 11 | 29.9 | 11.1 | 13.9 | 1.3 | 1.5 | 1.9 | 2.5 | .582 | .000 | .485
+2022-23 * | Illawarra | NBL Blitz | 3 | 15.4 | 9.7 | 3.3 | 0.3 | 0.7 | 1.0 | 0.7 | .667 | .667 | .500
+2023-24 * | All Teams | All Leagues | 44 | 21.9 | 7.7 | 7.2 | 0.5 | 0.5 | 0.9 | 1.5 | .570 | .000 | .577
+2023-24 * | New Zealand | AUS NBL | 30 | 20.0 | 6.7 | 6.1 | 0.4 | 0.4 | 1.2 | 1.0 | .561 | .000 | .565
+2023-24 * | Ironi Ramat Gan | I-BSL | 11 | 28.1 | 10.2 | 10.9 | 0.6 | 0.7 | 0.4 | 2.8 | .553 | .000 | .563
+CUT

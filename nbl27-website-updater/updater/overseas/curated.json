@@ -1,5 +1,5 @@
 {
- "_about": "Hand-curated additions to the overseas build, each with the source it was read from. 'stints' are career-journey stops without stats (season, club, league, country), used where RealGM's International table was cut off or a player has no RealGM career page (src 'Wikipedia', or 'Club' for the clubs' own announcements, listed in 'sources'); seasons of leagues played inside one calendar year (NZNBL, BSN, BAL, NBL1...) are that year. 'noBBR' records that no Basketball-Reference page could be found for a player whose leagues it covers, so those seasons stay journey-only. 'checked' (with a 'note') marks a player searched for on 23 Oct 2026 with no RealGM, Basketball-Reference or Wikipedia page to read.",
+ "_about": "Hand-curated additions to the overseas build, each with the source it was read from. 'stints' are career-journey stops without stats (season, club, league, country), used where RealGM's International table was cut off or a player has no RealGM career page (src 'Wikipedia', or 'Club' for the clubs' own announcements, listed in 'sources'); seasons of leagues played inside one calendar year (NZNBL, BSN, BAL, NBL1...) are that year. 'noBBR' records that no Basketball-Reference page could be found for a player whose leagues it covers, so those seasons stay journey-only. 'checked' (with a 'note') marks a player searched for on 23 Oct 2026 with no RealGM, Basketball-Reference or Wikipedia page to read. 'order' (season -> clubs in the order he played for them) is set where a source dates a season's clubs, as Basketball-Reference and RealGM lines carry no dates; 'college' (with 'collegeSrc') names the school of a player with no RealGM page, from the source listed.",
  "5336714": {
   "stints": [
    {
@@ -729,5 +729,101 @@
    }
   ],
   "note": "Basketball-Reference's page for him (nathan-sobey-1) returned a site error on every try, so his 2016-17 PAOK (GBL) and 2018-19 Strasbourg (LNB) seasons show RealGM's season lines (both reads agree; all games), and 2014-15 with Cairns (a training player, before the official NBL box scores) is a journey stop from Wikipedia. Ballarat Miners (SEABL), Cairns Marlins (QBL) and Ipswich Force (QSL/NBL1 North) are state leagues"
+ },
+ "5465370": {
+  "stints": [
+   {
+    "season": "2024-25",
+    "team": "Daegu KOGAS Pegasus",
+    "league": "KBL",
+    "country": "KR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2025-26",
+    "team": "Daegu KOGAS Pegasus",
+    "league": "KBL",
+    "country": "KR",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2026",
+    "team": "APR BBC",
+    "league": "Rwanda BL",
+    "country": "RW",
+    "src": "Wikipedia"
+   },
+   {
+    "season": "2026",
+    "team": "RSSB Tigers",
+    "league": "BAL",
+    "country": "RW",
+    "src": "Wikipedia"
+   }
+  ],
+  "order": {
+   "2024-25": [
+    "Ningbo Rockets",
+    "Daegu KOGAS Pegasus"
+   ],
+   "2026": [
+    "APR BBC",
+    "RSSB Tigers"
+   ]
+  },
+  "note": "RealGM's page text ends inside its 2023-24 International lines, so the seasons after that come from Basketball-Reference (Ningbo Rockets 2024-25; Beijing Ducks and one Ningbo game in 2025-26, CBA) and Wikipedia (clubs only, no stats): Daegu KOGAS Pegasus (KBL) - signed with Ningbo on 26 Sep 2024, joined Daegu in April 2025 for the KBL playoffs (hence the 2024-25 order), returned for 2025-26 and was released in late October 2025; Beijing Ducks from December 2025; a one-game stint with APR BBC (Rwanda Basketball League) in March 2026, then RSSB Tigers for the 2026 BAL season. RealGM names his 2018-19 Lega A club Roma SPQR; Basketball-Reference and Wikipedia have Vanoli Cremona, and Basketball-Reference's line is the one shown. Not shown: Cedevita Olimpija (ABA, 2020-21 - signed, but missed the whole season injured) and Casey Cavaliers (NBL1 South 2022, a state league)",
+  "sources": [
+   "https://en.wikipedia.org/wiki/Mangok_Mathiang"
+  ]
+ },
+ "5404876": {
+  "stints": [
+   {
+    "season": "2020-21",
+    "team": "UTSA",
+    "league": "NCAA",
+    "country": "US",
+    "src": "Club"
+   },
+   {
+    "season": "2021-22",
+    "team": "UTSA",
+    "league": "NCAA",
+    "country": "US",
+    "src": "Club"
+   },
+   {
+    "season": "2022-23",
+    "team": "UTSA",
+    "league": "NCAA",
+    "country": "US",
+    "src": "Club"
+   },
+   {
+    "season": "2023-24",
+    "team": "St. Mary's (TX)",
+    "league": "NCAA D2",
+    "country": "US",
+    "src": "Club"
+   },
+   {
+    "season": "2024-25",
+    "team": "St. Mary's (TX)",
+    "league": "NCAA D2",
+    "country": "US",
+    "src": "Club"
+   }
+  ],
+  "college": "St. Mary's (TX)",
+  "collegeSrc": "Club",
+  "note": "no RealGM, Basketball-Reference or Wikipedia page found by search. UTSA's roster page (its 2022-23 roster, junior): 17 games as a freshman in 2020-21, all 32 as a sophomore in 2021-22 (11 starts; UTSA, 16 May 2022). St. Mary's University (San Antonio; NCAA Division II, Lone Star Conference) roster page: three seasons and 69 games at UTSA before StMU, all 28 games as a senior in 2023-24 and 29 as a graduate student in 2024-25; StMU (16 Jun 2025): a 2025 graduate. NBL1's signing story (2 Sep 2026): five years in the US college system, with UTSA and St Mary's University in Texas. Norths Bears (NBL1 East, 2025 and 2026) is a state league",
+  "sources": [
+   "https://goutsa.com/sports/mens-basketball/roster/player/lachlan-bofinger",
+   "https://goutsa.com/news/2022/05/16/bofinger-to-participate-in-jamaica-tour-with-sports-reach",
+   "https://rattlerathletics.com/sports/baseball/roster/lachlan-bofinger/3994",
+   "https://rattlerathletics.com/news/2025/6/16/mens-basketball-pair-of-recent-mbb-graduates-playing-professionally-in-home-countries.aspx",
+   "https://www.nbl1.com.au/news/lachlan-bofinger-signs-with-sydney-kings-for-nbl27"
+  ],
+  "checked": "2026-10-25"
  }
 }

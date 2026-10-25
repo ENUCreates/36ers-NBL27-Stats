@@ -1318,15 +1318,16 @@ const CALYEAR=s=>/^\d{4}$/.test(s||"");
 const SIDETRACK=r=>CALYEAR(r.season)?"Off-season":r.league==="G League"?"G League":null;
 function careerStops(b,team){
   // one stop per club, season by season (inside a season: college, NBA, other leagues, NBL). Official NBL box scores and
-  // ESPN list a season's clubs in the order they were played. Other sources don't, so there the club carried over from
+  // ESPN list a season's clubs in the order they were played, and so do the one-off rows a dated source puts in order
+  // (seq: the club's place in that season). Other sources don't, so there the club carried over from
   // the previous stop comes first, the club that carries on into the next one comes last, and any club that can't be
   // placed between them shares one stop ("A / B")
-  const items=pastRows(b).concat(b?.careerExtra||[]).filter(r=>!SIDETRACK(r)),inOrder=s=>s==="NBL"||s==="ESPN";
+  const items=pastRows(b).concat(b?.careerExtra||[]).filter(r=>!SIDETRACK(r)),inOrder=r=>r.src==="NBL"||r.src==="ESPN"||r.seq!=null;
   const same=(a,c)=>!!(a&&c&&!a.parts&&!c.parts&&a.team===c.team&&a.cc===c.cc),groups=[],stops=[];
-  items.sort((x,y)=>(x.season||"").localeCompare(y.season||"")||PHASE(x)-PHASE(y)).forEach(r=>{
+  items.sort((x,y)=>(x.season||"").localeCompare(y.season||"")||PHASE(x)-PHASE(y)||(x.seq||0)-(y.seq||0)).forEach(r=>{
     const t={team:r.team,cc:rowCC(r),league:r.league},ph=PHASE(r),g=groups.find(g=>g.season===r.season&&g.ph===ph);
-    if(!g){groups.push({season:r.season,ph,teams:[t],ordered:inOrder(r.src)});return}
-    if(!g.teams.some(u=>same(u,t)))g.teams.push(t);if(!inOrder(r.src))g.ordered=false});
+    if(!g){groups.push({season:r.season,ph,teams:[t],ordered:inOrder(r)});return}
+    if(!g.teams.some(u=>same(u,t)))g.teams.push(t);if(!inOrder(r))g.ordered=false});
   const add=(t,season)=>{const last=stops[stops.length-1];if(same(last,t)){last.to=season;return}
     stops.push({team:t.team,league:t.league,cc:t.cc,from:season,to:season,parts:t.parts})};
   groups.forEach((g,i)=>{const ts=g.teams.slice();
@@ -1418,7 +1419,7 @@ function playerCard(team,pid){
   const past=pastRows(b);
   // de-duplicate identical season/team/league rows (extra sources first); newest first, and inside a season the later stage first
   const seen=new Set(),hist=cur.concat(past).filter(h=>{const k=h.season+"|"+h.team+"|"+h.league;if(seen.has(k))return false;seen.add(k);return true})
-    .sort((x,y)=>(y.season||"").localeCompare(x.season||"")||(x.live?-1:y.live?1:0)||PHASE(y)-PHASE(x));
+    .sort((x,y)=>(y.season||"").localeCompare(x.season||"")||(x.live?-1:y.live?1:0)||PHASE(y)-PHASE(x)||(y.seq||0)-(x.seq||0));
   const MA=(m,a)=>m==null||a==null||!isFinite(m)||!isFinite(a)?"–":`${m.toFixed(1)}/${a.toFixed(1)}`;
   const hrow=h=>`<tr${h.live?' class="teamrow"':""}><td class="tm">${h.season}</td><td style="text-align:left;font-family:var(--body)">${h.team} <span class="mu">(${ccFlag(rowCC(h))||rowCC(h)})</span></td><td style="text-align:left;font-family:var(--body)" title="${h.live?"This site's NBL27 data":"Source: "+(SRCNAME[h.src]||h.src||"")}">${h.league}${h.allGames?'<sup class="mu" title="RealGM season line: all games that season (playoffs included)">†</sup>':""}</td>
     <td>${h.gp??"–"}</td><td>${f1(h.mpg)}</td><td>${f1(h.pts)}</td><td>${f1(h.reb)}</td><td>${f1(h.ast)}</td><td>${f1(h.stl)}</td><td>${f1(h.blk)}</td><td>${MA(h.fgm,h.fga)}</td><td>${pct(h.fgp)}</td><td>${MA(h.tpm,h.tpa)}</td><td>${pct(h.tpp)}</td><td>${MA(h.ftm,h.fta)}</td><td>${pct(h.ftp)}</td><td>${sgn(h.pm)}</td></tr>`;

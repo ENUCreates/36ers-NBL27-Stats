@@ -12,7 +12,9 @@ Raw files (overseas/raw/<ESPN athlete id>.<kind>):
   rgm.jsonl               RealGM player Summary page: NBA / G League / NCAA / International season lines (per game).
   rgm2.txt                a second, independent read of the same RealGM page (pipe-separated, with career rows).
   wiki.jsonl              Wikipedia career history (clubs only), used through curated.json.
-curated.json: hand-mapped journey stops (club, league, country, season) with the source they were read from.
+curated.json: hand-mapped journey stops (club, league, country, season) with the source they were read from; the order
+of a season's clubs where a source dates them ('order', shown on the cards through each row's 'seq'); and the school of
+a player with no RealGM page ('college').
 
 What is used, and the checks it must pass:
   * Basketball-Reference rows (stats): leagues other than the NBL, and NBL seasons before the official data (2015-16).
@@ -94,6 +96,7 @@ LG = {
     "Leaders Cup LNB A": (None, None, "cup", False), "French-Leaders-Cup-LNB-A": (None, None, "cup", False),
     "FBC": (None, None, "cup", False), "French-Basketball-Cup": (None, None, "cup", False),
     "Turkish Cup": (None, None, "cup", False), "Spanish Cup": (None, None, "cup", False), "Spanish-Cup": (None, None, "cup", False),
+    "Italian Cup": (None, None, "cup", False), "Italian-Cup": (None, None, "cup", False),
     "Intercontinental Cup": ("Intercontinental Cup", None, "cup", False), "Intercontinental-Cup": ("Intercontinental Cup", None, "cup", False),
     "ROM DivA": ("Liga Națională", "RO", "dom", False), "Romanian-Divizia-A": ("Liga Națională", "RO", "dom", False),
     "Euroleague": ("EuroLeague", None, "cont", False), "Eurocup": ("EuroCup", None, "cont", False),
@@ -163,7 +166,8 @@ RGM_NAME = {"Aukland Tuatara": "Auckland Tuatara", "Art Giants Dusseldorf": "ART
             "UCAM Murcia CB": "UCAM Murcia", "Lenovo Tenerife": "La Laguna Tenerife",
             "s.Oliver Baskets": "s.Oliver Würzburg", "Chiba Jets": "Chiba Jets Funabashi", "Monbus Obradoiro": "Obradoiro CAB",
             "Mersin BSB": "Mersin MSK", "CSP Limoges": "Limoges CSP", "Pallacanestro Trieste 2004": "Pallacanestro Trieste",
-            "Dubai": "Dubai Basketball", "PAOK BC": "PAOK", "Strasbourg IG": "SIG Strasbourg"}
+            "Dubai": "Dubai Basketball", "PAOK BC": "PAOK", "Strasbourg IG": "SIG Strasbourg",
+            "Bahcesehir Koleji": "Bahçeşehir Koleji"}
 
 # Basketball-Reference team link slug -> club name shown on the cards
 BBR_CLUB = {"xinjiang": "Xinjiang Flying Tigers", "anadolu-efes": "Anadolu Efes", "brescia": "Germani Brescia",
@@ -171,7 +175,8 @@ BBR_CLUB = {"xinjiang": "Xinjiang Flying Tigers", "anadolu-efes": "Anadolu Efes"
             "gravelines": "BCM Gravelines-Dunkerque", "basquet-girona": "Bàsquet Girona", "bayern-muenchen": "Bayern Munich",
             "koroivos": "Koroivos Amaliadas", "roma": "Virtus Roma", "zhejiang-hangzhou": "Zhejiang Guangsha Lions",
             "mornar": "Mornar Bar", "zhejiang-yiwu": "Zhejiang Golden Bulls", "jilin": "Jilin Northeast Tigers",
-            "ningbo": "Ningbo Rockets", "guangdong": "Guangdong Southern Tigers", "san-sebastian": "Gipuzkoa Basket",
+            "ningbo": "Ningbo Rockets", "beijing-shougang": "Beijing Ducks", "guangdong": "Guangdong Southern Tigers", "san-sebastian": "Gipuzkoa Basket",
+            "cremona": "Vanoli Cremona", "maccabi-ironi-ramat-gan": "Maccabi Ironi Ramat Gan",
             "murcia": "UCAM Murcia", "barcelona": "FC Barcelona", "champagne-basket": "Champagne Châlons-Reims",
             "napoli-basket": "Napoli Basket", "neptunas": "Neptūnas Klaipėda", "maccabi-tel-aviv": "Maccabi Tel Aviv",
             "fuenlabrada": "Baloncesto Fuenlabrada", "shanxi": "Shanxi Loongs", "trieste": "Pallacanestro Trieste",
@@ -746,6 +751,16 @@ def main():
             if k in seen or any(r["season"] == st["season"] and r["league"] == st["league"] and r["team"] == st["team"] for r in rows):
                 continue
             seen.add(k); st2.append(st)
+        # the order of a season's clubs where a source gives it (curated 'order': season -> clubs in the order he played
+        # for them). Basketball-Reference and RealGM lines carry no dates, so without it the cards can only place a
+        # season's clubs by the seasons around it; 'seq' is the club's place in that season
+        for season, clubs in ((curated.get(pid) or {}).get("order") or {}).items():
+            for i, club in enumerate(clubs, 1):
+                hit = [x for x in rows + st2 if x["season"] == season and x["team"] == club]
+                if not hit:
+                    rep(f"curated order {season}: {club!r} has no row or stop - not applied"); continue
+                for x in hit:
+                    x["seq"] = i
         fetched = []
         for fp_ in glob.glob(os.path.join(RAW, pid + ".*")):
             for ln in open(fp_, encoding="utf-8"):
@@ -762,6 +777,9 @@ def main():
         if college and not b.get("college"):
             entry["college"] = college
             entry["src"] = {"college": "RealGM"}
+        elif (curated.get(pid) or {}).get("college") and not b.get("college"):
+            entry["college"] = curated[pid]["college"]            # no RealGM page: the school named by the curated source
+            entry["src"] = {"college": curated[pid].get("collegeSrc", "Club")}
         if sources:
             entry["sources"] = sources
         if (curated.get(pid) or {}).get("espnDrop"):
