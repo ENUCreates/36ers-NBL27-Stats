@@ -119,6 +119,18 @@ tr.low td{opacity:.55}
 .lu .lp .av.sm{width:34px;height:34px;font-size:12px}
 .lu .lpn{white-space:normal;overflow-wrap:break-word;line-height:1.2;max-width:100%}
 @media (max-width:600px){.lu{grid-template-columns:repeat(var(--n,5),82px);gap:4px}.lu .lpn{font-size:11.5px}.lu .lp .av.sm{width:30px;height:30px}}
+.chip[aria-expanded="true"]{border-color:var(--accent);background:var(--soft)}
+#view-lineups .pbar .seg+.seg{margin-right:auto}
+.lcols{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px;padding:10px 12px;border:1px dashed var(--line);border-radius:8px;background:var(--panel)}
+.lcols[hidden]{display:none}
+.lcols>.k{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.colchip{font:600 12px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);background:var(--soft);color:var(--ink);padding:7px 10px;border-radius:999px;cursor:pointer}
+.colchip::before{content:"✓ ";color:var(--good)}
+.colchip[aria-pressed="false"]{background:transparent;color:var(--muted)}
+.colchip[aria-pressed="false"]::before{content:"+ ";color:var(--muted)}
+.colchip.act{border-style:dashed}.colchip.act::before{content:""}
+.colchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.colchip:disabled{opacity:.45;cursor:default}
 #lineups td.tm{white-space:nowrap;font-family:var(--body);font-weight:600;font-size:13px}
 @media (max-width:600px){#lineups td.tm,#lineups th.tm{position:static;font-size:12px}}
 .nbar{display:inline-block;height:8px;border-radius:2px;vertical-align:middle;margin-right:6px}
@@ -341,10 +353,15 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
         <button class="chip" data-n="3" id="ln3">3-man</button>
         <button class="chip" data-n="2" id="ln2">2-man</button>
       </div>
+      <div class="seg" role="group" aria-label="Display">
+        <button class="chip" id="lphoto" aria-pressed="true" title="Show or hide the player photos">Photos</button>
+        <button class="chip" id="lcolbtn" aria-expanded="false" aria-controls="lcols" title="Choose which columns to show">Columns</button>
+      </div>
       <label class="pmin" for="lmin">Min. total minutes
         <select id="lmin"><option value="0">All</option><option value="5">5+</option><option value="10" selected>10+</option><option value="20">20+</option><option value="40">40+</option></select>
       </label>
     </div>
+    <div class="lcols" id="lcols" hidden></div>
     <div id="lineups"></div>
   </section>
 
@@ -827,8 +844,11 @@ document.getElementById("pv-adv").onclick=()=>{pview="adv";try{localStorage.setI
 document.getElementById("pv-box").onclick=()=>{pview="box";try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()};
 document.getElementById("pmin").onchange=e=>{pminVal=+e.target.value;try{localStorage.setItem("nbl27-pmin",pminVal)}catch(e){}renderPlayers()};
 
-let LINEDOCS=[],LSTATUS=null,lsize=5,lminVal=10,lsort={k:"min",d:-1};
+let LINEDOCS=[],LSTATUS=null,lsize=5,lminVal=10,lsort={k:"min",d:-1},lphotos=true,lhide=new Set(),lcolsOpen=false;
 try{const v=localStorage.getItem("nbl27-lsize");if(v)lsize=+v;const m=localStorage.getItem("nbl27-lmin");if(m!=null)lminVal=+m}catch(e){}
+// Lineups display choices (this browser only): player photos on/off, and the stat columns hidden
+try{lphotos=localStorage.getItem("nbl27-lphotos")!=="0";const h=JSON.parse(localStorage.getItem("nbl27-lhide")||"[]");if(Array.isArray(h))lhide=new Set(h)}catch(e){}
+const saveLhide=()=>{try{localStorage.setItem("nbl27-lhide",JSON.stringify([...lhide]))}catch(e){}};
 const shortName=n=>{if(!n)return "?";const p=n.trim().split(/\s+/);return p.length>1?p[0][0]+". "+p.slice(1).join(" "):n};
 function combos(arr,k){const out=[];const rec=(i,acc)=>{if(acc.length===k){out.push(acc.slice());return}for(let j=i;j<arr.length;j++){acc.push(arr[j]);rec(j+1,acc);acc.pop()}};rec(0,[]);return out}
 
@@ -890,10 +910,12 @@ function renderLineups(){
   pick.querySelectorAll("button").forEach(b=>b.onclick=()=>{current=b.dataset.team;try{localStorage.setItem("nbl27-team",current)}catch(e){}renderLineups()});
   [5,3,2].forEach(n=>document.getElementById("ln"+n).setAttribute("aria-pressed",n===lsize));
   document.getElementById("lmin").value=String(lminVal);
+  lineupControls();
   const el=document.getElementById("lineups"),name=byCode[current];
   if(!LINEDOCS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Lineup data is loading</strong>${LSTATUS?.error?"Couldn't load lineup data: "+LSTATUS.error:"Five-man units are being rebuilt from each game's substitutions. They'll appear here once that's done."}</div></div>`;return}
   const {rows,games,bad}=computeLineups(name,lsize);
-  const shown=rows.filter(r=>r.min>=lminVal);
+  const shown=rows.filter(r=>r.min>=lminVal),cols=LCOLS.filter(c=>!lhide.has(c[0]));
+  if(cols.length&&!cols.some(c=>c[0]===lsort.k))lsort={k:cols[0][0],d:["drtg","oefg","tov"].includes(cols[0][0])?1:-1};  // the sorted column was hidden
   shown.sort((a,b)=>{const k=lsort.k,x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return lsort.d*(x-y)});
   const arrow=k=>lsort.k===k?` data-dir="${lsort.d>0?'▲':'▼'}"`:"";
   const maxAbs=Math.max(10,...shown.map(r=>Math.abs(r.net||0)));
@@ -903,12 +925,27 @@ function renderLineups(){
   const label=lsize===5?"Lineup":lsize===3?"Trio":"Pair";
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${rows.length} ${lsize}-man groups · ${shown.length} shown · ${games} games</span></div>
-    <div class="scroll"><table><thead><tr><th class="tm">${label}</th>${LCOLS.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${shown.map(r=>`<tr class="${r.poss<20?'low':''}"><td class="tm"><div class="lu" style="--n:${lsize}">${r.label.map((n,i)=>`<span class="lp" title="${r.full[i]||n}">${avatar({id:r.p[i],name:n},name,"sm")}<span class="lpn">${n}</span></span>`).join("")}</div></td>${LCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${LCOLS.length+1}" style="color:var(--muted)">No ${lsize}-man groups with ${lminVal}+ minutes yet.</td></tr>`}</tbody></table></div>
+    <div class="scroll"><table><thead><tr><th class="tm">${label}</th>${cols.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
+    <tbody>${shown.map(r=>`<tr class="${r.poss<20?'low':''}"><td class="tm"><div class="lu" style="--n:${lsize}">${r.label.map((n,i)=>`<span class="lp" title="${r.full[i]||n}">${lphotos?avatar({id:r.p[i],name:n},name,"sm"):""}<span class="lpn">${n}</span></span>`).join("")}</div></td>${cols.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="color:var(--muted)">No ${lsize}-man groups with ${lminVal}+ minutes yet.</td></tr>`}</tbody></table></div>
   </div>
   <p style="color:var(--muted);font-size:12px;margin:10px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em">Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-${bad.length?` · Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}`:""}</p>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(lsort.k===k)lsort.d*=-1;else lsort={k,d:["drtg","oefg","tov"].includes(k)?1:-1};renderLineups()});
 }
+// Photos on/off and the column chooser (a row of toggles under the controls; ✓ = shown)
+function lineupControls(){
+  const ph=document.getElementById("lphoto"),cb=document.getElementById("lcolbtn"),box=document.getElementById("lcols");
+  ph.setAttribute("aria-pressed",lphotos);
+  const vis=LCOLS.filter(c=>!lhide.has(c[0])).length;
+  cb.setAttribute("aria-expanded",lcolsOpen);cb.textContent=vis<LCOLS.length?`Columns · ${vis}/${LCOLS.length}`:"Columns";
+  box.hidden=!lcolsOpen;
+  if(!lcolsOpen){box.innerHTML="";return}
+  box.innerHTML=`<span class="k">Show columns</span>${LCOLS.map(c=>`<button class="colchip" data-k="${c[0]}" aria-pressed="${!lhide.has(c[0])}">${c[1]}</button>`).join("")}<button class="colchip act" data-all="1"${lhide.size?"":" disabled"}>Show all</button>`;
+  box.querySelectorAll("button[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(lhide.has(k))lhide.delete(k);else lhide.add(k);saveLhide();renderLineups();
+    const again=document.querySelector(`#lcols button[data-k="${k}"]`);if(again)again.focus()});
+  box.querySelector("button[data-all]").onclick=()=>{lhide.clear();saveLhide();renderLineups()};
+}
+document.getElementById("lphoto").onclick=()=>{lphotos=!lphotos;try{localStorage.setItem("nbl27-lphotos",lphotos?"1":"0")}catch(e){}renderLineups()};
+document.getElementById("lcolbtn").onclick=()=>{lcolsOpen=!lcolsOpen;renderLineups()};
 [5,3,2].forEach(n=>document.getElementById("ln"+n).onclick=()=>{lsize=n;try{localStorage.setItem("nbl27-lsize",n)}catch(e){}renderLineups()});
 document.getElementById("lmin").onchange=e=>{lminVal=+e.target.value;try{localStorage.setItem("nbl27-lmin",lminVal)}catch(e){}renderLineups()};
 
