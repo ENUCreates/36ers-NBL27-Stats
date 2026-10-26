@@ -142,6 +142,7 @@ tr.low td{opacity:.55}
 .colchip.act{border-style:dashed}.colchip.act::before{content:""}
 .colchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .colchip:disabled{opacity:.45;cursor:default}
+.lcols .cg{font:600 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:6px;padding-left:10px;border-left:1px solid var(--line)}
 #lineups td.tm{white-space:nowrap;font-family:var(--body);font-weight:600;font-size:13px}
 @media (max-width:600px){#lineups td.tm,#lineups th.tm{position:static;font-size:12px}}
 .nbar{display:inline-block;height:8px;border-radius:2px;vertical-align:middle;margin-right:6px}
@@ -311,7 +312,11 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
   </nav>
 
   <section id="view-league">
-    <div class="chips" id="lviews" role="group" aria-label="Table" style="margin-bottom:12px"></div>
+    <div class="pbar">
+      <div class="chips" id="lviews" role="group" aria-label="Table"></div>
+      <label class="pmin" for="lgcolbtn">Columns <button class="selbtn" id="lgcolbtn" aria-expanded="false" aria-controls="lgcols" title="Choose which columns to show">All ▾</button></label>
+    </div>
+    <div class="lcols" id="lgcols" hidden></div>
     <div class="panel scroll" id="league"></div>
     <div class="legend" style="margin-top:10px">
       <span><i style="background:var(--good-bg);border:1px solid var(--good)"></i>Top 3 in the league</span>
@@ -418,6 +423,13 @@ const SHORT={"South East Melbourne Phoenix":"SEM Phoenix"};
 const disp=n=>SHORT[n]||n;
 const byCode=Object.fromEntries(Object.entries(TEAMS).map(([n,t])=>[t.c,n]));
 let GAMES=[],META=null,ROWS=[],LG=null,sortKey="net",sortDir=-1,current="ADL";
+// column choosers for the League Table (hidden columns per table view) and Team stats (this browser only)
+let lgOpen=false,lghide={},tsOpen=false,tshide=new Set();
+try{const o=JSON.parse(localStorage.getItem("nbl27-lghide")||"{}");if(o&&typeof o==="object")Object.entries(o).forEach(([v,a])=>{if(Array.isArray(a))lghide[v]=new Set(a)});
+  const t=JSON.parse(localStorage.getItem("nbl27-tshide")||"[]");if(Array.isArray(t))tshide=new Set(t)}catch(e){}
+const lgHidden=v=>lghide[v]||(lghide[v]=new Set());
+const saveLghide=()=>{try{localStorage.setItem("nbl27-lghide",JSON.stringify(Object.fromEntries(Object.entries(lghide).map(([v,s])=>[v,[...s]]))))}catch(e){}};
+const saveTshide=()=>{try{localStorage.setItem("nbl27-tshide",JSON.stringify([...tshide]))}catch(e){}};
 const SEASON_START="2026-09-19"; // NBL27 round 1; NBL Blitz and other preseason games are excluded
 let SHOTS=[],SZ={},SZLG=null,SHOTMETA=null,SHOTOK=0,SHOTBAD=[];
 const ZONES=[["ra","Restricted area",2],["paint","Paint (non-RA)",2],["mid","Mid-range",2],["c3","Corner 3",3],["ab3","Above-break 3",3],["ft","Free throws",1]];
@@ -532,23 +544,29 @@ function rankOf(k,name){const c=(typeof ALLCOLS!=="undefined"?ALLCOLS:COLS).find
 const nsort=(a,b)=>(a==null)-(b==null)||0;
 
 function renderLeague(){
-  const el=document.getElementById("league");renderLviews();const COLS=(LVIEWS[lview]||LVIEWS.main).cols;
+  const el=document.getElementById("league");renderLviews();
+  const V=LVIEWS[lview]||LVIEWS.main,hid=lgHidden(lview),showWL=!hid.has("wl");
+  // the columns still shown; a group's first shown column carries the separator line
+  const COLS=V.cols.filter(c=>!hid.has(c.k)).map((c,i,a)=>({...c,sep:i>0&&a[i-1].g!==c.g?1:0}));
+  colPicker("lgcolbtn","lgcols",[{k:"wl",l:"W–L",g:""}].concat(V.cols.map(c=>({k:c.k,l:c.l,g:c.g}))),hid,lgOpen,saveLghide,renderLeague);
+  if(sortKey!=="name"&&!(sortKey==="wl"&&showWL)&&!COLS.some(c=>c.k===sortKey)){   // the sorted column was hidden
+    sortKey=COLS.some(c=>c.k===V.def)?V.def:showWL?"wl":COLS[0]?COLS[0].k:"name";sortDir=sortKey==="name"||(V.cols.find(c=>c.k===sortKey)||{}).better===-1?1:-1}
   if(!ROWS.length){el.innerHTML=emptyMsg();return}
   const rows=ROWS.slice().sort((a,b)=>{if(sortKey==="name")return sortDir*a.name.localeCompare(b.name);
     if(sortKey==="wl")return sortDir*((a.w/a.gp)-(b.w/b.gp)||a.net-b.net);
     if(a[sortKey]==null||b[sortKey]==null)return nsort(a[sortKey],b[sortKey]);return sortDir*(a[sortKey]-b[sortKey])});
   const groups=[];COLS.forEach(c=>{const last=groups[groups.length-1];if(last&&last.g===c.g)last.n++;else groups.push({g:c.g,n:1,sep:c.sep})});
   const arrow=k=>sortKey===k?` data-dir="${sortDir>0?'▲':'▼'}"`:"";
-  let h=`<table><thead><tr><th class="tm"></th><th></th>${groups.map(g=>`<th class="grp ${g.sep?'sep':''}" colspan="${g.n}">${g.g}</th>`).join("")}</tr>
-  <tr><th class="tm"><button data-k="name"${arrow("name")}>Team</button></th><th><button data-k="wl"${arrow("wl")}>W–L</button></th>
+  let h=`<table><thead><tr><th class="tm"></th>${showWL?"<th></th>":""}${groups.map(g=>`<th class="grp ${g.sep?'sep':''}" colspan="${g.n}">${g.g}</th>`).join("")}</tr>
+  <tr><th class="tm"><button data-k="name"${arrow("name")}>Team</button></th>${showWL?`<th><button data-k="wl"${arrow("wl")}>W–L</button></th>`:""}
   ${COLS.map(c=>`<th class="${c.sep?'sep':''}"><button data-k="${c.k}"${arrow(c.k)}>${c.l}</button></th>`).join("")}</tr></thead><tbody>`;
   rows.forEach(r=>{
-    h+=`<tr><td class="tm"><button data-team="${TEAMS[r.name]?.c}">${code(r.name)}<span class="nm">${disp(r.name)}</span></button></td><td>${r.w}–${r.l}</td>`;
+    h+=`<tr><td class="tm"><button data-team="${TEAMS[r.name]?.c}">${code(r.name)}<span class="nm">${disp(r.name)}</span></button></td>${showWL?`<td>${r.w}–${r.l}</td>`:""}`;
     COLS.forEach(c=>{let cls=c.sep?"sep":"";if(c.better&&r[c.k]!=null){const rk=rankOf(c.k,r.name);if(rk<=3)cls+=" hi";else if(rk>=ROWS.length-2)cls+=" lo"}
       h+=`<td class="${cls}">${c.fmt(r[c.k],r)}</td>`});
     h+="</tr>";
   });
-  h+=`<tr class="avg"><td class="tm" style="letter-spacing:.04em">LEAGUE AVERAGE</td><td></td>${COLS.map(c=>`<td class="${c.sep?'sep':''}">${c.fmt(LG[c.k],LG)}</td>`).join("")}</tr></tbody></table>`;
+  h+=`<tr class="avg"><td class="tm" style="letter-spacing:.04em">LEAGUE AVERAGE</td>${showWL?"<td></td>":""}${COLS.map(c=>`<td class="${c.sep?'sep':''}">${c.fmt(LG[c.k],LG)}</td>`).join("")}</tr></tbody></table>`;
   el.innerHTML=h;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=(k==="name"||(COLS.find(c=>c.k===k)||{}).better===-1)?1:-1}renderLeague()});
   el.querySelectorAll("td.tm button").forEach(b=>b.onclick=()=>{current=b.dataset.team;show("team")});
@@ -577,8 +595,9 @@ function renderTeamStats(){
   const el=document.getElementById("tstats");if(!el)return;
   if(!GAMES.length){el.innerHTML="";return}
   const {rows,lg}=computeTeamStats(),opp=tsMode==="opp";
-  const cols=TSCOLS.filter(c=>!(opp&&c[0]==="pm"));
+  const all=TSCOLS.filter(c=>!(opp&&c[0]==="pm")),cols=all.filter(c=>!tshide.has(c[0]));
   const better=c=>opp?c[4]:c[3];
+  if(tsort.k!=="name"&&!cols.some(c=>c[0]===tsort.k))tsort=cols[0]?{k:cols[0][0],d:better(cols[0])===-1?1:-1}:{k:"name",d:1};   // the sorted column was hidden
   rows.sort((a,b)=>{const k=tsort.k;if(k==="name")return tsort.d*a.name.localeCompare(b.name);const x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return tsort.d*(x-y)});
   const rank=(k,dir,v)=>{const s=rows.map(r=>r[k]).filter(x=>x!=null).sort((a,b)=>dir>0?b-a:a-b);return s.indexOf(v)+1};
   const arrow=k=>tsort.k===k?` data-dir="${tsort.d>0?'▲':'▼'}"`:"";
@@ -588,13 +607,17 @@ function renderTeamStats(){
     return `<td class="${cls}">${txt}</td>`};
   el.innerHTML=`<div class="team-head" style="padding:14px 16px">
       <h3 style="font:700 18px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;margin:0">${opp?"Opponent stats":"Team stats"} · per game</h3>
-      <div class="seg" role="group" aria-label="Whose stats"><button class="chip" data-ts="own" aria-pressed="${!opp}">Team</button><button class="chip" data-ts="opp" aria-pressed="${opp}">Opponents</button></div></div>
+      <div class="lopts"><div class="seg" role="group" aria-label="Whose stats"><button class="chip" data-ts="own" aria-pressed="${!opp}">Team</button><button class="chip" data-ts="opp" aria-pressed="${opp}">Opponents</button></div>
+        <label class="pmin" for="tscolbtn">Columns <button class="selbtn" id="tscolbtn" aria-expanded="false" aria-controls="tscols" title="Choose which columns to show">All ▾</button></label></div></div>
+    <div class="lcols" id="tscols" hidden style="margin:0 16px 12px"></div>
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Team</button></th>${cols.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${opp&&c[0]!=="gp"?"Opp "+c[1]:c[1]}</button></th>`).join("")}</tr></thead>
     <tbody>${rows.map(r=>`<tr><td class="tm"><button data-team="${TEAMS[r.name]?.c}">${code(r.name)}<span class="nm">${disp(r.name)}</span></button></td>${cols.map(c=>cell(r,c)).join("")}</tr>`).join("")}
     ${lg?`<tr class="avg"><td class="tm" style="letter-spacing:.04em">LEAGUE AVERAGE</td>${cols.map(c=>c[0]==="gp"||c[0]==="pm"?"<td></td>":cell(lg,c,true)).join("")}</tr>`:""}</tbody></table></div>
     <div class="fblock" style="color:var(--muted);font-size:12px;padding:10px 16px 14px;text-transform:uppercase;letter-spacing:.02em">
       <span>Tap a column to sort · green = top 3, red = bottom 3${opp?" (for opponent stats, lower allowed is better)":""}</span>
       <span>Official team totals per game, including team rebounds and team turnovers · makes/attempts columns sort by attempts</span></div>`;
+  colPicker("tscolbtn","tscols",all.map(c=>({k:c[0],l:c[1]})),tshide,tsOpen,saveTshide,renderTeamStats);
+  document.getElementById("tscolbtn").onclick=()=>{tsOpen=!tsOpen;renderTeamStats()};
   el.querySelectorAll("[data-ts]").forEach(b=>b.onclick=()=>{tsMode=b.dataset.ts;renderTeamStats()});
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(tsort.k===k)tsort.d*=-1;else{const c=TSCOLS.find(c=>c[0]===k);tsort={k,d:k==="name"?1:(c&&better(c)===-1)?1:-1}}renderTeamStats()});
   el.querySelectorAll("td.tm button").forEach(b=>b.onclick=()=>{current=b.dataset.team;show("team")});
@@ -942,19 +965,27 @@ function renderLineups(){
   <p style="color:var(--muted);font-size:12px;margin:10px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em">Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-${bad.length?` · Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}`:""}</p>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(lsort.k===k)lsort.d*=-1;else lsort={k,d:["drtg","oefg","tov"].includes(k)?1:-1};renderLineups()});
 }
-// Photos on/off and the column chooser (a row of toggles under the controls; ✓ = shown)
-function lineupControls(){
-  const ph=document.getElementById("lphoto"),cb=document.getElementById("lcolbtn"),box=document.getElementById("lcols");
-  ph.setAttribute("aria-checked",lphotos);
-  const vis=LCOLS.filter(c=>!lhide.has(c[0])).length;
-  cb.setAttribute("aria-expanded",lcolsOpen);cb.textContent=`${vis<LCOLS.length?`${vis} of ${LCOLS.length}`:`All ${LCOLS.length}`} ${lcolsOpen?"▴":"▾"}`;
-  box.hidden=!lcolsOpen;
-  if(!lcolsOpen){box.innerHTML="";return}
-  box.innerHTML=`<span class="k">Show columns</span>${LCOLS.map(c=>`<button class="colchip" data-k="${c[0]}" aria-pressed="${!lhide.has(c[0])}">${c[1]}</button>`).join("")}<button class="colchip act" data-all="1"${lhide.size?"":" disabled"}>Show all</button>`;
-  box.querySelectorAll("button[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(lhide.has(k))lhide.delete(k);else lhide.add(k);saveLhide();renderLineups();
-    const again=document.querySelector(`#lcols button[data-k="${k}"]`);if(again)again.focus()});
-  box.querySelector("button[data-all]").onclick=()=>{lhide.clear();saveLhide();renderLineups()};
+// Column chooser (Lineups, League Table, Team stats): a drop-down style button ("All 15 ▾" / "7 of 15 ▾") that opens a
+// row of ✓ toggles, under group labels when the table groups its columns. hidden = the Set of hidden column keys,
+// save() keeps it in this browser, redraw() re-renders the table
+function colPicker(btnId,boxId,cols,hidden,open,save,redraw){
+  const btn=document.getElementById(btnId),box=document.getElementById(boxId);if(!btn||!box)return;
+  const vis=cols.filter(c=>!hidden.has(c.k)).length,any=vis<cols.length;
+  btn.setAttribute("aria-expanded",open);btn.textContent=`${any?`${vis} of ${cols.length}`:`All ${cols.length}`} ${open?"▴":"▾"}`;
+  box.hidden=!open;if(!open){box.innerHTML="";return}
+  let g=null;
+  box.innerHTML=`<span class="k">Show columns</span>`+cols.map(c=>{const lab=c.g&&c.g!==g?`<span class="cg">${c.g}</span>`:"";g=c.g;
+    return `${lab}<button class="colchip" data-k="${c.k}" aria-pressed="${!hidden.has(c.k)}">${c.l}</button>`}).join("")+`<button class="colchip act" data-all="1"${any?"":" disabled"}>Show all</button>`;
+  box.querySelectorAll("button[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(hidden.has(k))hidden.delete(k);else hidden.add(k);save();redraw();
+    const again=[...(document.getElementById(boxId)?.querySelectorAll("button[data-k]")||[])].find(x=>x.dataset.k===k);if(again)again.focus()});
+  box.querySelector("button[data-all]").onclick=()=>{cols.forEach(c=>hidden.delete(c.k));save();redraw()};
 }
+// Lineups: the Photos switch and the column chooser
+function lineupControls(){
+  document.getElementById("lphoto").setAttribute("aria-checked",lphotos);
+  colPicker("lcolbtn","lcols",LCOLS.map(c=>({k:c[0],l:c[1]})),lhide,lcolsOpen,saveLhide,renderLineups);
+}
+document.getElementById("lgcolbtn").onclick=()=>{lgOpen=!lgOpen;renderLeague()};
 document.getElementById("lphoto").onclick=()=>{lphotos=!lphotos;try{localStorage.setItem("nbl27-lphotos",lphotos?"1":"0")}catch(e){}renderLineups()};
 document.getElementById("lcolbtn").onclick=()=>{lcolsOpen=!lcolsOpen;renderLineups()};
 [5,3,2].forEach(n=>document.getElementById("ln"+n).onclick=()=>{lsize=n;try{localStorage.setItem("nbl27-lsize",n)}catch(e){}renderLineups()});
