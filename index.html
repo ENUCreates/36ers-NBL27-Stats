@@ -180,8 +180,18 @@ svg text.rq{font:600 13px var(--display);letter-spacing:.08em;fill:var(--muted)}
 svg text.rn{font:600 12px var(--body);fill:var(--ink)}
 svg text.ri{font:700 8px var(--display);fill:#fff;letter-spacing:.02em}
 svg text.rv{font:500 11px var(--mono);fill:var(--muted)}
-ol.conn{margin:0;padding-left:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 18px}
-ol.conn li{font-size:13px}ol.conn .ma{font-family:var(--mono);color:var(--muted);margin-left:4px}
+/* Top connections: like the lineups, each player's photo sits above his name in a fixed-width column */
+ol.conn{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px 18px}
+ol.conn li{display:grid;grid-template-columns:24px 104px 18px 104px auto;justify-content:start;column-gap:6px;align-items:start}
+ol.conn .cn{font:600 13px/34px var(--mono);color:var(--muted)}
+ol.conn .arr{line-height:34px;color:var(--muted);text-align:center}
+ol.conn .n{font:600 16px/34px var(--mono);padding-left:6px}
+ol.conn .lp{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;text-align:center}
+ol.conn .lp .av.sm{width:34px;height:34px;font-size:12px}
+ol.conn .lpn{font-size:13px;line-height:1.2;overflow-wrap:break-word;max-width:100%}
+ol.conn .lp.pa .lpn{font-weight:600}
+@media (max-width:600px){ol.conn li{grid-template-columns:22px 90px 16px 90px auto}ol.conn .lpn{font-size:12px}ol.conn .lp .av.sm{width:30px;height:30px}
+  ol.conn .cn,ol.conn .arr,ol.conn .n{line-height:30px}}
 .card-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 /* Player cards */
 .mu{color:var(--muted)}
@@ -201,7 +211,12 @@ ol.conn li{font-size:13px}ol.conn .ma{font-family:var(--mono);color:var(--muted)
 .av.sm{width:26px;height:26px;font-size:10px;letter-spacing:.02em;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
 .pn{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;vertical-align:middle}
 td.pl{white-space:nowrap}
-table.net th .pn{flex-direction:column;gap:4px}
+table.net th .pn{flex-direction:column;gap:4px;white-space:normal}
+/* assist network: equal scorer columns, passers' photos in one straight column */
+table.net{table-layout:fixed}
+table.net th.tm{width:170px;text-align:left}table.net th.sep{width:64px}
+table.net thead th:not(.tm):not(.sep){vertical-align:top}
+table.net td.pl{text-align:left}
 .pcard{overflow:hidden}
 .pc-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;padding:20px;align-items:start;border-bottom:1px solid var(--line)}
 .pc-name{font:700 clamp(30px,4.6vw,46px)/1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:2px 0 0}
@@ -1329,10 +1344,13 @@ function renderAssists(el,name){
   // network: top players by involvement
   const top=Object.values(P).sort((a,b)=>(b.ast+b.asd)-(a.ast+a.asd)).filter(x=>x.ast+x.asd>0).slice(0,9);
   const mx=Math.max(1,...Object.values(pair));
-  const net=top.length<2?"":`<div class="scroll"><table class="net"><thead><tr><th class="tm">Passer ↓ · Scorer →</th>${top.map(s=>`<th title="${s.name}">${pname(s.id,s.name,name,shortName(s.name))}</th>`).join("")}<th class="sep">Total</th></tr></thead><tbody>
+  const net=top.length<2?"":`<div class="scroll"><table class="net" style="min-width:${234+84*top.length}px"><thead><tr><th class="tm">Passer ↓ · Scorer →</th>${top.map(s=>`<th title="${s.name}">${pname(s.id,s.name,name,shortName(s.name))}</th>`).join("")}<th class="sep">Total</th></tr></thead><tbody>
     ${top.map(a=>`<tr><td class="tm pl">${pname(a.id,a.name,name,shortName(a.name))}</td>${top.map(s=>{const n=pair[a.id+"|"+s.id]||0;if(a.id===s.id)return `<td class="ma">·</td>`;
       return `<td style="${n?`background:rgba(228,0,43,${(0.12+0.68*n/mx).toFixed(2)});color:#fff`:''}" title="${a.name} → ${s.name}: ${n}">${n||""}</td>`}).join("")}<td class="sep"><b>${a.ast}</b></td></tr>`).join("")}</tbody></table></div>`;
-  const conns=Object.entries(pair).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,n])=>{const[a,s]=k.split("|");return `<li><b>${pname(a,P[a]?.name,name,shortName(P[a]?.name))}</b> → ${pname(s,P[s]?.name,name,shortName(P[s]?.name))} <span class="ma">${n}</span></li>`}).join("");
+  // top connections: rank, passer (photo above name), arrow, scorer, assists - fixed columns so every row lines up
+  const tile=(id,cls)=>`<span class="lp${cls||""}" title="${P[id]?.name||""}">${avatar({id,name:P[id]?.name},name,"sm")}<span class="lpn">${shortName(P[id]?.name)}</span></span>`;
+  const conns=Object.entries(pair).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,n],i)=>{const[a,s]=k.split("|");
+    return `<li><span class="cn">${i+1}.</span>${tile(a," pa")}<span class="arr" aria-label="assisted">→</span>${tile(s)}<span class="n" title="${P[a]?.name||""} → ${P[s]?.name||""}: ${n} assists">${n}</span></li>`}).join("");
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${games} games · season totals</span></div>
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${C.map(c=>`<th class="${c[3]?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
