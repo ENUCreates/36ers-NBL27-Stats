@@ -1,5 +1,5 @@
 {
- "_about": "NBL27 head coaches and the NBL seasons they were head coach in since 2015-16, the first season of the official NBL box scores (nblR). 'stints': one per season and club; 'from' = the date he took over mid-season (games from that date on are his). 'record' and 'titles': his whole NBL head-coaching career (finals included) from Wikipedia's NBL All-Time Coaching Records, to the end of 2025-26. Each coach lists the sources read (25-26 Oct 2026). Used by coaches/build.py; update it when a club changes coach.",
+ "_about": "NBL27 head coaches and the NBL seasons they were head coach in since 2015-16, the first season of the official NBL box scores (nblR). 'stints': one per season and club; 'from' = the date he took over mid-season (games from that date on are his). 'record' and 'titles': his whole NBL head-coaching career (finals included) from Wikipedia's NBL All-Time Coaching Records, to the end of 2025-26. Each coach lists the sources read (25-26 Oct 2026). Used by coaches/build.py; update it when a club changes coach. 'career': every head-coaching job he has held, club by club and season by season in any league (oldest first); w/l = his own regular-season record where the source gives it for his games, team = the club's record when his own isn't known (part seasons, shared roles), pos/of/grp = the club's regular-season place, res = playoffs; src = the pages read (26 Oct 2026). NBL seasons from 2015-16 are checked against the official results by build.py. 'national': national-team jobs; 'side' marks an off-season job held alongside an NBL one.",
  "recordSource": {
   "name": "Wikipedia, NBL All-Time Coaching Records (to the end of 2025-26)",
   "url": "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
@@ -57,7 +57,300 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "1990",
+     "club": "Warrnambool Mermaids",
+     "cc": "AU",
+     "lg": "CVIBL",
+     "disp": "1990–91",
+     "part": "women's team",
+     "src": [
+      "https://en.wikipedia.org/wiki/Trevor_Gleeson",
+      "https://www.standard.net.au/story/5965899/successful-nbl-coach-still-the-boy-named-budsa/"
+     ]
+    },
+    {
+     "season": "1992",
+     "club": "Warrnambool Seahawks",
+     "cc": "AU",
+     "lg": "CVIBL",
+     "res": "Lost Grand Final",
+     "note": "one regular-season loss all year, in his words",
+     "src": [
+      "https://en.wikipedia.org/wiki/Trevor_Gleeson",
+      "https://www.standard.net.au/story/5965899/successful-nbl-coach-still-the-boy-named-budsa/"
+     ]
+    },
+    {
+     "season": "1993",
+     "club": "Warrnambool Seahawks",
+     "cc": "AU",
+     "lg": "CVIBL",
+     "src": [
+      "https://en.wikipedia.org/wiki/Trevor_Gleeson"
+     ]
+    },
+    {
+     "season": "2002-03",
+     "club": "Sioux Falls Skyforce",
+     "cc": "US",
+     "lg": "CBA (USA)",
+     "part": "from January 2003",
+     "src": [
+      "https://en.wikipedia.org/wiki/Trevor_Gleeson"
+     ]
+    },
+    {
+     "season": "2003-04",
+     "club": "Sioux Falls Skyforce",
+     "cc": "US",
+     "lg": "CBA (USA)",
+     "src": [
+      "https://en.wikipedia.org/wiki/Trevor_Gleeson"
+     ]
+    },
+    {
+     "season": "2006-07",
+     "club": "Townsville Crocodiles",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 19,
+     "l": 14,
+     "pos": 5,
+     "of": 12,
+     "res": "Lost quarter-final",
+     "note": "won the elimination final",
+     "src": [
+      "https://en.wikipedia.org/wiki/Townsville_Crocodiles",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "2007-08",
+     "club": "Townsville Crocodiles",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 17,
+     "l": 13,
+     "pos": 5,
+     "of": 13,
+     "res": "Lost quarter-final",
+     "note": "won the elimination final",
+     "src": [
+      "https://en.wikipedia.org/wiki/Townsville_Crocodiles",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "2008-09",
+     "club": "Townsville Crocodiles",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 17,
+     "l": 13,
+     "pos": 5,
+     "of": 10,
+     "res": "Lost semi-final 1–2",
+     "note": "won the elimination final",
+     "src": [
+      "https://en.wikipedia.org/wiki/Townsville_Crocodiles",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "2009-10",
+     "club": "Townsville Crocodiles",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 16,
+     "l": 12,
+     "pos": 3,
+     "of": 8,
+     "res": "Lost semi-final 1–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Townsville_Crocodiles",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "2010-11",
+     "club": "Townsville Crocodiles",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 17,
+     "l": 11,
+     "pos": 2,
+     "of": 9,
+     "res": "Lost semi-final 1–2",
+     "note": "NBL Coach of the Year",
+     "src": [
+      "https://en.wikipedia.org/wiki/Townsville_Crocodiles",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons",
+      "https://en.wikipedia.org/wiki/Trevor_Gleeson"
+     ]
+    },
+    {
+     "season": "2011-12",
+     "club": "Melbourne Tigers",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 11,
+     "l": 17,
+     "pos": 6,
+     "of": 9,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/2011%E2%80%9312_Melbourne_Tigers_season"
+     ]
+    },
+    {
+     "season": "2013-14",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 21,
+     "l": 7,
+     "pos": 1,
+     "res": "Champions · won Grand Final 2–1",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2014-15",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 16,
+     "l": 12,
+     "pos": 4,
+     "res": "Lost semi-final 0–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2015-16",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 18,
+     "l": 10,
+     "pos": 2,
+     "of": 8,
+     "res": "Champions · won Grand Final 2–1",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2016-17",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 15,
+     "l": 13,
+     "pos": 3,
+     "of": 8,
+     "res": "Champions · won Grand Final 3–0",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2017-18",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 16,
+     "l": 12,
+     "pos": 3,
+     "of": 8,
+     "res": "Lost semi-final 0–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2018-19",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 18,
+     "l": 10,
+     "pos": 1,
+     "of": 8,
+     "res": "Champions · won Grand Final 3–1",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2019-20",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 19,
+     "l": 9,
+     "pos": 2,
+     "of": 9,
+     "res": "Champions · won Grand Final 2–1",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2020-21",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 25,
+     "l": 11,
+     "pos": 2,
+     "of": 9,
+     "res": "Lost Grand Final 0–3",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2024-25",
+     "club": "Chiba Jets",
+     "cc": "JP",
+     "lg": "B.League B1",
+     "w": 42,
+     "l": 18,
+     "pos": 2,
+     "of": 8,
+     "grp": "East",
+     "res": "Lost semi-final",
+     "src": [
+      "https://en.wikipedia.org/wiki/2024%E2%80%9325_B1_League_season",
+      "https://en.wikipedia.org/wiki/Chiba_Jets",
+      "https://takashiaoki629.substack.com/p/2024-25-short-review-chiba-jets"
+     ]
+    },
+    {
+     "season": "2025-26",
+     "club": "Chiba Jets",
+     "cc": "JP",
+     "lg": "B.League B1",
+     "w": 42,
+     "l": 18,
+     "pos": 2,
+     "of": 13,
+     "grp": "East",
+     "res": "Lost semi-final",
+     "src": [
+      "https://en.wikipedia.org/wiki/2025%E2%80%9326_B1_League_season",
+      "https://en.wikipedia.org/wiki/Chiba_Jets"
+     ]
+    }
+   ],
+   "national": [],
+   "careerChecked": "2026-10-26"
   },
   {
    "id": "will-weaver",
@@ -81,7 +374,70 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "2018-19",
+     "club": "Long Island Nets",
+     "cc": "US",
+     "lg": "NBA G League",
+     "w": 34,
+     "l": 16,
+     "pos": 1,
+     "grp": "Atlantic Division",
+     "res": "Lost G League Finals 1–2",
+     "note": "G League Coach of the Year",
+     "src": [
+      "https://en.wikipedia.org/wiki/Long_Island_Nets",
+      "https://en.wikipedia.org/wiki/2018%E2%80%9319_NBA_G_League_season",
+      "https://pr.nba.com/will-weaver-glcoach-of-year"
+     ]
+    },
+    {
+     "season": "2019-20",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 20,
+     "l": 8,
+     "pos": 1,
+     "of": 9,
+     "res": "Lost Grand Final 1–2",
+     "note": "series stopped after game 3 (COVID-19)",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings",
+      "https://en.wikipedia.org/wiki/Will_Weaver_(basketball)"
+     ]
+    },
+    {
+     "season": "2022-23",
+     "club": "Paris Basketball",
+     "cc": "FR",
+     "lg": "LNB Pro A",
+     "w": 16,
+     "l": 18,
+     "pos": 9,
+     "of": 18,
+     "res": "Missed playoffs",
+     "note": "EuroCup quarter-finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Paris_Basketball",
+      "https://en.wikipedia.org/wiki/2022%E2%80%9323_Pro_A_season"
+     ]
+    }
+   ],
+   "national": [
+    {
+     "team": "Australia",
+     "cc": "AU",
+     "yrs": "2020",
+     "what": "acting head coach for the Asia Cup qualifiers (Brett Brown absent)",
+     "src": [
+      "https://en.wikipedia.org/wiki/Will_Weaver_(basketball)"
+     ]
+    }
+   ],
+   "careerChecked": "2026-10-26"
   },
   {
    "id": "adam-forde",
@@ -130,7 +486,218 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "2010",
+     "club": "Rockingham Flames",
+     "cc": "AU",
+     "lg": "SBL (WA)",
+     "w": 8,
+     "l": 18,
+     "pos": 11,
+     "of": 14,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Adam_Forde",
+      "https://en.wikipedia.org/wiki/2010_State_Basketball_League_season"
+     ]
+    },
+    {
+     "season": "2012",
+     "club": "East Perth Eagles",
+     "cc": "AU",
+     "lg": "SBL (WA)",
+     "w": 16,
+     "l": 10,
+     "pos": 4,
+     "of": 14,
+     "res": "Lost Grand Final",
+     "note": "to Cockburn",
+     "src": [
+      "https://en.wikipedia.org/wiki/Adam_Forde",
+      "https://en.wikipedia.org/wiki/2012_State_Basketball_League_season",
+      "https://en.wikipedia.org/wiki/East_Perth_Eagles"
+     ]
+    },
+    {
+     "season": "2013",
+     "club": "East Perth Eagles",
+     "cc": "AU",
+     "lg": "SBL (WA)",
+     "w": 15,
+     "l": 11,
+     "pos": 4,
+     "of": 14,
+     "res": "Lost semi-final",
+     "src": [
+      "https://en.wikipedia.org/wiki/Adam_Forde",
+      "https://en.wikipedia.org/wiki/2013_State_Basketball_League_season"
+     ]
+    },
+    {
+     "season": "2014",
+     "club": "East Perth Eagles",
+     "cc": "AU",
+     "lg": "SBL (WA)",
+     "w": 14,
+     "l": 12,
+     "pos": 7,
+     "of": 14,
+     "res": "Champions · won Grand Final 99–83",
+     "note": "v Geraldton",
+     "src": [
+      "https://en.wikipedia.org/wiki/Adam_Forde",
+      "https://en.wikipedia.org/wiki/2014_State_Basketball_League_season",
+      "https://en.wikipedia.org/wiki/East_Perth_Eagles"
+     ]
+    },
+    {
+     "season": "2015",
+     "club": "East Perth Eagles",
+     "cc": "AU",
+     "lg": "SBL (WA)",
+     "part": "stepped down mid-season",
+     "src": [
+      "https://en.wikipedia.org/wiki/Adam_Forde"
+     ]
+    },
+    {
+     "season": "2019",
+     "club": "East Perth Eagles",
+     "cc": "AU",
+     "lg": "SBL (WA)",
+     "w": 6,
+     "l": 20,
+     "pos": 12,
+     "of": 14,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Adam_Forde",
+      "https://en.wikipedia.org/wiki/2019_State_Basketball_League_season"
+     ]
+    },
+    {
+     "season": "2020-21",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 19,
+     "l": 17,
+     "pos": 5,
+     "of": 9,
+     "res": "Missed finals",
+     "note": "missed the top four on percentage",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings",
+      "https://en.wikipedia.org/wiki/Adam_Forde"
+     ]
+    },
+    {
+     "season": "2021",
+     "club": "Hawke's Bay Hawks",
+     "cc": "NZ",
+     "lg": "NZNBL",
+     "team": [
+      13,
+      5
+     ],
+     "pos": 2,
+     "of": 10,
+     "res": "Lost Grand Final",
+     "part": "shared with Jacob Chance, who covered while Forde coached Sydney; Forde finished the season",
+     "note": "to Wellington",
+     "side": "Off-season",
+     "src": [
+      "https://en.wikipedia.org/wiki/Adam_Forde",
+      "https://en.wikipedia.org/wiki/2021_New_Zealand_NBL_season"
+     ]
+    },
+    {
+     "season": "2021-22",
+     "club": "Cairns Taipans",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 9,
+     "l": 19,
+     "pos": 9,
+     "of": 10,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Cairns_Taipans"
+     ]
+    },
+    {
+     "season": "2022-23",
+     "club": "Cairns Taipans",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 18,
+     "l": 10,
+     "pos": 3,
+     "of": 10,
+     "res": "Lost semi-final 1–2",
+     "note": "through the play-in; NBL Coach of the Year",
+     "src": [
+      "https://en.wikipedia.org/wiki/Cairns_Taipans",
+      "https://en.wikipedia.org/wiki/Adam_Forde"
+     ]
+    },
+    {
+     "season": "2023-24",
+     "club": "Cairns Taipans",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 12,
+     "l": 16,
+     "pos": 8,
+     "of": 10,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Cairns_Taipans"
+     ]
+    },
+    {
+     "season": "2024-25",
+     "club": "Cairns Taipans",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 8,
+     "l": 21,
+     "pos": 10,
+     "of": 10,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Cairns_Taipans"
+     ]
+    },
+    {
+     "season": "2025-26",
+     "club": "Cairns Taipans",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 9,
+     "l": 24,
+     "pos": 9,
+     "of": 10,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Cairns_Taipans"
+     ]
+    }
+   ],
+   "national": [
+    {
+     "team": "Australia 3x3 (Gangurrus)",
+     "cc": "AU",
+     "yrs": "2025–",
+     "what": "interim head coach from 10 Mar 2025: 3x3 Asia Cup gold, 3x3 Champions Cup bronze",
+     "src": [
+      "https://en.wikipedia.org/wiki/Adam_Forde"
+     ]
+    }
+   ],
+   "careerChecked": "2026-10-26"
   },
   {
    "id": "justin-tatum",
@@ -169,7 +736,106 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "2007",
+     "club": "Soldan HS",
+     "cc": "US",
+     "lg": "Missouri high school",
+     "disp": "2007–13",
+     "res": "Class 4 state champions 2012",
+     "src": [
+      "https://en.wikipedia.org/wiki/Justin_Tatum"
+     ]
+    },
+    {
+     "season": "2013",
+     "club": "Christian Brothers College HS",
+     "cc": "US",
+     "lg": "Missouri high school",
+     "disp": "2013–23",
+     "res": "State champions 2014 and 2022",
+     "src": [
+      "https://en.wikipedia.org/wiki/Justin_Tatum"
+     ]
+    },
+    {
+     "season": "2023-24",
+     "club": "Illawarra Hawks",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 12,
+     "l": 7,
+     "team": [
+      14,
+      14
+     ],
+     "pos": 4,
+     "of": 10,
+     "res": "Lost semi-final 1–2",
+     "part": "interim from 14 Nov 2023 (after a 2–7 start), permanent from 22 Feb 2024",
+     "note": "through the play-in",
+     "src": [
+      "https://en.wikipedia.org/wiki/Illawarra_Hawks",
+      "https://en.wikipedia.org/wiki/Justin_Tatum"
+     ]
+    },
+    {
+     "season": "2024-25",
+     "club": "Illawarra Hawks",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 20,
+     "l": 9,
+     "pos": 1,
+     "of": 10,
+     "res": "Champions · won Grand Final 3–2",
+     "note": "NBL Coach of the Year",
+     "src": [
+      "https://en.wikipedia.org/wiki/Illawarra_Hawks",
+      "https://en.wikipedia.org/wiki/Justin_Tatum"
+     ]
+    },
+    {
+     "season": "2025",
+     "club": "Pelita Jaya",
+     "cc": "ID",
+     "lg": "IBL (Indonesia)",
+     "team": [
+      23,
+      3
+     ],
+     "pos": 1,
+     "of": 14,
+     "res": "Lost Finals",
+     "part": "short-term, from May 2025",
+     "note": "to Dewa United",
+     "side": "Off-season",
+     "src": [
+      "https://en.wikipedia.org/wiki/Justin_Tatum",
+      "https://en.wikipedia.org/wiki/2025_Indonesian_Basketball_League",
+      "https://league.nbl.com.au/news/hawks-hero-heads-to-indonesia-for-title-tilt"
+     ]
+    },
+    {
+     "season": "2025-26",
+     "club": "Illawarra Hawks",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 13,
+     "l": 20,
+     "pos": 8,
+     "of": 10,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Illawarra_Hawks",
+      "https://en.wikipedia.org/wiki/Justin_Tatum"
+     ]
+    }
+   ],
+   "national": [],
+   "careerChecked": "2026-10-26"
   },
   {
    "id": "jacob-chance",
@@ -182,7 +848,48 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "2021",
+     "club": "Hawke's Bay Hawks",
+     "cc": "NZ",
+     "lg": "NZNBL",
+     "team": [
+      13,
+      5
+     ],
+     "pos": 2,
+     "of": 10,
+     "res": "Lost Grand Final",
+     "part": "covered for Adam Forde while Forde coached Sydney, then shared the role",
+     "note": "to Wellington",
+     "src": [
+      "https://www.basketball.com.au/news/jacob-chance-melbourne-united-head-coach-nbl27-age-career",
+      "https://en.wikipedia.org/wiki/2021_New_Zealand_NBL_season",
+      "https://en.wikipedia.org/wiki/Adam_Forde"
+     ]
+    },
+    {
+     "season": "2025-26",
+     "club": "Austin Spurs",
+     "cc": "US",
+     "lg": "NBA G League",
+     "w": 23,
+     "l": 13,
+     "pos": 5,
+     "grp": "West seed",
+     "res": "Lost conference quarter-final",
+     "note": "106–117 at Rio Grande Valley",
+     "src": [
+      "https://austin.gleague.nba.com/news/austin-spurs-clinch-no-5-seed-in-2026-nba-g-league-playoffs",
+      "https://austin.gleague.nba.com/news/spurs-fall-to-vipers117-106-in-western-conference-quarterfinals",
+      "https://www.basketball.com.au/news/jacob-chance-melbourne-united-head-coach-nbl27-age-career"
+     ]
+    }
+   ],
+   "national": [],
+   "careerChecked": "2026-10-26"
   },
   {
    "id": "gordon-herbert",
@@ -195,7 +902,421 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "1994",
+     "club": "UU-Korihait",
+     "cc": "FI",
+     "lg": "Finnish league",
+     "disp": "1994–96",
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "1996-97",
+     "club": "Espoon Honka",
+     "cc": "FI",
+     "lg": "Korisliiga",
+     "res": "3rd place",
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "1997-98",
+     "club": "Espoon Honka",
+     "cc": "FI",
+     "lg": "Korisliiga",
+     "res": "3rd place",
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "1998-99",
+     "club": "Espoon Honka",
+     "cc": "FI",
+     "lg": "Korisliiga",
+     "res": "Runner-up",
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "1999-00",
+     "club": "Oberwart Gunners",
+     "cc": "AT",
+     "lg": "Austrian Bundesliga",
+     "note": "Austrian League Coach of the Year",
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2000-01",
+     "club": "DJK s.Oliver Würzburg",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "pos": 5,
+     "res": "Lost quarter-final",
+     "note": "to Gießen",
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2001-02",
+     "club": "Opel Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 20,
+     "l": 6,
+     "pos": 1,
+     "of": 14,
+     "res": "Lost semi-final",
+     "note": "final placing 3rd",
+     "src": [
+      "https://de-academic.com/dic.nsf/dewiki/144000",
+      "https://en.wikipedia.org/wiki/Skyliners_Frankfurt"
+     ]
+    },
+    {
+     "season": "2002-03",
+     "club": "Opel Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "res": "Lost quarter-final",
+     "note": "final placing 7th",
+     "src": [
+      "https://en.wikipedia.org/wiki/Skyliners_Frankfurt"
+     ]
+    },
+    {
+     "season": "2003-04",
+     "club": "Opel Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "res": "Champions",
+     "src": [
+      "https://en.wikipedia.org/wiki/Skyliners_Frankfurt",
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2004-05",
+     "club": "Paris Basket Racing",
+     "cc": "FR",
+     "lg": "LNB Pro A",
+     "w": 23,
+     "l": 11,
+     "pos": 4,
+     "res": "Lost quarter-final 0–2",
+     "src": [
+      "https://www.bebasket.fr/gordon-herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert",
+      "https://www.basketball-reference.com/international/france-lnb-pro-a/2005.html",
+      "https://en.wikipedia.org/wiki/Paris_Basket_Racing"
+     ]
+    },
+    {
+     "season": "2005-06",
+     "club": "Paris Basket Racing",
+     "cc": "FR",
+     "lg": "LNB Pro A",
+     "w": 16,
+     "l": 18,
+     "pos": 13,
+     "res": "Missed playoffs",
+     "src": [
+      "https://www.bebasket.fr/gordon-herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert",
+      "https://www.basketball-reference.com/international/france-lnb-pro-a/2006.html",
+      "https://en.wikipedia.org/wiki/Paris_Basket_Racing"
+     ]
+    },
+    {
+     "season": "2006-07",
+     "club": "Élan Béarnais Pau-Orthez",
+     "cc": "FR",
+     "lg": "LNB Pro A",
+     "w": 18,
+     "l": 16,
+     "pos": 9,
+     "of": 18,
+     "res": "Missed playoffs",
+     "note": "French Cup winners; EuroLeague Top 16",
+     "src": [
+      "https://en.wikipedia.org/wiki/2006%E2%80%9307_Pro_A_season",
+      "https://www.bebasket.fr/gordon-herbert",
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2007-08",
+     "club": "Aris",
+     "cc": "GR",
+     "lg": "Greek A1",
+     "w": 18,
+     "l": 8,
+     "pos": 3,
+     "of": 14,
+     "res": "Lost quarter-final 1–2",
+     "note": "EuroLeague Top 16",
+     "src": [
+      "https://en.wikipedia.org/wiki/2007%E2%80%9308_Greek_Basket_League",
+      "https://www.basketball-reference.com/euro/teams/aris/",
+      "https://en.wikipedia.org/wiki/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2009-10",
+     "club": "Espoon Honka",
+     "cc": "FI",
+     "lg": "Korisliiga",
+     "res": "Finnish Cup winners 2009",
+     "part": "interim",
+     "seq": 1,
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2009-10",
+     "club": "Deutsche Bank Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "team": [
+      21,
+      13
+     ],
+     "pos": 7,
+     "of": 18,
+     "res": "Lost Finals",
+     "part": "took over from Murat Didin during the season",
+     "note": "to Bamberg; German Cup runner-up",
+     "seq": 2,
+     "src": [
+      "https://en.wikipedia.org/wiki/2009%E2%80%9310_Basketball_Bundesliga",
+      "https://en.wikipedia.org/wiki/Skyliners_Frankfurt",
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2010-11",
+     "club": "Deutsche Bank Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 26,
+     "l": 8,
+     "pos": 2,
+     "of": 18,
+     "res": "Lost semi-final",
+     "note": "final placing 3rd",
+     "src": [
+      "https://en.wikipedia.org/wiki/2010%E2%80%9311_Basketball_Bundesliga",
+      "https://en.wikipedia.org/wiki/Skyliners_Frankfurt",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2011-12",
+     "club": "Alba Berlin",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 26,
+     "l": 8,
+     "pos": 3,
+     "of": 18,
+     "res": "Lost quarter-final",
+     "note": "to s.Oliver Baskets",
+     "src": [
+      "https://en.wikipedia.org/wiki/2011%E2%80%9312_Basketball_Bundesliga",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2013-14",
+     "club": "Fraport Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 14,
+     "l": 20,
+     "pos": 11,
+     "of": 18,
+     "res": "Missed playoffs",
+     "src": [
+      "https://en.wikipedia.org/wiki/2013%E2%80%9314_Basketball_Bundesliga"
+     ]
+    },
+    {
+     "season": "2014-15",
+     "club": "Fraport Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 20,
+     "l": 14,
+     "pos": 6,
+     "res": "Lost quarter-final",
+     "src": [
+      "https://en.wikipedia.org/wiki/2015_BBL_Playoffs",
+      "https://en.wikipedia.org/wiki/Skyliners_Frankfurt"
+     ]
+    },
+    {
+     "season": "2015-16",
+     "club": "Fraport Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 26,
+     "l": 8,
+     "pos": 3,
+     "of": 18,
+     "res": "Lost semi-final 1–3",
+     "note": "swept Alba 3–0 in the quarter-final; FIBA Europe Cup champions; Bundesliga Coach of the Year",
+     "src": [
+      "https://en.wikipedia.org/wiki/2015%E2%80%9316_Basketball_Bundesliga",
+      "https://germanhoops.com/2016/06/04/the-fraport-skyliners-have-historical-season-climbing-new-heights-but-come-up-short-at-the-last-peak/",
+      "https://en.wikipedia.org/wiki/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2016-17",
+     "club": "Fraport Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 14,
+     "l": 18,
+     "pos": 10,
+     "res": "Missed playoffs",
+     "src": [
+      "https://en.wikipedia.org/wiki/2016%E2%80%9317_Basketball_Bundesliga"
+     ]
+    },
+    {
+     "season": "2017-18",
+     "club": "Fraport Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 20,
+     "l": 14,
+     "pos": 8,
+     "of": 18,
+     "res": "Lost quarter-final 2–3",
+     "note": "to Bayern, after leading the series 2–1",
+     "src": [
+      "https://en.wikipedia.org/wiki/2017%E2%80%9318_Basketball_Bundesliga",
+      "https://eurohoops.net/en/bbl/674001/fraport-upsets-bayern-on-the-road-bamberg-advances-to-semifinals",
+      "https://en.wikipedia.org/wiki/2018_BBL_Playoffs"
+     ]
+    },
+    {
+     "season": "2018-19",
+     "club": "Fraport Skyliners Frankfurt",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 16,
+     "l": 18,
+     "pos": 11,
+     "of": 18,
+     "res": "Missed playoffs",
+     "src": [
+      "https://en.wikipedia.org/wiki/2018%E2%80%9319_Basketball_Bundesliga",
+      "https://en.wikipedia.org/wiki/Skyliners_Frankfurt",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2020-21",
+     "club": "Avtodor Saratov",
+     "cc": "RU",
+     "lg": "VTB United League",
+     "part": "until mid-March 2021",
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2024-25",
+     "club": "Bayern Munich",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 24,
+     "l": 8,
+     "pos": 1,
+     "of": 17,
+     "res": "Champions",
+     "note": "beat Ulm in the final",
+     "src": [
+      "https://en.wikipedia.org/wiki/2024%E2%80%9325_Basketball_Bundesliga",
+      "https://en.wikipedia.org/wiki/Gordon_Herbert"
+     ]
+    },
+    {
+     "season": "2025-26",
+     "club": "Bayern Munich",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "part": "until December 2025",
+     "note": "left after eight straight EuroLeague defeats",
+     "src": [
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    }
+   ],
+   "national": [
+    {
+     "team": "Georgia",
+     "cc": "GE",
+     "yrs": "2005–07",
+     "what": "head coach",
+     "src": [
+      "https://en.wikipedia.org/wiki/Georgia_men%27s_national_basketball_team",
+      "https://basketball.ca/news/gordie-herbert-to-coach-canada-in-second-window-of-fiba-basketball-world-cup-2019-americas-qualifiers"
+     ]
+    },
+    {
+     "team": "Canada",
+     "cc": "CA",
+     "yrs": "2018",
+     "what": "coached the second window of the 2019 World Cup qualifiers",
+     "src": [
+      "https://basketball.ca/news/gordie-herbert-to-coach-canada-in-second-window-of-fiba-basketball-world-cup-2019-americas-qualifiers"
+     ]
+    },
+    {
+     "team": "Germany",
+     "cc": "DE",
+     "yrs": "2021–24",
+     "what": "EuroBasket 2022 bronze · 2023 World Cup gold · 2024 Olympics 4th",
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert",
+      "https://dewiki.de/Lexikon/Gordon_Herbert"
+     ]
+    },
+    {
+     "team": "Canada",
+     "cc": "CA",
+     "yrs": "2025–",
+     "what": "head coach (appointed 1 May 2025)",
+     "src": [
+      "https://en.wikipedia.org/wiki/Gordon_Herbert"
+     ]
+    }
+   ],
+   "careerChecked": "2026-10-26"
   },
   {
    "id": "john-rillie",
@@ -233,7 +1354,81 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "2022-23",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 15,
+     "l": 13,
+     "pos": 6,
+     "of": 10,
+     "res": "Lost play-in",
+     "note": "won the play-in qualifier, lost the play-in game",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats",
+      "https://en.wikipedia.org/wiki/John_Rillie"
+     ]
+    },
+    {
+     "season": "2023-24",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 17,
+     "l": 11,
+     "pos": 2,
+     "of": 10,
+     "res": "Lost semi-final 1–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2024-25",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 18,
+     "l": 11,
+     "pos": 3,
+     "of": 10,
+     "res": "Lost semi-final 1–2",
+     "note": "won the seeding qualifier",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    },
+    {
+     "season": "2025-26",
+     "club": "Perth Wildcats",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 21,
+     "l": 12,
+     "pos": 4,
+     "of": 10,
+     "res": "Lost semi-final 0–2",
+     "note": "through the play-in",
+     "src": [
+      "https://en.wikipedia.org/wiki/Perth_Wildcats"
+     ]
+    }
+   ],
+   "national": [
+    {
+     "team": "Australia",
+     "cc": "AU",
+     "yrs": "2026",
+     "what": "head coach for two World Cup qualifiers (Feb 2026)",
+     "src": [
+      "https://en.wikipedia.org/wiki/John_Rillie"
+     ]
+    }
+   ],
+   "careerChecked": "2026-10-26"
   },
   {
    "id": "josh-king",
@@ -265,7 +1460,125 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "2021-22",
+     "club": "USK Praha",
+     "cc": "CZ",
+     "lg": "Czech NBL",
+     "res": "Lost quarter-final",
+     "src": [
+      "https://en.wikipedia.org/wiki/Josh_King_(basketball)"
+     ]
+    },
+    {
+     "season": "2022-23",
+     "club": "MHP Riesen Ludwigsburg",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 19,
+     "l": 15,
+     "pos": 5,
+     "of": 18,
+     "res": "Lost semi-final",
+     "src": [
+      "https://en.wikipedia.org/wiki/2022%E2%80%9323_Basketball_Bundesliga",
+      "https://en.wikipedia.org/wiki/2023_BBL_Playoffs",
+      "https://en.wikipedia.org/wiki/Josh_King_(basketball)"
+     ]
+    },
+    {
+     "season": "2023-24",
+     "club": "MHP Riesen Ludwigsburg",
+     "cc": "DE",
+     "lg": "Basketball Bundesliga",
+     "w": 18,
+     "l": 16,
+     "pos": 8,
+     "of": 18,
+     "res": "Lost quarter-final 1–3",
+     "note": "through the play-in; to Bayern",
+     "src": [
+      "https://en.wikipedia.org/wiki/2023%E2%80%9324_Basketball_Bundesliga",
+      "https://easycredit-bbl.de/de/n/news/2024/mai/bonn-hammer-ludwigsburg-yet-again-in-play-ins-to-reach-playoffs-date-with-alba-ludwigsburg-face-hamburg-for-final-chance",
+      "https://eurohoops.net/en/bbl/1675955/bayern-ludwigsburg-wurzburg-ulm-bbl-quarterfinals-recap",
+      "https://en.wikipedia.org/wiki/Josh_King_(basketball)"
+     ]
+    },
+    {
+     "season": "2024-25",
+     "club": "Darüşşafaka",
+     "cc": "TR",
+     "lg": "Turkish BSL",
+     "part": "two games, then left for the Phoenix (Oct 2024)",
+     "seq": 1,
+     "src": [
+      "https://en.wikipedia.org/wiki/Josh_King_(basketball)"
+     ]
+    },
+    {
+     "season": "2024-25",
+     "club": "South East Melbourne Phoenix",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 14,
+     "l": 7,
+     "team": [
+      16,
+      13
+     ],
+     "pos": 4,
+     "of": 10,
+     "res": "Lost semi-final 1–2",
+     "part": "from 1 Nov 2024 (the Phoenix were 0–5 when Mike Kelly was let go)",
+     "note": "through the play-in",
+     "seq": 2,
+     "src": [
+      "https://en.wikipedia.org/wiki/South_East_Melbourne_Phoenix",
+      "https://en.wikipedia.org/wiki/Josh_King_(basketball)"
+     ]
+    },
+    {
+     "season": "2025",
+     "club": "Mets de Guaynabo",
+     "cc": "PR",
+     "lg": "BSN (Puerto Rico)",
+     "team": [
+      13,
+      21
+     ],
+     "pos": 5,
+     "of": 6,
+     "grp": "Group A",
+     "res": "Missed playoffs",
+     "part": "from 9 May 2025 (took over at 8–10)",
+     "side": "Off-season",
+     "src": [
+      "https://en.wikipedia.org/wiki/Josh_King_(basketball)",
+      "https://en.wikipedia.org/wiki/2025_Baloncesto_Superior_Nacional_season",
+      "https://www.metro.pr/deportes/2025/05/09/mets-anuncian-nuevo-dirigente-tras-despedir-a-barea/"
+     ]
+    },
+    {
+     "season": "2025-26",
+     "club": "South East Melbourne Phoenix",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 22,
+     "l": 11,
+     "pos": 3,
+     "of": 10,
+     "res": "Lost semi-final 1–2",
+     "note": "won the seeding qualifier",
+     "src": [
+      "https://en.wikipedia.org/wiki/South_East_Melbourne_Phoenix",
+      "https://en.wikipedia.org/wiki/Josh_King_(basketball)"
+     ]
+    }
+   ],
+   "national": [],
+   "careerChecked": "2026-10-26"
   },
   {
    "id": "brian-goorjian",
@@ -313,7 +1626,555 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "1986",
+     "club": "Ballarat Miners",
+     "cc": "AU",
+     "lg": "SEABL",
+     "note": "the club's first head coach",
+     "src": [
+      "https://en.wikipedia.org/wiki/Brian_Goorjian"
+     ]
+    },
+    {
+     "season": "1987",
+     "club": "Ballarat Miners",
+     "cc": "AU",
+     "lg": "SEABL",
+     "res": "SEABL South Conference champions",
+     "src": [
+      "https://en.wikipedia.org/wiki/Brian_Goorjian"
+     ]
+    },
+    {
+     "season": "1988",
+     "club": "Eastside Spectres",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 11,
+     "l": 13,
+     "pos": 8,
+     "of": 13,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Nunawading_Spectres",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "1989",
+     "club": "Eastside Spectres",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 14,
+     "l": 10,
+     "pos": 7,
+     "of": 13,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Nunawading_Spectres",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "1990",
+     "club": "Eastside Spectres",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 18,
+     "l": 8,
+     "pos": 2,
+     "of": 14,
+     "res": "Lost semi-final 0–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Nunawading_Spectres",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "1991",
+     "club": "Eastside Spectres",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 17,
+     "l": 9,
+     "pos": 2,
+     "of": 14,
+     "res": "Lost Grand Final 1–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Nunawading_Spectres",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "1992",
+     "club": "South East Melbourne Magic",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 20,
+     "l": 4,
+     "pos": 1,
+     "of": 13,
+     "res": "Champions · won Grand Final 2–1",
+     "src": [
+      "https://en.wikipedia.org/wiki/South_East_Melbourne_Magic",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "1993",
+     "club": "South East Melbourne Magic",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 20,
+     "l": 6,
+     "pos": 2,
+     "of": 14,
+     "res": "Lost semi-final 0–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/South_East_Melbourne_Magic",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "1994",
+     "club": "South East Melbourne Magic",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 18,
+     "l": 8,
+     "pos": 3,
+     "of": 14,
+     "res": "Lost semi-final 0–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/South_East_Melbourne_Magic",
+      "https://en.wikipedia.org/wiki/1994_NBL_season"
+     ]
+    },
+    {
+     "season": "1995",
+     "club": "South East Melbourne Magic",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 18,
+     "l": 8,
+     "pos": 2,
+     "of": 14,
+     "res": "Lost semi-final 1–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/South_East_Melbourne_Magic",
+      "https://en.wikipedia.org/wiki/1995_NBL_season"
+     ]
+    },
+    {
+     "season": "1996",
+     "club": "South East Melbourne Magic",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 19,
+     "l": 7,
+     "pos": 2,
+     "of": 14,
+     "res": "Champions · won Grand Final 2–1",
+     "src": [
+      "https://en.wikipedia.org/wiki/South_East_Melbourne_Magic",
+      "https://en.wikipedia.org/wiki/1996_NBL_season"
+     ]
+    },
+    {
+     "season": "1997",
+     "club": "South East Melbourne Magic",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 22,
+     "l": 8,
+     "pos": 1,
+     "of": 11,
+     "res": "Lost Grand Final 1–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/South_East_Melbourne_Magic",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "1998",
+     "club": "South East Melbourne Magic",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 26,
+     "l": 4,
+     "pos": 1,
+     "of": 11,
+     "res": "Lost Grand Final 0–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/South_East_Melbourne_Magic",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "1998-99",
+     "club": "Victoria Titans",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 16,
+     "l": 10,
+     "pos": 4,
+     "of": 11,
+     "res": "Lost Grand Final 1–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Victoria_Titans",
+      "https://en.wikipedia.org/wiki/1998%E2%80%9399_NBL_season"
+     ]
+    },
+    {
+     "season": "1999-00",
+     "club": "Victoria Titans",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 20,
+     "l": 8,
+     "pos": 4,
+     "of": 11,
+     "res": "Lost Grand Final 0–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Victoria_Titans",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "2000-01",
+     "club": "Victoria Titans",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 22,
+     "l": 6,
+     "pos": 1,
+     "of": 11,
+     "res": "Lost semi-final 1–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Victoria_Titans",
+      "https://en.wikipedia.org/wiki/2000%E2%80%9301_NBL_season"
+     ]
+    },
+    {
+     "season": "2001-02",
+     "club": "Victoria Titans",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 21,
+     "l": 9,
+     "pos": 1,
+     "of": 11,
+     "res": "Lost semi-final 1–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Victoria_Titans",
+      "https://en.wikipedia.org/wiki/2001%E2%80%9302_NBL_season"
+     ]
+    },
+    {
+     "season": "2002-03",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 22,
+     "l": 8,
+     "pos": 1,
+     "of": 11,
+     "res": "Champions · won Grand Final 2–0",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "2003-04",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 26,
+     "l": 7,
+     "pos": 1,
+     "of": 12,
+     "res": "Champions · won Grand Final 3–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings",
+      "https://en.wikipedia.org/wiki/2003%E2%80%9304_NBL_season"
+     ]
+    },
+    {
+     "season": "2004-05",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 21,
+     "l": 11,
+     "pos": 1,
+     "of": 11,
+     "res": "Champions · won Grand Final 3–0",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings",
+      "https://en.wikipedia.org/wiki/2004%E2%80%9305_NBL_season"
+     ]
+    },
+    {
+     "season": "2005-06",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 26,
+     "l": 6,
+     "pos": 1,
+     "of": 11,
+     "res": "Lost Grand Final 0–3",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings",
+      "https://en.wikipedia.org/wiki/2005%E2%80%9306_NBL_season"
+     ]
+    },
+    {
+     "season": "2006-07",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 20,
+     "l": 13,
+     "pos": 4,
+     "of": 12,
+     "res": "Lost semi-final 0–2",
+     "note": "won the quarter-final",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "2007-08",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 27,
+     "l": 3,
+     "pos": 1,
+     "of": 13,
+     "res": "Lost Grand Final 2–3",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "2008-09",
+     "club": "South Dragons",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 22,
+     "l": 8,
+     "pos": 1,
+     "of": 10,
+     "res": "Champions · won Grand Final 3–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/South_Dragons",
+      "https://en.wikipedia.org/wiki/List_of_NBL_seasons"
+     ]
+    },
+    {
+     "season": "2009-10",
+     "club": "Dongguan Leopards",
+     "cc": "CN",
+     "lg": "CBA (China)",
+     "w": 13,
+     "l": 19,
+     "pos": 11,
+     "of": 17,
+     "res": "Missed playoffs",
+     "src": [
+      "https://en.wikipedia.org/wiki/2009%E2%80%9310_Chinese_Basketball_Association_season"
+     ]
+    },
+    {
+     "season": "2010-11",
+     "club": "Dongguan Leopards",
+     "cc": "CN",
+     "lg": "CBA (China)",
+     "w": 25,
+     "l": 7,
+     "pos": 3,
+     "of": 17,
+     "res": "Made playoffs",
+     "src": [
+      "https://en.wikipedia.org/wiki/2010%E2%80%9311_Chinese_Basketball_Association_season"
+     ]
+    },
+    {
+     "season": "2011-12",
+     "club": "Dongguan Leopards",
+     "cc": "CN",
+     "lg": "CBA (China)",
+     "w": 19,
+     "l": 13,
+     "pos": 5,
+     "of": 17,
+     "res": "Lost quarter-final 2–3",
+     "note": "to Xinjiang",
+     "src": [
+      "https://en.wikipedia.org/wiki/2011%E2%80%9312_Chinese_Basketball_Association_season",
+      "https://en.wikipedia.org/wiki/2012_CBA_Playoffs",
+      "https://www.basketball-reference.com/international/cba-china/2012.html"
+     ]
+    },
+    {
+     "season": "2012-13",
+     "club": "Dongguan Leopards",
+     "cc": "CN",
+     "lg": "CBA (China)",
+     "w": 17,
+     "l": 15,
+     "pos": 7,
+     "of": 17,
+     "res": "Lost quarter-final 0–3",
+     "src": [
+      "https://en.wikipedia.org/wiki/2012%E2%80%9313_Chinese_Basketball_Association_season",
+      "https://www.basketball-reference.com/international/cba-china/2013.html"
+     ]
+    },
+    {
+     "season": "2013-14",
+     "club": "Dongguan Leopards",
+     "cc": "CN",
+     "lg": "CBA (China)",
+     "w": 25,
+     "l": 9,
+     "pos": 3,
+     "of": 18,
+     "res": "Lost semi-final",
+     "note": "swept by Xinjiang",
+     "src": [
+      "https://en.wikipedia.org/wiki/2013%E2%80%9314_Chinese_Basketball_Association_season",
+      "https://www.basketball-reference.com/international/cba-china/2014.html",
+      "https://sheridanhoops.com/2014/03/18/chinese-basketball-association-finals-preview-beijing-vs-xinjiang"
+     ]
+    },
+    {
+     "season": "2014-15",
+     "club": "Dongguan Leopards",
+     "cc": "CN",
+     "lg": "CBA (China)",
+     "w": 25,
+     "l": 13,
+     "pos": 8,
+     "of": 20,
+     "res": "Lost quarter-final 1–3",
+     "src": [
+      "https://en.wikipedia.org/wiki/2014%E2%80%9315_Chinese_Basketball_Association_season",
+      "https://www.basketball-reference.com/international/cba-china/2015.html"
+     ]
+    },
+    {
+     "season": "2018-19",
+     "club": "Xinjiang Flying Tigers",
+     "cc": "CN",
+     "lg": "CBA (China)",
+     "part": "head coach from May to December 2018, then assistant",
+     "src": [
+      "https://en.wikipedia.org/wiki/Brian_Goorjian"
+     ]
+    },
+    {
+     "season": "2020-21",
+     "club": "Illawarra Hawks",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 20,
+     "l": 16,
+     "pos": 3,
+     "of": 9,
+     "res": "Lost semi-final 1–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Illawarra_Hawks"
+     ]
+    },
+    {
+     "season": "2021-22",
+     "club": "Illawarra Hawks",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 19,
+     "l": 9,
+     "pos": 2,
+     "of": 10,
+     "res": "Lost semi-final 0–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Illawarra_Hawks"
+     ]
+    },
+    {
+     "season": "2022-23",
+     "club": "Bay Area Dragons",
+     "cc": "HK",
+     "lg": "PBA Commissioner's Cup",
+     "w": 10,
+     "l": 2,
+     "pos": 1,
+     "of": 13,
+     "res": "Lost Finals 3–4",
+     "note": "to Ginebra; EASL Champions Week 3rd",
+     "src": [
+      "https://en.wikipedia.org/wiki/2022%E2%80%9323_PBA_Commissioner%27s_Cup",
+      "https://en.wikipedia.org/wiki/Bay_Area_Dragons"
+     ]
+    },
+    {
+     "season": "2024-25",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 16,
+     "l": 13,
+     "pos": 5,
+     "of": 10,
+     "res": "Lost play-in",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings"
+     ]
+    },
+    {
+     "season": "2025-26",
+     "club": "Sydney Kings",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 24,
+     "l": 9,
+     "pos": 1,
+     "of": 10,
+     "res": "Champions · won Grand Final 3–2",
+     "src": [
+      "https://en.wikipedia.org/wiki/Sydney_Kings"
+     ]
+    }
+   ],
+   "national": [
+    {
+     "team": "Australia",
+     "cc": "AU",
+     "yrs": "2001–08",
+     "what": "2004 and 2008 Olympics, 2006 World Championship, 2006 Commonwealth Games gold",
+     "src": [
+      "https://en.wikipedia.org/wiki/Brian_Goorjian"
+     ]
+    },
+    {
+     "team": "Australia",
+     "cc": "AU",
+     "yrs": "2020–24",
+     "what": "Tokyo 2020 bronze, the Boomers' first Olympic medal; Paris 2024",
+     "src": [
+      "https://en.wikipedia.org/wiki/Brian_Goorjian"
+     ]
+    }
+   ],
+   "careerChecked": "2026-10-26"
   },
   {
    "id": "scott-roth",
@@ -358,7 +2219,170 @@
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
     "https://www.basketball.com.au/news/nbl-rosters",
     "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
-   ]
+   ],
+   "career": [
+    {
+     "season": "2007-08",
+     "club": "Bakersfield Jam",
+     "cc": "US",
+     "lg": "NBA D-League",
+     "team": [
+      11,
+      39
+     ],
+     "pos": 5,
+     "grp": "division",
+     "part": "from January 2008",
+     "src": [
+      "https://en.wikipedia.org/wiki/Scott_Roth",
+      "https://www.statscrew.com/minorbasketball/standings/t-DLGBAK"
+     ]
+    },
+    {
+     "season": "2008-09",
+     "club": "Bakersfield Jam",
+     "cc": "US",
+     "lg": "NBA D-League",
+     "w": 26,
+     "l": 24,
+     "pos": 3,
+     "grp": "division",
+     "res": "Lost quarter-final",
+     "note": "the club's first playoff trip; to Utah Flash",
+     "src": [
+      "https://en.wikipedia.org/wiki/Scott_Roth",
+      "https://www.statscrew.com/minorbasketball/standings/t-DLGBAK"
+     ]
+    },
+    {
+     "season": "2014-15",
+     "club": "Baloncesto Sevilla",
+     "cc": "ES",
+     "lg": "Liga ACB",
+     "part": "until 22 Jan 2015; without a Spanish coaching licence, Audie Norris was coach of record in Liga ACB games and Roth coached the EuroCup",
+     "note": "team started 0–5",
+     "src": [
+      "https://en.wikipedia.org/wiki/Scott_Roth"
+     ]
+    },
+    {
+     "season": "2017-18",
+     "club": "Iowa Wolves",
+     "cc": "US",
+     "lg": "NBA G League",
+     "w": 24,
+     "l": 26,
+     "pos": 3,
+     "grp": "division",
+     "res": "Missed playoffs",
+     "src": [
+      "https://www.basketball-reference.com/gleague/teams/IWA/",
+      "https://en.wikipedia.org/wiki/Scott_Roth"
+     ]
+    },
+    {
+     "season": "2018-19",
+     "club": "Iowa Wolves",
+     "cc": "US",
+     "lg": "NBA G League",
+     "w": 20,
+     "l": 30,
+     "pos": 4,
+     "grp": "division",
+     "res": "Missed playoffs",
+     "src": [
+      "https://www.basketball-reference.com/gleague/teams/IWA/",
+      "https://en.wikipedia.org/wiki/Scott_Roth"
+     ]
+    },
+    {
+     "season": "2021-22",
+     "club": "Tasmania JackJumpers",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 17,
+     "l": 11,
+     "pos": 4,
+     "of": 10,
+     "res": "Lost Grand Final 0–3",
+     "note": "the club's first season; NBL Coach of the Year",
+     "src": [
+      "https://en.wikipedia.org/wiki/Tasmania_JackJumpers",
+      "https://en.wikipedia.org/wiki/Scott_Roth"
+     ]
+    },
+    {
+     "season": "2022-23",
+     "club": "Tasmania JackJumpers",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 16,
+     "l": 12,
+     "pos": 4,
+     "of": 10,
+     "res": "Lost semi-final 1–2",
+     "note": "won the seeding qualifier",
+     "src": [
+      "https://en.wikipedia.org/wiki/Tasmania_JackJumpers"
+     ]
+    },
+    {
+     "season": "2023-24",
+     "club": "Tasmania JackJumpers",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 16,
+     "l": 12,
+     "pos": 3,
+     "of": 10,
+     "res": "Champions · won Grand Final 3–2",
+     "note": "won the seeding qualifier",
+     "src": [
+      "https://en.wikipedia.org/wiki/Tasmania_JackJumpers",
+      "https://en.wikipedia.org/wiki/Scott_Roth"
+     ]
+    },
+    {
+     "season": "2024-25",
+     "club": "Tasmania JackJumpers",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 13,
+     "l": 16,
+     "pos": 7,
+     "of": 10,
+     "res": "Missed finals",
+     "src": [
+      "https://en.wikipedia.org/wiki/Tasmania_JackJumpers"
+     ]
+    },
+    {
+     "season": "2025-26",
+     "club": "Tasmania JackJumpers",
+     "cc": "AU",
+     "lg": "NBL",
+     "w": 14,
+     "l": 19,
+     "pos": 6,
+     "of": 10,
+     "res": "Lost play-in",
+     "src": [
+      "https://en.wikipedia.org/wiki/Tasmania_JackJumpers"
+     ]
+    }
+   ],
+   "national": [
+    {
+     "team": "Dominican Republic",
+     "cc": "DO",
+     "yrs": "2007–08",
+     "what": "2007 CBC Championship silver",
+     "src": [
+      "https://en.wikipedia.org/wiki/Scott_Roth"
+     ]
+    }
+   ],
+   "careerChecked": "2026-10-26"
   }
  ]
 }

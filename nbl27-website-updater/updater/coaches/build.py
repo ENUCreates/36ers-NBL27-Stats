@@ -16,6 +16,11 @@ Official team totals include team rebounds and team turnovers, as the page's NBL
 1 = fastest) among that season's teams; a coach who took over mid-season is ranked on his games against the other
 clubs' full seasons. Checks printed at the end: games per team and season, and each coach's games and W-L (finals
 included) against his career record where his whole NBL career falls inside the official data.
+
+curated.json also carries each coach's whole head-coaching career ('career': every club job in every league, season by
+season, with the pages each row was read from) and his national-team jobs ('national'). They are passed to the page as
+they are, newest season first, with the source pages numbered once per coach ('csrc'); every NBL row from 2015-16 on
+must agree with the official results for the games he coached (W-L and the number of teams), or nothing is written.
 """
 import json, os, sys, re, tempfile, datetime
 from collections import defaultdict
@@ -145,6 +150,57 @@ def games_by_season(dest):
     return out, finals, []
 
 
+CAREER_KEYS = {"season", "disp", "club", "cc", "lg", "w", "l", "team", "pos", "of", "grp", "res", "part", "note", "seq", "side", "src"}
+
+
+def career_rows(c, out, rep, bad):
+    """The curated career (every head-coaching job, any league) for the page: each row's source pages become numbers
+    into one list per coach ('csrc'), newest season first. NBL rows from 2015-16 on must match the official results
+    for the games he coached (W-L, and the number of teams); a mismatch stops the build."""
+    car, nat = c.get("career") or [], c.get("national") or []
+    if not car and not nat:
+        return
+    urls = []
+
+    def ix(lst):
+        if not lst:
+            bad.append(f"{c['name']}: a row without sources")
+        for u in lst:
+            if u not in urls:
+                urls.append(u)
+        return [urls.index(u) + 1 for u in lst]
+    official_rows = {(r["season"], r["team"]): r for r in out["seasons"]}
+    rows, checked = [], 0
+    for r in car:
+        if set(r) - CAREER_KEYS or not {"season", "club", "cc", "lg"} <= set(r):
+            bad.append(f"{c['name']} {r.get('season')} {r.get('club')}: unexpected or missing keys")
+        x = {k: v for k, v in r.items() if k != "src"}
+        x["s"] = ix(r.get("src") or [])
+        if r["lg"] == "NBL" and FIRST <= r["season"] <= LAST:
+            o = official_rows.get((r["season"], r["club"]))
+            if not o:
+                bad.append(f"{c['name']} {r['season']} {r['club']}: no official coach-season (add the stint)")
+            else:
+                if (r.get("w"), r.get("l")) != (o["w"], o["l"]):
+                    bad.append(f"{c['name']} {r['season']} {r['club']}: curated {r.get('w')}-{r.get('l')}, official {o['w']}-{o['l']}")
+                if r.get("of") not in (None, o["n"]):
+                    bad.append(f"{c['name']} {r['season']} {r['club']}: curated {r['of']} teams, official {o['n']}")
+                x["of"], x["off"] = o["n"], 1
+                checked += 1
+        rows.append(x)
+    seasons_of = {s["season"] for s in out["seasons"]}
+    missing = sorted(seasons_of - {r["season"] for r in car if r["lg"] == "NBL"})
+    if missing:
+        bad.append(f"{c['name']}: official NBL coach-seasons missing from the career list: {', '.join(missing)}")
+    out["career"] = sorted(rows, key=lambda r: (r["season"], r.get("seq", 0)), reverse=True)
+    out["national"] = [{**{k: v for k, v in n.items() if k != "src"}, "s": ix(n.get("src") or [])} for n in nat]
+    out["csrc"] = urls
+    if c.get("careerChecked"):
+        out["careerChecked"] = c["careerChecked"]
+    rep.append(f"{c['name']}: career {len(rows)} rows ({checked} NBL seasons checked against the official results), "
+               f"{len(out['national'])} national-team jobs, {len(urls)} sources")
+
+
 def main():
     root = sys.argv[1]
     pages = sys.argv[2:]
@@ -172,7 +228,7 @@ def main():
             for k, _ in STATS:
                 allt["own"][k] += t["own"][k]; allt["opp"][k] += t["opp"][k]
         league[season] = rnd(metrics(allt))
-    coaches = []
+    coaches, bad = [], []
     for c in cur["coaches"]:
         out = {k: c[k] for k in ("id", "name", "team") if k in c}
         for k in ("record", "titles", "note"):
@@ -207,6 +263,7 @@ def main():
                     check_g += 1; check_w += 1 if g["score"][team] > g["score"][opp] else 0
         out["seasons"] = sorted(rows, key=lambda r: r["season"], reverse=True)
         out["sources"] = c.get("sources") or []
+        career_rows(c, out, rep, bad)
         coaches.append(out)
         rec = c.get("record")
         line = f"{c['name']} ({c['team']}): " + (", ".join(f"{r['season']} {r['team']} {r['games']} g {r['w']}-{r['l']}"
@@ -221,12 +278,17 @@ def main():
     res = {"_about": ("Head coaches tab data, built once by updater/coaches/build.py from coaches/curated.json and the official NBL "
                       "box scores (nblR files): each NBL27 head coach's NBL head-coaching seasons since 2015-16 - regular-season "
                       "games he coached, his team's ratings and four factors in those games, their rank among that season's teams "
-                      "(1 = best; pace: 1 = fastest) and the league average. Built " + datetime.date.today().isoformat() + "."),
+                      "(1 = best; pace: 1 = fastest) and the league average - and his whole head-coaching career in every league "
+                      "('career', newest first, with the pages read in 'csrc'; NBL rows from 2015-16 checked against the official "
+                      "results) and national-team jobs. Built " + datetime.date.today().isoformat() + "."),
            "recordSource": cur.get("recordSource"), "coaches": coaches}
+    print("\n".join(rep))
+    if bad:
+        sys.exit("career rows that disagree with the official NBL data or are malformed (nothing written):\n" + "\n".join(bad))
     fp = os.path.join(HERE, "..", "coaches.json")
     json.dump(res, open(fp, "w"), indent=1, ensure_ascii=False)
-    print(f"{len(coaches)} coaches, {sum(len(c['seasons']) for c in coaches)} coach-seasons -> {os.path.normpath(fp)}")
-    print("\n".join(rep))
+    print(f"{len(coaches)} coaches, {sum(len(c['seasons']) for c in coaches)} coach-seasons, "
+          f"{sum(len(c.get('career') or []) for c in coaches)} career rows -> {os.path.normpath(fp)}")
     # the page's copy
     blob = "/*COACHES*/const COACHES=" + json.dumps({"recordSource": res["recordSource"], "coaches": coaches}, ensure_ascii=False, separators=(",", ":")) + ";/*COACHES*/"
     for pg in pages:
