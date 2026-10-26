@@ -1,0 +1,364 @@
+{
+ "_about": "NBL27 head coaches and the NBL seasons they were head coach in since 2015-16, the first season of the official NBL box scores (nblR). 'stints': one per season and club; 'from' = the date he took over mid-season (games from that date on are his). 'record' and 'titles': his whole NBL head-coaching career (finals included) from Wikipedia's NBL All-Time Coaching Records, to the end of 2025-26. Each coach lists the sources read (25-26 Oct 2026). Used by coaches/build.py; update it when a club changes coach.",
+ "recordSource": {
+  "name": "Wikipedia, NBL All-Time Coaching Records (to the end of 2025-26)",
+  "url": "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+ },
+ "coaches": [
+  {
+   "id": "trevor-gleeson",
+   "name": "Trevor Gleeson",
+   "team": "Adelaide 36ers",
+   "stints": [
+    {
+     "season": "2015-16",
+     "team": "Perth Wildcats"
+    },
+    {
+     "season": "2016-17",
+     "team": "Perth Wildcats"
+    },
+    {
+     "season": "2017-18",
+     "team": "Perth Wildcats"
+    },
+    {
+     "season": "2018-19",
+     "team": "Perth Wildcats"
+    },
+    {
+     "season": "2019-20",
+     "team": "Perth Wildcats"
+    },
+    {
+     "season": "2020-21",
+     "team": "Perth Wildcats"
+    }
+   ],
+   "record": {
+    "games": 460,
+    "w": 274,
+    "l": 186
+   },
+   "titles": [
+    "2013-14",
+    "2015-16",
+    "2016-17",
+    "2018-19",
+    "2019-20"
+   ],
+   "note": "Perth Wildcats head coach 2013 to 2021, then NBA assistant (Toronto, Milwaukee) and Chiba Jets head coach (Japan B.League, 2024-26); appointed by Adelaide on 22 May 2026",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Trevor_Gleeson",
+    "https://africa.espn.com/nbl/story/_/id/48840232/nbl-master-coach-trevor-gleeson-joins-adelaide-36ers",
+    "https://en.wikipedia.org/wiki/2019%E2%80%9320_NBL_season",
+    "https://en.wikipedia.org/wiki/2020%E2%80%9321_NBL_season",
+    "https://en.wikipedia.org/wiki/2021%E2%80%9322_NBL_season",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  },
+  {
+   "id": "will-weaver",
+   "name": "Will Weaver",
+   "team": "Brisbane Bullets",
+   "stints": [
+    {
+     "season": "2019-20",
+     "team": "Sydney Kings"
+    }
+   ],
+   "record": {
+    "games": 34,
+    "w": 23,
+    "l": 11
+   },
+   "titles": [],
+   "sources": [
+    "https://en.wikipedia.org/wiki/2019%E2%80%9320_NBL_season",
+    "https://en.wikipedia.org/wiki/2020%E2%80%9321_NBL_season",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  },
+  {
+   "id": "adam-forde",
+   "name": "Adam Forde",
+   "team": "Cairns Taipans",
+   "stints": [
+    {
+     "season": "2020-21",
+     "team": "Sydney Kings"
+    },
+    {
+     "season": "2021-22",
+     "team": "Cairns Taipans"
+    },
+    {
+     "season": "2022-23",
+     "team": "Cairns Taipans"
+    },
+    {
+     "season": "2023-24",
+     "team": "Cairns Taipans"
+    },
+    {
+     "season": "2024-25",
+     "team": "Cairns Taipans"
+    },
+    {
+     "season": "2025-26",
+     "team": "Cairns Taipans"
+    }
+   ],
+   "record": {
+    "games": 186,
+    "w": 76,
+    "l": 110
+   },
+   "titles": [],
+   "sources": [
+    "https://en.wikipedia.org/wiki/Adam_Forde",
+    "https://en.wikipedia.org/wiki/2020%E2%80%9321_NBL_season",
+    "https://en.wikipedia.org/wiki/2021%E2%80%9322_NBL_season",
+    "https://en.wikipedia.org/wiki/2022%E2%80%9323_NBL_season",
+    "https://en.wikipedia.org/wiki/2023%E2%80%9324_NBL_season",
+    "https://en.wikipedia.org/wiki/2024%E2%80%9325_NBL_season",
+    "https://en.wikipedia.org/wiki/2025%E2%80%9326_NBL_season",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  },
+  {
+   "id": "justin-tatum",
+   "name": "Justin Tatum",
+   "team": "Illawarra Hawks",
+   "stints": [
+    {
+     "season": "2023-24",
+     "team": "Illawarra Hawks",
+     "from": "2023-11-14"
+    },
+    {
+     "season": "2024-25",
+     "team": "Illawarra Hawks"
+    },
+    {
+     "season": "2025-26",
+     "team": "Illawarra Hawks"
+    }
+   ],
+   "record": {
+    "games": 93,
+    "w": 51,
+    "l": 42
+   },
+   "titles": [
+    "2024-25"
+   ],
+   "note": "took over (interim) on 14 Nov 2023, when Jacob Jackomas was removed after a 2-7 start, and coached from the next game (19 Nov 2023 at New Zealand); made permanent on 22 Feb 2024",
+   "sources": [
+    "https://en.wikipedia.org/wiki/2023%E2%80%9324_Illawarra_Hawks_season",
+    "https://www.espn.com/nbl/story/_/id/38930633/nbl-round-8-hawks-beat-breakers-celebrate-start-justin-tatum-tenure",
+    "https://en.wikipedia.org/wiki/2023%E2%80%9324_NBL_season",
+    "https://en.wikipedia.org/wiki/2024%E2%80%9325_NBL_season",
+    "https://en.wikipedia.org/wiki/2025%E2%80%9326_NBL_season",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  },
+  {
+   "id": "jacob-chance",
+   "name": "Jacob Chance",
+   "team": "Melbourne United",
+   "stints": [],
+   "note": "his first season as an NBL head coach: head coach of the Austin Spurs (NBA G League) in 2025-26, and a Melbourne United assistant from 2023 to 2025",
+   "sources": [
+    "https://www.basketball.com.au/news/jacob-chance-melbourne-united-head-coach-nbl27-age-career",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  },
+  {
+   "id": "gordon-herbert",
+   "name": "Gordon Herbert",
+   "team": "New Zealand Breakers",
+   "stints": [],
+   "note": "his first NBL season: won the 2023 FIBA World Cup as Germany's head coach and also coaches Canada's national team; his clubs include Bayern Munich, Alba Berlin and Skyliners Frankfurt",
+   "sources": [
+    "https://www.nbl.com.au/news/new-zealand-breakers-unveil-world-cup-gordron-herbert-winner-as-new-coach",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  },
+  {
+   "id": "john-rillie",
+   "name": "John Rillie",
+   "team": "Perth Wildcats",
+   "stints": [
+    {
+     "season": "2022-23",
+     "team": "Perth Wildcats"
+    },
+    {
+     "season": "2023-24",
+     "team": "Perth Wildcats"
+    },
+    {
+     "season": "2024-25",
+     "team": "Perth Wildcats"
+    },
+    {
+     "season": "2025-26",
+     "team": "Perth Wildcats"
+    }
+   ],
+   "record": {
+    "games": 131,
+    "w": 76,
+    "l": 55
+   },
+   "titles": [],
+   "sources": [
+    "https://en.wikipedia.org/wiki/2022%E2%80%9323_NBL_season",
+    "https://en.wikipedia.org/wiki/2023%E2%80%9324_NBL_season",
+    "https://en.wikipedia.org/wiki/2024%E2%80%9325_NBL_season",
+    "https://en.wikipedia.org/wiki/2025%E2%80%9326_NBL_season",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  },
+  {
+   "id": "josh-king",
+   "name": "Josh King",
+   "team": "South East Melbourne Phoenix",
+   "stints": [
+    {
+     "season": "2024-25",
+     "team": "South East Melbourne Phoenix",
+     "from": "2024-11-01"
+    },
+    {
+     "season": "2025-26",
+     "team": "South East Melbourne Phoenix"
+    }
+   ],
+   "record": {
+    "games": 63,
+    "w": 40,
+    "l": 23
+   },
+   "titles": [],
+   "note": "appointed on 22 Oct 2024, after Mike Kelly was let go at 0-5 (13 Oct); coached his first game on 1 Nov 2024 at Tasmania (Sam Mackinnon was interim coach for the three games before)",
+   "sources": [
+    "https://en.wikipedia.org/wiki/2024%E2%80%9325_S.E._Melbourne_Phoenix_season",
+    "https://www.semphoenix.com.au/news/kings-dream-start-to-coaching-reign",
+    "https://en.wikipedia.org/wiki/2024%E2%80%9325_NBL_season",
+    "https://en.wikipedia.org/wiki/2025%E2%80%9326_NBL_season",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  },
+  {
+   "id": "brian-goorjian",
+   "name": "Brian Goorjian",
+   "team": "Sydney Kings",
+   "stints": [
+    {
+     "season": "2020-21",
+     "team": "Illawarra Hawks"
+    },
+    {
+     "season": "2021-22",
+     "team": "Illawarra Hawks"
+    },
+    {
+     "season": "2024-25",
+     "team": "Sydney Kings"
+    },
+    {
+     "season": "2025-26",
+     "team": "Sydney Kings"
+    }
+   ],
+   "record": {
+    "games": 873,
+    "w": 598,
+    "l": 275
+   },
+   "titles": [
+    "1992",
+    "1996",
+    "2002-03",
+    "2003-04",
+    "2004-05",
+    "2008-09",
+    "2025-26"
+   ],
+   "note": "Illawarra 2020-22, Boomers head coach 2020-24, back at Sydney (his club from 2002 to 2008) from 2024-25",
+   "sources": [
+    "https://en.wikipedia.org/wiki/Brian_Goorjian",
+    "https://en.wikipedia.org/wiki/2020%E2%80%9321_NBL_season",
+    "https://en.wikipedia.org/wiki/2021%E2%80%9322_NBL_season",
+    "https://en.wikipedia.org/wiki/2024%E2%80%9325_NBL_season",
+    "https://en.wikipedia.org/wiki/2025%E2%80%9326_NBL_season",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  },
+  {
+   "id": "scott-roth",
+   "name": "Scott Roth",
+   "team": "Tasmania JackJumpers",
+   "stints": [
+    {
+     "season": "2021-22",
+     "team": "Tasmania JackJumpers"
+    },
+    {
+     "season": "2022-23",
+     "team": "Tasmania JackJumpers"
+    },
+    {
+     "season": "2023-24",
+     "team": "Tasmania JackJumpers"
+    },
+    {
+     "season": "2024-25",
+     "team": "Tasmania JackJumpers"
+    },
+    {
+     "season": "2025-26",
+     "team": "Tasmania JackJumpers"
+    }
+   ],
+   "record": {
+    "games": 166,
+    "w": 86,
+    "l": 80
+   },
+   "titles": [
+    "2023-24"
+   ],
+   "sources": [
+    "https://en.wikipedia.org/wiki/2021%E2%80%9322_NBL_season",
+    "https://en.wikipedia.org/wiki/2022%E2%80%9323_NBL_season",
+    "https://en.wikipedia.org/wiki/2023%E2%80%9324_NBL_season",
+    "https://en.wikipedia.org/wiki/2024%E2%80%9325_NBL_season",
+    "https://en.wikipedia.org/wiki/2025%E2%80%9326_NBL_season",
+    "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
+    "https://www.basketball.com.au/news/nbl-rosters",
+    "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
+   ]
+  }
+ ]
+}
