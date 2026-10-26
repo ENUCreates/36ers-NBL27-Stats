@@ -1198,40 +1198,48 @@ function extrasCards(name){
 
 // ---- players: on/off ----
 function computeOnOff(team){
-  const P={},names={},tot={sec:0,f:{},a:{}};let games=0;const bad=[];
+  const P={},names={},tot={sec:0,f:{},a:{}},pm={};let games=0,teamPM=0,pmFromStints=0;const bad=[];
   const add=(x,st)=>{x.sec+=st.sec||0;for(const s of["f","a"])for(const[k,v]of Object.entries(st[s]||{}))x[s][k]=(x[s][k]||0)+(+v||0)};
   LINEDOCS.forEach(doc=>{if(!doc.date||doc.date<SEASON_START||!doc.teams?.[team])return;
     if(!lineupTeamOk(doc,team)){bad.push(gtag(doc));return}
     games++;addNames(names,doc.names);
     doc.teams[team].forEach(st=>{if(!st.p||st.p.length!==5)return;add(tot,st);
-      st.p.forEach(id=>{const x=P[id]||(P[id]={id,sec:0,f:{},a:{},g:new Set()});add(x,st);x.g.add(doc.espnId)})})});
+      st.p.forEach(id=>{const x=P[id]||(P[id]={id,sec:0,f:{},a:{},g:new Set()});add(x,st);x.g.add(doc.espnId)})});
+    // raw +/-: the official box-score +/- and final margin of the same games (the stints if a box score is missing)
+    const g=GAMES.find(x=>x.date===doc.date&&(x.home.team===team||x.away.team===team)),pd=PLAYERDOCS.find(p=>p.espnId===doc.espnId)?.teams?.[team];
+    if(g&&pd){const b=g.home.team===team?g.home:g.away,o=g.home.team===team?g.away:g.home;teamPM+=(b.pts||0)-(o.pts||0);pd.forEach(x=>pm[x.id]=(pm[x.id]||0)+(+x.pm||0))}
+    else{pmFromStints++;doc.teams[team].forEach(st=>{const d=(+st.f?.pts||0)-(+st.a?.pts||0);teamPM+=d;(st.p||[]).forEach(id=>pm[id]=(pm[id]||0)+d)})}});
   const rate=(f,a)=>{const pp=(possF(f)+possF(a))/2;return {pp,o:dv(100*(f.pts||0),pp),d:dv(100*(a.pts||0),pp),n:dv(100*((f.pts||0)-(a.pts||0)),pp),
     efg:dv((f.fgm||0)+0.5*(f.tpm||0),f.fga),oefg:dv((a.fgm||0)+0.5*(a.tpm||0),a.fga)}};
   const rows=Object.values(P).map(x=>{const off={f:{},a:{}};for(const s of["f","a"]){const keys=new Set([...Object.keys(tot[s]),...Object.keys(x[s])]);keys.forEach(k=>off[s][k]=(tot[s][k]||0)-(x[s][k]||0))}
     const on=rate(x.f,x.a),of=rate(off.f,off.a),ok=of.pp>=10;
+    const onPM=pm[x.id]||0,offPM=teamPM-onPM;
     return {id:x.id,name:names[x.id]||x.id,gp:x.g.size,mpg:x.sec/60/x.g.size,poss:on.pp,onO:on.o,onD:on.d,onN:on.n,offO:ok?of.o:null,offD:ok?of.d:null,offN:ok?of.n:null,
-      offPoss:of.pp,diff:ok&&on.n!=null?on.n-of.n:null,onEfg:on.efg,offEfg:ok?of.efg:null}});
-  return {rows,games,bad};
+      offPoss:of.pp,diff:ok&&on.n!=null?on.n-of.n:null,onEfg:on.efg,offEfg:ok?of.efg:null,onPM,offPM,diffPM:onPM-offPM}});
+  return {rows,games,bad,teamPM,pmFromStints};
 }
-const OCOLS=[["gp","GP",v=>v,1],["mpg","MPG",f1,1],["poss","On poss",v=>Math.round(v),1],["onO","On ORtg",f1,1],["onD","On DRtg",f1,-1],["onN","On Net",sgn,1],
-  ["offO","Off ORtg",f1,1,"sep"],["offD","Off DRtg",f1,-1],["offN","Off Net",sgn,1],["diff","On–Off Net",sgn,1,"diff"],["onEfg","On eFG%",pct,1,"sep"],["offEfg","Off eFG%",pct,1]];
+const pmf=v=>v==null?"–":(v>0?"+":"")+v;   // a raw +/- total
+const OCOLS=[["gp","GP",v=>v,1],["mpg","MPG",f1,1],["poss","On poss",v=>Math.round(v),1],["onO","On ORtg",f1,1],["onD","On DRtg",f1,-1],["onN","On Net",sgn,1],["onPM","On +/-",pmf,1],
+  ["offO","Off ORtg",f1,1,"sep"],["offD","Off DRtg",f1,-1],["offN","Off Net",sgn,1],["offPM","Off +/-",pmf,1],["diff","On–Off Net",sgn,1,"diff"],["diffPM","On–Off +/-",pmf,1,"pmd"],["onEfg","On eFG%",pct,1,"sep"],["offEfg","Off eFG%",pct,1]];
 let osort={k:"mpg",d:-1};
 function renderOnOff(el,name){
   if(!LINEDOCS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Lineup data is loading</strong></div></div>`;return}
-  const {rows,games,bad}=computeOnOff(name);
+  const {rows,games,bad,teamPM,pmFromStints}=computeOnOff(name);
   const shown=rows.filter(r=>r.mpg>=pminVal);
   shown.sort((a,b)=>{const k=osort.k;if(k==="name")return osort.d*a.name.localeCompare(b.name);const x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return osort.d*(x-y)});
   const arrow=k=>osort.k===k?` data-dir="${osort.d>0?'▲':'▼'}"`:"";
   const mx=Math.max(10,...shown.map(r=>Math.abs(r.diff||0)));
   const cell=(r,[k,,fmt,,x])=>{const sep=x==="sep"?' sep':'';
     if(x==="diff"&&r.diff!=null){const w=Math.round(26*Math.min(1,Math.abs(r.diff)/mx));return `<td class="sep ${r.poss>=150&&r.offPoss>=150?(r.diff>=5?'hi':r.diff<=-5?'lo':''):''}"><span class="nbar" style="width:${w}px;background:${r.diff>=0?'var(--good)':'var(--bad)'}"></span>${fmt(r.diff)}</td>`}
+    if(x==="pmd")return `<td class="${r[k]>0?'up':r[k]<0?'dn':''}">${fmt(r[k])}</td>`;
     return `<td class="${sep}">${fmt(r[k])}</td>`};
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${games} games · ${shown.length} players shown</span></div>
     <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${OCOLS.map(c=>`<th class="${c[4]==="sep"||c[4]==="diff"?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
     <tbody>${shown.map(r=>`<tr class="${r.poss<100?'low':''}"><td class="tm pl">${pname(r.id,r.name,name)}</td>${OCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${OCOLS.length+1}" style="color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
-    <span>On = team ratings per 100 possessions with him on the floor; Off = with him on the bench</span><span>On–Off Net = On Net − Off Net (shaded with 150+ possessions each way)</span><span>Faded rows = under 100 on-court possessions</span><span>Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-</span>
+    <span>On = team ratings per 100 possessions with him on the floor; Off = with him off it (on the bench, or a game he missed)</span><span>On–Off Net = On Net − Off Net (shaded with 150+ possessions each way)</span>
+    <span>On +/- = his official box-score +/- (the team's points scored minus allowed with him on the floor) in these games; Off +/- = the team's margin in these games (${pmf(teamPM)}) minus his On +/-; On–Off +/- = On +/- − Off +/-${pmFromStints?` (${pmFromStints} game${pmFromStints>1?"s":""} without a box score: from the rebuilt floor time)`:""}</span><span>Faded rows = under 100 on-court possessions</span><span>Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-</span>
     ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(osort.k===k)osort.d*=-1;else osort={k,d:k==="name"||k==="onD"||k==="offD"?1:-1};renderPlayers()});
 }
