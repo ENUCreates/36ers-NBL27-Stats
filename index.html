@@ -1602,7 +1602,7 @@ function playerCard(team,pid){
   const sc=PSHOTS.length?shotChartParts(team,pid):null;
   // connections
   const cx=EVENTS.length?connectionsFor(team,pid):null;
-  const bars=(L,max,empty)=>L.length?L.slice(0,6).map(x=>`<div class="cxrow"><div><div class="cxn">${pname(x.id,x.name,team)} <span class="mu">${x.n} · ${x.p} pts</span></div><div class="cxbar" style="width:${Math.max(4,Math.round(100*x.n/max))}%"></div></div><div class="num">${x.n}</div></div>`).join(""):`<p class="note">${empty}</p>`;
+  const bars=(L,max,empty)=>L.length?L.slice(0,6).map(x=>`<div class="cxrow"><div><div class="cxn">${pname(x.id,x.name,team)} <span class="mu">${x.p} pts</span></div><div class="cxbar" style="width:${Math.max(4,Math.round(100*x.n/max))}%"></div></div><div class="num">${x.n}</div></div>`).join(""):`<p class="note">${empty}</p>`;
   const cxHTML=cx?`<div class="cx"><div><h4>Assisted by</h4>${bars(cx.by,Math.max(1,...cx.by.map(x=>x.n)),"No assisted makes yet.")}</div>
       <div><h4>Assists to</h4>${bars(cx.to,Math.max(1,...cx.to.map(x=>x.n)),"No assists yet.")}</div></div>
     <p class="note" style="text-transform:uppercase;letter-spacing:.03em">${cx.fgm} made FG · ${cx.asd} assisted (${pct(dv(cx.asd,cx.fgm))}%) · ${cx.ast} assists → ${cx.apts} pts created · ${cx.games} games</p>`:`<p class="note">Play-by-play data is loading.</p>`;
