@@ -90,7 +90,7 @@ tr.teamrow td.tm{background:var(--soft);letter-spacing:.04em}
 .card{padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .card h3{font:700 18px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;margin:0}
 .card p.note{margin:0;color:var(--muted);font-size:12px}
-.ff{display:grid;grid-template-columns:110px minmax(0,1fr) 60px 44px;gap:8px 10px;align-items:center}
+.ff{display:grid;grid-template-columns:132px minmax(0,1fr) 60px 44px;gap:8px 10px;align-items:center}
 .ff .lab{font-size:13px}
 .ff .lab small{display:block;color:var(--muted);font-size:11px}
 .bar{position:relative;height:16px;background:var(--soft);border-radius:3px}
@@ -631,7 +631,7 @@ function ffRows(r,list){
     const v=r[k],a=LG[k],diff=(v-a)*(better===-1?-1:1);
     const span=0.08;const w=Math.min(Math.abs(diff)/span,1)*50;
     const left=diff>=0?50:50-w;const col=diff>=0?"var(--good)":"var(--bad)";
-    return `<div class="lab">${label}<small>${hint}</small></div>
+    return `<div class="lab">${label}<small>(${hint})</small></div>
       <div class="bar" title="League avg ${pct(a)}"><div class="mid"></div><div class="fill" style="left:${left}%;width:${w}%;background:${col}"></div></div>
       <div class="num">${pct(v)}</div><div>${rkBadge(k,r.name)}</div>`}).join("");
 }
@@ -732,7 +732,7 @@ function renderTeam(){
   <div class="grid2" style="margin-top:18px">
     <div class="panel card"><h3>Net rating by game</h3>${netChart(r.log)}</div>
     <div class="panel card"><h3>Shooting & style</h3>
-      <div class="ff" style="grid-template-columns:110px minmax(0,1fr) 60px 44px">${ffRows(r,[["ts","TS%","true shooting",1],["tpar","3PA rate","3PA per FGA",1],["tpp","3P%","from deep",1],["astr","AST/FGM","assisted makes",1],["stl","STL%","steals per poss",1],["blk","BLK%","blocks per opp 2PA",1]])}</div></div>
+      <div class="ff">${ffRows(r,[["ts","TS%","true shooting",1],["tpar","3PA rate","3PA per FGA",1],["tpp","3P%","from deep",1],["astr","AST/FGM","assisted makes",1],["stl","STL%","steals per poss",1],["blk","BLK%","blocks per opp 2PA",1]])}</div></div>
   </div>
   <div style="margin-top:18px">${shotSection(r.name)}</div>
   ${extrasCards(r.name)}
