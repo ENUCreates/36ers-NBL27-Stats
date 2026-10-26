@@ -55,10 +55,11 @@ th button[data-dir]::after{content:attr(data-dir);color:var(--accent)}
 td{font-family:var(--mono);font-size:13px}
 td.tm,th.tm{text-align:left;position:sticky;left:0;background:var(--panel);z-index:1}
 td.tm{font-family:var(--body);font-weight:600;font-size:13px}
-td.tm button{all:unset;cursor:pointer;display:flex;gap:8px;align-items:center;white-space:nowrap}
-#league th.tm,#league td.tm{min-width:250px}
+td.tm button{all:unset;cursor:pointer;display:flex;align-items:center;white-space:nowrap}
+td.tm button>img.logo,td.tm button>.code{margin-right:8px}
+#league th.tm,#league td.tm,#tstats th.tm,#tstats td.tm{min-width:250px}
 .nm{white-space:nowrap}
-@media (max-width:600px){#league th.tm,#league td.tm{min-width:200px}}
+@media (max-width:600px){#league th.tm,#league td.tm,#tstats th.tm,#tstats td.tm{min-width:210px}}
 td.tm button:hover .nm{text-decoration:underline}
 .code{font:700 13px/1 var(--display);letter-spacing:.05em;min-width:34px;padding:3px 0;text-align:center;border-radius:3px;color:#fff;display:inline-block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
 img.logo,.code{width:38px;height:28px;flex:none;border-radius:6px;vertical-align:middle}
@@ -209,9 +210,11 @@ ol.conn .lp.pa .lpn{font-weight:600}
 .av.ph:not(.lg) img{transform:scale(1.5);transform-origin:50% 2%}
 .av.lg.ph{height:165px}
 .av.sm{width:26px;height:26px;font-size:10px;letter-spacing:.02em;box-shadow:0 0 0 1px rgba(255,255,255,.2)}
-.pn{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;vertical-align:middle}
+.pn{display:inline-flex;align-items:center;white-space:nowrap;vertical-align:middle}
+.pn>.av{margin-right:8px}
 td.pl{white-space:nowrap}
 table.net th .pn{flex-direction:column;gap:4px;white-space:normal}
+table.net th .pn>.av{margin-right:0}
 /* assist network: equal scorer columns, passers' photos in one straight column */
 table.net{table-layout:fixed}
 table.net th.tm{width:170px;text-align:left}table.net th.sep{width:64px}
