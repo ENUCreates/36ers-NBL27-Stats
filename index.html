@@ -359,10 +359,14 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
         <button class="chip" id="pv-clutch" aria-pressed="false">Clutch</button>
         <button class="chip" id="pv-ast" aria-pressed="false">Assists</button>
       </div>
-      <label class="pmin" for="pmin" id="pmin-wrap">Min. minutes per game
-        <select id="pmin"><option value="0">All players</option><option value="5">5+</option><option value="10" selected>10+</option><option value="15">15+</option><option value="20">20+</option></select>
-      </label>
+      <div class="lopts">
+        <label class="pmin" for="pcolbtn" id="pcol-wrap">Columns <button class="selbtn" id="pcolbtn" aria-expanded="false" aria-controls="pcols" title="Choose which columns to show">All ▾</button></label>
+        <label class="pmin" for="pmin" id="pmin-wrap">Min. minutes per game
+          <select id="pmin"><option value="0">All players</option><option value="5">5+</option><option value="10" selected>10+</option><option value="15">15+</option><option value="20">20+</option></select>
+        </label>
+      </div>
     </div>
+    <div class="lcols" id="pcols" hidden></div>
     <div id="players"></div>
   </section>
 
@@ -779,6 +783,14 @@ function recalc(){const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();comp
 
 
 let PLAYERDOCS=[],PSTATUS=null,pview="adv",pminVal=10,psort={k:"min",d:-1};
+// Players column chooser: hidden columns per view (adv, box, onoff, clutch, ast), kept in this browser
+let pOpen=false,phide={};
+try{const o=JSON.parse(localStorage.getItem("nbl27-phide")||"{}");if(o&&typeof o==="object")Object.entries(o).forEach(([v,a])=>{if(Array.isArray(a))phide[v]=new Set(a)})}catch(e){}
+const pHidden=v=>phide[v]||(phide[v]=new Set());
+const savePhide=()=>{try{localStorage.setItem("nbl27-phide",JSON.stringify(Object.fromEntries(Object.entries(phide).map(([v,s])=>[v,[...s]]))))}catch(e){}};
+const pPicker=(v,cols)=>colPicker("pcolbtn","pcols",cols.map(c=>({k:c[0],l:c[1]})),pHidden(v),pOpen,savePhide,renderPlayers);
+// separator lines follow the blocks of the full column list (a block starts at each column marked as one), for the columns shown
+const sepShown=(all,shown,isSep)=>{let b=0;const blk=new Map(all.map(c=>{if(isSep(c))b++;return [c,b]}));return shown.map((c,i)=>i>0&&blk.get(c)!==blk.get(shown[i-1]))};
 // Per game view: "avg" = per-game averages, "tot" = season totals (switch top right of the panel). paggFrom = state the switch slides from on the next render.
 let pagg="avg",paggFrom=null;
 try{const v=localStorage.getItem("nbl27-pview");if(v)pview=v;const m=localStorage.getItem("nbl27-pmin");if(m!=null)pminVal=+m;const a=localStorage.getItem("nbl27-pagg");if(a==="avg"||a==="tot")pagg=a}catch(e){}
@@ -850,17 +862,22 @@ function renderPlayers(){
   pick.querySelectorAll("button").forEach(b=>b.onclick=()=>{current=b.dataset.team;try{localStorage.setItem("nbl27-team",current)}catch(e){}renderPlayers()});
   ["adv","box","shot","onoff","clutch","ast"].forEach(v=>document.getElementById("pv-"+v).setAttribute("aria-pressed",pview===v));
   document.getElementById("pmin-wrap").hidden=["shot","clutch","ast"].includes(pview);
-  if(pview==="shot"){renderShotChart();return}
+  document.getElementById("pcol-wrap").hidden=pview==="shot";
+  if(pview==="shot"){document.getElementById("pcols").hidden=true;renderShotChart();return}
   document.getElementById("pmin").value=String(pminVal);
   if(pview==="onoff"){renderOnOff(document.getElementById("players"),byCode[current]);return}
   if(pview==="clutch"){renderPClutch(document.getElementById("players"),byCode[current]);return}
   if(pview==="ast"){renderAssists(document.getElementById("players"),byCode[current]);return}
   document.getElementById("pmin").value=String(pminVal);
   const el=document.getElementById("players"),name=byCode[current];
+  const tot=pview==="box"&&pagg==="tot",km=tot?A2T:T2A;if(km[psort.k])psort.k=km[psort.k];
+  // hidden columns are kept by their per-game key, so they stay hidden across the Avg / Total switch
+  const hid=pHidden(pview),avgKey=k=>tot?(T2A[k]||(k==="min"?"mpg":k)):k;
+  const cols=PCOLS[tot?"tot":pview].filter(c=>!hid.has(avgKey(c[0])));
+  pPicker(pview,PCOLS[pview]);
+  if(psort.k!=="name"&&psort.k!=="min"&&!cols.some(c=>c[0]===psort.k))psort={k:"min",d:-1};   // the sorted column was hidden
   if(!PLAYERDOCS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Player box scores are loading</strong>${PSTATUS?.error?"Couldn't load player data: "+PSTATUS.error:"Every player's advanced numbers will appear here once this season's player box scores are in."}</div></div>`;return}
   let rows=computePlayers(name);
-  const tot=pview==="box"&&pagg==="tot",km=tot?A2T:T2A;if(km[psort.k])psort.k=km[psort.k];
-  const cols=PCOLS[tot?"tot":pview];
   rows.sort((a,b)=>{const k=psort.k;if(k==="name")return psort.d*a.name.localeCompare(b.name);const x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return psort.d*(x-y)});
   const lgTs=LG?.ts||0.56,maxU=Math.max(0.0001,...rows.map(r=>r.usg||0));
   const arrow=k=>psort.k===k?` data-dir="${psort.d>0?'▲':'▼'}"`:"";
@@ -892,6 +909,7 @@ function renderPlayers(){
 document.getElementById("pv-adv").onclick=()=>{pview="adv";try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()};
 document.getElementById("pv-box").onclick=()=>{pview="box";try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()};
 document.getElementById("pmin").onchange=e=>{pminVal=+e.target.value;try{localStorage.setItem("nbl27-pmin",pminVal)}catch(e){}renderPlayers()};
+document.getElementById("pcolbtn").onclick=()=>{pOpen=!pOpen;renderPlayers()};
 
 let LINEDOCS=[],LSTATUS=null,lsize=5,lminVal=10,lsort={k:"min",d:-1},lphotos=true,lhide=new Set(),lcolsOpen=false;
 try{const v=localStorage.getItem("nbl27-lsize");if(v)lsize=+v;const m=localStorage.getItem("nbl27-lmin");if(m!=null)lminVal=+m}catch(e){}
@@ -1280,20 +1298,23 @@ const OCOLS=[["gp","GP",v=>v,1],["mpg","MPG",f1,1],["poss","On poss",v=>Math.rou
   ["offO","Off ORtg",f1,1,"sep"],["offD","Off DRtg",f1,-1],["offN","Off Net",sgn,1],["offPM","Off +/-",pmf,1],["diff","On–Off Net",sgn,1,"diff"],["diffPM","On–Off +/-",pmf,1,"pmd"],["onEfg","On eFG%",pct,1,"sep"],["offEfg","Off eFG%",pct,1]];
 let osort={k:"mpg",d:-1};
 function renderOnOff(el,name){
+  pPicker("onoff",OCOLS);
   if(!LINEDOCS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Lineup data is loading</strong></div></div>`;return}
+  const hid=pHidden("onoff"),cols=OCOLS.filter(c=>!hid.has(c[0])),seps=sepShown(OCOLS,cols,c=>c[4]==="sep"||c[4]==="diff");
+  if(osort.k!=="name"&&osort.k!=="mpg"&&!cols.some(c=>c[0]===osort.k))osort={k:"mpg",d:-1};   // the sorted column was hidden
   const {rows,games,bad,teamPM,pmFromStints}=computeOnOff(name);
   const shown=rows.filter(r=>r.mpg>=pminVal);
   shown.sort((a,b)=>{const k=osort.k;if(k==="name")return osort.d*a.name.localeCompare(b.name);const x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return osort.d*(x-y)});
   const arrow=k=>osort.k===k?` data-dir="${osort.d>0?'▲':'▼'}"`:"";
   const mx=Math.max(10,...shown.map(r=>Math.abs(r.diff||0)));
-  const cell=(r,[k,,fmt,,x])=>{const sep=x==="sep"?' sep':'';
-    if(x==="diff"&&r.diff!=null){const w=Math.round(26*Math.min(1,Math.abs(r.diff)/mx));return `<td class="sep ${r.poss>=150&&r.offPoss>=150?(r.diff>=5?'hi':r.diff<=-5?'lo':''):''}"><span class="nbar" style="width:${w}px;background:${r.diff>=0?'var(--good)':'var(--bad)'}"></span>${fmt(r.diff)}</td>`}
-    if(x==="pmd")return `<td class="${r[k]>0?'up':r[k]<0?'dn':''}">${fmt(r[k])}</td>`;
+  const cell=(r,[k,,fmt,,x],sp)=>{const sep=sp?' sep':'';
+    if(x==="diff"&&r.diff!=null){const w=Math.round(26*Math.min(1,Math.abs(r.diff)/mx));return `<td class="${sep} ${r.poss>=150&&r.offPoss>=150?(r.diff>=5?'hi':r.diff<=-5?'lo':''):''}"><span class="nbar" style="width:${w}px;background:${r.diff>=0?'var(--good)':'var(--bad)'}"></span>${fmt(r.diff)}</td>`}
+    if(x==="pmd")return `<td class="${sep}${r[k]>0?' up':r[k]<0?' dn':''}">${fmt(r[k])}</td>`;
     return `<td class="${sep}">${fmt(r[k])}</td>`};
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${games} games · ${shown.length} players shown</span></div>
-    <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${OCOLS.map(c=>`<th class="${c[4]==="sep"||c[4]==="diff"?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${shown.map(r=>`<tr class="${r.poss<100?'low':''}"><td class="tm pl">${pname(r.id,r.name,name)}</td>${OCOLS.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${OCOLS.length+1}" style="color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}</tbody></table></div></div>
+    <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${cols.map((c,i)=>`<th class="${seps[i]?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
+    <tbody>${shown.map(r=>`<tr class="${r.poss<100?'low':''}"><td class="tm pl">${pname(r.id,r.name,name)}</td>${cols.map((c,i)=>cell(r,c,seps[i])).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="color:var(--muted)">No players at ${pminVal}+ minutes per game.</td></tr>`}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
     <span>On = team ratings per 100 possessions with him on the floor; Off = with him off it (on the bench, or a game he missed)</span><span>On–Off Net = On Net − Off Net (shaded with 150+ possessions each way)</span>
     <span>On +/- = his official box-score +/- (the team's points scored minus allowed with him on the floor) in these games; Off +/- = the team's margin in these games (${pmf(teamPM)}) minus his On +/-; On–Off +/- = On +/- − Off +/-${pmFromStints?` (${pmFromStints} game${pmFromStints>1?"s":""} without a box score: from the rebuilt floor time)`:""}</span><span>Faded rows = under 100 on-court possessions</span><span>Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-</span>
@@ -1303,7 +1324,11 @@ function renderOnOff(el,name){
 
 // ---- players: clutch ----
 let csort={k:"min",d:-1};
+const cma=(m,a)=>r=>`${r[m]||0}/${r[a]||0}`;
+const CCOLS=[["g","GP",r=>r.g],["min","MIN",r=>f1(r.min)],["pts","PTS",r=>r.pts||0],["fga","FGM/FGA",cma("fgm","fga")],["tpa","3PM/3PA",cma("tpm","tpa")],["fta","FTM/FTA",cma("ftm","fta")],
+  ["efg","eFG%",r=>pct(r.efg)],["ts","TS%",r=>pct(r.ts)],["ast","AST",r=>r.ast||0],["tov","TOV",r=>r.tov||0],["reb","REB",r=>r.reb],["stl","STL",r=>r.stl||0],["blk","BLK",r=>r.blk||0],["pm","+/-",r=>{const v=r.pm||0;return (v>0?"+":"")+v}]];
 function renderPClutch(el,name){
+  pPicker("clutch",CCOLS);
   const evs=seasonEv().filter(d=>d.teams[name]);
   if(!EVENTS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Play-by-play data is loading</strong></div></div>`;return}
   const P={},bad=[];let games=0,cg=0;
@@ -1312,14 +1337,14 @@ function renderPClutch(el,name){
       for(const[k,v]of Object.entries(s))x[k]=(x[k]||0)+v}});
   const rows=Object.values(P).map(x=>({...x,min:(x.sec||0)/60,reb:(x.oreb||0)+(x.dreb||0),efg:dv((x.fgm||0)+0.5*(x.tpm||0),x.fga),ts:dv(x.pts||0,2*((x.fga||0)+0.44*(x.fta||0)))}));
   rows.sort((a,b)=>{const k=csort.k;if(k==="name")return csort.d*a.name.localeCompare(b.name);const x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return csort.d*(x-y)});
-  const ma=(m,a)=>r=>`${r[m]||0}/${r[a]||0}`;
-  const C=[["g","GP",r=>r.g],["min","MIN",r=>f1(r.min)],["pts","PTS",r=>r.pts||0],["fga","FGM/FGA",ma("fgm","fga")],["tpa","3PM/3PA",ma("tpm","tpa")],["fta","FTM/FTA",ma("ftm","fta")],
-    ["efg","eFG%",r=>pct(r.efg)],["ts","TS%",r=>pct(r.ts)],["ast","AST",r=>r.ast||0],["tov","TOV",r=>r.tov||0],["reb","REB",r=>r.reb],["stl","STL",r=>r.stl||0],["blk","BLK",r=>r.blk||0],["pm","+/-",r=>{const v=r.pm||0;return (v>0?"+":"")+v}]];
+  const C=CCOLS;
+  const hid=pHidden("clutch"),cols=C.filter(c=>!hid.has(c[0]));
+  if(csort.k!=="name"&&csort.k!=="min"&&!cols.some(c=>c[0]===csort.k)){csort={k:"min",d:-1};rows.sort((a,b)=>{const x=a.min,y=b.min;if(x==null||y==null)return (x==null)-(y==null);return y-x})}   // the sorted column was hidden
   const arrow=k=>csort.k===k?` data-dir="${csort.d>0?'▲':'▼'}"`:"";
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${cg} clutch games of ${games} · season totals</span></div>
-    <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${C.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${rows.map(r=>`<tr><td class="tm pl">${pname(r.id,r.name,name)}</td>${C.map(c=>`<td>${c[2](r)}</td>`).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${C.length+1}" style="color:var(--muted)">No clutch minutes yet.</td></tr>`}</tbody></table></div></div>
+    <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${cols.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
+    <tbody>${rows.map(r=>`<tr><td class="tm pl">${pname(r.id,r.name,name)}</td>${cols.map(c=>`<td>${c[2](r)}</td>`).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="color:var(--muted)">No clutch minutes yet.</td></tr>`}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
     <span>Clutch = last 5:00 of the 4th quarter or overtime with the margin 5 or fewer</span><span>Totals, not per game · +/- = team points margin while on the floor</span>
     ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
@@ -1328,7 +1353,10 @@ function renderPClutch(el,name){
 
 // ---- players: assists ----
 let asort={k:"ast",d:-1};
+const ACOLS=[["ast","AST",r=>r.ast],["apts","Pts created",r=>r.apts],["fgm","FGM",r=>r.fgm,"sep"],["asd","Assisted FGM",r=>r.asd],["asdp","% assisted",r=>pct(r.asdp)],
+  ["rim","Rim % ast",r=>pct(r.rim),"sep"],["pnt","Paint % ast",r=>pct(r.pnt)],["mid","Mid % ast",r=>pct(r.mid)],["thr","3PT % ast",r=>pct(r.thr)]];
 function renderAssists(el,name){
+  pPicker("ast",ACOLS);
   if(!EVENTS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Play-by-play data is loading</strong></div></div>`;return}
   const P={},pair={},bad=[];let games=0;
   const pl=(id,d)=>P[id]||(P[id]={id,name:d.names?.[id]||id,ast:0,apts:0,fgm:0,asd:0,z:Array.from({length:4},()=>({m:0,a:0}))});
@@ -1338,8 +1366,9 @@ function renderAssists(el,name){
       if(a){x.asd+=n;const y=pl(a,d);y.ast+=n;y.apts+=v*n;const k=a+"|"+s;pair[k]=(pair[k]||0)+n}})});
   const rows=Object.values(P).map(x=>({...x,apg:x.ast/games,asdp:dv(x.asd,x.fgm),rim:dv(x.z[0].a,x.z[0].m),pnt:dv(x.z[1].a,x.z[1].m),mid:dv(x.z[2].a,x.z[2].m),thr:dv(x.z[3].a,x.z[3].m)}));
   rows.sort((a,b)=>{const k=asort.k;if(k==="name")return asort.d*a.name.localeCompare(b.name);const x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return asort.d*(x-y)});
-  const C=[["ast","AST",r=>r.ast],["apts","Pts created",r=>r.apts],["fgm","FGM",r=>r.fgm,"sep"],["asd","Assisted FGM",r=>r.asd],["asdp","% assisted",r=>pct(r.asdp)],
-    ["rim","Rim % ast",r=>pct(r.rim),"sep"],["pnt","Paint % ast",r=>pct(r.pnt)],["mid","Mid % ast",r=>pct(r.mid)],["thr","3PT % ast",r=>pct(r.thr)]];
+  const C=ACOLS;
+  const hid=pHidden("ast"),cols=C.filter(c=>!hid.has(c[0])),seps=sepShown(C,cols,c=>!!c[3]);
+  if(asort.k!=="name"&&asort.k!=="ast"&&!cols.some(c=>c[0]===asort.k)){asort={k:"ast",d:-1};rows.sort((a,b)=>b.ast-a.ast)}   // the sorted column was hidden
   const arrow=k=>asort.k===k?` data-dir="${asort.d>0?'▲':'▼'}"`:"";
   // network: top players by involvement
   const top=Object.values(P).sort((a,b)=>(b.ast+b.asd)-(a.ast+a.asd)).filter(x=>x.ast+x.asd>0).slice(0,9);
@@ -1353,8 +1382,8 @@ function renderAssists(el,name){
     return `<li><span class="cn">${i+1}.</span>${tile(a," pa")}<span class="arr" aria-label="assisted">→</span>${tile(s)}<span class="n" title="${P[a]?.name||""} → ${P[s]?.name||""}: ${n} assists">${n}</span></li>`}).join("");
   el.innerHTML=`<div class="panel">
     <div class="team-head"><h2>${code(name)} ${disp(name)}</h2><span class="rec">${games} games · season totals</span></div>
-    <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${C.map(c=>`<th class="${c[3]?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
-    <tbody>${rows.map(r=>`<tr><td class="tm pl">${pname(r.id,r.name,name)}</td>${C.map(c=>`<td class="${c[3]?'sep':''}">${c[2](r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
+    <div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${cols.map((c,i)=>`<th class="${seps[i]?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
+    <tbody>${rows.map(r=>`<tr><td class="tm pl">${pname(r.id,r.name,name)}</td>${cols.map((c,i)=>`<td class="${seps[i]?'sep':''}">${c[2](r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
   <div class="grid2" style="margin-top:18px">
     <div class="panel card" style="grid-column:1/-1"><h3>Assist network</h3><p class="note">Assists from each passer (row) to each scorer (column). Darker = more.</p>${net}</div>
   </div>
