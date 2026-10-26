@@ -119,8 +119,19 @@ tr.low td{opacity:.55}
 .lu .lp .av.sm{width:34px;height:34px;font-size:12px}
 .lu .lpn{white-space:normal;overflow-wrap:break-word;line-height:1.2;max-width:100%}
 @media (max-width:600px){.lu{grid-template-columns:repeat(var(--n,5),82px);gap:4px}.lu .lpn{font-size:11.5px}.lu .lp .av.sm{width:30px;height:30px}}
-.chip[aria-expanded="true"]{border-color:var(--accent);background:var(--soft)}
-#view-lineups .pbar .seg+.seg{margin-right:auto}
+.lopts{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+/* on/off switch: label on top, the switch below */
+.swl{display:flex;flex-direction:column;align-items:center;gap:5px}
+.swk{font:600 11px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sw{position:relative;width:44px;height:24px;border-radius:999px;border:1px solid var(--line);background:var(--soft);cursor:pointer;padding:0;transition:background .15s,border-color .15s}
+.sw i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:transform .15s,background .15s}
+.sw[aria-checked="true"]{background:var(--accent);border-color:var(--accent)}
+.sw[aria-checked="true"] i{transform:translateX(20px);background:var(--accent-ink)}
+.sw:focus-visible,.selbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.sw,.sw i{transition:none}}
+/* a drop-down style button (looks like the selects, not the chips) */
+.selbtn{font:500 13px var(--body);background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 9px;cursor:pointer;white-space:nowrap}
+.selbtn[aria-expanded="true"]{border-color:var(--accent)}
 .lcols{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px;padding:10px 12px;border:1px dashed var(--line);border-radius:8px;background:var(--panel)}
 .lcols[hidden]{display:none}
 .lcols>.k{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
@@ -353,13 +364,13 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
         <button class="chip" data-n="3" id="ln3">3-man</button>
         <button class="chip" data-n="2" id="ln2">2-man</button>
       </div>
-      <div class="seg" role="group" aria-label="Display">
-        <button class="chip" id="lphoto" aria-pressed="true" title="Show or hide the player photos">Photos</button>
-        <button class="chip" id="lcolbtn" aria-expanded="false" aria-controls="lcols" title="Choose which columns to show">Columns</button>
+      <div class="lopts">
+        <div class="swl"><span class="swk" id="lphoto-l">Photos</span><button class="sw" id="lphoto" role="switch" aria-checked="true" aria-labelledby="lphoto-l" title="Show or hide the player photos"><i></i></button></div>
+        <label class="pmin" for="lcolbtn">Columns <button class="selbtn" id="lcolbtn" aria-expanded="false" aria-controls="lcols" title="Choose which columns to show">All 15 ▾</button></label>
+        <label class="pmin" for="lmin">Min. total minutes
+          <select id="lmin"><option value="0">All</option><option value="5">5+</option><option value="10" selected>10+</option><option value="20">20+</option><option value="40">40+</option></select>
+        </label>
       </div>
-      <label class="pmin" for="lmin">Min. total minutes
-        <select id="lmin"><option value="0">All</option><option value="5">5+</option><option value="10" selected>10+</option><option value="20">20+</option><option value="40">40+</option></select>
-      </label>
     </div>
     <div class="lcols" id="lcols" hidden></div>
     <div id="lineups"></div>
@@ -934,9 +945,9 @@ function renderLineups(){
 // Photos on/off and the column chooser (a row of toggles under the controls; ✓ = shown)
 function lineupControls(){
   const ph=document.getElementById("lphoto"),cb=document.getElementById("lcolbtn"),box=document.getElementById("lcols");
-  ph.setAttribute("aria-pressed",lphotos);
+  ph.setAttribute("aria-checked",lphotos);
   const vis=LCOLS.filter(c=>!lhide.has(c[0])).length;
-  cb.setAttribute("aria-expanded",lcolsOpen);cb.textContent=vis<LCOLS.length?`Columns · ${vis}/${LCOLS.length}`:"Columns";
+  cb.setAttribute("aria-expanded",lcolsOpen);cb.textContent=`${vis<LCOLS.length?`${vis} of ${LCOLS.length}`:`All ${LCOLS.length}`} ${lcolsOpen?"▴":"▾"}`;
   box.hidden=!lcolsOpen;
   if(!lcolsOpen){box.innerHTML="";return}
   box.innerHTML=`<span class="k">Show columns</span>${LCOLS.map(c=>`<button class="colchip" data-k="${c[0]}" aria-pressed="${!lhide.has(c[0])}">${c[1]}</button>`).join("")}<button class="colchip act" data-all="1"${lhide.size?"":" disabled"}>Show all</button>`;
