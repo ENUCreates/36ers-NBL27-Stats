@@ -1,5 +1,5 @@
 {
- "_about": "Head coaches tab data, built once by updater/coaches/build.py from coaches/curated.json and the official NBL box scores (nblR files): each NBL27 head coach's NBL head-coaching seasons since 2015-16 - regular-season games he coached, his team's ratings and four factors in those games, their rank among that season's teams (1 = best; pace: 1 = fastest) and the league average - and his whole head-coaching career in every league ('career', newest first, with the pages read in 'csrc'; NBL rows from 2015-16 checked against the official results) and national-team jobs. Built 2026-10-26.",
+ "_about": "Head coaches tab data, built once by updater/coaches/build.py from coaches/curated.json and the official NBL box scores (nblR files): each NBL27 head coach's NBL head-coaching seasons since 2015-16 - regular-season games he coached, his team's ratings and four factors in those games, their rank among that season's teams (1 = best; pace: 1 = fastest) and the league average - and his whole head-coaching career in every league ('career', newest first, with the pages read in 'csrc'; NBL rows from 2015-16 checked against the official results) and national-team jobs; 'seasons' also carries his full seasons in other leagues ('league'), from every team's totals in coaches/overseas_teams.json. Built 2026-10-27.",
  "recordSource": {
   "name": "Wikipedia, NBL All-Time Coaching Records (to the end of 2025-26)",
   "url": "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
@@ -712,6 +712,63 @@
       "drb": 0.6944,
       "oftr": 0.2811
      }
+    },
+    {
+     "season": "2018-19",
+     "team": "Long Island Nets",
+     "league": "G League",
+     "games": 50,
+     "w": 34,
+     "l": 16,
+     "gp": 50,
+     "n": 27,
+     "m": {
+      "pace": 92.04,
+      "ortg": 106.33,
+      "drtg": 102.6,
+      "net": 3.72,
+      "efg": 0.5083,
+      "tov": 0.1442,
+      "orb": 0.2928,
+      "ftr": 0.2993,
+      "oefg": 0.5058,
+      "otov": 0.1232,
+      "drb": 0.8002,
+      "oftr": 0.2142
+     },
+     "rk": {
+      "pace": 3,
+      "ortg": 14,
+      "drtg": 4,
+      "net": 4,
+      "efg": 24,
+      "tov": 15,
+      "orb": 3,
+      "ftr": 2,
+      "oefg": 2,
+      "otov": 24,
+      "drb": 1,
+      "oftr": 2
+     },
+     "lg": {
+      "pace": 87.9,
+      "ortg": 104.75,
+      "drtg": 104.75,
+      "net": 0.0,
+      "efg": 0.5228,
+      "tov": 0.1496,
+      "orb": 0.2493,
+      "ftr": 0.2586,
+      "oefg": 0.5228,
+      "otov": 0.1496,
+      "drb": 0.7507,
+      "oftr": 0.2586
+     },
+     "src": "ESPN box scores",
+     "notes": [
+      "G League 2018-19: ESPN box scores of every regular-season game (50 a team)",
+      "pace per 40 minutes (G League games are 48; overtime periods 2 minutes)"
+     ]
     }
    ],
    "sources": [
@@ -766,6 +823,7 @@
      "grp": "Atlantic Division",
      "res": "Lost G League Finals 1–2",
      "note": "G League Coach of the Year",
+     "stats": "Long Island Nets",
      "s": [
       1,
       2,
@@ -1648,7 +1706,66 @@
    "name": "Jacob Chance",
    "team": "Melbourne United",
    "note": "his first season as an NBL head coach: head coach of the Austin Spurs (NBA G League) in 2025-26, and a Melbourne United assistant from 2023 to 2025",
-   "seasons": [],
+   "seasons": [
+    {
+     "season": "2025-26",
+     "team": "Austin Spurs",
+     "league": "G League",
+     "games": 36,
+     "w": 23,
+     "l": 13,
+     "gp": 35,
+     "n": 31,
+     "m": {
+      "pace": 86.72,
+      "ortg": 107.89,
+      "drtg": 104.36,
+      "net": 3.53,
+      "efg": 0.5226,
+      "tov": 0.1324,
+      "orb": 0.3058,
+      "ftr": 0.1758,
+      "oefg": 0.5063,
+      "otov": 0.1328,
+      "drb": 0.7539,
+      "oftr": 0.1862
+     },
+     "rk": {
+      "pace": 16,
+      "ortg": 27,
+      "drtg": 1,
+      "net": 8,
+      "efg": 29,
+      "tov": 17,
+      "orb": 2,
+      "ftr": 15,
+      "oefg": 1,
+      "otov": 15,
+      "drb": 5,
+      "oftr": 25
+     },
+     "lg": {
+      "pace": 86.63,
+      "ortg": 111.2,
+      "drtg": 111.2,
+      "net": 0.0,
+      "efg": 0.5481,
+      "tov": 0.1324,
+      "orb": 0.2708,
+      "ftr": 0.1688,
+      "oefg": 0.5481,
+      "otov": 0.1324,
+      "drb": 0.7292,
+      "oftr": 0.1688
+     },
+     "src": "ESPN box scores",
+     "notes": [
+      "G League 2025-26: ESPN box scores of every regular-season game (36 a team; the Tip-Off Tournament is left out)",
+      "pace per 40 minutes (G League games are 48; overtime is untimed, first to 7 points, its length read from the game clock)",
+      "one free throw per trip, worth 2 or 3: each counts as a possession (other free throws 0.44, as usual)"
+     ]
+    }
+   ],
    "sources": [
     "https://www.basketball.com.au/news/jacob-chance-melbourne-united-head-coach-nbl27-age-career",
     "https://en.wikipedia.org/wiki/2026%E2%80%9327_NBL_season",
@@ -1667,6 +1784,7 @@
      "grp": "West seed",
      "res": "Lost conference quarter-final",
      "note": "106–117 at Rio Grande Valley",
+     "stats": "Austin Spurs",
      "s": [
       4,
       5,
@@ -3811,6 +3929,63 @@
       "drb": 0.7068,
       "oftr": 0.2675
      }
+    },
+    {
+     "season": "2018-19",
+     "team": "Iowa Wolves",
+     "league": "G League",
+     "games": 50,
+     "w": 20,
+     "l": 30,
+     "gp": 50,
+     "n": 27,
+     "m": {
+      "pace": 86.44,
+      "ortg": 108.03,
+      "drtg": 109.81,
+      "net": -1.79,
+      "efg": 0.5215,
+      "tov": 0.1173,
+      "orb": 0.2121,
+      "ftr": 0.2679,
+      "oefg": 0.5473,
+      "otov": 0.1349,
+      "drb": 0.7497,
+      "oftr": 0.2492
+     },
+     "rk": {
+      "pace": 17,
+      "ortg": 5,
+      "drtg": 27,
+      "net": 19,
+      "efg": 13,
+      "tov": 1,
+      "orb": 25,
+      "ftr": 9,
+      "oefg": 27,
+      "otov": 21,
+      "drb": 12,
+      "oftr": 8
+     },
+     "lg": {
+      "pace": 87.9,
+      "ortg": 104.75,
+      "drtg": 104.75,
+      "net": 0.0,
+      "efg": 0.5228,
+      "tov": 0.1496,
+      "orb": 0.2493,
+      "ftr": 0.2586,
+      "oefg": 0.5228,
+      "otov": 0.1496,
+      "drb": 0.7507,
+      "oftr": 0.2586
+     },
+     "src": "ESPN box scores",
+     "notes": [
+      "G League 2018-19: ESPN box scores of every regular-season game (50 a team)",
+      "pace per 40 minutes (G League games are 48; overtime periods 2 minutes)"
+     ]
     }
    ],
    "sources": [
@@ -3914,6 +4089,7 @@
      "pos": 4,
      "grp": "division",
      "res": "Missed playoffs",
+     "stats": "Iowa Wolves",
      "s": [
       3,
       1

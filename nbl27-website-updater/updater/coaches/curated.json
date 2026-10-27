@@ -1,5 +1,5 @@
 {
- "_about": "NBL27 head coaches and the NBL seasons they were head coach in since 2015-16, the first season of the official NBL box scores (nblR). 'stints': one per season and club; 'from' = the date he took over mid-season (games from that date on are his). 'record' and 'titles': his whole NBL head-coaching career (finals included) from Wikipedia's NBL All-Time Coaching Records, to the end of 2025-26. Each coach lists the sources read (25-26 Oct 2026). Used by coaches/build.py; update it when a club changes coach. 'career': every head-coaching job he has held, club by club and season by season in any league (oldest first); w/l = his own regular-season record where the source gives it for his games, team = the club's record when his own isn't known (part seasons, shared roles), pos/of/grp = the club's regular-season place, res = playoffs; src = the pages read (26 Oct 2026). NBL seasons from 2015-16 are checked against the official results by build.py. 'national': national-team jobs; 'side' marks an off-season job held alongside an NBL one.",
+ "_about": "NBL27 head coaches and the NBL seasons they were head coach in since 2015-16, the first season of the official NBL box scores (nblR). 'stints': one per season and club; 'from' = the date he took over mid-season (games from that date on are his). 'record' and 'titles': his whole NBL head-coaching career (finals included) from Wikipedia's NBL All-Time Coaching Records, to the end of 2025-26. Each coach lists the sources read (25-26 Oct 2026). Used by coaches/build.py; update it when a club changes coach. 'career': every head-coaching job he has held, club by club and season by season in any league (oldest first); w/l = his own regular-season record where the source gives it for his games, team = the club's record when his own isn't known (part seasons, shared roles), pos/of/grp = the club's regular-season place, res = playoffs; src = the pages read (26 Oct 2026). NBL seasons from 2015-16 are checked against the official results by build.py. 'national': national-team jobs; 'side' marks an off-season job held alongside an NBL one; 'stats' = the club's name in overseas_teams.json, for a full overseas season that also goes in the drop-down.",
  "recordSource": {
   "name": "Wikipedia, NBL All-Time Coaching Records (to the end of 2025-26)",
   "url": "https://en.wikipedia.org/wiki/NBL_All-Time_Coaching_Records"
@@ -387,6 +387,7 @@
      "grp": "Atlantic Division",
      "res": "Lost G League Finals 1–2",
      "note": "G League Coach of the Year",
+     "stats": "Long Island Nets",
      "src": [
       "https://en.wikipedia.org/wiki/Long_Island_Nets",
       "https://en.wikipedia.org/wiki/2018%E2%80%9319_NBA_G_League_season",
@@ -881,6 +882,7 @@
      "grp": "West seed",
      "res": "Lost conference quarter-final",
      "note": "106–117 at Rio Grande Valley",
+     "stats": "Austin Spurs",
      "src": [
       "https://austin.gleague.nba.com/news/austin-spurs-clinch-no-5-seed-in-2026-nba-g-league-playoffs",
       "https://austin.gleague.nba.com/news/spurs-fall-to-vipers117-106-in-western-conference-quarterfinals",
@@ -2290,6 +2292,7 @@
      "pos": 4,
      "grp": "division",
      "res": "Missed playoffs",
+     "stats": "Iowa Wolves",
      "src": [
       "https://www.basketball-reference.com/gleague/teams/IWA/",
       "https://en.wikipedia.org/wiki/Scott_Roth"
