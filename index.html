@@ -288,7 +288,6 @@ table.hcc td.cl,table.hcc td.lg,table.hcc td.hr{text-align:left;font-family:var(
 table.hcc td.cl{white-space:normal;min-width:190px}
 table.hcc td.hr{white-space:normal;min-width:150px}
 table.hcc tr.champ td.hr b{color:var(--good)}
-table.hcc td.sr{color:var(--muted);font-size:11px}
 .hcsub{font:400 12px/1.35 var(--body);color:var(--muted);max-width:46ch;margin-top:2px}
 .hcnat{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:grid;gap:5px}
 .hcnat>.k{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -298,7 +297,7 @@ table.hcc td.sr{color:var(--muted);font-size:11px}
 .sgrid.hc-car{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .sgrid.hc-car .r{overflow-wrap:anywhere}
 table.hcc .lgm,table.hcc .fnm,table.hcc .lgo{display:none}
-@media (max-width:640px){table.hcc .lg,table.hcc .fn,table.hcc .sr{display:none}table.hcc .lgm{display:inline}table.hcc .fnm,table.hcc .lgo{display:block}
+@media (max-width:640px){table.hcc .lg,table.hcc .fn{display:none}table.hcc .lgm{display:inline}table.hcc .fnm,table.hcc .lgo{display:block}
   table.hcc th,table.hcc td{padding:7px 5px}table.hcc td.cl,table.hcc td.hr{min-width:0}.sgrid.hc-car{grid-template-columns:repeat(2,minmax(0,1fr))}
   .sgrid.hc-car>div:last-child:nth-child(odd){grid-column:1/-1}}
 .hcj .stop{white-space:normal;max-width:100%}
@@ -1733,7 +1732,7 @@ function hcProfile(c,opts,s){
     <p class="note" style="text-transform:uppercase;letter-spacing:.03em">${notes.join(" · ")}</p>`;
 }
 // whole head-coaching career, every league (coaches/curated.json, built into COACHES): one stop per club in a row,
-// national teams, every season newest first, and the pages each row was read from (numbered once per coach)
+// national teams, every season newest first, and the pages the rows were read from (listed under the table)
 const hcSpan=r=>{const t=(r.disp||r.season).split(/[–-]/),a=t[0];if(!t[1])return [a,a];
   const b=t[1].length===2?String(Math.floor(+a/100)*100+(+t[1])+(+t[1]<+a%100?100:0)):t[1];return [a,b]};
 const hcYrs=(a,b)=>a===b?a:`${a}–${b.slice(-2)}`;
@@ -1754,7 +1753,7 @@ function hcCareer(c,live){
   const chip=s=>`<span class="stop${s.now?" now":""}">${s.club} (${ccFlag(s.cc)||s.cc})<small>${hcYrs(s.a,s.b)}</small></span>`;
   const journey=stops.map(chip).join('<span class="jarr" aria-hidden="true">→</span>');
   const sideHTML=sides.length?`<div class="journey offs hcj"><span class="k">${sides[0].side}</span>${sides.map(chip).join("")}</div>`:"";
-  const natHTML=nat.length?`<div class="hcnat"><span class="k">National teams</span>${nat.map(n=>`<div>${n.team} (${ccFlag(n.cc)||n.cc})<small>${n.yrs}</small><span class="mu">${n.what}</span><small>${(n.s||[]).join(",")}</small></div>`).join("")}</div>`:"";
+  const natHTML=nat.length?`<div class="hcnat"><span class="k">National teams</span>${nat.map(n=>`<div>${n.team} (${ccFlag(n.cc)||n.cc})<small>${n.yrs}</small><span class="mu">${n.what}</span></div>`).join("")}</div>`:"";
   // summary: his own regular-season record (all leagues, NBL), league titles, clubs
   const kn=car.filter(r=>r.w!=null),kN=kn.filter(r=>r.lg==="NBL"),sum=a=>[a.reduce((s,r)=>s+r.w,0),a.reduce((s,r)=>s+r.l,0)];
   const t=(l,v,sub)=>`<div><span class="k">${l}</span><span class="v">${v}</span><span class="r">${sub||""}</span></div>`;
@@ -1768,18 +1767,18 @@ function hcCareer(c,live){
   const row=r=>{const sub=[r.part,r.team?`club ${r.team[0]}–${r.team[1]}`:null,r.note].filter(Boolean).join(" · "),champ=/^Champions/.test(r.res||"");
     const res=r.res?(champ?`<b>${r.res.split(" · ")[0]}</b>${r.res.includes(" · ")?` <span class="mu">· ${r.res.split(" · ").slice(1).join(" · ")}</span>`:""}`:r.res):dash;
     return `<tr${champ?' class="champ"':""}><td class="tm">${r.disp||r.season}</td><td class="cl">${r.club} <span class="mu">(${ccFlag(r.cc)||r.cc})</span><div class="hcsub${sub?"":" lgo"}"><span class="lgm">${r.lg}${sub?" · ":""}</span>${sub}</div></td><td class="lg">${r.lg}</td>
-      <td>${r.w!=null?`${r.w}–${r.l}`:dash}</td><td class="fn">${fin(r)}</td><td class="hr">${res}${r.pos?`<div class="hcsub fnm">${fin(r)}</div>`:""}</td><td class="sr" title="${(r.s||[]).map(i=>hcSrcName(src[i-1])).join(" · ")}">${(r.s||[]).join(",")}</td></tr>`};
-  const now=`<tr class="teamrow"><td class="tm">2026-27</td><td class="cl">${c.team} <span class="mu">(${ccFlag(NBLCC(c.team))})</span><div class="hcsub lgo"><span class="lgm">NBL</span></div></td><td class="lg">NBL</td><td>${live?`${live.w}–${live.l}`:dash}</td><td class="fn">${dash}</td><td class="hr"><span class="mu">${live?`NBL27 so far · ${live.games} games`:"NBL27"}</span></td><td class="sr"></td></tr>`;
-  const table=car.length?`<div class="scroll" style="margin-top:14px"><table class="hcc"><thead><tr><th class="tm">Season</th><th style="text-align:left">Club</th><th class="lg" style="text-align:left">League</th><th title="His own regular-season record">W–L</th><th class="fn" title="The club's regular-season place">Finish</th><th style="text-align:left">Result</th><th class="sr" title="Source pages, listed below">Src</th></tr></thead>
+      <td>${r.w!=null?`${r.w}–${r.l}`:dash}</td><td class="fn">${fin(r)}</td><td class="hr">${res}${r.pos?`<div class="hcsub fnm">${fin(r)}</div>`:""}</td></tr>`};
+  const now=`<tr class="teamrow"><td class="tm">2026-27</td><td class="cl">${c.team} <span class="mu">(${ccFlag(NBLCC(c.team))})</span><div class="hcsub lgo"><span class="lgm">NBL</span></div></td><td class="lg">NBL</td><td>${live?`${live.w}–${live.l}`:dash}</td><td class="fn">${dash}</td><td class="hr"><span class="mu">${live?`NBL27 so far · ${live.games} games`:"NBL27"}</span></td></tr>`;
+  const table=car.length?`<div class="scroll" style="margin-top:14px"><table class="hcc"><thead><tr><th class="tm">Season</th><th style="text-align:left">Club</th><th class="lg" style="text-align:left">League</th><th title="His own regular-season record">W–L</th><th class="fn" title="The club's regular-season place">Finish</th><th style="text-align:left">Result</th></tr></thead>
     <tbody>${now}${car.map(row).join("")}</tbody></table></div>`:"";
   const notes=["W–L: his own regular-season record (– = not found, or a part season or shared job: the club's record is under the club)",
     "Finish: the club's regular-season place","Result: playoffs or finals","NBL from 2015-16: W–L checked against the official NBL results",
-    "2026-27: NBL27 so far (this site's data)",`Src: the pages each row was read from${c.careerChecked?" ("+fmtDate(c.careerChecked)+")":""}`];
-  const srcList=src.map((u,i)=>`<span>${i+1} <a href="${u}" target="_blank" rel="noopener">${hcSrcName(u)}</a></span>`).join(" · ");
+    "2026-27: NBL27 so far (this site's data)"];
+  const srcList=src.map(u=>`<a href="${u}" target="_blank" rel="noopener">${hcSrcName(u)}</a>`).join(" · ");
   return `<div class="panel card" style="margin-top:18px"><h3>Head-coaching career</h3>${tiles}
     <div class="journey hcj" style="margin-top:12px">${journey}</div>${sideHTML}${natHTML}${table}
     <p class="note" style="margin-top:10px;text-transform:uppercase;letter-spacing:.03em">${notes.join(" · ")}</p>
-    ${src.length?`<p class="note hcsrcs" style="margin-top:6px;text-transform:uppercase;letter-spacing:.03em">Sources: ${srcList}</p>`:""}</div>`;
+    ${src.length?`<p class="note hcsrcs" style="margin-top:6px;text-transform:uppercase;letter-spacing:.03em">Sources${c.careerChecked?` (checked ${fmtDate(c.careerChecked)})`:""}: ${srcList}</p>`:""}</div>`;
 }
 function coachCard(c){
   const team=c.team,col=TEAMS[team]?.col||"#555",opts=hcSeasons(c),live=opts.find(o=>o.live),past=opts.filter(o=>!o.live);
