@@ -18,9 +18,10 @@ clubs' full seasons. Checks printed at the end: games per team and season, and e
 included) against his career record where his whole NBL career falls inside the official data.
 
 Overseas seasons: a career row with 'stats' (the club's name in coaches/overseas_teams.json, which holds every team's
-regular-season totals for that league-season, written by overseas_espn.py) also goes in the drop-down - his whole season
-as sole head coach, with the same formulas, ranked among that league's teams; the club's W-L there must equal the
-curated record. Pace stays per 40 minutes in every league.
+season totals for that league-season: overseas_espn.py writes the G League's regular seasons from ESPN box scores,
+overseas_realgm.py other leagues from RealGM season totals, which include the playoffs) also goes in the drop-down - his
+whole season as sole head coach, with the same formulas, ranked among that league's teams; the data must agree with the
+curated record (the club's W-L, or for RealGM the regular season's length). Pace stays per 40 minutes in every league.
 
 curated.json also carries each coach's whole head-coaching career ('career': every club job in every league, season by
 season, with the pages each row was read from) and his national-team jobs ('national'). They are passed to the page as
@@ -168,7 +169,8 @@ def overseas_seasons(c, overseas, rep, bad):
     """His full seasons in other leagues that overseas_teams.json has every team's totals for (career rows with 'stats' =
     the club's name there): the same numbers as an NBL season - his team's ratings and four factors, the rank among that
     league-season's teams and the league average. Only a whole season as the sole head coach (w/l given, no 'part'); the
-    club's W-L in the data must equal his curated record, or nothing is written."""
+    club's W-L in the data must equal his curated record (for totals that include the playoffs, 'allGames': the
+    regular season's length must equal his W-L's), or nothing is written."""
     rows = []
     for r in c.get("career") or []:
         if not r.get("stats"):
@@ -181,7 +183,13 @@ def overseas_seasons(c, overseas, rep, bad):
             bad.append(f"{tag}: no team '{r['stats']}' in overseas_teams.json for that league-season"); continue
         L, T = L[0], L[0]["teams"]
         t = T[r["stats"]]
-        if (t["w"], t["l"]) != (r["w"], r["l"]):
+        if L.get("allGames"):
+            # season totals with the playoffs in (no W-L): the regular season is as long as the shortest team season (a
+            # club that missed the playoffs), which must be his W-L's length; his club played at least that many games
+            rs = min(x["games"] for x in T.values())
+            if rs != r["w"] + r["l"] or t["games"] < rs:
+                bad.append(f"{tag}: curated {r['w']}-{r['l']}, but the league data has a {rs}-game regular season and {t['games']} games for the club"); continue
+        elif (t["w"], t["l"]) != (r["w"], r["l"]):
             bad.append(f"{tag}: curated {r['w']}-{r['l']}, the league data {t['w']}-{t['l']}"); continue
         met = {n: metrics({**x, "poss": (poss(x["own"]) + poss(x["opp"])) / 2}) for n, x in T.items()}
         allt = {"mins": sum(x["mins"] for x in T.values()), "poss": sum((poss(x["own"]) + poss(x["opp"])) / 2 for x in T.values()),
@@ -191,11 +199,14 @@ def overseas_seasons(c, overseas, rep, bad):
                 for k, v in x[side].items():
                     allt[side][k] += v
         m = met[r["stats"]]
-        row = {"season": r["season"], "team": r["club"], "league": L["short"], "games": t["games"], "w": t["w"], "l": t["l"],
+        row = {"season": r["season"], "team": r["club"], "league": L["short"], "games": t["games"], "w": r["w"], "l": r["l"],
                "gp": t["gp"], "n": len(T), "m": rnd(m), "rk": {k: rank(k, m[k], [met[n][k] for n in T if n != r["stats"]]) for k in BETTER},
                "lg": rnd(metrics(allt)), "src": L["source"], "notes": L.get("notes") or []}
+        if L.get("allGames"):
+            row["allGames"], row["rsGames"] = 1, r["w"] + r["l"]
         rows.append(row)
-        rep.append(f"{tag}: {t['games']} g {t['w']}-{t['l']}" + (f" (box scores {t['gp']})" if t["gp"] != t["games"] else "")
+        rep.append(f"{tag}: {t['games']} g" + (f" (all games; regular season {r['w']}-{r['l']})" if L.get("allGames") else f" {t['w']}-{t['l']}")
+                   + (f" (box scores {t['gp']})" if t["gp"] != t["games"] else "")
                    + f", {len(T)} teams, {L['source']} - ORtg {row['m']['ortg']} ({row['rk']['ortg']}), DRtg {row['m']['drtg']} ({row['rk']['drtg']})")
     return rows
 

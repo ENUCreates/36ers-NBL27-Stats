@@ -170,10 +170,11 @@ def main():
     want = sys.argv[1:] or list(SEASONS)
     cache = os.environ.get("OVERSEAS_CACHE") or tempfile.mkdtemp()
     data = json.load(open(OUT, encoding="utf-8")) if os.path.exists(OUT) else {"leagues": []}
-    data["_about"] = ("Every team's regular-season totals (own and opponents') for the overseas league-seasons the NBL27 head "
-                      "coaches coached in full, for the Head coaches drop-down (build.py computes ratings, four factors, ranks "
-                      "and league averages from them with the page's formulas). Written by overseas_espn.py (G League, ESPN box "
-                      "scores); each entry names its source.")
+    data["_about"] = ("Every team's season totals (own and opponents') for the overseas league-seasons the NBL27 head coaches "
+                      "coached in full, for the Head coaches drop-down (build.py computes ratings, four factors, ranks and "
+                      "league averages from them with the page's formulas). G League: overseas_espn.py, ESPN box scores, "
+                      "regular season. Other leagues: overseas_realgm.py, RealGM season totals copied into coaches/realgm/, "
+                      "every league game (playoffs included, 'allGames'). Each entry names its source.")
     for label in want:
         entry, rep = season(label, SEASONS[label], cache)
         data["leagues"] = [x for x in data["leagues"] if not (x["league"] == entry["league"] and x["season"] == label)] + [entry]
