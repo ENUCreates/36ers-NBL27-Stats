@@ -174,8 +174,9 @@ tr.low td{opacity:.55}
 .colchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .colchip:disabled{opacity:.45;cursor:default}
 .lcols .cg{font:600 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:6px;padding-left:10px;border-left:1px solid var(--line)}
-#lineups td.tm{white-space:nowrap;font-family:var(--body);font-weight:600;font-size:13px}
-@media (max-width:600px){#lineups td.tm,#lineups th.tm{position:static;font-size:12px}}
+#lineups td.tm,#hc-lu td.tm{white-space:nowrap;font-family:var(--body);font-weight:600;font-size:13px}
+@media (max-width:600px){#lineups td.tm,#lineups th.tm,#hc-lu td.tm,#hc-lu th.tm{position:static;font-size:12px}}
+#hc-lu .pbar{margin:12px 0}
 .nbar{display:inline-block;height:8px;border-radius:2px;vertical-align:middle;margin-right:6px}
 .sc-wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
 @media (max-width:860px){.sc-wrap{grid-template-columns:minmax(0,1fr)}}
@@ -1947,18 +1948,87 @@ function coachCard(c){
         <div class="bio">${bio}</div>${note}</div>
     </div>
     <div class="card" id="hc-prof">${s?hcProfile(c,opts,s):`<p class="note">NBL27 data is loading.</p>`}</div>
-  </article>${hcCareer(c,live)}`;
+  </article>
+  <div class="panel card" id="hc-lu" style="margin-top:18px"></div>${hcCareer(c,live)}`;
+}
+// ---------- Head coaches: lineups for the season picked in the drop-down ----------
+// NBL seasons before NBL27: data/coachlineups.json (coaches/lineups_hist.py: the NBL's official play-by-play, checked
+// game by game against the official box scores; five-man units, summed into 3- and 2-man groups here). NBL27: the
+// Lineups tab's data. Same table, controls and formulas as the Lineups tab; the Photos switch is shared with it.
+let COACHLU=null,COACHLU_ST=null,hclSize=5,hclMin=10,hclSort={k:"min",d:-1},hclHide=new Set(),hclOpen=false;
+try{const z=localStorage.getItem("nbl27-hclsize");if(z)hclSize=+z;const m=localStorage.getItem("nbl27-hclmin");if(m!=null)hclMin=+m;
+  const h=JSON.parse(localStorage.getItem("nbl27-hclhide")||"[]");if(Array.isArray(h))hclHide=new Set(h)}catch(e){}
+const saveHclHide=()=>{try{localStorage.setItem("nbl27-hclhide",JSON.stringify([...hclHide]))}catch(e){}};
+function loadCoachLineups(){if(COACHLU||COACHLU_ST==="loading")return;COACHLU_ST="loading";
+  fetch("data/coachlineups.json").then(r=>r.ok?r.json():Promise.reject(new Error("HTTP "+r.status)))
+    .then(d=>{COACHLU=d;COACHLU_ST="ok"},()=>{COACHLU_ST="error"}).then(()=>{if(!document.getElementById("view-coaches").hidden)renderCoachLineups()})}
+// one season's groups of `size`: {rows, games used, games in all, games left out}
+function coachLineupRows(s,size){
+  if(s.live){const r=computeLineups(s.team,size);return {rows:r.rows,used:r.games,of:null,left:r.bad}}
+  const d=COACHLU?.seasons?.[s.season+"|"+s.team];if(!d)return null;
+  const K=COACHLU.keys,L={};
+  d.units.forEach(([idx,sec,f,a,gs])=>(size===5?[idx]:combos(idx,size)).forEach(g=>{const k=g.join("|");
+    const x=L[k]||(L[k]={p:g,sec:0,f:{},a:{},gset:new Set()});x.sec+=sec;
+    K.forEach((kk,j)=>{x.f[kk]=(x.f[kk]||0)+f[j];x.a[kk]=(x.a[kk]||0)+a[j]});gs.forEach(i=>x.gset.add(i))}));
+  const rows=Object.values(L).map(x=>({p:x.p.map(i=>d.players[i][1]||"h"+i),label:x.p.map(i=>shortName(d.players[i][0])),full:x.p.map(i=>d.players[i][0]),gp:x.gset.size,...lineupNums(x.f,x.a,x.sec)}));
+  return {rows,used:d.games.filter(g=>g.ok).length,of:d.games.length,left:d.games.filter(g=>!g.ok).map(g=>`${fmtDate(g.date)} v ${TEAMS[g.opp]?.c||g.opp}`)};
+}
+function renderCoachLineups(){
+  const el=document.getElementById("hc-lu");if(!el)return;
+  const c=(COACHES.coaches||[]).find(x=>x.team===byCode[current]);if(!c){el.innerHTML="";return}
+  const s=hcSeasons(c).find(o=>hcKey(o)===hsel[c.id]);if(!s){el.innerHTML="";return}
+  const head=sub=>`<div class="card-head"><h3>Lineups · ${s.season}</h3><span class="rec">${disp(s.team)}${sub?` · ${sub}`:""}</span></div>`;
+  if(s.league){el.innerHTML=head("")+`<p class="note">Lineups are for NBL seasons only: there's no play-by-play here for the ${s.league}.</p>`;return}
+  if(!s.live&&!COACHLU){loadCoachLineups();el.innerHTML=head("")+`<p class="note">${COACHLU_ST==="error"?"Couldn't load the lineup data.":"Lineup data is loading."}</p>`;return}
+  if(s.live&&!LINEDOCS.length){el.innerHTML=head("")+`<p class="note">Lineup data is loading.</p>`;return}
+  const res=coachLineupRows(s,hclSize);
+  if(!res){el.innerHTML=head("")+`<p class="note">No lineup data for this season.</p>`;return}
+  const shown=res.rows.filter(r=>r.min>=hclMin),cols=LCOLS.filter(c=>!hclHide.has(c[0]));
+  if(cols.length&&!cols.some(c=>c[0]===hclSort.k))hclSort={k:cols[0][0],d:["drtg","oefg","tov"].includes(cols[0][0])?1:-1};  // the sorted column was hidden
+  shown.sort((a,b)=>{const k=hclSort.k,x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return hclSort.d*(x-y)});
+  const arrow=k=>hclSort.k===k?` data-dir="${hclSort.d>0?'▲':'▼'}"`:"";
+  const maxAbs=Math.max(10,...shown.map(r=>Math.abs(r.net||0)));
+  const cell=(r,[k,,fmt,better,extra])=>{
+    if(extra==="net"&&r.net!=null){const w=Math.round(26*Math.min(1,Math.abs(r.net)/maxAbs));return `<td class="${r.poss>=40?(r.net>=5?'hi':r.net<=-5?'lo':''):''}"><span class="nbar" style="width:${w}px;background:${r.net>=0?'var(--good)':'var(--bad)'}"></span>${fmt(r.net)}</td>`}
+    return `<td>${fmt(r[k])}</td>`};
+  const label=hclSize===5?"Lineup":hclSize===3?"Trio":"Pair",games=res.of!=null?`${res.used} of ${res.of} games`:`${res.used} games`;
+  const notes=(s.live?["NBL27 so far: the Lineups tab's data (ESPN play-by-play matched to each player's official minutes and +/-)"]
+      :["Rebuilt from the NBL's official play-by-play and checked game by game against the official box scores (points, shots and every player's minutes)"])
+    .concat(s.from?[`His games only, from ${fmtDate(s.from)}`]:[])
+    .concat(["Faded rows: fewer than 20 possessions","Net shaded from 40 possessions"])
+    .concat(res.left.length?[`Games left out (play-by-play doesn't reconcile with the box score): ${res.left.join(", ")}`]:[]);
+  el.innerHTML=head(`${games} · ${res.rows.length} ${hclSize}-man groups · ${shown.length} shown`)+`
+    <div class="pbar">
+      <div class="seg" role="group" aria-label="Group size">${[5,3,2].map(n=>`<button class="chip" data-n="${n}" aria-pressed="${n===hclSize}">${n}-man</button>`).join("")}</div>
+      <div class="lopts">
+        <div class="swl"><span class="swk" id="hclphoto-l">Photos</span><button class="sw" id="hclphoto" role="switch" aria-checked="${lphotos}" aria-labelledby="hclphoto-l" title="Show or hide the player photos"><i></i></button></div>
+        <label class="pmin" for="hclcolbtn">Columns <button class="selbtn" id="hclcolbtn" aria-expanded="false" aria-controls="hclcols" title="Choose which columns to show"></button></label>
+        <label class="pmin" for="hclmin">Min. total minutes
+          <select id="hclmin">${[[0,"All"],[5,"5+"],[10,"10+"],[20,"20+"],[40,"40+"],[80,"80+"]].map(([v,l])=>`<option value="${v}"${v===hclMin?" selected":""}>${l}</option>`).join("")}</select>
+        </label>
+      </div>
+    </div>
+    <div class="lcols" id="hclcols" hidden></div>
+    <div class="scroll"><table><thead><tr><th class="tm">${label}</th>${cols.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
+    <tbody>${shown.map(r=>`<tr class="${r.poss<20?'low':''}"><td class="tm"><div class="lu" style="--n:${hclSize}">${r.label.map((n,i)=>`<span class="lp" title="${r.full[i]||n}">${lphotos?avatar({id:r.p[i],name:r.full[i]||n},s.team,"sm"):""}<span class="lpn">${n}</span></span>`).join("")}</div></td>${cols.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="color:var(--muted)">No ${hclSize}-man groups with ${hclMin}+ minutes.</td></tr>`}</tbody></table></div>
+    <p class="note" style="margin-top:10px;text-transform:uppercase;letter-spacing:.03em">${notes.join(" · ")}</p>`;
+  colPicker("hclcolbtn","hclcols",LCOLS.map(c=>({k:c[0],l:c[1]})),hclHide,hclOpen,saveHclHide,renderCoachLineups);
+  el.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{hclSize=+b.dataset.n;try{localStorage.setItem("nbl27-hclsize",hclSize)}catch(e){}renderCoachLineups()});
+  document.getElementById("hclphoto").onclick=()=>{lphotos=!lphotos;try{localStorage.setItem("nbl27-lphotos",lphotos?"1":"0")}catch(e){}renderCoachLineups()};
+  document.getElementById("hclcolbtn").onclick=()=>{hclOpen=!hclOpen;renderCoachLineups()};
+  document.getElementById("hclmin").onchange=e=>{hclMin=+e.target.value;try{localStorage.setItem("nbl27-hclmin",hclMin)}catch(e){}renderCoachLineups()};
+  el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(hclSort.k===k)hclSort.d*=-1;else hclSort={k,d:["drtg","oefg","tov"].includes(k)?1:-1};renderCoachLineups()});
 }
 function hcWire(c){const sel=document.getElementById("hc-season");if(!sel)return;
   sel.onchange=()=>{hsel[c.id]=sel.value;const opts=hcSeasons(c),s=opts.find(o=>hcKey(o)===sel.value);if(!s)return;
-    document.getElementById("hc-prof").innerHTML=hcProfile(c,opts,s);hcWire(c);document.getElementById("hc-season").focus()}}
+    document.getElementById("hc-prof").innerHTML=hcProfile(c,opts,s);hcWire(c);renderCoachLineups();document.getElementById("hc-season").focus()}}
 function renderCoaches(){
   const pick=document.getElementById("hpicker");if(!pick)return;
   pick.innerHTML=Object.values(TEAMS).map(t=>`<button class="chip" aria-pressed="${t.c===current}" data-team="${t.c}">${t.c}</button>`).join("");
   pick.querySelectorAll("button").forEach(b=>b.onclick=()=>{current=b.dataset.team;try{localStorage.setItem("nbl27-team",current)}catch(e){}renderCoaches()});
   const el=document.getElementById("coaches"),name=byCode[current],c=(COACHES.coaches||[]).find(x=>x.team===name);
   if(!c){el.innerHTML=`<div class="panel"><div class="empty"><strong>No head coach on file for ${disp(name)}</strong></div></div>`;return}
-  el.innerHTML=coachCard(c);hcWire(c);
+  el.innerHTML=coachCard(c);hcWire(c);renderCoachLineups();
 }
 
 // re-draw the open tab (used when the headshots arrive)
