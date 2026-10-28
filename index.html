@@ -120,6 +120,36 @@ tr.low td{opacity:.55}
 .lu .lp .av.sm{width:34px;height:34px;font-size:12px}
 .lu .lpn{white-space:normal;overflow-wrap:break-word;line-height:1.2;max-width:100%}
 @media (max-width:600px){.lu{grid-template-columns:repeat(var(--n,5),82px);gap:4px}.lu .lpn{font-size:11.5px}.lu .lp .av.sm{width:30px;height:30px}}
+/* H2H Lineups: the two team pickers side by side, the games to use, then one half per team */
+.h2h-top{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px 14px;align-items:end;margin-bottom:14px}
+.h2h-side>.k{display:block;font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.h2h-top .chips .chip{padding:6px 8px;font-size:13px}
+.h2h-swap{font-size:16px;padding:6px 10px;margin-bottom:1px}
+.h2h-side:last-child{text-align:right}.h2h-side:last-child .chips{justify-content:flex-end}
+.hgames{padding:12px 14px;margin-bottom:14px}
+.hg-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;justify-content:space-between}
+.hg-head b{font:700 18px var(--display);letter-spacing:.04em;text-transform:uppercase}
+.hg-list{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:10px}
+.gck{display:inline-flex;align-items:center;gap:7px;font:500 13px/1.2 var(--body);border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:999px;padding:6px 12px 6px 9px;cursor:pointer}
+.gck input{accent-color:var(--accent);width:15px;height:15px;margin:0;cursor:pointer}
+.gck.all{font-weight:600}
+.gck.off{opacity:.5;cursor:default}.gck.off input{cursor:default}
+.gck:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.h2h-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.h2h-grid .team-head{padding:14px 14px 6px}
+.h2h-grid .team-head h2{font-size:clamp(22px,3vw,28px)}
+.h2h-sum{font:500 12.5px var(--mono);color:var(--muted);padding:0 14px 12px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.h2h-sum b{color:var(--ink);font-weight:600}
+.h2h-grid .team-head{flex-direction:column;align-items:flex-start;gap:6px}
+.h2h-grid th,.h2h-grid td{padding:6px 5px}
+.h2h-grid th.tm,.h2h-grid td.tm{padding-left:12px}
+.h2h-grid th:last-child,.h2h-grid td:last-child{padding-right:12px}
+.h2h-grid th{white-space:normal}
+.h2h-grid th button{text-align:right;line-height:1.15}
+.hlu{display:flex;flex-direction:column;gap:2px;align-items:flex-start}
+.hlu .hlp{display:flex;align-items:center;gap:5px;white-space:nowrap;font:500 12.5px/1.2 var(--body);text-align:left}
+.hlu .hlp .av.sm{width:20px;height:20px;font-size:8.5px}
+@media (max-width:1000px){.h2h-top{grid-template-columns:minmax(0,1fr)}.h2h-swap{justify-self:start}.h2h-side:last-child{text-align:left}.h2h-side:last-child .chips{justify-content:flex-start}.h2h-grid{grid-template-columns:minmax(0,1fr)}}
 .lopts{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
 /* on/off switch: label on top, the switch below */
 .swl{display:flex;flex-direction:column;align-items:center;gap:5px}
@@ -325,6 +355,7 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
     <button class="tab" role="tab" id="tab-cards" aria-selected="false">Player cards</button>
     <button class="tab" role="tab" id="tab-coaches" aria-selected="false">Head coaches</button>
     <button class="tab" role="tab" id="tab-lineups" aria-selected="false">Lineups</button>
+    <button class="tab" role="tab" id="tab-h2h" aria-selected="false">H2H Lineups</button>
     <button class="tab" role="tab" id="tab-rotations" aria-selected="false">Rotations</button>
   </nav>
 
@@ -400,6 +431,30 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
     </div>
     <div class="lcols" id="lcols" hidden></div>
     <div id="lineups"></div>
+  </section>
+
+  <section id="view-h2h" hidden>
+    <div class="h2h-top">
+      <div class="h2h-side"><span class="k">Team</span><div class="chips" id="hpickA" role="group" aria-label="Team"></div></div>
+      <button class="chip h2h-swap" id="hswap" title="Swap the two teams" aria-label="Swap the two teams">⇄</button>
+      <div class="h2h-side"><span class="k">Opponent</span><div class="chips" id="hpickB" role="group" aria-label="Opponent"></div></div>
+    </div>
+    <div class="pbar">
+      <div class="seg" role="group" aria-label="Group size">
+        <button class="chip" data-n="5" id="hn5">5-man</button>
+        <button class="chip" data-n="3" id="hn3">3-man</button>
+        <button class="chip" data-n="2" id="hn2">2-man</button>
+      </div>
+      <div class="lopts">
+        <div class="swl"><span class="swk" id="hphoto-l">Photos</span><button class="sw" id="hphoto" role="switch" aria-checked="true" aria-labelledby="hphoto-l" title="Show or hide the player photos"><i></i></button></div>
+        <label class="pmin" for="hcolbtn">Columns <button class="selbtn" id="hcolbtn" aria-expanded="false" aria-controls="hcols" title="Choose which columns to show">All 15 ▾</button></label>
+        <label class="pmin" for="hmin">Min. total minutes
+          <select id="hmin"><option value="0">All</option><option value="2" selected>2+</option><option value="5">5+</option><option value="10">10+</option><option value="20">20+</option></select>
+        </label>
+      </div>
+    </div>
+    <div class="lcols" id="hcols" hidden></div>
+    <div id="h2h"></div>
   </section>
 
   <section id="view-rotations" hidden>
@@ -781,7 +836,7 @@ function renderStatus(){
   document.getElementById("foot-note").textContent="Source: ESPN API, rebuilt and verified once a day (8:58am Sydney)."+offTxt+(notes.length?" "+notes.join(" "):"");
 }
 
-function recalc(){const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();computeExtras();renderStatus();renderLeague();renderTeam();renderPlayers();renderLineups();renderRotations();if(!document.getElementById("view-cards").hidden)renderCards();if(!document.getElementById("view-coaches").hidden)renderCoaches()}
+function recalc(){const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();computeExtras();renderStatus();renderLeague();renderTeam();renderPlayers();renderLineups();renderRotations();if(!document.getElementById("view-cards").hidden)renderCards();if(!document.getElementById("view-coaches").hidden)renderCoaches();if(!document.getElementById("view-h2h").hidden)renderH2H()}
 
 
 let PLAYERDOCS=[],PSTATUS=null,pview="adv",pminVal=10,psort={k:"min",d:-1};
@@ -948,28 +1003,32 @@ function lineupMinOk(doc,team){
 }
 // Merge a game's id->name map, skipping any entry that is just the player's ID (no name in that game's data).
 function addNames(names,src){for(const[id,n]of Object.entries(src||{}))if(n&&n!==id)names[id]=n}
-function computeLineups(team,size){
-  const L={},names={};let games=0,bad=[];
+// a unit's numbers from its summed stints: f = its own totals, a = the opponents' while it was on, sec = floor time
+function lineupNums(f,a,sec){const poss=t=>(t.fga||0)-(t.oreb||0)+(t.tov||0)+0.44*(t.fta||0),pp=(poss(f)+poss(a))/2,div=(n,d)=>d>0?n/d:null;
+  return {min:sec/60,poss:pp,pf:f.pts||0,pa:a.pts||0,pm:(f.pts||0)-(a.pts||0),
+    ortg:div(100*(f.pts||0),pp),drtg:div(100*(a.pts||0),pp),net:div(100*((f.pts||0)-(a.pts||0)),pp),
+    efg:div((f.fgm||0)+0.5*(f.tpm||0),f.fga),oefg:div((a.fgm||0)+0.5*(a.tpm||0),a.fga),
+    orb:div(f.oreb||0,(f.oreb||0)+(a.dreb||0)),drb:div(f.dreb||0,(f.dreb||0)+(a.oreb||0)),
+    tov:div(f.tov||0,(f.fga||0)+0.44*(f.fta||0)+(f.tov||0)),otov:div(a.tov||0,(a.fga||0)+0.44*(a.fta||0)+(a.tov||0)),
+    ftr:div(f.fta||0,f.fga),pace:div(40*pp,sec/60)}}
+// only (optional): the ESPN ids of the games to use (H2H Lineups); tot = the team's own numbers over the games used
+function computeLineups(team,size,only){
+  const L={},names={},T={sec:0,f:{},a:{}};let games=0,bad=[];
+  const add=(x,st)=>{x.sec+=st.sec||0;for(const side of ["f","a"])for(const [kk,v] of Object.entries(st[side]||{}))x[side][kk]=(x[side][kk]||0)+(+v||0)};
   LINEDOCS.forEach(doc=>{
     if(!doc.date||doc.date<SEASON_START||!doc.teams||!doc.teams[team])return;
+    if(only&&!only.has(doc.espnId))return;
     if(!lineupTeamOk(doc,team)){bad.push(doc.date.slice(8)+"/"+doc.date.slice(5,7)+" "+Object.keys(doc.teams).map(n=>TEAMS[n]?.c||n).join("–"));return}
     games++;addNames(names,doc.names);
     doc.teams[team].forEach(st=>{
       if(!st.p||st.p.length!==5)return;
+      add(T,st);
       const groups=size===5?[st.p.slice().sort()]:combos(st.p.slice().sort(),size);
-      groups.forEach(g=>{const k=g.join("|");const x=L[k]||(L[k]={p:g,sec:0,f:{},a:{},gset:new Set()});x.sec+=st.sec||0;x.gset.add(doc.espnId||doc.date);
-        for(const side of ["f","a"])for(const [kk,v] of Object.entries(st[side]||{}))x[side][kk]=(x[side][kk]||0)+(+v||0)});
+      groups.forEach(g=>{const k=g.join("|");const x=L[k]||(L[k]={p:g,sec:0,f:{},a:{},gset:new Set()});add(x,st);x.gset.add(doc.espnId||doc.date)});
     });
   });
-  const poss=t=>(t.fga||0)-(t.oreb||0)+(t.tov||0)+0.44*(t.fta||0);
-  const rows=Object.values(L).map(x=>{const f=x.f,a=x.a,pp=(poss(f)+poss(a))/2,div=(n,d)=>d>0?n/d:null;
-    return {p:x.p,label:x.p.map(id=>shortName(names[id])),full:x.p.map(id=>names[id]||""),min:x.sec/60,gp:x.gset.size,poss:pp,pf:f.pts||0,pa:a.pts||0,pm:(f.pts||0)-(a.pts||0),
-      ortg:div(100*(f.pts||0),pp),drtg:div(100*(a.pts||0),pp),net:div(100*((f.pts||0)-(a.pts||0)),pp),
-      efg:div((f.fgm||0)+0.5*(f.tpm||0),f.fga),oefg:div((a.fgm||0)+0.5*(a.tpm||0),a.fga),
-      orb:div(f.oreb||0,(f.oreb||0)+(a.dreb||0)),drb:div(f.dreb||0,(f.dreb||0)+(a.oreb||0)),
-      tov:div(f.tov||0,(f.fga||0)+0.44*(f.fta||0)+(f.tov||0)),otov:div(a.tov||0,(a.fga||0)+0.44*(a.fta||0)+(a.tov||0)),
-      ftr:div(f.fta||0,f.fga),pace:div(40*pp,x.sec/60)}});
-  return {rows,games,bad};
+  const rows=Object.values(L).map(x=>({p:x.p,label:x.p.map(id=>shortName(names[id])),full:x.p.map(id=>names[id]||""),gp:x.gset.size,...lineupNums(x.f,x.a,x.sec)}));
+  return {rows,games,bad,tot:lineupNums(T.f,T.a,T.sec)};
 }
 const LCOLS=[["min","MIN",f1,1],["gp","GP",v=>v,1],["poss","Poss",v=>v==null?"–":Math.round(v),1],["pm","+/-",v=>(v>0?"+":"")+v,1],["ortg","ORtg",f1,1],["drtg","DRtg",f1,-1],["net","Net",sgn,1,"net"],
   ["efg","eFG%",pct,1],["oefg","Opp eFG%",pct,-1],["tov","TOV%",pct,-1],["otov","Opp TOV%",pct,1],["orb","OREB%",pct,1],["drb","DREB%",pct,1],["ftr","FT rate",pct,1],["pace","Pace",f1,0]];
@@ -1025,6 +1084,92 @@ document.getElementById("lphoto").onclick=()=>{lphotos=!lphotos;try{localStorage
 document.getElementById("lcolbtn").onclick=()=>{lcolsOpen=!lcolsOpen;renderLineups()};
 [5,3,2].forEach(n=>document.getElementById("ln"+n).onclick=()=>{lsize=n;try{localStorage.setItem("nbl27-lsize",n)}catch(e){}renderLineups()});
 document.getElementById("lmin").onchange=e=>{lminVal=+e.target.value;try{localStorage.setItem("nbl27-lmin",lminVal)}catch(e){}renderLineups()};
+
+// ---------- H2H Lineups ----------
+// Two teams' lineups in the games they've played each other, side by side: the team (left, the page's current team) and
+// the opponent (right), then a tick box per game. A game can be ticked only if both teams' lineups reconcile with the
+// official box score (lineupTeamOk), so the two halves always cover the same games. Same columns as Lineups; one sort
+// for both halves; the Photos switch is shared with Lineups. Small samples: faded under 10 possessions, Net shaded from 20.
+let hB=null,hsize=5,hminVal=2,hsort={k:"min",d:-1},hhide=new Set(["gp","tov","otov","orb","drb","ftr","pace"]),hcolsOpen=false;
+const hex=new Set();   // games unticked (ESPN ids), for this visit
+try{hB=localStorage.getItem("nbl27-h2h")||null;const z=localStorage.getItem("nbl27-hsize");if(z)hsize=+z;const m=localStorage.getItem("nbl27-hmin");if(m!=null)hminVal=+m;
+  const h=localStorage.getItem("nbl27-hhide");if(h!=null){const a=JSON.parse(h);if(Array.isArray(a))hhide=new Set(a)}}catch(e){}
+const saveHhide=()=>{try{localStorage.setItem("nbl27-hhide",JSON.stringify([...hhide]))}catch(e){}};
+const saveH2H=()=>{try{localStorage.setItem("nbl27-h2h",hB);localStorage.setItem("nbl27-team",current)}catch(e){}};
+// the two teams' games this season, oldest first, each with its lineup document and whether both teams' lineups reconcile
+function h2hGames(A,B){
+  return GAMES.filter(g=>g.date>=SEASON_START&&[g.home.team,g.away.team].includes(A)&&[g.home.team,g.away.team].includes(B))
+    .sort((x,y)=>x.date.localeCompare(y.date)).map(g=>{const id=String(g.id||"").replace(/^espn-/,"");
+      const doc=LINEDOCS.find(d=>d.espnId===id)||LINEDOCS.find(d=>d.date===g.date&&d.teams?.[A]&&d.teams?.[B]);
+      return {g,id:doc?.espnId||id,doc,ok:!!(doc&&doc.teams?.[A]&&doc.teams?.[B]&&lineupTeamOk(doc,A)&&lineupTeamOk(doc,B))}});
+}
+// the opponent by default: the team's latest opponent this season, else the next team in the list
+function h2hDefaultB(){const A=byCode[current],gs=GAMES.filter(g=>g.date>=SEASON_START&&(g.home.team===A||g.away.team===A)).sort((x,y)=>y.date.localeCompare(x.date));
+  const o=gs.length?(gs[0].home.team===A?gs[0].away.team:gs[0].home.team):null;
+  return o&&TEAMS[o]?TEAMS[o].c:Object.values(TEAMS).map(t=>t.c).find(c=>c!==current)}
+function renderH2H(){
+  const el=document.getElementById("h2h");if(!el)return;
+  if(!hB||hB===current||!byCode[hB])hB=h2hDefaultB();
+  const A=byCode[current],B=byCode[hB];
+  const pick=(id,sel,side)=>{const box=document.getElementById(id);
+    box.innerHTML=Object.values(TEAMS).map(t=>`<button class="chip" aria-pressed="${t.c===sel}" data-team="${t.c}">${t.c}</button>`).join("");
+    box.querySelectorAll("button").forEach(b=>b.onclick=()=>{const c=b.dataset.team;   // picking the other side's team swaps the two
+      if(side==="A"){if(c===hB)hB=current;current=c}else{if(c===current)current=hB;hB=c}
+      saveH2H();renderH2H()})};
+  pick("hpickA",current,"A");pick("hpickB",hB,"B");
+  [5,3,2].forEach(n=>document.getElementById("hn"+n).setAttribute("aria-pressed",n===hsize));
+  document.getElementById("hmin").value=String(hminVal);
+  document.getElementById("hphoto").setAttribute("aria-checked",lphotos);
+  colPicker("hcolbtn","hcols",LCOLS.map(c=>({k:c[0],l:c[1]})),hhide,hcolsOpen,saveHhide,renderH2H);
+  if(!LINEDOCS.length){el.innerHTML=`<div class="panel"><div class="empty"><strong>Lineup data is loading</strong>${LSTATUS?.error?"Couldn't load lineup data: "+LSTATUS.error:"Five-man units are being rebuilt from each game's substitutions. They'll appear here once that's done."}</div></div>`;return}
+  const games=h2hGames(A,B),ok=games.filter(x=>x.ok),use=ok.filter(x=>!hex.has(x.id)),only=new Set(use.map(x=>x.doc.espnId));
+  const dd=iso=>new Date(iso+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"});
+  const won=(x,T)=>{const me=x.g.home.team===T?x.g.home:x.g.away,op=x.g.home.team===T?x.g.away:x.g.home;return me.pts>op.pts};
+  const wl=(list,T)=>{const w=list.filter(x=>won(x,T)).length;return `${w}–${list.length-w}`};
+  const ca=TEAMS[A]?.c||A,cb=TEAMS[B]?.c||B;
+  const gl=games.map(x=>`<label class="gck${x.ok?"":" off"}"${x.ok?"":` title="This game's play-by-play doesn't reconcile with the official box score, so its lineups can't be used"`}><input type="checkbox" data-g="${x.id}"${x.ok&&!hex.has(x.id)?" checked":""}${x.ok?"":" disabled"}>${dd(x.g.date)} · ${TEAMS[x.g.away.team]?.c} ${x.g.away.pts} @ ${TEAMS[x.g.home.team]?.c} ${x.g.home.pts}${x.ok?"":' <span class="mu">· no lineup data</span>'}</label>`).join("");
+  const gamesHTML=`<div class="panel hgames"><div class="hg-head"><b>${ca} v ${cb}</b><span class="rec">${games.length?`${games.length} game${games.length===1?"":"s"} this season · ${ca} ${wl(games,A)}${use.length!==games.length?` · using ${use.length}`:""}`:"no games yet this season"}</span></div>
+    ${games.length?`<div class="hg-list" role="group" aria-label="Games to use"><label class="gck all"><input type="checkbox" id="hg-all"${use.length&&use.length===ok.length?" checked":""}${ok.length?"":" disabled"}>All games</label>${gl}</div>`:""}</div>`;
+  if(!games.length||!use.length){
+    el.innerHTML=gamesHTML+`<div class="panel"><div class="empty"><strong>${!games.length?`${disp(A)} and ${disp(B)} haven't played each other yet this season`:!ok.length?"No lineup data for these games yet":"Tick at least one game"}</strong>${!games.length?"Pick another opponent above.":!ok.length?"The play-by-play for their games doesn't reconcile with the official box scores yet.":"The lineups use the ticked games only."}</div></div>`;
+    h2hWire(el,ok);return}
+  // each team's line over the ticked games: the official box scores, with the League table's formulas (compute)
+  const box=compute(use.map(x=>x.g)).rows;
+  const sides=[A,B].map(T=>{const c=computeLineups(T,hsize,only);return {T,O:T===A?B:A,...c,box:box.find(r=>r.name===T),shown:c.rows.filter(r=>r.min>=hminVal)}});
+  const cols=LCOLS.filter(c=>!hhide.has(c[0]));
+  if(cols.length&&!cols.some(c=>c[0]===hsort.k))hsort={k:cols[0][0],d:["drtg","oefg","tov"].includes(cols[0][0])?1:-1};  // the sorted column was hidden
+  sides.forEach(sd=>sd.shown.sort((a,b)=>{const k=hsort.k,x=a[k],y=b[k];if(x==null||y==null)return (x==null)-(y==null);return hsort.d*(x-y)}));
+  const arrow=k=>hsort.k===k?` data-dir="${hsort.d>0?'▲':'▼'}"`:"";
+  const maxAbs=Math.max(10,...sides.flatMap(sd=>sd.shown.map(r=>Math.abs(r.net||0))));
+  const cell=(r,[k,,fmt,better,extra])=>{
+    if(extra==="net"&&r.net!=null){const w=Math.round(16*Math.min(1,Math.abs(r.net)/maxAbs));return `<td class="${r.poss>=20?(r.net>=5?'hi':r.net<=-5?'lo':''):''}"><span class="nbar" style="width:${w}px;background:${r.net>=0?'var(--good)':'var(--bad)'}"></span>${fmt(r.net)}</td>`}
+    return `<td>${fmt(r[k])}</td>`};
+  const label=hsize===5?"Lineup":hsize===3?"Trio":"Pair";
+  const half=sd=>{const t=sd.box||{};
+    return `<div class="panel" style="min-width:0">
+      <div class="team-head"><h2>${code(sd.T)} ${disp(sd.T)}</h2><span class="rec">v ${TEAMS[sd.O]?.c} · ${sd.rows.length} ${hsize}-man groups · ${sd.shown.length} shown</span></div>
+      <div class="h2h-sum" title="The team's official box scores in the ticked games"><span><b>${wl(use,sd.T)}</b> in ${use.length} game${use.length===1?"":"s"}</span><span>ORtg <b>${f1(t.ortg)}</b></span><span>DRtg <b>${f1(t.drtg)}</b></span><span>Net <b>${sgn(t.net)}</b></span><span>Pace <b>${f1(t.pace)}</b></span></div>
+      <div class="scroll"><table><thead><tr><th class="tm">${label}</th>${cols.map(c=>`<th><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
+      <tbody>${sd.shown.map(r=>`<tr class="${r.poss<10?'low':''}"><td class="tm"><div class="hlu">${r.label.map((n,i)=>`<span class="hlp" title="${r.full[i]||n}">${lphotos?avatar({id:r.p[i],name:n},sd.T,"sm"):""}<span>${n}</span></span>`).join("")}</div></td>${cols.map(c=>cell(r,c)).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="color:var(--muted)">No ${hsize}-man groups with ${hminVal}+ minutes in these games.</td></tr>`}</tbody></table></div>
+    </div>`};
+  el.innerHTML=gamesHTML+`<div class="h2h-grid">${sides.map(half).join("")}</div>
+    <p style="color:var(--muted);font-size:12px;margin:10px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em">Each team's lineups in the ticked games against the other only · floor time rebuilt from ESPN play-by-play and matched to each player's official minutes and +/- · the line under each team: its official box scores in those games · faded rows: fewer than 10 possessions · Net shaded from 20 possessions · a game can be ticked only when its play-by-play reconciles for both teams</p>`;
+  el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(hsort.k===k)hsort.d*=-1;else hsort={k,d:["drtg","oefg","tov"].includes(k)?1:-1};renderH2H()});
+  h2hWire(el,ok);
+}
+// the game tick boxes: one per game, and All games (ticks or clears them all; part-ticked shows a dash)
+function h2hWire(el,ok){
+  el.querySelectorAll("input[data-g]").forEach(b=>b.onchange=()=>{if(b.checked)hex.delete(b.dataset.g);else hex.add(b.dataset.g);renderH2H();document.querySelector(`#h2h input[data-g="${b.dataset.g}"]`)?.focus()});
+  const all=el.querySelector("#hg-all");if(!all)return;
+  const on=ok.filter(x=>!hex.has(x.id)).length;all.indeterminate=on>0&&on<ok.length;
+  all.onchange=()=>{ok.forEach(x=>all.checked?hex.delete(x.id):hex.add(x.id));renderH2H();document.getElementById("hg-all")?.focus()};
+}
+document.getElementById("tab-h2h").onclick=()=>show("h2h");
+document.getElementById("hswap").onclick=()=>{const a=current;current=hB||h2hDefaultB();hB=a;saveH2H();renderH2H()};
+[5,3,2].forEach(n=>document.getElementById("hn"+n).onclick=()=>{hsize=n;try{localStorage.setItem("nbl27-hsize",n)}catch(e){}renderH2H()});
+document.getElementById("hmin").onchange=e=>{hminVal=+e.target.value;try{localStorage.setItem("nbl27-hmin",hminVal)}catch(e){}renderH2H()};
+document.getElementById("hphoto").onclick=()=>{lphotos=!lphotos;try{localStorage.setItem("nbl27-lphotos",lphotos?"1":"0")}catch(e){}renderH2H()};
+document.getElementById("hcolbtn").onclick=()=>{hcolsOpen=!hcolsOpen;renderH2H()};
 
 let PSHOTS=[],PSHOTMETA=null,psel={};
 // Regions: 0 RA, 1 paint, 2 mid, 3 left corner 3, 4 right corner 3, 5 left wing 3, 6 top 3 (between the lane lines), 7 right wing 3, 8 no zone
@@ -1818,11 +1963,11 @@ function renderCoaches(){
 
 // re-draw the open tab (used when the headshots arrive)
 function renderVisible(){const on=x=>!document.getElementById("view-"+x).hidden;
-  if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("rotations"))renderRotations();if(on("cards"))renderCards();if(on("coaches"))renderCoaches()}
+  if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("h2h"))renderH2H();if(on("rotations"))renderRotations();if(on("cards"))renderCards();if(on("coaches"))renderCoaches()}
 function show(v){
-  ["league","team","players","cards","coaches","lineups","rotations"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
+  ["league","team","players","cards","coaches","lineups","h2h","rotations"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
   if(v!=="league"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
-  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="rotations")renderRotations();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();
+  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();
 }
 document.getElementById("tab-cards").onclick=()=>show("cards");
 document.getElementById("tab-coaches").onclick=()=>show("coaches");
