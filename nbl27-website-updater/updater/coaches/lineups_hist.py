@@ -18,11 +18,21 @@ free-throw attempts within 3, and every player's floor time within 2 minutes of 
 listed and left out, as the Lineups tab does.
 
 Output, per coach-season ('<season>|<team>'): the games (with whether each was used), the players ([name, ESPN id when
-he is on an NBL27 roster - for his photo - else null]) and the five-man units: [[5 player indexes], seconds, f, a,
-[game indexes]] with f and a in the order of K. The page sums units into 3- and 2-man groups itself.
+he is on an NBL27 roster - for his NBL27 photo - else null, season photo or null]) and the five-man units: [[5 player
+indexes], seconds, f, a, [game indexes]] with f and a in the order of K. The page sums units into 3- and 2-man groups.
+
+Season photos, for the players without an NBL27 photo: the official headshot of that season - the one on his rows of
+the official box scores for that team that season (the most used, if it changed); if those rows have none, the one on
+his box score rows with the same team in the nearest season, else the one on that season's official player profile
+(nbl_player_bios.rds, which holds his latest headshot). The official files name the image hosts of their day; the same
+files are served now by Genius Sports' image host (SportingPulse and the older Genius host) and Sportradar's (Atrium,
+2025-26). Each is converted as the Player cards' headshots are (bios.photo_webp) into data/coachphotos/<image id>.webp;
+one already there isn't downloaded again (delete the folder to fetch them all again), and files no season uses any more
+are removed.
 """
 import json, os, re, sys, subprocess, tempfile, datetime, unicodedata
-from collections import defaultdict
+import concurrent.futures as cf
+from collections import Counter, defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
@@ -30,9 +40,33 @@ sys.path.insert(0, HERE)
 import official   # noqa: E402
 import rdsread    # noqa: E402
 import build      # noqa: E402  (games_by_season: the official regular-season games, as the drop-down uses them)
+import bios as cards   # noqa: E402  (photo_webp: the Player cards' headshot conversion)
 
 K = ("pts", "fga", "fgm", "tpa", "tpm", "fta", "ftm", "oreb", "dreb", "tov")
 tn = lambda n: official.TEAMNAME.get(n, n)
+txt = lambda v: v.strip() if isinstance(v, str) and v.strip() else None
+GENIUS = "https://images.statsengine.playbyplay.api.geniussports.com/"
+SPORTRADAR = "https://images.dc.connect.sportradar.com/"
+HOSTS = ((r"^https?://(img\.wh\.sportingpulseinternational\.com|se-img\.dcd-production\.i\.geniussports\.com"
+          r"|images\.statsengine\.playbyplay\.api\.geniussports\.com)/", GENIUS),
+         (r"^https?://(images\.dc\.prod\.cloud\.atriumsports\.com|images\.dc\.connect\.sportradar\.com)/", SPORTRADAR))
+
+
+def photo_src(u):
+    """An official headshot URL -> (image id, the URL it's served from now), or None. Genius Sports' files come in
+    sizes T1 (75 px), S1 (200), M1 and L1 (not kept for the oldest seasons): S1 is taken."""
+    u = txt(u)
+    if not u:
+        return None
+    for pat, new in HOSTS:
+        u = re.sub(pat, new, u)
+    m = re.match(re.escape(GENIUS) + r"([0-9a-f]{32})[TSML]1\.(jpe?g|png|webp)$", u)
+    if m:
+        return m.group(1), f"{GENIUS}{m.group(1)}S1.{m.group(2)}"
+    m = re.match(re.escape(SPORTRADAR) + r"\w+/([0-9a-f]{32})(\?.*)?$", u)
+    if m:
+        return m.group(1), u
+    return None
 
 
 def sid(x):
@@ -252,10 +286,21 @@ def main():
             if rec[k] is None:
                 rec[k] = float("nan")
         by_match[sid(rec["match_id"])].append(rec)
-    box = defaultdict(lambda: defaultdict(dict))  # match -> team -> player key -> (minutes, starter)
+    box = defaultdict(lambda: defaultdict(dict))  # match -> team -> player key -> (minutes, starter, name, headshot)
+    seasonph = defaultdict(Counter)               # (season, team, player key) -> his box score headshots, every season
     for r in bx.to_dict("records"):
+        u, k = txt(r.get("photo_s")) or txt(r.get("photo_t")), nkey(r["first_name"], r["family_name"])
+        if u:
+            seasonph[(str(r["season"])[:5] + str(r["season"])[7:], tn(r["team_name"]), k)][u] += 1
         if sid(r["match_id"]) in ids:
-            box[sid(r["match_id"])][tn(r["team_name"])][nkey(r["first_name"], r["family_name"])] = (mmss(r["minutes"]), int(r["starter"] or 0) if r["starter"] == r["starter"] else 0, f"{r['first_name']} {r['family_name']}".strip())
+            box[sid(r["match_id"])][tn(r["team_name"])][k] = (mmss(r["minutes"]), int(r["starter"] or 0) if r["starter"] == r["starter"] else 0, f"{r['first_name']} {r['family_name']}".strip(), u)
+    # each season's official player profiles (2016-17 on): the headshot for a player whose box score rows have none
+    prof = {}
+    for r in pyreadr.read_r(files["bios"])[None].to_dict("records"):
+        u = txt(r.get("S1_url")) or txt(r.get("M1_url")) or txt(r.get("L1_url"))
+        if u:
+            prof[(r["season"], tn(r["teamName"]), nkey(r["firstName"], r["familyName"]))] = u
+    have_photo = {x["id"] for x in json.load(open(os.path.join(root, "data", "photos.json")))}   # NBL27 headshots
     # ESPN ids of NBL27 players, by name, for their photos
     bios = json.load(open(os.path.join(root, "data", "bios.json")))
     espn = {}
@@ -264,6 +309,7 @@ def main():
             if nm:
                 espn.setdefault(re.sub(r"[^a-z]", "", unicodedata.normalize("NFKD", nm).encode("ascii", "ignore").decode().lower()), b["id"])
     out, rep = {}, []
+    shots, who = {}, defaultdict(set)              # season photos: image id -> URL, image id -> players
     for cid, season, team, G in want:
         P, U, games, left = {}, {}, [], []
         for gi, g in enumerate(sorted(G, key=lambda g: (g["date"] or "", sid(g["id"])))):
@@ -327,23 +373,74 @@ def main():
             info["ok"] = not why
             if why:
                 left.append(f"{g['date']} v {opp}: {'; '.join(why)}")
-        players = [None] * len(P)
+        players, need, nophoto = [None] * len(P), 0, []
+        long_season = f"{season[:4]}-{int(season[:4]) + 1}"
+        dated = sorted(G, key=lambda g: (g["date"] or "", sid(g["id"])))
         for p, (i, nm, e) in P.items():
-            players[i] = [nm, e]
+            key = None
+            if e not in have_photo:
+                need += 1
+                urls = [v[3] for v in (box.get(sid(g["id"]), {}).get(team, {}).get(p) for g in dated) if v and v[3]]
+                n = Counter(urls)            # the season's most used headshot on his box score rows (ties: the later)
+                u = max(n, key=lambda u: (n[u], max(j for j, x in enumerate(urls) if x == u))) if n else None
+                if not u:
+                    # none on his rows that season: his headshot with the same team in the nearest season that has
+                    # one (the later on a tie), else that season's profile (which holds his latest headshot, not
+                    # necessarily that season's)
+                    y0 = int(season[:4])
+                    for y in sorted((y for y in range(2015, y0 + 13) if y != y0), key=lambda y: (abs(y - y0), -y)):
+                        c = seasonph.get((f"{y}-{str(y + 1)[2:]}", team, p))
+                        if c:
+                            u = max(c, key=c.get)
+                            break
+                    u = u or prof.get((long_season, team, p))
+                src = photo_src(u)
+                if src:
+                    key = src[0]
+                    shots.setdefault(key, src[1]); who[key].add(f"{nm} {season}")
+                else:
+                    nophoto.append(nm)
+            players[i] = [nm, e, key]
         units = [[u[0], round(u[1], 1), [int(v) for v in u[2]], [int(v) for v in u[3]], sorted(u[4])] for u in U.values()]
         out[f"{season}|{team}"] = {"coach": cid, "games": games, "players": players, "units": sorted(units, key=lambda u: -u[1])}
         used = sum(1 for g in games if g["ok"])
-        rep.append(f"{cid} {season} {team}: {used} of {len(games)} games reconcile, {len(units)} five-man units"
+        rep.append(f"{cid} {season} {team}: {used} of {len(games)} games reconcile, {len(units)} five-man units, "
+                   f"season photos for {need - len(nophoto)} of the {need} players without an NBL27 photo"
+                   + (f" (none on file: {', '.join(sorted(nophoto))})" if nophoto else "")
                    + "".join(f"\n   left out {x}" for x in left))
+    # the season photos -> data/coachphotos/<image id>.webp (kept from earlier runs), as the Player cards convert theirs
+    pdir = os.path.join(root, "data", "coachphotos")
+    os.makedirs(pdir, exist_ok=True)
+
+    def fetch(item):
+        key, url = item
+        fp = os.path.join(pdir, key + ".webp")
+        if not os.path.exists(fp):
+            b = cards.photo_webp(url)
+            if b:
+                open(fp, "wb").write(b)
+        return key, os.path.exists(fp)
+    with cf.ThreadPoolExecutor(8) as ex:
+        got = dict(ex.map(fetch, sorted(shots.items())))
+    for v in out.values():
+        for pl in v["players"]:
+            if pl[2] and not got.get(pl[2]):
+                pl[2] = None
+    for f in os.listdir(pdir):
+        if f.endswith(".webp") and not got.get(f[:-5]):
+            os.remove(os.path.join(pdir, f))
+    rep.extend(f"photo not downloaded ({', '.join(sorted(who[k]))}): {shots[k]}" for k in sorted(got) if not got[k])
     res = {"_about": ("Head coaches tab lineups, built once by updater/coaches/lineups_hist.py: each NBL27 head coach's NBL "
                       "seasons since 2015-16 (coaches/curated.json stints), rebuilt from the official play-by-play (nblR) and "
-                      "checked game by game against the official box scores; units = [player indexes, seconds, f, a, game "
-                      "indexes], f/a = " + ", ".join(K) + ". Built " + datetime.date.today().isoformat() + "."),
+                      "checked game by game against the official box scores; players = [name, ESPN id (NBL27 roster) or "
+                      "null, season photo data/coachphotos/<id>.webp (official headshot of that season) or null]; units = "
+                      "[player indexes, seconds, f, a, game indexes], f/a = " + ", ".join(K) + ". Built "
+                      + datetime.date.today().isoformat() + "."),
            "keys": list(K), "seasons": out}
     fp = os.path.join(root, "data", "coachlineups.json")
     json.dump(res, open(fp, "w", encoding="utf-8"), separators=(",", ":"), ensure_ascii=False)
     print("\n".join(rep))
-    print(f"{len(out)} coach-seasons -> {fp} ({os.path.getsize(fp) / 1e6:.2f} MB)")
+    print(f"{len(out)} coach-seasons -> {fp} ({os.path.getsize(fp) / 1e6:.2f} MB); {sum(got.values())} season photos -> {pdir}")
 
 
 if __name__ == "__main__":

@@ -1602,6 +1602,8 @@ function renderRotations(){
 // ===== Player cards: bio, career journey, NBL27 averages + ranks, season history, advanced, shot chart, assist connections =====
 // Bio + history come from the "bios" collection (built daily from ESPN; extra verified sources are merged field by field).
 let BIOS={},csel={},PHOTOS={},loadPhotos=null,photosAsked=false;
+// earlier seasons' official headshots (Head coaches lineups: players with no NBL27 photo), "c:<image id>" -> file
+const XPHOTOS={};
 // headshots are a separate collection, fetched once at start-up: every player name on the page shows his photo
 function wantPhotos(){if(photosAsked||!loadPhotos)return;photosAsked=true;try{loadPhotos()}catch(e){photosAsked=false}}
 const ccFlag=cc=>cc&&/^[A-Za-z]{2}$/.test(cc)?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt(0))):"";
@@ -1610,7 +1612,7 @@ const LEAGUECC={NBA:"US",NCAA:"US","G League":"US",NBL:"AU",NBL1:"AU"};
 const rowCC=r=>r.country||(r.league==="NBL"?NBLCC(r.team):LEAGUECC[r.league])||"";
 const initials=n=>(n||"?").replace(/[^A-Za-z' -]/g,"").split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join("").toUpperCase();
 // size: true / "lg" = the card's big photo, "sm" = the small one next to a name in tables and lists
-function avatar(b,team,size){const col=TEAMS[team]?.col||"#555",ph=b?.id?PHOTOS[b.id]:null,cls=size==="sm"?" sm":size?" lg":"",big=cls===" lg";
+function avatar(b,team,size){const col=TEAMS[team]?.col||"#555",ph=b?.id?PHOTOS[b.id]||XPHOTOS[b.id]:null,cls=size==="sm"?" sm":size?" lg":"",big=cls===" lg";
   return ph?`<span class="av ph${cls}" style="background:${col}"><img src="${ph}" alt="${big?(b.name||"")+" headshot":""}" decoding="async"></span>`:`<span class="av${cls}" style="background:${col}" aria-hidden="true">${initials(b?.name)}</span>`}
 // a player's name with his headshot (the Player cards' photos) in front; label = the text shown (defaults to the name)
 const pname=(id,name,team,label)=>`<span class="pn">${avatar({id,name},team,"sm")}<span>${label??name??""}</span></span>`;
@@ -1961,7 +1963,9 @@ try{const z=localStorage.getItem("nbl27-hclsize");if(z)hclSize=+z;const m=localS
 const saveHclHide=()=>{try{localStorage.setItem("nbl27-hclhide",JSON.stringify([...hclHide]))}catch(e){}};
 function loadCoachLineups(){if(COACHLU||COACHLU_ST==="loading")return;COACHLU_ST="loading";
   fetch("data/coachlineups.json").then(r=>r.ok?r.json():Promise.reject(new Error("HTTP "+r.status)))
-    .then(d=>{COACHLU=d;COACHLU_ST="ok"},()=>{COACHLU_ST="error"}).then(()=>{if(!document.getElementById("view-coaches").hidden)renderCoachLineups()})}
+    .then(d=>{COACHLU=d;COACHLU_ST="ok";
+      Object.values(d.seasons||{}).forEach(s=>(s.players||[]).forEach(p=>{if(p[2])XPHOTOS["c:"+p[2]]="data/coachphotos/"+p[2]+".webp"}))},()=>{COACHLU_ST="error"})
+    .then(()=>{if(!document.getElementById("view-coaches").hidden)renderCoachLineups()})}
 // one season's groups of `size`: {rows, games used, games in all, games left out}
 function coachLineupRows(s,size){
   if(s.live){const r=computeLineups(s.team,size);return {rows:r.rows,used:r.games,of:null,left:r.bad}}
@@ -1970,7 +1974,8 @@ function coachLineupRows(s,size){
   d.units.forEach(([idx,sec,f,a,gs])=>(size===5?[idx]:combos(idx,size)).forEach(g=>{const k=g.join("|");
     const x=L[k]||(L[k]={p:g,sec:0,f:{},a:{},gset:new Set()});x.sec+=sec;
     K.forEach((kk,j)=>{x.f[kk]=(x.f[kk]||0)+f[j];x.a[kk]=(x.a[kk]||0)+a[j]});gs.forEach(i=>x.gset.add(i))}));
-  const rows=Object.values(L).map(x=>({p:x.p.map(i=>d.players[i][1]||"h"+i),label:x.p.map(i=>shortName(d.players[i][0])),full:x.p.map(i=>d.players[i][0]),gp:x.gset.size,...lineupNums(x.f,x.a,x.sec)}));
+  // photo: his NBL27 headshot (ESPN id), else that season's official one ("c:<image id>"), else initials
+  const rows=Object.values(L).map(x=>({p:x.p.map(i=>d.players[i][2]?"c:"+d.players[i][2]:d.players[i][1]||"h"+i),label:x.p.map(i=>shortName(d.players[i][0])),full:x.p.map(i=>d.players[i][0]),gp:x.gset.size,...lineupNums(x.f,x.a,x.sec)}));
   return {rows,used:d.games.filter(g=>g.ok).length,of:d.games.length,left:d.games.filter(g=>!g.ok).map(g=>`${fmtDate(g.date)} v ${TEAMS[g.opp]?.c||g.opp}`)};
 }
 function renderCoachLineups(){
@@ -1995,6 +2000,7 @@ function renderCoachLineups(){
   const notes=(s.live?["NBL27 so far: the Lineups tab's data (ESPN play-by-play matched to each player's official minutes and +/-)"]
       :["Rebuilt from the NBL's official play-by-play and checked game by game against the official box scores (points, shots and every player's minutes)"])
     .concat(s.from?[`His games only, from ${fmtDate(s.from)}`]:[])
+    .concat(lphotos&&!s.live?["Photos: NBL27 players' current headshots; other players' official headshots from that season's box scores (initials where there's none)"]:[])
     .concat(["Faded rows: fewer than 20 possessions","Net shaded from 40 possessions"])
     .concat(res.left.length?[`Games left out (play-by-play doesn't reconcile with the box score): ${res.left.join(", ")}`]:[]);
   el.innerHTML=head(`${games} · ${res.rows.length} ${hclSize}-man groups · ${shown.length} shown`)+`
