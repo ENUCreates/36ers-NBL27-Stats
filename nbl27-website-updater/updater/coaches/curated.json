@@ -326,6 +326,7 @@
      "of": 8,
      "grp": "East",
      "res": "Lost semi-final",
+     "stats": "Chiba Jets",
      "src": [
       "https://en.wikipedia.org/wiki/2024%E2%80%9325_B1_League_season",
       "https://en.wikipedia.org/wiki/Chiba_Jets",
@@ -343,6 +344,7 @@
      "of": 13,
      "grp": "East",
      "res": "Lost semi-final",
+     "stats": "Chiba Jets",
      "src": [
       "https://en.wikipedia.org/wiki/2025%E2%80%9326_B1_League_season",
       "https://en.wikipedia.org/wiki/Chiba_Jets"
@@ -421,6 +423,7 @@
      "of": 18,
      "res": "Missed playoffs",
      "note": "EuroCup quarter-finals",
+     "stats": "Paris Basketball",
      "src": [
       "https://en.wikipedia.org/wiki/Paris_Basketball",
       "https://en.wikipedia.org/wiki/2022%E2%80%9323_Pro_A_season"
@@ -1038,6 +1041,7 @@
      "l": 18,
      "pos": 13,
      "res": "Missed playoffs",
+     "stats": "Boulogne-Levallois",
      "src": [
       "https://www.bebasket.fr/gordon-herbert",
       "https://dewiki.de/Lexikon/Gordon_Herbert",
@@ -1056,6 +1060,7 @@
      "of": 18,
      "res": "Missed playoffs",
      "note": "French Cup winners; EuroLeague Top 16",
+     "stats": "Pau-Orthez",
      "src": [
       "https://en.wikipedia.org/wiki/2006%E2%80%9307_Pro_A_season",
       "https://www.bebasket.fr/gordon-herbert",
@@ -1126,6 +1131,7 @@
      "of": 18,
      "res": "Lost semi-final",
      "note": "final placing 3rd",
+     "stats": "Fraport Skyliners",
      "src": [
       "https://en.wikipedia.org/wiki/2010%E2%80%9311_Basketball_Bundesliga",
       "https://en.wikipedia.org/wiki/Skyliners_Frankfurt",
@@ -1143,6 +1149,7 @@
      "of": 18,
      "res": "Lost quarter-final",
      "note": "to s.Oliver Baskets",
+     "stats": "ALBA Berlin",
      "src": [
       "https://en.wikipedia.org/wiki/2011%E2%80%9312_Basketball_Bundesliga",
       "https://dewiki.de/Lexikon/Gordon_Herbert"
@@ -1158,6 +1165,7 @@
      "pos": 11,
      "of": 18,
      "res": "Missed playoffs",
+     "stats": "Fraport Skyliners",
      "src": [
       "https://en.wikipedia.org/wiki/2013%E2%80%9314_Basketball_Bundesliga"
      ]
@@ -1171,6 +1179,7 @@
      "l": 14,
      "pos": 6,
      "res": "Lost quarter-final",
+     "stats": "Fraport Skyliners",
      "src": [
       "https://en.wikipedia.org/wiki/2015_BBL_Playoffs",
       "https://en.wikipedia.org/wiki/Skyliners_Frankfurt"
@@ -1203,6 +1212,7 @@
      "l": 18,
      "pos": 10,
      "res": "Missed playoffs",
+     "stats": "Fraport Skyliners",
      "src": [
       "https://en.wikipedia.org/wiki/2016%E2%80%9317_Basketball_Bundesliga"
      ]
@@ -1218,6 +1228,7 @@
      "of": 18,
      "res": "Lost quarter-final 2–3",
      "note": "to Bayern, after leading the series 2–1",
+     "stats": "Fraport Skyliners",
      "src": [
       "https://en.wikipedia.org/wiki/2017%E2%80%9318_Basketball_Bundesliga",
       "https://eurohoops.net/en/bbl/674001/fraport-upsets-bayern-on-the-road-bamberg-advances-to-semifinals",
@@ -1234,6 +1245,7 @@
      "pos": 11,
      "of": 18,
      "res": "Missed playoffs",
+     "stats": "Fraport Skyliners",
      "src": [
       "https://en.wikipedia.org/wiki/2018%E2%80%9319_Basketball_Bundesliga",
       "https://en.wikipedia.org/wiki/Skyliners_Frankfurt",
@@ -1262,6 +1274,7 @@
      "of": 17,
      "res": "Champions",
      "note": "beat Ulm in the final",
+     "stats": "Bayern Munich",
      "src": [
       "https://en.wikipedia.org/wiki/2024%E2%80%9325_Basketball_Bundesliga",
       "https://en.wikipedia.org/wiki/Gordon_Herbert"
@@ -1485,6 +1498,7 @@
      "pos": 5,
      "of": 18,
      "res": "Lost semi-final",
+     "stats": "MHP Riesen",
      "src": [
       "https://en.wikipedia.org/wiki/2022%E2%80%9323_Basketball_Bundesliga",
       "https://en.wikipedia.org/wiki/2023_BBL_Playoffs",
@@ -1502,6 +1516,7 @@
      "of": 18,
      "res": "Lost quarter-final 1–3",
      "note": "through the play-in; to Bayern",
+     "stats": "MHP Riesen",
      "src": [
       "https://en.wikipedia.org/wiki/2023%E2%80%9324_Basketball_Bundesliga",
       "https://easycredit-bbl.de/de/n/news/2024/mai/bonn-hammer-ludwigsburg-yet-again-in-play-ins-to-reach-playoffs-date-with-alba-ludwigsburg-face-hamburg-for-final-chance",
@@ -2021,6 +2036,7 @@
      "of": 17,
      "res": "Lost quarter-final 2–3",
      "note": "to Xinjiang",
+     "stats": "Shenzhen",
      "src": [
       "https://en.wikipedia.org/wiki/2011%E2%80%9312_Chinese_Basketball_Association_season",
       "https://en.wikipedia.org/wiki/2012_CBA_Playoffs",
@@ -2037,6 +2053,7 @@
      "pos": 7,
      "of": 17,
      "res": "Lost quarter-final 0–3",
+     "stats": "Shenzhen",
      "src": [
       "https://en.wikipedia.org/wiki/2012%E2%80%9313_Chinese_Basketball_Association_season",
       "https://www.basketball-reference.com/international/cba-china/2013.html"
@@ -2053,6 +2070,7 @@
      "of": 18,
      "res": "Lost semi-final",
      "note": "swept by Xinjiang",
+     "stats": "Shenzhen",
      "src": [
       "https://en.wikipedia.org/wiki/2013%E2%80%9314_Chinese_Basketball_Association_season",
       "https://www.basketball-reference.com/international/cba-china/2014.html",
@@ -2069,6 +2087,7 @@
      "pos": 8,
      "of": 20,
      "res": "Lost quarter-final 1–3",
+     "stats": "Shenzhen",
      "src": [
       "https://en.wikipedia.org/wiki/2014%E2%80%9315_Chinese_Basketball_Association_season",
       "https://www.basketball-reference.com/international/cba-china/2015.html"
@@ -2123,6 +2142,7 @@
      "of": 13,
      "res": "Lost Finals 3–4",
      "note": "to Ginebra; EASL Champions Week 3rd",
+     "stats": "Bay Area Dragons",
      "src": [
       "https://en.wikipedia.org/wiki/2022%E2%80%9323_PBA_Commissioner%27s_Cup",
       "https://en.wikipedia.org/wiki/Bay_Area_Dragons"
@@ -2252,6 +2272,7 @@
      "grp": "division",
      "res": "Lost quarter-final",
      "note": "the club's first playoff trip; to Utah Flash",
+     "stats": "Bakersfield",
      "src": [
       "https://en.wikipedia.org/wiki/Scott_Roth",
       "https://www.statscrew.com/minorbasketball/standings/t-DLGBAK"
@@ -2278,6 +2299,7 @@
      "pos": 3,
      "grp": "division",
      "res": "Missed playoffs",
+     "stats": "Iowa",
      "src": [
       "https://www.basketball-reference.com/gleague/teams/IWA/",
       "https://en.wikipedia.org/wiki/Scott_Roth"

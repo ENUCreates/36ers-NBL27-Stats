@@ -18,10 +18,11 @@ clubs' full seasons. Checks printed at the end: games per team and season, and e
 included) against his career record where his whole NBL career falls inside the official data.
 
 Overseas seasons: a career row with 'stats' (the club's name in coaches/overseas_teams.json, which holds every team's
-season totals for that league-season: overseas_espn.py writes the G League's regular seasons from ESPN box scores,
-overseas_realgm.py other leagues from RealGM season totals, which include the playoffs) also goes in the drop-down - his
-whole season as sole head coach, with the same formulas, ranked among that league's teams; the data must agree with the
-curated record (the club's W-L, or for RealGM the regular season's length). Pace stays per 40 minutes in every league.
+season totals for that league-season: overseas_espn.py writes G League regular seasons from ESPN box scores,
+overseas_realgm.py the others from RealGM totals - playoffs included for the international leagues, the regular season
+for the G League / D-League) also goes in the drop-down - his whole season as sole head coach, with the same formulas,
+ranked among that league's teams; the data must agree with the curated record (the club's W-L, or else its number of
+games: see overseas_seasons). Pace stays per 40 minutes in every league.
 
 curated.json also carries each coach's whole head-coaching career ('career': every club job in every league, season by
 season, with the pages each row was read from) and his national-team jobs ('national'). They are passed to the page as
@@ -168,9 +169,13 @@ CAREER_KEYS = {"season", "disp", "club", "cc", "lg", "w", "l", "team", "pos", "o
 def overseas_seasons(c, overseas, rep, bad):
     """His full seasons in other leagues that overseas_teams.json has every team's totals for (career rows with 'stats' =
     the club's name there): the same numbers as an NBL season - his team's ratings and four factors, the rank among that
-    league-season's teams and the league average. Only a whole season as the sole head coach (w/l given, no 'part'); the
-    club's W-L in the data must equal his curated record (for totals that include the playoffs, 'allGames': the
-    regular season's length must equal his W-L's), or nothing is written."""
+    league-season's teams and the league average. Only a whole season as the sole head coach (w/l given, no 'part').
+    His W-L is the regular season, and the data must fit it, or nothing is written: the club's W-L where the data has
+    one; otherwise its games - all of the regular season and no more for regular-season totals, at least that for totals
+    with the playoffs in ('allGames', where some club must have played exactly that many: one that missed the playoffs).
+    Every other club too: a club that left the league during the season ('partial') is in the league average but not
+    ranked, and the source's totals may lack a few games (other clubs short of the regular season, at most 1% of the
+    league's games, never his club's) - named in the notes."""
     rows = []
     for r in c.get("career") or []:
         if not r.get("stats"):
@@ -182,15 +187,21 @@ def overseas_seasons(c, overseas, rep, bad):
         if len(L) != 1 or r["stats"] not in L[0]["teams"]:
             bad.append(f"{tag}: no team '{r['stats']}' in overseas_teams.json for that league-season"); continue
         L, T = L[0], L[0]["teams"]
-        t = T[r["stats"]]
-        if L.get("allGames"):
-            # season totals with the playoffs in (no W-L): the regular season is as long as the shortest team season (a
-            # club that missed the playoffs), which must be his W-L's length; his club played at least that many games
-            rs = min(x["games"] for x in T.values())
-            if rs != r["w"] + r["l"] or t["games"] < rs:
-                bad.append(f"{tag}: curated {r['w']}-{r['l']}, but the league data has a {rs}-game regular season and {t['games']} games for the club"); continue
-        elif (t["w"], t["l"]) != (r["w"], r["l"]):
-            bad.append(f"{tag}: curated {r['w']}-{r['l']}, the league data {t['w']}-{t['l']}"); continue
+        t, rs = T[r["stats"]], r["w"] + r["l"]
+        full = {n: x for n, x in T.items() if not x.get("partial")}
+        short = {n: x["games"] for n, x in full.items() if x["games"] < rs}
+        if "w" in t:
+            if (t["w"], t["l"]) != (r["w"], r["l"]):
+                bad.append(f"{tag}: curated {r['w']}-{r['l']}, the league data {t['w']}-{t['l']}"); continue
+        elif L.get("allGames"):
+            if t["games"] < rs or not any(x["games"] == rs for x in full.values()):
+                bad.append(f"{tag}: curated {r['w']}-{r['l']}, but no club in the league data played exactly {rs} games, or the club "
+                           f"played fewer ({t['games']})"); continue
+        elif t["games"] != rs:
+            bad.append(f"{tag}: curated {r['w']}-{r['l']}, the league data {t['games']} regular-season games for the club"); continue
+        if r["stats"] in short or sum(rs - g for g in short.values()) > 0.01 * rs * len(full):
+            bad.append(f"{tag}: the league data lacks games: " + ", ".join(f"{n} {g}" for n, g in sorted(short.items()))
+                       + f" of a {rs}-game regular season"); continue
         met = {n: metrics({**x, "poss": (poss(x["own"]) + poss(x["opp"])) / 2}) for n, x in T.items()}
         allt = {"mins": sum(x["mins"] for x in T.values()), "poss": sum((poss(x["own"]) + poss(x["opp"])) / 2 for x in T.values()),
                 "own": defaultdict(float), "opp": defaultdict(float)}
@@ -199,15 +210,25 @@ def overseas_seasons(c, overseas, rep, bad):
                 for k, v in x[side].items():
                     allt[side][k] += v
         m = met[r["stats"]]
+        notes = list(L.get("notes") or [])
+        for g in sorted(set(short.values())):
+            names = sorted(n for n, x in short.items() if x == g)
+            notes.append(f"{L['source']}: {g} games for {', '.join(names[:-1]) + ' and ' if len(names) > 1 else ''}{names[-1]} "
+                         f"(a {rs}-game regular season)")
+        for n in sorted(set(T) - set(full)):
+            notes.append(f"{n} left the league after {T[n]['games']} games: its games stay in the totals and the league average, "
+                         f"it isn't ranked")
         row = {"season": r["season"], "team": r["club"], "league": L["short"], "games": t["games"], "w": r["w"], "l": r["l"],
-               "gp": t["gp"], "n": len(T), "m": rnd(m), "rk": {k: rank(k, m[k], [met[n][k] for n in T if n != r["stats"]]) for k in BETTER},
-               "lg": rnd(metrics(allt)), "src": L["source"], "notes": L.get("notes") or []}
+               "gp": t["gp"], "n": len(full), "m": rnd(m),
+               "rk": {k: rank(k, m[k], [met[n][k] for n in full if n != r["stats"]]) for k in BETTER},
+               "lg": rnd(metrics(allt)), "src": L["source"], "notes": notes}
         if L.get("allGames"):
-            row["allGames"], row["rsGames"] = 1, r["w"] + r["l"]
+            row["allGames"], row["rsGames"] = 1, rs
         rows.append(row)
-        rep.append(f"{tag}: {t['games']} g" + (f" (all games; regular season {r['w']}-{r['l']})" if L.get("allGames") else f" {t['w']}-{t['l']}")
+        rep.append(f"{tag}: {t['games']} g" + (f" (all games; regular season {r['w']}-{r['l']})" if L.get("allGames") else f" {r['w']}-{r['l']}")
                    + (f" (box scores {t['gp']})" if t["gp"] != t["games"] else "")
-                   + f", {len(T)} teams, {L['source']} - ORtg {row['m']['ortg']} ({row['rk']['ortg']}), DRtg {row['m']['drtg']} ({row['rk']['drtg']})")
+                   + f", {len(full)} teams ranked, {L['source']} - ORtg {row['m']['ortg']} ({row['rk']['ortg']}), DRtg {row['m']['drtg']} ({row['rk']['drtg']})"
+                   + "".join(f"; {x}" for x in notes[len(L.get('notes') or []):]))
     return rows
 
 
