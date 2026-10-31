@@ -1005,12 +1005,13 @@ function lineupMinOk(doc,team){
 // Merge a game's id->name map, skipping any entry that is just the player's ID (no name in that game's data).
 function addNames(names,src){for(const[id,n]of Object.entries(src||{}))if(n&&n!==id)names[id]=n}
 // a unit's numbers from its summed stints: f = its own totals, a = the opponents' while it was on, sec = floor time
-function lineupNums(f,a,sec){const poss=t=>(t.fga||0)-(t.oreb||0)+(t.tov||0)+0.44*(t.fta||0),pp=(poss(f)+poss(a))/2,div=(n,d)=>d>0?n/d:null;
+// ftx (G League 2025-26 lineups: one free throw per trip, worth 2 or 3, counts as a possession) replaces 0.44 x FTA
+function lineupNums(f,a,sec){const fx=t=>t.ftx!=null?t.ftx:0.44*(t.fta||0),poss=t=>(t.fga||0)-(t.oreb||0)+(t.tov||0)+fx(t),pp=(poss(f)+poss(a))/2,div=(n,d)=>d>0?n/d:null;
   return {min:sec/60,poss:pp,pf:f.pts||0,pa:a.pts||0,pm:(f.pts||0)-(a.pts||0),
     ortg:div(100*(f.pts||0),pp),drtg:div(100*(a.pts||0),pp),net:div(100*((f.pts||0)-(a.pts||0)),pp),
     efg:div((f.fgm||0)+0.5*(f.tpm||0),f.fga),oefg:div((a.fgm||0)+0.5*(a.tpm||0),a.fga),
     orb:div(f.oreb||0,(f.oreb||0)+(a.dreb||0)),drb:div(f.dreb||0,(f.dreb||0)+(a.oreb||0)),
-    tov:div(f.tov||0,(f.fga||0)+0.44*(f.fta||0)+(f.tov||0)),otov:div(a.tov||0,(a.fga||0)+0.44*(a.fta||0)+(a.tov||0)),
+    tov:div(f.tov||0,(f.fga||0)+fx(f)+(f.tov||0)),otov:div(a.tov||0,(a.fga||0)+fx(a)+(a.tov||0)),
     ftr:div(f.fta||0,f.fga),pace:div(40*pp,sec/60)}}
 // only (optional): the ESPN ids of the games to use (H2H Lineups); tot = the team's own numbers over the games used
 function computeLineups(team,size,only){
@@ -1970,7 +1971,7 @@ function loadCoachLineups(){if(COACHLU||COACHLU_ST==="loading")return;COACHLU_ST
 function coachLineupRows(s,size){
   if(s.live){const r=computeLineups(s.team,size);return {rows:r.rows,used:r.games,of:null,left:r.bad}}
   const d=COACHLU?.seasons?.[s.season+"|"+s.team];if(!d)return null;
-  const K=COACHLU.keys,L={};
+  const K=d.keys||COACHLU.keys,L={};
   d.units.forEach(([idx,sec,f,a,gs])=>(size===5?[idx]:combos(idx,size)).forEach(g=>{const k=g.join("|");
     const x=L[k]||(L[k]={p:g,sec:0,f:{},a:{},gset:new Set()});x.sec+=sec;
     K.forEach((kk,j)=>{x.f[kk]=(x.f[kk]||0)+f[j];x.a[kk]=(x.a[kk]||0)+a[j]});gs.forEach(i=>x.gset.add(i))}));
@@ -1983,8 +1984,9 @@ function renderCoachLineups(){
   const c=(COACHES.coaches||[]).find(x=>x.team===byCode[current]);if(!c){el.innerHTML="";return}
   const s=hcSeasons(c).find(o=>hcKey(o)===hsel[c.id]);if(!s){el.innerHTML="";return}
   const head=sub=>`<div class="card-head"><h3>Lineups · ${s.season}</h3><span class="rec">${disp(s.team)}${sub?` · ${sub}`:""}</span></div>`;
-  if(s.league){el.innerHTML=head("")+`<p class="note">Lineups are for NBL seasons only: there's no play-by-play here for the ${s.league}.</p>`;return}
   if(!s.live&&!COACHLU){loadCoachLineups();el.innerHTML=head("")+`<p class="note">${COACHLU_ST==="error"?"Couldn't load the lineup data.":"Lineup data is loading."}</p>`;return}
+  const src=s.live?null:COACHLU.seasons?.[s.season+"|"+s.team];
+  if(s.league&&!src){el.innerHTML=head("")+`<p class="note">No lineups for this season: there's no play-by-play here for the ${s.league}.</p>`;return}
   if(s.live&&!LINEDOCS.length){el.innerHTML=head("")+`<p class="note">Lineup data is loading.</p>`;return}
   const res=coachLineupRows(s,hclSize);
   if(!res){el.innerHTML=head("")+`<p class="note">No lineup data for this season.</p>`;return}
@@ -1998,9 +2000,11 @@ function renderCoachLineups(){
     return `<td>${fmt(r[k])}</td>`};
   const label=hclSize===5?"Lineup":hclSize===3?"Trio":"Pair",games=res.of!=null?`${res.used} of ${res.of} games`:`${res.used} games`;
   const notes=(s.live?["NBL27 so far: the Lineups tab's data (ESPN play-by-play matched to each player's official minutes and +/-)"]
+      :src?.league?[`${s.league} ${s.season}: ESPN's play-by-play, with who was on the floor solved from the recorded substitutions, every player's actions and his box-score minutes and +/- (as the Lineups tab does), then checked game by game against ESPN's box scores (points, shots and minutes)`]
       :["Rebuilt from the NBL's official play-by-play and checked game by game against the official box scores (points, shots and every player's minutes)"])
+    .concat((src?.keys||[]).includes("ftx")?["One free throw per trip, worth 2 or 3: each counts as a possession"]:[])
     .concat(s.from?[`His games only, from ${fmtDate(s.from)}`]:[])
-    .concat(lphotos&&!s.live?["Photos: NBL27 players' current headshots; other players' official headshots from that season's box scores (initials where there's none)"]:[])
+    .concat(lphotos&&!s.live?[src?.league?"Photos: players on NBL27 rosters only (initials for the rest)":"Photos: NBL27 players' current headshots; other players' official headshots from that season's box scores (initials where there's none)"]:[])
     .concat(["Faded rows: fewer than 20 possessions","Net shaded from 40 possessions"])
     .concat(res.left.length?[`Games left out (play-by-play doesn't reconcile with the box score): ${res.left.join(", ")}`]:[]);
   el.innerHTML=head(`${games} · ${res.rows.length} ${hclSize}-man groups · ${shown.length} shown`)+`

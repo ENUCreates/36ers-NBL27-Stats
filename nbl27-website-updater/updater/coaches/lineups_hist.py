@@ -1,6 +1,7 @@
 """Lineups for the Head coaches tab: every NBL season since 2015-16 that an NBL27 head coach coached (the stints in
 coaches/curated.json, the same games build.py uses), rebuilt from the NBL's official play-by-play and checked game by
-game against the official box scores, into data/coachlineups.json.
+game against the official box scores, into data/coachlineups.json (its overseas seasons, from lineups_gleague.py, are
+kept as they are).
 
     python3 lineups_hist.py <repo_root>
 
@@ -434,10 +435,15 @@ def main():
                       "seasons since 2015-16 (coaches/curated.json stints), rebuilt from the official play-by-play (nblR) and "
                       "checked game by game against the official box scores; players = [name, ESPN id (NBL27 roster) or "
                       "null, season photo data/coachphotos/<id>.webp (official headshot of that season) or null]; units = "
-                      "[player indexes, seconds, f, a, game indexes], f/a = " + ", ".join(K) + ". Built "
+                      "[player indexes, seconds, f, a, game indexes], f/a = " + ", ".join(K) + " (or the season's own "
+                      "'keys'). Overseas seasons ('league'): updater/coaches/lineups_gleague.py, ESPN's play-by-play. Built "
                       + datetime.date.today().isoformat() + "."),
            "keys": list(K), "seasons": out}
     fp = os.path.join(root, "data", "coachlineups.json")
+    old = json.load(open(fp, encoding="utf-8")) if os.path.exists(fp) else {}
+    for k, v in (old.get("seasons") or {}).items():
+        if v.get("league") and k not in out:
+            out[k] = v                                # overseas seasons, built by lineups_gleague.py, stay as they are
     json.dump(res, open(fp, "w", encoding="utf-8"), separators=(",", ":"), ensure_ascii=False)
     print("\n".join(rep))
     print(f"{len(out)} coach-seasons -> {fp} ({os.path.getsize(fp) / 1e6:.2f} MB); {sum(got.values())} season photos -> {pdir}")
