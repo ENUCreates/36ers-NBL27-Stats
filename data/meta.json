@@ -372,30 +372,27 @@
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-11-01T09:08:38+11:00",
+  "checkedAt": "2026-11-01T09:22:16+11:00",
   "games": 49,
-  "invalid": 1,
+  "invalid": 0,
   "method": "Who is on the floor: the NBL's own play-by-play (every substitution recorded) wherever it reproduces the official box score - every player's minutes and plus-minus (nbl_lineups.py); otherwise solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
   "fit": {
    "teamGames": 98,
-   "minutesOver30s": 2,
+   "minutesOver30s": 0,
    "plusMinusOff": 1,
    "actionsOffCourt": 0,
-   "unrecordedSwapsPerTeamGame": 1.0
+   "unrecordedSwapsPerTeamGame": 0.3
   },
   "sources": {
-   "nbl": 91,
-   "espn": 7
+   "nbl": 95,
+   "espn": 3
   },
   "notes": [
-   "lineups by team-game: espn 7, nbl 91",
+   "lineups by team-game: espn 3, nbl 93, no official play-by-play 1",
    "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)",
-   "2026-10-18 Illawarra Hawks at Melbourne United Melbourne United: NBL play-by-play not used (pts 0, official 89; fgm 0, official 32; fga 0, official 72)",
-   "2026-10-18 Illawarra Hawks at Melbourne United Illawarra Hawks: NBL play-by-play not used (pts 0, official 91; fgm 0, official 37; fga 0, official 76)",
+   "2026-10-18 Illawarra Hawks at Melbourne United: the NBL's play-by-play came back empty this run - last run's lineups kept",
    "2026-10-31 Illawarra Hawks at Perth Wildcats Perth Wildcats: NBL play-by-play not used (fga 81, official 79; tpa 31, official 30; oreb 13, official 11)",
-   "2026-10-31 Illawarra Hawks at Perth Wildcats Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 3 with 281s left; Illawarra Hawks: 4 on the floor in period 3 with 265s left; Illawarra Hawks: 4 on the floor in period 3 with 265s left)",
-   "2026-10-31 Melbourne United at Cairns Taipans Cairns Taipans: NBL play-by-play not used (Keanu Pinder -13, official -11; Jaylin Galloway +15, official +13; Jack McVeigh -13, official -17)",
-   "2026-10-31 Melbourne United at Cairns Taipans Melbourne United: NBL play-by-play not used (Shea Ili -6, official -2; Fabijan Krslovic +4, official +5; Malith Machar +10, official +12)"
+   "2026-10-31 Illawarra Hawks at Perth Wildcats Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 3 with 281s left; Illawarra Hawks: 4 on the floor in period 3 with 265s left; Illawarra Hawks: 4 on the floor in period 3 with 265s left)"
   ]
  },
  "pshots_status": {

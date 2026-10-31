@@ -231,8 +231,11 @@ def apply(lineups, games, players, off, pairs, index, prev=None):
                 src[t] = "espn"
         m = pbp.get(index.get((g["date"], frozenset(teams))))
         tag = f"{g['date']} {g['away']['team']} at {g['home']['team']}"
-        if m is None:
-            # no official play-by-play this run: keep last run's NBL-based lineups, if any
+        if m is None or not m.get("plays"):
+            # no official play-by-play this run (the NBL's API sometimes returns a finished game with its play-by-play
+            # empty for a while): keep last run's NBL-based lineups, if any
+            if m is not None:
+                rep.append(f"{tag}: the NBL's play-by-play came back empty this run - last run's lineups kept")
             pv = (prev or {}).get(eid) or {}
             for t in teams:
                 if (pv.get("src") or {}).get(t) == "nbl":
