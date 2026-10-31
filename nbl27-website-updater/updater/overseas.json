@@ -209,6 +209,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Louisville",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/David-Johnson/Summary/132437"
   }
@@ -974,6 +978,10 @@
     "src": "Wikipedia"
    }
   ],
+  "college": "Wyoming",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Nathan-Sobey/Summary/42644"
   }
@@ -5533,6 +5541,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Australian Institute of Sport",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "bbr": "https://www.basketball-reference.com/international/players/mitchell-norton-1.html",
    "realgm": "https://basketball.realgm.com/player/Mitchell-Norton/Summary/25789"
@@ -5662,6 +5674,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Barry",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Sunday-Dech/Summary/103300"
   }
@@ -7221,6 +7237,10 @@
     }
    }
   ],
+  "college": "Eastern Washington",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "bbr": "https://www.basketball-reference.com/international/players/tyler-harvey-1.html",
    "realgm": "https://basketball.realgm.com/player/Tyler-Harvey/Summary/31059"
@@ -7538,6 +7558,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Saint Mary's",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Jordan-Hunter/Summary/92771"
   }
@@ -7606,6 +7630,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Iona",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Joshua-Duach/Summary/183387"
   }
@@ -7785,6 +7813,10 @@
     }
    }
   ],
+  "college": "Clarke University",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "bbr": "https://www.basketball-reference.com/international/players/nick-marshall-1.html",
    "realgm": "https://basketball.realgm.com/player/Nicholas-Marshall/Summary/167598"
@@ -7944,12 +7976,20 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Montana",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Fabijan-Krslovic/Summary/41362"
   }
  },
  "5090900": {
   "checked": "2026-10-23",
+  "college": "Midland College (TX)",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Malith-Machar/Summary/166055"
   }
@@ -8108,6 +8148,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Saint Mary's",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Kyle-Bowen/Summary/107888"
   }
@@ -8236,6 +8280,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Saint Mary's",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Tanner-Krebs/Summary/92770"
   }
@@ -8334,6 +8382,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Creighton",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Samson-Froling/Summary/107190"
   }
@@ -8849,6 +8901,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Sacramento State",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Izayah-Mauriohooho-LeAfa/Summary/55255"
   }
@@ -8977,6 +9033,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Virginia",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Kody-Stattmann/Summary/107902"
   }
@@ -9225,6 +9285,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Miami (FL)",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Sam-Waardenburg/Summary/95710"
   }
@@ -9470,6 +9534,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "California Baptist",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Keanu-Rasmussen/Summary/179775"
   }
@@ -9538,6 +9606,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Barry",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Luca-Yates/Summary/179770"
   }
@@ -10035,6 +10107,10 @@
     }
    }
   ],
+  "college": "Arizona",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "bbr": "https://www.basketball-reference.com/international/players/parker-jackson-cartwright-1.html",
    "realgm": "https://basketball.realgm.com/player/Parker-Jackson-Cartwright/Summary/41310"
@@ -11023,6 +11099,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Southern Methodist",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Tom-Wilson/Summary/76273"
   }
@@ -11127,6 +11207,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "UC Riverside",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Ben-Griscti/Summary/183848"
   }
@@ -11353,6 +11437,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "UC Davis",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Elijah-Pepper/Summary/134396"
   }
@@ -12498,6 +12586,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Oregon State",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "bbr": "https://www.basketball-reference.com/international/players/angus-brandt-1.html",
    "realgm": "https://basketball.realgm.com/player/Angus-Brandt/Summary/6800"
@@ -12627,6 +12719,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Canisius",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Tana-Kopa/Summary/185129"
   }
@@ -13032,6 +13128,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "UNLV",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Walter-Brown/Summary/180034"
   }
@@ -13190,6 +13290,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Rogers State",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Sam-Davidson/Summary/174728"
   }
@@ -13482,6 +13586,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "George Mason",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "bbr": "https://www.basketball-reference.com/international/players/dshawn-schwartz-1.html",
    "realgm": "https://basketball.realgm.com/player/DShawn-Schwartz/Summary/88873"
@@ -14218,6 +14326,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Richmond",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Will-Johnston/Summary/178767"
   }
@@ -14426,6 +14538,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Missouri",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Jayden-Stone/Summary/135639"
   }
@@ -16112,6 +16228,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Evansville",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Jaylon-Brown/Summary/57162"
   }
@@ -16265,6 +16385,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Hawaii",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Harry-Rouhliadeff/Summary/202940"
   }
@@ -17276,6 +17400,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Marquette",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Ben-Gold/Summary/161767"
   }
@@ -17745,6 +17873,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Quinnipiac",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Jacob-Rigoni/Summary/107188"
   }
@@ -17873,6 +18005,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Georgia Southwestern State",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Deonte-Williams/Summary/212738"
   }
@@ -18181,6 +18317,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Charlotte",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "bbr": "https://www.basketball-reference.com/international/players/anzac-rissetto-1.html",
    "realgm": "https://basketball.realgm.com/player/Anzac-Rissetto/Summary/137264"
@@ -18525,6 +18665,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "Northern Kentucky",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Kael-Robinson/Summary/179580"
   }
@@ -18566,6 +18710,10 @@
     "shootingSrc": "RealGM per game (two reads)"
    }
   ],
+  "college": "West Texas A&M",
+  "src": {
+   "college": "RealGM"
+  },
   "sources": {
    "realgm": "https://basketball.realgm.com/player/Austin-Shelley/Summary/184445"
   }

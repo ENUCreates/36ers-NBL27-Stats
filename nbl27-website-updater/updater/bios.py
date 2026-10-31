@@ -128,10 +128,11 @@ ESPN_LEAGUE = {"46": "nba", "69": "nba-development", "41": "mens-college-basketb
 LINK_V = 3          # bump to re-run the record linking for every player
 
 
-def espn_links(name, pid, dob):
+def espn_links(name, pid, dob, known=()):
     """Other ESPN athlete records of the same person (NBA, G League, US college or FIBA ids): found with ESPN's two
-    player searches, kept only when the name and the date of birth both match (a day's difference allowed: ESPN's
-    dates are sometimes a day out). -> list of {id, league, college, birthPlace}."""
+    player searches, plus the records linked on earlier runs ('known': ESPN's search sometimes stops listing a record
+    it still has), kept only when the date of birth matches (a day's difference allowed: ESPN's dates are sometimes a
+    day out; search hits must also match the name). -> list of {id, league, college, birthPlace}."""
     if not dob or not name:
         return []
     import official as O
@@ -146,6 +147,7 @@ def espn_links(name, pid, dob):
             m = re.match(r"s:40~l:(\d+)~a:(\d+)$", c.get("uid") or "")
             if m and O.norm(c.get("displayName")) == O.norm(name):
                 cands.append((m.group(2), ESPN_LEAGUE.get(m.group(1), "")))
+    cands += [(str(k), "") for k in known or []]
     out, seen = [], {pid}
     for aid, lg in cands:
         if aid in seen or lg in ("nbl", "wnba", "womens-college-basketball"):
@@ -339,9 +341,10 @@ def main():
         b["team"] = team
         # NBA / college seasons kept under another ESPN athlete id (checked once per ESPN refresh)
         if b.get("linksV") != LINK_V and b.get("dob"):
-            links = espn_links(b["name"], pid, b["dob"])
+            known = (o or {}).get("espnLinks") or []
+            links = espn_links(b["name"], pid, b["dob"], known)
             if not links and b.get("nblName") and name != b["name"]:
-                links = espn_links(name, pid, b["dob"])
+                links = espn_links(name, pid, b["dob"], known)
             have_rows = {(h.get("season"), h.get("team"), h.get("league")) for h in b.get("history") or []}
             for ln in links:
                 for lg, nm in (("nba", "NBA"), ("mens-college-basketball", "NCAA")):

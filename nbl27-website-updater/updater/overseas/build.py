@@ -774,10 +774,13 @@ def main():
             entry["history"] = sorted(rows, key=lambda r: r["season"])
         if st2:
             entry["career"] = sorted(st2, key=lambda r: r["season"])
-        if college and not b.get("college"):
+        # the school, unless ESPN's own record names one (data/bios.json already holds the school this file gave it
+        # on an earlier build, so 'no college there' can't be the test)
+        espn_college = b.get("college") and (b.get("src") or {}).get("college") == "ESPN"
+        if college and not espn_college:
             entry["college"] = college
             entry["src"] = {"college": "RealGM"}
-        elif (curated.get(pid) or {}).get("college") and not b.get("college"):
+        elif (curated.get(pid) or {}).get("college") and not espn_college:
             entry["college"] = curated[pid]["college"]            # no RealGM page: the school named by the curated source
             entry["src"] = {"college": curated[pid].get("collegeSrc", "Club")}
         if sources:

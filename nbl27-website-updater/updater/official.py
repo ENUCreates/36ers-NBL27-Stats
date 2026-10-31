@@ -176,7 +176,7 @@ def load(dest=None):
     Earlier seasons and the 2015-25 profiles come from the nblR release files; the current season comes straight
     from the NBL's own API (same day) when it answers, otherwise from the nblR files (about a week behind)."""
     dest = dest or os.environ.get("NBL_OFFICIAL_CACHE") or tempfile.mkdtemp()
-    out = {"box": [], "team": [], "res": [], "bios": [], "roster": [], "live": False, "notes": []}
+    out = {"box": [], "team": [], "res": [], "bios": [], "roster": [], "live": False, "notes": [], "pbp": {}}
     try:
         import pyreadr
         files = download(dest)
@@ -185,11 +185,11 @@ def load(dest=None):
     except Exception as ex:
         out["notes"].append(f"nblR files unavailable: {ex}")
     try:
-        res, box, team, roster = rosetta_current(os.path.join(dest, "rosetta"))
+        res, box, team, roster, pbp = rosetta_current(os.path.join(dest, "rosetta"))
         out["res"] = [r for r in out["res"] if r["season"] != CUR] + res
         out["box"] = [r for r in out["box"] if r["season"] != CUR] + box
         out["team"] = [r for r in out["team"] if r["season"] != CUR] + team
-        out["roster"], out["live"] = roster, True
+        out["roster"], out["live"], out["pbp"] = roster, True, pbp
     except Exception as ex:
         out["notes"].append(f"NBL API unavailable, current season from the nblR files: {ex}")
     if not out["box"]:
@@ -226,11 +226,18 @@ def rget(path, dest=None, fresh=False):
     raise RuntimeError(f"NBL API {path}: {err}")
 
 
+# left out of the kept play-by-play: possession markers. The clock's start/stop rows ('main') stay: a substitution
+# keyed while the clock was still running takes effect when it stops, and the official minutes count it from there
+PBP_SKIP = {"possession", "possessionArrow", "fixture"}
+
+
 def rosetta_current(dest):
     """Current-season official data straight from the NBL's API, in the same row shapes as the nblR files:
-    -> (res rows, box rows, team rows, roster profiles). Same-day, unlike the weekly nblR files."""
+    -> (res rows, box rows, team rows, roster profiles, play-by-play). Same-day, unlike the weekly nblR files.
+    play-by-play: {match id: {'home', 'away', 'players', 'teams', 'plays'}} for nbl_lineups.py - the plays in the
+    feed's own order (game order), each {per, pt (period type), clock, type, sub, ok (made), team, pid}."""
     lst = rget(f"nbl/matches/in/season/{ROSETTA_YEAR}?limit=400", dest, fresh=True)["data"]
-    res, box, team = [], [], []
+    res, box, team, pbp = [], [], [], {}
     for m in sorted(lst, key=lambda m: (m.get("start_time") or "", m["id"])):
         st, ty = sv(m.get("match_status")).lower(), sv(m.get("match_type")).lower()
         res.append({"season": CUR, "match_id": m["id"], "match_status": "COMPLETE" if st == "complete" else st.upper(),
@@ -276,8 +283,30 @@ def rosetta_current(dest):
                          "rebounds_defensive": x.get("defensive_rebounds"), "rebounds_total": x.get("rebounds"),
                          "assists": x.get("assists"), "steals": x.get("steals"), "blocks": x.get("blocks"),
                          "turnovers": x.get("turnovers"), "fouls_total": x.get("fouls")})
+        site = lambda t: TEAMNAME.get(tname(t), tname(t)) if t else None
+        num = lambda v: iv(v) if v not in (None, "") else None
+        P = [{"pid": (x.get("player") or {}).get("id"), "team": site(x.get("team")), "starter": bool(x.get("starter")),
+              "min": x.get("minutes_string") or x.get("minutes"), "pm": x.get("plus_minus"),
+              "name": f"{sv((x.get('player') or {}).get('first_name'))} {sv((x.get('player') or {}).get('last_name'))}".strip()}
+             for x in d.get("player_match_statistics") or [] if sv(x.get("period")) == "0"]
+        T = [{"team": site(x.get("team")), "pts": num(x.get("points")), "fgm": num(x.get("field_goals_made")),
+              "fga": num(x.get("field_goals_attempted")), "tpm": num(x.get("three_points_made")),
+              "tpa": num(x.get("three_points_attempted")), "ftm": num(x.get("free_throws_made")),
+              "fta": num(x.get("free_throws_attempted")), "oreb": num(x.get("offensive_rebounds")),
+              "dreb": num(x.get("defensive_rebounds")), "tov": num(x.get("turnovers"))}
+             for x in d.get("team_match_statistics") or [] if sv(x.get("period")) == "0"]
+        A = []
+        for a in d.get("play_by_play") or []:
+            if a.get("action_type") in PBP_SKIP:
+                continue
+            pl = a.get("player") if isinstance(a.get("player"), dict) else {}
+            A.append({"per": a.get("period"), "pt": a.get("period_type"), "clock": a.get("clock"), "type": a.get("action_type"),
+                      "sub": a.get("sub_type"), "ok": bool(a.get("success")), "pid": pl.get("id") or a.get("personId"),
+                      "team": site(a.get("team")) or site(pl.get("team"))})
+        pbp[m["id"]] = {"home": site(d.get("home_team") or m.get("home_team")), "away": site(d.get("away_team") or m.get("away_team")),
+                        "players": P, "teams": T, "plays": A}
     roster = rget(f"nbl/players/in/season/{ROSETTA_YEAR}", dest, fresh=True)["data"]
-    return res, box, team, roster
+    return res, box, team, roster, pbp
 
 
 def tip_syd(utc):

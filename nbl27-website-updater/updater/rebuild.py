@@ -7,7 +7,9 @@ however old, is picked up. Steps:
      they are added on the next run.
   3. Download each game's ESPN summary ONCE into a cache, so every step reads the same snapshot.
   4. Build games (official team totals via teamtotals.py + overrides.json), players, shots, lineups, pshots
-     and events with the same scripts as before.
+     and events with the same scripts as before. Lineups are then rebuilt from the NBL's own play-by-play
+     (nbl_lineups.py, read with the official box scores) wherever it reproduces the official box score; the
+     ESPN-based solve (lineups.py / oncourt.py) stays for any other team-game.
   5. Verify each game before publishing: ESPN status final; points = 2*FGM + 3PM + FTM for both teams;
      player lines add up to the team box (FGM/FGA/3PM/3PA/FTM/FTA/PTS). A game that fails is HELD: its
      previously published (already verified) documents are kept and a warning is recorded.
@@ -17,7 +19,7 @@ however old, is picked up. Steps:
 
 Usage: python3 rebuild.py <repo_root> [settle_hours=8]
 """
-import json, os, sys, tempfile, datetime
+import json, os, sys, tempfile, datetime, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -164,6 +166,8 @@ def main():
     # If the official files can't be read, the corrections and spellings from the previous run are reused.
     prev_off = (meta.get("status") or {}).get("official") or {}
     off_status = {}
+    import nbl_lineups as NL
+    lu_rep, lu_n = [], {}
     try:
         import official as O
         os.environ["NBL_OFFICIAL_CACHE"] = os.path.join(tmp, "official")
@@ -171,6 +175,9 @@ def main():
         glist, plist = list(new["games"].values()), list(new["players"].values())
         cmp = O.compare(glist, plist, off)
         fixes = O.apply(glist, plist, cmp)
+        # lineups: the NBL's own play-by-play wherever it reproduces the official box score (every substitution is
+        # recorded there); the ESPN-based solve built above stays for any other team-game
+        lu_rep, lu_n = NL.apply(new["lineups"], glist, plist, off, cmp["pairs"], O.nbl27_index(off), prev_by["lineups"])
         names = {i: p["name"] for i, p in cmp["pairs"].items()}
         for i, n in (prev_off.get("names") or {}).items():
             names.setdefault(i, n)          # keep spellings learned from games the official files no longer list
@@ -178,6 +185,8 @@ def main():
                       "fixes": cmp["fix_players"] + cmp["fix_teams"], "applied": fixes, "notes": cmp["notes"]}
     except Exception as ex:
         warnings.append(f"official NBL box scores unavailable ({ex}); previous official corrections reused")
+        NL.keep_previous(new["lineups"], prev_by["lineups"])
+        lu_rep = ["official data unavailable: last run's NBL play-by-play lineups kept"]
         off_status = {k: prev_off.get(k) for k in ("games", "pending", "names", "fixes", "applied", "notes")}
         off_status["error"] = str(ex)[:300]
         G_ = {g["id"].replace("espn-", ""): g for g in new["games"].values()}
@@ -218,7 +227,7 @@ def main():
         n = sum(1 for i, d in new[c].items() if i in prev_by[c] and json.dumps(d.get("teams"), sort_keys=True)
                 != json.dumps(prev_by[c][i].get("teams"), sort_keys=True))
         if n:
-            changes.append(f"{c}: {n} game(s) updated from ESPN")
+            changes.append(f"{c}: {n} game(s) updated" + ("" if c == "lineups" else " from ESPN"))
 
     data = {"games": sorted(new["games"].values(), key=lambda g: (g["date"], g["id"]))}
     for c in COLS[1:]:
@@ -246,11 +255,17 @@ def main():
                                                 mismatches=sum(1 for d in data["shots"] if d.get("mismatch")))
     meta.setdefault("players_status", {}).update(checkedAt=nowiso, games=len(data["players"]),
                                                   mismatches=sum(1 for d in data["players"] if d.get("mismatch")))
-    fits = [f for d in data["lineups"] for f in (d.get("fit") or {}).values()]
+    fits = [f for d in data["lineups"] for f in (d.get("fit") or {}).values() if f]
+    srcs = collections.Counter(v for d in data["lineups"] for v in (d.get("src") or {}).values())
     meta.setdefault("lineups_status", {}).update(checkedAt=nowiso, games=len(data["lineups"]),
                                                   invalid=sum(1 for d in data["lineups"] if d.get("invalid")),
-                                                  method="On-court five per play solved from ESPN play-by-play and matched to "
-                                                         "each player's official minutes and plus-minus (oncourt.py)",
+                                                  sources={"nbl": srcs.get("nbl", 0), "espn": srcs.get("espn", 0)},
+                                                  notes=lu_rep[:40],
+                                                  method="Who is on the floor: the NBL's own play-by-play (every substitution "
+                                                         "recorded) wherever it reproduces the official box score - every "
+                                                         "player's minutes and plus-minus (nbl_lineups.py); otherwise solved "
+                                                         "from ESPN play-by-play and matched to each player's official minutes "
+                                                         "and plus-minus (oncourt.py)",
                                                   fit={"teamGames": len(fits),
                                                        "minutesOver30s": sum(1 for f in fits if f.get("maxMinErr", 0) > 30),
                                                        "plusMinusOff": sum(1 for f in fits if f.get("maxPmErr", 0) > 0),
@@ -264,7 +279,7 @@ def main():
         json.dump(data[c], open(os.path.join(root, "data", c + ".json"), "w"), separators=(",", ":"), sort_keys=True)
     json.dump(meta, open(os.path.join(root, "data", "meta.json"), "w"), indent=1)
     print(json.dumps({"games": len(data["games"]), "held": held, "pending": pending, "warnings": warnings,
-                      "changes": changes}, indent=1))
+                      "changes": changes, "lineups": lu_rep}, indent=1))
     # Player cards: bios + NBA/NCAA history (bios.py; refreshes new players and a few stale ones per run).
     # A failure here never affects the game data written above.
     try:
