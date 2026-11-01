@@ -1,12 +1,16 @@
 {
  "status": {
-  "lastGameDate": "2026-10-31",
+  "lastGameDate": "2026-11-01",
   "source": "ESPN box scores and play-by-play, checked against the NBL's official box scores; full rebuild once a day",
-  "updatedAt": "2026-11-01T09:08:38+11:00",
-  "games": 49,
-  "changes": [],
+  "updatedAt": "2026-11-02T08:59:02+11:00",
+  "games": 51,
+  "changes": [
+   "added 2026-11-01 Brisbane Bullets 96 at Adelaide 36ers 89",
+   "added 2026-11-01 Tasmania JackJumpers 98 at South East Melbourne Phoenix 89",
+   "lineups: 1 game(s) updated"
+  ],
   "official": {
-   "games": 49,
+   "games": 51,
    "pending": 0,
    "names": {
     "4278777": "Shaun Bruce",
@@ -353,7 +357,7 @@
     "2026-10-21 Tasmania JackJumpers: official box has Ryley Haywood (00:21, 0 pts), ESPN does not",
     "2026-10-21 Tasmania JackJumpers: official box has Jed Richardson (00:21, 0 pts), ESPN does not"
    ],
-   "checkedAt": "2026-11-01T09:08:38+11:00"
+   "checkedAt": "2026-11-02T08:59:02+11:00"
   }
  },
  "shots_status": {
@@ -361,38 +365,39 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-11-01T09:08:38+11:00",
-  "games": 49,
+  "checkedAt": "2026-11-02T08:59:02+11:00",
+  "games": 51,
   "medianErr": 0.24,
-  "mismatches": 42
+  "mismatches": 44
  },
  "players_status": {
-  "checkedAt": "2026-11-01T09:08:38+11:00",
-  "games": 49,
+  "checkedAt": "2026-11-02T08:59:02+11:00",
+  "games": 51,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-11-01T09:22:16+11:00",
-  "games": 49,
+  "checkedAt": "2026-11-02T08:59:02+11:00",
+  "games": 51,
   "invalid": 0,
   "method": "Who is on the floor: the NBL's own play-by-play (every substitution recorded) wherever it reproduces the official box score - every player's minutes and plus-minus (nbl_lineups.py); otherwise solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
   "fit": {
-   "teamGames": 98,
-   "minutesOver30s": 0,
+   "teamGames": 102,
+   "minutesOver30s": 1,
    "plusMinusOff": 1,
    "actionsOffCourt": 0,
-   "unrecordedSwapsPerTeamGame": 0.3
+   "unrecordedSwapsPerTeamGame": 0.4
   },
   "sources": {
-   "nbl": 95,
-   "espn": 3
+   "nbl": 97,
+   "espn": 5
   },
   "notes": [
-   "lineups by team-game: espn 3, nbl 93, no official play-by-play 1",
+   "lineups by team-game: espn 5, nbl 97",
    "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)",
-   "2026-10-18 Illawarra Hawks at Melbourne United: the NBL's play-by-play came back empty this run - last run's lineups kept",
-   "2026-10-31 Illawarra Hawks at Perth Wildcats Perth Wildcats: NBL play-by-play not used (fga 81, official 79; tpa 31, official 30; oreb 13, official 11)",
-   "2026-10-31 Illawarra Hawks at Perth Wildcats Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 3 with 281s left; Illawarra Hawks: 4 on the floor in period 3 with 265s left; Illawarra Hawks: 4 on the floor in period 3 with 265s left)"
+   "2026-11-01 Brisbane Bullets at Adelaide 36ers Adelaide 36ers: NBL play-by-play not used (Adelaide 36ers: 6 on the floor in period 2 with 144s left; Adelaide 36ers: 6 on the floor in period 2 with 128s left; Adelaide 36ers: 6 on the floor in period 2 with 128s left)",
+   "2026-11-01 Brisbane Bullets at Adelaide 36ers Brisbane Bullets: NBL play-by-play not used (fga 75, official 74; dreb 32, official 31; Mawot Mag +4, official +5)",
+   "2026-11-01 Tasmania JackJumpers at South East Melbourne Phoenix South East Melbourne Phoenix: NBL play-by-play not used (dreb 25, official 24; Nathan Sobey 1600s on the floor, official 1762s; Angus Glover 1464s on the floor, official 1803s)",
+   "2026-11-01 Tasmania JackJumpers at South East Melbourne Phoenix Tasmania JackJumpers: NBL play-by-play not used (fga 66, official 65; Nick Marshall 1663s on the floor, official 2142s; Nick Marshall +0, official +2)"
   ]
  },
  "pshots_status": {
@@ -401,14 +406,14 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-11-01T09:08:38+11:00",
+  "checkedAt": "2026-11-02T08:59:02+11:00",
   "frame": "x across court 0-50 ft (basket at 25), y = feet from baseline/basket toward halfway (0-47); both teams share one half-court frame, y>47 mirrored as safeguard",
-  "games": 49,
+  "games": 51,
   "notes": "4548 FGAs stored, 0 without coordinates, 5 with no shooter id (key \"0\"). Zones/attribution identical to meta/shotscript. 8 team-games not ok: games 401875244, 401875247, 401875260, 401875279 have incomplete ESPN play-by-play (both teams). Elsewhere per-player FGA may differ by 1-2 from box due to ESPN PBP attribution noise."
  },
  "events_status": {
-  "checkedAt": "2026-11-01T09:08:38+11:00",
-  "games": 49,
+  "checkedAt": "2026-11-02T08:59:02+11:00",
+  "games": 51,
   "badTeamGames": 11,
   "notes": "Team-games failing reconciliation: 401875244 Brisbane Bullets, 401875244 New Zealand Breakers, 401875247 Illawarra Hawks, 401875247 Tasmania JackJumpers, 401875260 Melbourne United, 401875260 Cairns Taipans, 401875269 New Zealand Breakers, 401875271 Sydney Kings, 401875279 Brisbane Bullets, 401875293 New Zealand Breakers, 401875293 Adelaide 36ers"
  }
