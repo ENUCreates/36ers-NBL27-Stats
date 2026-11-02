@@ -9,7 +9,8 @@ GitHub release files, refreshed about once a week:
 This module downloads them and provides:
   pair()       our ESPN player ids <-> the official players (same NBL27 game and team; same name, or a close spelling
                with an identical scoring line)
-  compare()    our ESPN-built NBL27 box scores vs the official ones -> corrections for a few counting fields
+  compare()    our ESPN-built NBL27 box scores vs the official ones -> corrections for a few counting fields, and the
+               official line of any player who was on the floor but isn't in our box score
   history()    every player's earlier NBL regular seasons (per-game averages from the official game lines)
   bios()       official profile fields
 Needs pyreadr (pip install pyreadr).
@@ -381,7 +382,8 @@ def compare(games, players, off):
     games/players: this site's games.json / players.json lists."""
     idx, lines, trows = nbl27_index(off), _lines(off), _team_rows(off)
     P = {p["espnId"]: p for p in players}
-    res = {"pairs": {}, "fix_players": [], "fix_teams": [], "notes": [], "checked": [], "missing": []}
+    res = {"pairs": {}, "fix_players": [], "fix_teams": [], "add_players": [], "notes": [], "checked": [], "missing": []}
+    cand = []
     for g in games:
         k = (g["date"], frozenset((g["home"]["team"], g["away"]["team"])))
         mid = idx.get(k)
@@ -412,13 +414,12 @@ def compare(games, players, off):
                     if f in FIX and x.get(f, 0) != iv(r[c]):
                         res["fix_players"].append({"eid": eid, "team": team, "id": x["id"], "name": x["name"], "field": f,
                                                    "ours": x.get(f, 0), "official": iv(r[c])})
+            extra = [x for x in left if x.get("min", 0) > 0]
             for r in unpaired:
                 if secs(r["minutes"]) > 0:
-                    res["notes"].append(f"{g['date']} {team}: official box has {sv(r['first_name'])} {sv(r['family_name'])} "
-                                        f"({sv(r['minutes'])}, {iv(r['points'])} pts), ESPN does not")
-            for x in left:
-                if x.get("min", 0) > 0:
-                    res["notes"].append(f"{g['date']} {team}: ESPN has {x['name']} ({x.get('min')} min), the official box does not")
+                    cand.append((g, eid, team, r, bool(extra)))      # on the floor, but not in our box score: see below
+            for x in extra:
+                res["notes"].append(f"{g['date']} {team}: ESPN has {x['name']} ({x.get('min')} min), the official box does not")
             # team totals: only from an internally consistent official team row with the same final score
             tr = trows.get((mid, team))
             if tr is None:
@@ -439,6 +440,38 @@ def compare(games, players, off):
             for f in FIX:
                 if T.get(f) != off_t[f]:
                     res["fix_teams"].append({"eid": eid, "team": team, "field": f, "ours": T.get(f), "official": off_t[f]})
+    # A player the official box score has on the floor (minutes above 0:00) who isn't in our box score - ESPN shows a
+    # few seconds as "-" minutes and update.py keeps only players with minutes - gets his official line, so he counts
+    # as a game played and his +/- counts. His ESPN id comes from his other games ("nbl-<official id>" if ESPN has never
+    # listed him). Added only when it can't double-count: no unexplained ESPN line in that team-game, his id not
+    # already there, and the team's player lines still add up to its box score (points and shooting).
+    espn_of = {v["pid"]: k for k, v in res["pairs"].items() if v.get("pid")}
+    pos_of = {}
+    for p in sorted(players, key=lambda d: d.get("date") or ""):
+        for L in p.get("teams", {}).values():
+            for x in L:
+                if x.get("pos") and x["pos"] != "NA":
+                    pos_of[x["id"]] = x["pos"]
+    for g, eid, team, r, extra in cand:
+        nm, pid = f"{sv(r['first_name'])} {sv(r['family_name'])}".strip(), sv(r["player_id"])
+        i = espn_of.get(pid) or f"nbl-{pid}"
+        L = P[eid]["teams"].get(team, [])
+        T = g["home"] if g["home"]["team"] == team else g["away"]
+        # official fields as they are: the official personal-foul count leaves out offensive fouls (see FIX), but it's
+        # the only count there is for a player ESPN's box score leaves out
+        row = {"id": i, "name": nm, "pos": pos_of.get(i, "NA"), "starter": bool(iv(r.get("starter"))),
+               "min": round(secs(r["minutes"]) / 60, 4), **{f: iv(r[c]) for f, c in STAT}, "pm": iv(r.get("plus_minus")),
+               "src": "nbl"}
+        why = ("ESPN has a line in that team-game the official box doesn't" if extra
+               else "his ESPN id is already in that box score" if any(x["id"] == i for x in L)
+               else "the team's player lines wouldn't add up to its box score"
+               if any(sum(x.get(f, 0) for x in L) + row[f] != T.get(f) for f in SCORING) else "")
+        head = f"{g['date']} {team}: official box has {nm} ({sv(r['minutes'])}, {iv(r['points'])} pts), ESPN's box score does not"
+        if why:
+            res["notes"].append(f"{head} - not added ({why})")
+            continue
+        res["add_players"].append({"eid": eid, "date": g["date"], "team": team, "official": sv(r["minutes"]), "row": row})
+        res["notes"].append(f"{head} - added from the official box score")
     return res
 
 
@@ -457,6 +490,13 @@ def apply(games, players, cmp):
         T = g["home"] if g["home"]["team"] == c["team"] else g["away"]
         T[c["field"]] = c["official"]
         out.append(f"{g['date']} {c['team']} team {c['field']} {c['ours']}->{c['official']}")
+    for c in cmp.get("add_players") or []:
+        L, r = P[c["eid"]]["teams"].setdefault(c["team"], []), c["row"]
+        if any(x["id"] == r["id"] for x in L):
+            continue
+        L.append(dict(r))
+        out.append(f"{c['date']} {r['name']} ({c['team']}) added from the official box score: {c['official']}, {r['pts']} pts, "
+                   f"{r['pm']:+d} (ESPN's box score leaves him out)")
     return out
 
 

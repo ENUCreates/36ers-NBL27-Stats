@@ -160,10 +160,12 @@ def main():
         print("ABORT: rebuild lost too many games; nothing written. Held:", held)
         sys.exit(2)
 
-    # Official NBL box scores (official.py, via nblR on GitHub, about a week behind): the official spelling of every
-    # player's name, and a few counting fields where ESPN's box score differs from the league's (assists, turnovers,
-    # steals, blocks, rebounds and team rebound splits). Scoring, minutes and +/- are only compared, never changed.
-    # If the official files can't be read, the corrections and spellings from the previous run are reused.
+    # Official NBL box scores (official.py: the NBL's own API, same day; nblR on GitHub for earlier seasons): the
+    # official spelling of every player's name, and a few counting fields where ESPN's box score differs from the
+    # league's (assists, turnovers, steals, blocks, rebounds and team rebound splits). Scoring, minutes and +/- are only
+    # compared, never changed. A player the official box score has on the floor but ESPN's leaves out (a few seconds
+    # show as "-" minutes there) is added with his official line. If the official data can't be read, the
+    # corrections, added lines and spellings from the previous run are reused.
     prev_off = (meta.get("status") or {}).get("official") or {}
     off_status = {}
     import nbl_lineups as NL
@@ -182,12 +184,13 @@ def main():
         for i, n in (prev_off.get("names") or {}).items():
             names.setdefault(i, n)          # keep spellings learned from games the official files no longer list
         off_status = {"games": len(cmp["checked"]), "pending": len(cmp["missing"]), "names": names,
-                      "fixes": cmp["fix_players"] + cmp["fix_teams"], "applied": fixes, "notes": cmp["notes"]}
+                      "fixes": cmp["fix_players"] + cmp["fix_teams"], "added": cmp["add_players"], "applied": fixes,
+                      "notes": cmp["notes"]}
     except Exception as ex:
         warnings.append(f"official NBL box scores unavailable ({ex}); previous official corrections reused")
         NL.keep_previous(new["lineups"], prev_by["lineups"])
         lu_rep = ["official data unavailable: last run's NBL play-by-play lineups kept"]
-        off_status = {k: prev_off.get(k) for k in ("games", "pending", "names", "fixes", "applied", "notes")}
+        off_status = {k: prev_off.get(k) for k in ("games", "pending", "names", "fixes", "added", "applied", "notes")}
         off_status["error"] = str(ex)[:300]
         G_ = {g["id"].replace("espn-", ""): g for g in new["games"].values()}
         for c in prev_off.get("fixes") or []:      # re-apply only where ESPN still has the value we corrected
@@ -202,6 +205,14 @@ def main():
                 T = g["home"] if g["home"]["team"] == c["team"] else g["away"]
                 if T.get(c["field"]) == c["ours"]:
                     T[c["field"]] = c["official"]
+        for c in prev_off.get("added") or []:      # re-add only where ESPN's box score still leaves the player out
+            g, r = G_.get(c["eid"]), c["row"]
+            L = ((new["players"].get(c["eid"]) or {}).get("teams") or {}).get(c["team"])
+            if not g or L is None or any(x["id"] == r["id"] for x in L):
+                continue
+            T = g["home"] if g["home"]["team"] == c["team"] else g["away"]
+            if all(sum(x.get(f, 0) for x in L) + r.get(f, 0) == T.get(f) for f in ("pts", "fgm", "fga", "tpm", "tpa", "ftm", "fta")):
+                L.append(dict(r))
     if off_status.get("names"):
         O_names = off_status["names"]
         import official as O
@@ -227,7 +238,12 @@ def main():
         n = sum(1 for i, d in new[c].items() if i in prev_by[c] and json.dumps(d.get("teams"), sort_keys=True)
                 != json.dumps(prev_by[c][i].get("teams"), sort_keys=True))
         if n:
-            changes.append(f"{c}: {n} game(s) updated" + ("" if c == "lineups" else " from ESPN"))
+            changes.append(f"{c}: {n} game(s) updated" + ("" if c in ("lineups", "players") else " from ESPN"))
+    for c in off_status.get("added") or []:
+        pv = ((prev_by["players"].get(c["eid"]) or {}).get("teams") or {}).get(c["team"], [])
+        if not any(x["id"] == c["row"]["id"] for x in pv):
+            changes.append(f"added from the official box score: {c['date']} {c['row']['name']} ({c['team']}, {c['official']}) - "
+                           f"ESPN's box score leaves him out")
 
     data = {"games": sorted(new["games"].values(), key=lambda g: (g["date"], g["id"]))}
     for c in COLS[1:]:
