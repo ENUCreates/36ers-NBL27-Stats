@@ -11,23 +11,49 @@
 <style>
 /* Layout: scoreboard-style header strip, then two views (league table / team sheet); tables scroll inside their own frame on phones. */
 :root{
-  /* Adelaide 36ers: navy ground, red accent, white type. Single committed dark look. */
+  /* Adelaide 36ers: navy ground, red accent, white type. The header switch turns on the white look below. */
   --bg:#0a1b38; --panel:#10264a; --ink:#f3f5fa; --muted:#a8b5cc; --line:#223d68; --soft:#18315a;
   --accent:#e4002b; --accent-ink:#ffffff; --accent-text:#ff6b7d; --navy-deep:#061227;
   --good:#5fd394; --good-bg:#15413a; --bad:#ff8a95; --bad-bg:#4b1c30;
+  --miss:#ff6b7d; --pill-bg:rgba(6,18,39,.55);
   --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   color-scheme:dark;
+}
+/* White background (switch in the header; data-bg="white" on <html>, kept in this browser): same layout, white
+   ground, navy type, 36ers red. Its own attribute, so the host app's light/dark theme never switches it. */
+:root[data-bg="white"]{
+  --bg:#ffffff; --panel:#ffffff; --ink:#0a1b38; --muted:#4d5b73; --line:#d5dce7; --soft:#eef2f8;
+  --accent:#e4002b; --accent-ink:#ffffff; --accent-text:#c8102e; --navy-deep:#f2f5fa;
+  --good:#12784a; --good-bg:#e2f4e9; --bad:#c3283a; --bad-bg:#fce6e9;
+  --miss:#a8102a; --pill-bg:rgba(10,27,56,.06);
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
 .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 body{background:linear-gradient(180deg,var(--navy-deep) 0,var(--bg) 340px) var(--bg)}
+:root[data-bg="white"] body,:root[data-bg="white"] .mast{background:#fff}
+:root[data-bg="white"] img.logo{box-shadow:0 0 0 1px var(--line)}
+:root[data-bg="white"] .mast::after{opacity:.07}
+/* stat grids: cell lines drawn round each cell, so a short last row ends in white, not a grey block */
+:root[data-bg="white"] .sgrid{background:var(--panel)}
+:root[data-bg="white"] .sgrid>div{box-shadow:0 0 0 1px var(--line)}
+:root[data-bg="white"] .av{box-shadow:0 0 0 1px rgba(10,27,56,.16)}
+:root[data-bg="white"] .av.lg{box-shadow:0 0 0 2px rgba(10,27,56,.16)}
+:root[data-bg="white"] svg.radar .ring.mid{stroke:#9fb0c8}
+:root[data-bg="white"] svg.radar .area{fill:rgba(200,16,46,.10);stroke:var(--accent-text)}
+:root[data-bg="white"] svg.radar .dot{fill:var(--accent-text)}
+/* card headers: a light tint of the team colour, so the navy name stays readable */
+:root[data-bg="white"] .pc-head{background:linear-gradient(120deg,color-mix(in srgb,var(--tc,#555) 30%,#fff) 0%,rgba(255,255,255,0) 72%)}
 .mast{position:relative;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));margin-top:-20px;padding:22px max(16px,env(safe-area-inset-left,0px)) 20px;border-bottom:4px solid var(--accent);background:var(--navy-deep);overflow:hidden}
 .mast::after{content:"";position:absolute;right:-60px;top:-40px;width:260px;height:260px;border:28px solid var(--accent);border-radius:50%;opacity:.12;pointer-events:none}
 .mast-in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;position:relative;z-index:1}
+/* right of the title: the update status, the White background switch under it (left-aligned once it wraps below the title) */
+.mast-r{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+@media (max-width:1240px){.mast-r{align-items:flex-start}}
 .brand{display:flex;align-items:center;gap:16px;min-width:0}
 .brand img{height:84px;width:auto;flex:none}
 @media (max-width:600px){.brand{gap:12px}.brand img{height:52px}}
@@ -258,10 +284,10 @@ table.net th.tm{width:170px;text-align:left}table.net th.sep{width:64px}
 table.net thead th:not(.tm):not(.sep){vertical-align:top}
 table.net td.pl{text-align:left}
 .pcard{overflow:hidden}
-.pc-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;padding:20px;align-items:start;border-bottom:1px solid var(--line)}
+.pc-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;padding:20px;align-items:start;border-bottom:1px solid var(--line);background:linear-gradient(120deg,var(--tc,#555) 0%,rgba(0,0,0,0) 62%)}
 .pc-name{font:700 clamp(30px,4.6vw,46px)/1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:2px 0 0}
 .pc-sub{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--ink);font:600 14px var(--body);margin-top:10px}
-.pill{font:600 12px/1 var(--mono);padding:4px 8px;border-radius:999px;background:rgba(6,18,39,.55);border:1px solid var(--line);color:var(--ink)}
+.pill{font:600 12px/1 var(--mono);padding:4px 8px;border-radius:999px;background:var(--pill-bg);border:1px solid var(--line);color:var(--ink)}
 .bio{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px 20px;margin-top:16px}
 .bio .k{font:600 11px/1 var(--display);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
 .bio .v{font:500 15px/1.3 var(--body);margin-top:4px}
@@ -344,6 +370,7 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
 @media (prefers-reduced-motion:no-preference){.bar .fill{transition:width .3s,left .3s}}
 </style>
 
+<script>try{if(localStorage.getItem("nbl27-bg")==="white")document.documentElement.setAttribute("data-bg","white")}catch(e){}</script>
 <div class="wrap">
   <header class="mast"><div class="mast-in">
     <div class="brand">
@@ -352,7 +379,10 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
         <h1><span class="club">Adelaide 36ers</span> NBL27 <span>Advanced Data</span></h1>
       </div>
     </div>
-    <div class="status" id="status"><span>Loading games…</span></div>
+    <div class="mast-r">
+      <div class="status" id="status"><span>Loading games…</span></div>
+      <div class="swl"><span class="swk" id="bgsw-l">White background</span><button class="sw" id="bgsw" role="switch" aria-checked="false" aria-labelledby="bgsw-l" title="Switch the page background between navy and white"><i></i></button></div>
+    </div>
   </div></header>
 
   <nav class="tabs" role="tablist">
@@ -850,7 +880,7 @@ function shotSection(name){
   // the zone picture above stands in until the player shot log has loaded
   const opp=shotMode==="opp",sc=PSHOTS.length?shotChartParts(name,null,opp):null;
   const court=sc?`${sc.svg}
-        <div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="#ff6b7d" stroke-width="2"/></svg> Missed</span><span>${sc.games} games · ${sc.fga} ${opp?"opp ":""}FGA · ${pct(sc.fga?sc.fgm/sc.fga:null)} FG% · ${pct(sc.efg)} eFG%</span></div>`:svg;
+        <div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84" stroke="#062012" stroke-width=".8"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="var(--miss)" stroke-width="2"/></svg> Missed</span><span>${sc.games} games · ${sc.fga} ${opp?"opp ":""}FGA · ${pct(sc.fga?sc.fgm/sc.fga:null)} FG% · ${pct(sc.efg)} eFG%</span></div>`:svg;
   const intro=sc?(opp?"Every shot opponents have taken against them. Each zone: opponent FG%, makes/attempts · share of FGA. Shading: opponent FG% vs League Ave (green = held below).":"Every shot they've taken. Each zone: FG%, makes/attempts · share of FGA. Shading: FG% vs League Ave (green better).")
     :(opp?"Points per game and FG% the defense allows in each zone. Shading: opponent FG% vs League Ave (green = holds them below).":"Points per game and FG% in each zone. Shading: share of points from the zone vs League Ave.");
   return `<div class="panel card"><div class="card-head"><h3>Shot locations</h3><div class="seg" role="group" aria-label="Whose shots"><button class="chip" data-sm="own" aria-pressed="${!opp}">Team</button><button class="chip" data-sm="opp" aria-pressed="${opp}">Opponents</button></div></div>
@@ -1067,6 +1097,11 @@ document.getElementById("pv-adv").onclick=()=>{pview="adv";try{localStorage.setI
 document.getElementById("pv-box").onclick=()=>{pview="box";try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()};
 document.getElementById("pmin").onchange=e=>{pminVal=+e.target.value;try{localStorage.setItem("nbl27-pmin",pminVal)}catch(e){}renderPlayers()};
 document.getElementById("pcolbtn").onclick=()=>{pOpen=!pOpen;renderPlayers()};
+// White background switch (header): the attribute is set before the page draws (top of the page); every colour
+// comes from the CSS variables, so nothing needs redrawing
+{const root=document.documentElement,sw=document.getElementById("bgsw"),sync=()=>sw.setAttribute("aria-checked",root.getAttribute("data-bg")==="white");
+  sync();sw.onclick=()=>{const w=root.getAttribute("data-bg")!=="white";if(w)root.setAttribute("data-bg","white");else root.removeAttribute("data-bg");
+    sync();try{localStorage.setItem("nbl27-bg",w?"white":"navy")}catch(e){}}}
 document.getElementById("pphoto").onclick=()=>{pphotos=!pphotos;try{localStorage.setItem("nbl27-pphotos",pphotos?"1":"0")}catch(e){}renderPlayers()};
 
 let LINEDOCS=[],LSTATUS=null,lsize=5,lminVal=10,lsort={k:"min",d:-1},lphotos=true,lhide=new Set(),lcolsOpen=false;
@@ -1311,7 +1346,7 @@ function shotChartParts(name,sel,opp,keep){
   const arc=`M${cx*S},0 L${cx*S},${9.81*S} A${R*S},${R*S} 0 0 0 ${(W-cx)*S},${9.81*S} L${(W-cx)*S},0 Z`;
   const ra=`M${(bx-4.1)*S},${(by-1.3)*S} L${(bx-4.1)*S},${by*S} A${4.1*S},${4.1*S} 0 0 0 ${(bx+4.1)*S},${by*S} L${(bx+4.1)*S},${(by-1.3)*S} Z`;
   const lab=(x,y,k,anchor="middle",title="")=>`<g transform="translate(${x*S},${y*S})">${title?`<text text-anchor="${anchor}" class="zq" y="-15">${title}</text>`:""}<text text-anchor="${anchor}" class="zp" y="1">${Z[k].a?pct(zfg(k))+"%":"–"}</text><text text-anchor="${anchor}" class="zq" y="15">${Z[k].m}/${Z[k].a} · ${share(k)}%</text></g>`;
-  const dots=shots.map(s=>{const p=toXY(s);if(!p)return "";return s[2]?`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4.2" fill="#3ddc84" fill-opacity=".85" stroke="#062012" stroke-width=".8"/>`:`<path d="M${(p[0]-3.4).toFixed(1)},${(p[1]-3.4).toFixed(1)}l6.8,6.8m0,-6.8l-6.8,6.8" stroke="#ff6b7d" stroke-width="1.7" stroke-opacity=".8"/>`}).join("");
+  const dots=shots.map(s=>{const p=toXY(s);if(!p)return "";return s[2]?`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4.2" fill="#3ddc84" fill-opacity=".85" stroke="#062012" stroke-width=".8"/>`:`<path d="M${(p[0]-3.4).toFixed(1)},${(p[1]-3.4).toFixed(1)}l6.8,6.8m0,-6.8l-6.8,6.8" stroke="var(--miss)" stroke-width="1.7" stroke-opacity=".85"/>`}).join("");
   const xl=(bx-LANE)*S,xr=(bx+LANE)*S;
   const svg=`<svg viewBox="-2 -2 ${W*S+4} ${H*S+4}" width="100%" role="img" aria-label="${opp?"Opponent shot chart":"Shot chart"}">
     <rect x="0" y="0" width="${W*S}" height="${H*S}" fill="var(--soft)"/>
@@ -1356,7 +1391,7 @@ function renderShotChart(keep){
       <span class="rec">${games} games · ${fga} FGA · ${pct(fga?fgm/fga:null)} FG% · ${pct(efg)} eFG%</span></div>
     <div class="sc-wrap">
       <div style="min-width:0">${svg}
-        <div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="#ff6b7d" stroke-width="2"/></svg> Missed</span><span>Each zone: FG%, makes/attempts · share of FGA. Shading: FG% vs league (green better)</span></div>
+        <div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84" stroke="#062012" stroke-width=".8"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="var(--miss)" stroke-width="2"/></svg> Missed</span><span>Each zone: FG%, makes/attempts · share of FGA. Shading: FG% vs league (green better)</span></div>
       </div>
       <div style="min-width:0">
         <h3 style="margin:0 0 8px">${sel?ppname(sel,tally[sel].n,name):who}</h3>
@@ -1627,7 +1662,7 @@ function renderAssists(el,name,keep){
   const mx=Math.max(1,...Object.values(pair));
   const net=top.length<2?"":`<div class="scroll"><table class="net" style="min-width:${234+84*top.length}px"><thead><tr><th class="tm">Passer ↓ · Scorer →</th>${top.map(s=>`<th title="${s.name}">${ppname(s.id,s.name,name,shortName(s.name))}</th>`).join("")}<th class="sep">Total</th></tr></thead><tbody>
     ${top.map(a=>`<tr><td class="tm pl">${ppname(a.id,a.name,name,shortName(a.name))}</td>${top.map(s=>{const n=pair[a.id+"|"+s.id]||0;if(a.id===s.id)return `<td class="ma">·</td>`;
-      return `<td style="${n?`background:rgba(228,0,43,${(0.12+0.68*n/mx).toFixed(2)});color:#fff`:''}" title="${a.name} → ${s.name}: ${n}">${n||""}</td>`}).join("")}<td class="sep"><b>${a.ast}</b></td></tr>`).join("")}</tbody></table></div>`;
+      return `<td style="${n?`background:rgba(228,0,43,${(0.12+0.68*n/mx).toFixed(2)});color:var(--ink)`:''}" title="${a.name} → ${s.name}: ${n}">${n||""}</td>`}).join("")}<td class="sep"><b>${a.ast}</b></td></tr>`).join("")}</tbody></table></div>`;
   // top connections: rank, passer (photo above name), arrow, scorer, assists - fixed columns so every row lines up
   const tile=(id,cls)=>`<span class="lp${cls||""}" title="${P[id]?.name||""}">${pphotos?avatar({id,name:P[id]?.name},name,"sm"):""}<span class="lpn">${shortName(P[id]?.name)}</span></span>`;
   const conns=Object.entries(pair).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,n],i)=>{const[a,s]=k.split("|");
@@ -1891,7 +1926,7 @@ function playerCard(team,pid){
     <p class="note" style="text-transform:uppercase;letter-spacing:.03em">${cx.fgm} made FG · ${cx.asd} assisted (${pct(dv(cx.asd,cx.fgm))}%) · ${cx.ast} assists → ${cx.apts} pts created · ${cx.games} games</p>`:`<p class="note">Play-by-play data is loading.</p>`;
   const srcBits=[];if(b.src&&Object.keys(b.src).length){const by={};Object.entries(b.src).forEach(([k,v])=>{const l=SRCLAB[k];if(l)(by[v]=by[v]||new Set()).add(l)});Object.entries(by).forEach(([v,ls])=>srcBits.push(`${SRCNAME[v]||v} (${[...ls].join(", ")})`))}
   return `<article class="panel pcard">
-    <div class="pc-head" style="background:linear-gradient(120deg,${col} 0%,rgba(0,0,0,0) 62%)">
+    <div class="pc-head" style="--tc:${col}">
       ${avatar({...b,id:pid,name:nm},team,true)}
       <div style="min-width:0">
         <h2 class="pc-name">${nm}</h2>
@@ -1909,7 +1944,7 @@ function playerCard(team,pid){
   <div class="panel card" style="margin-top:18px"><h3>Season averages</h3>${histTable}
     <p class="note" style="text-transform:uppercase;letter-spacing:.03em">${histNote}</p></div>
   <div class="panel card" style="margin-top:18px"><div class="card-head"><h3>Shot chart · NBL27</h3>${sc?`<span class="rec">${sc.fga} FGA · ${pct(sc.fga?sc.fgm/sc.fga:null)} FG% · ${pct(sc.efg)} eFG%</span>`:""}</div>
-    ${sc?`<div class="sc-wrap"><div style="min-width:0">${sc.svg}<div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="#ff6b7d" stroke-width="2"/></svg> Missed</span><span>Zone: FG%, makes/attempts · share of FGA. Shading: FG% vs League Ave</span></div></div>
+    ${sc?`<div class="sc-wrap"><div style="min-width:0">${sc.svg}<div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84" stroke="#062012" stroke-width=".8"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="var(--miss)" stroke-width="2"/></svg> Missed</span><span>Zone: FG%, makes/attempts · share of FGA. Shading: FG% vs League Ave</span></div></div>
       <div style="min-width:0">${sc.table}${sc.bad.length?`<p class="note" style="margin-top:10px;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN shot log): ${sc.bad.join(", ")}</p>`:""}</div></div>`:`<p class="note">Shot locations are loading.</p>`}</div>
   <div class="panel card" style="margin-top:18px"><h3>NBL27 connections</h3>${cxHTML}</div>
   <p class="note" style="margin-top:10px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.03em">Bio sources: ${srcBits.join(" · ")||"none yet"}${b.checked?` · checked ${fmtDate(b.checked)}`:""} · NBL27 stats: ESPN box scores and play-by-play, checked against the NBL's official box scores</p>`;
@@ -2048,7 +2083,7 @@ function coachCard(c){
     field("Seasons in the drop-down",past.length?`${past.length} <span class="mu">· ${[[past.filter(o=>!o.league).length,"NBL since 2015-16"],[past.filter(o=>o.league).length,"overseas"]].filter(x=>x[0]).map(x=>x.join(" ")).join(" · ")}</span>`:null)].join("");
   const note=c.note?`<p class="hc-note">${c.note.charAt(0).toUpperCase()+c.note.slice(1)}.</p>`:"";
   return `<article class="panel pcard">
-    <div class="pc-head" style="background:linear-gradient(120deg,${col} 0%,rgba(0,0,0,0) 62%)">
+    <div class="pc-head" style="--tc:${col}">
       ${avatar({name:c.name},team,true)}
       <div style="min-width:0"><h2 class="pc-name">${c.name}</h2>
         <div class="pc-sub">${code(team)}<span>${disp(team)}</span><span class="pill">Head coach</span></div>
