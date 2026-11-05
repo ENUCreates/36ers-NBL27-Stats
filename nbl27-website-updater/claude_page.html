@@ -514,7 +514,7 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
       <span>Clutch = last 5:00 of the 4th quarter or OT with the margin 5 or fewer.</span>
       <span>On/Off = team ratings per 100 possessions with a player on / off the floor.</span>
     </div>
-    <span id="foot-note">Source: ESPN API. Rebuilt from ESPN and verified once a day (8:58am Sydney).</span>
+    <span id="foot-note">Sources: ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play. Rebuilt and checked once a day (8:58am Sydney).</span>
   </footer>
 </div>
 
@@ -546,7 +546,7 @@ const ZONES=[["ra","Restricted area",2],["paint","Paint (non-RA)",2],["mid","Mid
 function computeShots(keep){
   SZ={};const lg={g:0,own:{},opp:{}};
   const z0=()=>Object.fromEntries(ZONES.map(([k])=>[k,{m:0,a:0}]).concat([["unk",{m:0,a:0}]]));
-  // keep only games whose shot log matches the box score (ESPN play-by-play sometimes drops plays)
+  // keep only games whose shot log matches the box score (a play-by-play can miss plays)
   SHOTOK=0;SHOTBAD=[];
   const usable=SHOTS.filter(d=>{const names=Object.keys(d.teams||{});if(names.length!==2||!d.date||d.date<SEASON_START)return false;
     const g=GAMES.find(x=>x.date===d.date&&names.includes(x.home.team)&&names.includes(x.away.team));
@@ -879,7 +879,7 @@ function shotSection(name){
     :(opp?"Points per game and FG% the defense allows in each zone. Shading: opponent FG% vs League Ave (green = holds them below).":"Points per game and FG% in each zone. Shading: share of points from the zone vs League Ave.");
   return `<div class="panel card"><div class="card-head"><h3>Shot locations</h3><div class="seg" role="group" aria-label="Whose shots"><button class="chip" data-sm="own" aria-pressed="${!opp}">Team</button><button class="chip" data-sm="opp" aria-pressed="${opp}">Opponents</button></div></div>
     <p class="note">${intro}</p>
-    ${SHOTBAD.length?`<p class="note" style="text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN shot log): ${SHOTBAD.join(", ")}</p>`:""}
+    ${SHOTBAD.length?`<p class="note" style="text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete shot log): ${SHOTBAD.join(", ")}</p>`:""}
     <div class="grid2" style="align-items:start">
       <div style="min-width:0">${court}</div>
       <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
@@ -942,7 +942,7 @@ function renderStatus(){
   const notes=[...new Set(GAMES.filter(g=>g.note).map(g=>g.note))];
   const O=META?.official,fx=(O?.applied||[]).length;
   const offTxt=O&&O.games!=null?` Checked against the NBL's official box scores: ${O.games} game${O.games===1?"":"s"}${O.pending?` (${O.pending} not published by the NBL yet)`:""}, ${fx?`${fx} figure${fx===1?"":"s"} corrected to the official value (assists, rebounds and similar; points, shooting, minutes and +/- already match)`:"no differences"}.`:"";
-  document.getElementById("foot-note").textContent="Source: ESPN API, rebuilt and verified once a day (8:58am Sydney)."+offTxt+(notes.length?" "+notes.join(" "):"");
+  document.getElementById("foot-note").textContent="Sources: ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where the NBL's doesn't add up). Rebuilt and checked once a day (8:58am Sydney)."+offTxt+(notes.length?" "+notes.join(" "):"");
 }
 
 function recalc(){FDATA=null;const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();computeExtras();renderStatus();renderLeague();renderTeam();renderPlayers();renderLineups();renderRotations();if(!document.getElementById("view-cards").hidden)renderCards();if(!document.getElementById("view-coaches").hidden)renderCoaches();if(!document.getElementById("view-h2h").hidden)renderH2H()}
@@ -1395,14 +1395,14 @@ function renderShotChart(keep){
         <div class="scroll"><table><thead><tr><th class="tm">Zone</th><th>FGM/FGA</th><th>FG%</th><th>% of FGA</th><th>League Ave FG%</th><th>League Ave % FGA</th><th>vs League Ave</th></tr></thead><tbody>${rows}
           <tr class="avg"><td class="tm">All field goals</td><td>${fgm}/${fga}</td><td>${pct(fga?fgm/fga:null)}</td><td>100.0</td><td>${pct(lfga?L.reduce((t,z)=>t+z.m,0)/lfga:null)}</td><td>100.0</td><td></td></tr></tbody></table></div>
         ${keep?`<p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0;text-transform:uppercase;letter-spacing:.03em">League Ave columns: every team, whole season</p>`:""}
-        ${bad.length?`<p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN shot log): ${bad.join(", ")}</p>`:""}
+        ${bad.length?`<p class="note" style="color:var(--muted);font-size:12px;margin:10px 0 0;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete shot log): ${bad.join(", ")}</p>`:""}
       </div>
     </div></div>`;
   document.getElementById("sc-player").onchange=e=>{psel[name]=e.target.value;renderShotChart(keep)};
 }
 document.getElementById("pv-shot").onclick=()=>{pview="shot";try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()};
 // ===== Extras: shot quality, situational scoring, clutch, on/off, assists, rotations =====
-// Built from ESPN play-by-play by the nightly "events" step; a team's game counts only when it reconciles with the box score.
+// Built from the NBL's own play-by-play by the daily update (ESPN's where the NBL's doesn't add up); a team's game counts only when it reconciles with the box score.
 let EVENTS=[],ESTATUS=null,lview="main",shotMode="own",rsort={k:"mpg",d:-1};
 try{const v=localStorage.getItem("nbl27-lview");if(v)lview=v}catch(e){}
 const gtag=d=>d.date.slice(8)+"/"+d.date.slice(5,7)+" "+Object.keys(d.teams).map(n=>TEAMS[n]?.c||n).join("–");
@@ -1519,7 +1519,7 @@ function renderLviews(){
     const v=LVIEWS[lview];sortKey=v.def;sortDir=(v.cols.find(c=>c.k===v.def)||{}).better===-1?1:-1;renderLeague()});
   const n=document.getElementById("lnote");if(n){const t=LNOTES[lview]||[];n.innerHTML=t.map(x=>`<span>${x}</span>`).join("");n.hidden=!t.length}
   const bad=extrasBad(lview,gfKeep());const b=document.getElementById("lbad");
-  if(b){b.textContent=bad.length?`Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}`:"";b.hidden=!bad.length}
+  if(b){b.textContent=bad.length?`Games left out (incomplete play-by-play): ${bad.join(", ")}`:"";b.hidden=!bad.length}
 }
 function extrasBad(v,keep){
   const inF=d=>!keep||Object.keys(d.teams||{}).some(n=>keep(n,d.date));
@@ -1536,7 +1536,7 @@ function statTable(r,groups){
 function extrasCards(name){
   const r=ROWS.find(x=>x.name===name);if(!r)return "";
   const sqBad=extrasBad("sq"),evBad=extrasBad("sit");
-  const badNote=(b,what)=>b.length?`<p class="note" style="text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN ${what}): ${b.join(", ")}</p>`:"";
+  const badNote=(b,what)=>b.length?`<p class="note" style="text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ${what}): ${b.join(", ")}</p>`:"";
   const sq=r.xefg==null?`<p class="note">Shot locations are loading.</p>`:statTable(r,[
     ["Offense",[["sefg","eFG%",pct],["xefg","xeFG% (shot quality)",pct],["smk","Shot-making",ppt],["rim","Rim share of FGA",pct],["pmid","Mid-range share",pct],["c3r","Corner 3 share",pct],["ab3r","Above-break 3 share",pct]]],
     ["Defense",[["osefg","Opp eFG%",pct],["oxefg","Opp xeFG%",pct],["osmk","Opp shot-making",ppt],["orim","Opp rim share",pct],["opmid","Opp mid-range share",pct],["oc3r","Opp corner 3 share",pct],["oab3r","Opp above-break 3 share",pct]]]]);
@@ -1631,7 +1631,7 @@ function renderPClutch(el,name,keep){
     <tbody>${rows.map(r=>`<tr><td class="tm pl">${ppname(r.id,r.name,name)}</td>${cols.map(c=>`<td>${c[2](r)}</td>`).join("")}</tr>`).join("")||`<tr><td class="tm" colspan="${cols.length+1}" style="color:var(--muted)">No clutch minutes ${keep?"in these games":"yet"}.</td></tr>`}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
     <span>Clutch = last 5:00 of the 4th quarter or overtime with the margin 5 or fewer</span><span>Totals, not per game · +/- = team points margin while on the floor</span>
-    ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
+    ${bad.length?`<span>Games left out (incomplete play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(csort.k===k)csort.d*=-1;else csort={k,d:k==="name"||k==="tov"?1:-1};renderPlayers()});
 }
 
@@ -1674,7 +1674,7 @@ function renderAssists(el,name,keep){
   <div class="panel card" style="margin-top:18px"><h3>Top connections</h3><ol class="conn${pphotos?"":" nop"}">${conns}</ol></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
     <span>Pts created = points from made shots he assisted</span><span>% assisted = share of his made field goals that were assisted, overall and by zone</span>
-    ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
+    ${bad.length?`<span>Games left out (incomplete play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(!k)return;if(asort.k===k)asort.d*=-1;else asort={k,d:k==="name"?1:-1};renderPlayers()});
 }
 
@@ -1730,8 +1730,8 @@ function renderRotations(){
   <div class="panel" style="margin-top:18px"><div class="scroll"><table><thead><tr><th class="tm"><button data-k="name"${arrow("name")}>Player</button></th>${C.map(c=>`<th class="${c[3]?'sep':''}"><button data-k="${c[0]}"${arrow(c[0])}>${c[1]}</button></th>`).join("")}</tr></thead>
     <tbody>${shown.map(r=>`<tr class="${r.g<2?'low':''}"><td class="tm pl">${pname(r.id,r.name,name)}</td>${C.map(c=>`<td class="${c[3]?'sep':''}">${c[2](r[c[0]])}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
   <div class="fblock" style="color:var(--muted);font-size:12px;margin:12px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.02em">
-    <span>Q1–Q4 = minutes per game in each quarter · stints run until he subs out (they carry across quarter breaks)</span><span>Starts Q1 / Q3 = share of games on the floor to open the half · On at end of Q4 = on the floor at the final buzzer of regulation</span><span>Floor time is rebuilt from ESPN play-by-play and matched to each player's official minutes and +/-</span>
-    ${bad.length?`<span>Games left out (incomplete ESPN play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
+    <span>Q1–Q4 = minutes per game in each quarter · stints run until he subs out (they carry across quarter breaks)</span><span>Starts Q1 / Q3 = share of games on the floor to open the half · On at end of Q4 = on the floor at the final buzzer of regulation</span><span>Floor time: the NBL's own play-by-play, which records every substitution (ESPN's, solved, for a game where the NBL's doesn't add up), matched to each player's official minutes and +/-</span>
+    ${bad.length?`<span>Games left out (incomplete play-by-play): ${bad.join(", ")}</span>`:""}</div>`;
   el.querySelectorAll("th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(rsort.k===k)rsort.d*=-1;else rsort={k,d:k==="name"?1:-1};renderRotations()});
 }
 
@@ -1942,9 +1942,9 @@ function playerCard(team,pid){
     <p class="note" style="text-transform:uppercase;letter-spacing:.03em">${histNote}</p></div>
   <div class="panel card" style="margin-top:18px"><div class="card-head"><h3>Shot chart · NBL27</h3>${sc?`<span class="rec">${sc.fga} FGA · ${pct(sc.fga?sc.fgm/sc.fga:null)} FG% · ${pct(sc.efg)} eFG%</span>`:""}</div>
     ${sc?`<div class="sc-wrap"><div style="min-width:0">${sc.svg}<div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="#3ddc84" stroke="#062012" stroke-width=".8"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="var(--miss)" stroke-width="2"/></svg> Missed</span><span>Zone: FG% and makes/attempts; at the bottom of the zone, its share of all his shots (% of shots). Shading: FG% vs League Ave</span></div></div>
-      <div style="min-width:0">${sc.table}${sc.bad.length?`<p class="note" style="margin-top:10px;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete ESPN shot log): ${sc.bad.join(", ")}</p>`:""}</div></div>`:`<p class="note">Shot locations are loading.</p>`}</div>
+      <div style="min-width:0">${sc.table}${sc.bad.length?`<p class="note" style="margin-top:10px;text-transform:uppercase;letter-spacing:.03em">Games left out (incomplete shot log): ${sc.bad.join(", ")}</p>`:""}</div></div>`:`<p class="note">Shot locations are loading.</p>`}</div>
   <div class="panel card" style="margin-top:18px"><h3>NBL27 connections</h3>${cxHTML}</div>
-  <p class="note" style="margin-top:10px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.03em">Bio sources: ${srcBits.join(" · ")||"none yet"}${b.checked?` · checked ${fmtDate(b.checked)}`:""} · NBL27 stats: ESPN box scores and play-by-play, checked against the NBL's official box scores</p>`;
+  <p class="note" style="margin-top:10px;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.03em">Bio sources: ${srcBits.join(" · ")||"none yet"}${b.checked?` · checked ${fmtDate(b.checked)}`:""} · NBL27 stats: ESPN box scores checked against the NBL's official box scores; shots, lineups, rotations and clutch from the NBL's own play-by-play</p>`;
 }
 
 ["onoff","clutch","ast"].forEach(v=>document.getElementById("pv-"+v).onclick=()=>{pview=v;try{localStorage.setItem("nbl27-pview",pview)}catch(e){}renderPlayers()});

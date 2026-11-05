@@ -169,7 +169,9 @@ def main():
     prev_off = (meta.get("status") or {}).get("official") or {}
     off_status = {}
     import nbl_lineups as NL
-    lu_rep, lu_n = [], {}
+    import nbl_shots as NS
+    import nbl_events as NE
+    lu_rep, lu_n, sh_rep, ev_rep = [], {}, [], []
     try:
         import official as O
         os.environ["NBL_OFFICIAL_CACHE"] = os.path.join(tmp, "official")
@@ -177,9 +179,29 @@ def main():
         glist, plist = list(new["games"].values()), list(new["players"].values())
         cmp = O.compare(glist, plist, off)
         fixes = O.apply(glist, plist, cmp)
+        # a game whose official team totals the NBL's feed doesn't have this run (it drops them for a while at times):
+        # last run's team corrections stay, where ESPN still has the value that was corrected
+        miss = {tuple(x) for x in cmp.get("no_team_totals") or []}
+        G_ = {g["id"].replace("espn-", ""): g for g in glist}
+        for c in prev_off.get("fixes") or []:
+            if "id" in c or (c["eid"], c["team"]) not in miss or c["eid"] not in G_:
+                continue
+            g = G_[c["eid"]]
+            T = g["home"] if g["home"]["team"] == c["team"] else g["away"]
+            if T.get(c["field"]) == c["ours"]:
+                T[c["field"]] = c["official"]
+                cmp["fix_teams"].append(c)
+                fixes.append(f"{g['date']} {c['team']} team {c['field']} {c['ours']}->{c['official']} (last run's official figure)")
         # lineups: the NBL's own play-by-play wherever it reproduces the official box score (every substitution is
         # recorded there); the ESPN-based solve built above stays for any other team-game
         lu_rep, lu_n = NL.apply(new["lineups"], glist, plist, off, cmp["pairs"], O.nbl27_index(off), prev_by["lineups"])
+        # shots (shot charts and shot-zone totals): the NBL's own play-by-play, which carries every shot's position
+        # and reproduces the official box score; ESPN's shot logs stay only where the NBL's doesn't add up
+        sh_rep, _ = NS.apply(new["pshots"], new["shots"], glist, plist, off, cmp["pairs"], O.nbl27_index(off),
+                             prev_by["pshots"], prev_by["shots"])
+        # rotations, clutch, possessions and the assist network: the NBL's play-by-play too, wherever its lineups
+        # reproduce the official box score; ESPN's (events.py) stay for any other team-game
+        ev_rep, _ = NE.apply(new["events"], glist, plist, off, cmp["pairs"], O.nbl27_index(off), prev_by["events"])
         names = {i: p["name"] for i, p in cmp["pairs"].items()}
         for i, n in (prev_off.get("names") or {}).items():
             names.setdefault(i, n)          # keep spellings learned from games the official files no longer list
@@ -189,7 +211,11 @@ def main():
     except Exception as ex:
         warnings.append(f"official NBL box scores unavailable ({ex}); previous official corrections reused")
         NL.keep_previous(new["lineups"], prev_by["lineups"])
+        NS.keep_previous(new["pshots"], new["shots"], prev_by["pshots"], prev_by["shots"])
+        NE.keep_previous(new["events"], prev_by["events"])
+        ev_rep = ["official data unavailable: last run's NBL play-by-play events kept"]
         lu_rep = ["official data unavailable: last run's NBL play-by-play lineups kept"]
+        sh_rep = ["official data unavailable: last run's NBL play-by-play shots kept"]
         off_status = {k: prev_off.get(k) for k in ("games", "pending", "names", "fixes", "added", "applied", "notes")}
         off_status["error"] = str(ex)[:300]
         G_ = {g["id"].replace("espn-", ""): g for g in new["games"].values()}
@@ -238,7 +264,7 @@ def main():
         n = sum(1 for i, d in new[c].items() if i in prev_by[c] and json.dumps(d.get("teams"), sort_keys=True)
                 != json.dumps(prev_by[c][i].get("teams"), sort_keys=True))
         if n:
-            changes.append(f"{c}: {n} game(s) updated" + ("" if c in ("lineups", "players") else " from ESPN"))
+            changes.append(f"{c}: {n} game(s) updated")
     for c in off_status.get("added") or []:
         pv = ((prev_by["players"].get(c["eid"]) or {}).get("teams") or {}).get(c["team"], [])
         if not any(x["id"] == c["row"]["id"] for x in pv):
@@ -251,7 +277,8 @@ def main():
     nowiso = now.replace(microsecond=0).isoformat()
     st = meta.setdefault("status", {})
     st.update(updatedAt=nowiso, lastGameDate=max(g["date"] for g in data["games"]),
-              source="ESPN box scores and play-by-play, checked against the NBL's official box scores; full rebuild once a day",
+              source="ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch "
+                     "and assists from the NBL's own play-by-play (ESPN's where it doesn't add up); full rebuild once a day",
               games=len(data["games"]), changes=changes[:60])
     if off_status:
         st["official"] = {**{k: v for k, v in off_status.items() if v is not None}, "checkedAt": nowiso}
@@ -267,8 +294,10 @@ def main():
     else:
         st.pop("pending", None)
     st.pop("github_error", None)
+    ssrc = collections.Counter(v for d in data["shots"] for v in (d.get("src") or {}).values())
     meta.setdefault("shots_status", {}).update(checkedAt=nowiso, games=len(data["shots"]),
-                                                mismatches=sum(1 for d in data["shots"] if d.get("mismatch")))
+                                                mismatches=sum(1 for d in data["shots"] if d.get("mismatch")),
+                                                sources={"nbl": ssrc.get("nbl", 0), "espn": ssrc.get("espn", 0)})
     meta.setdefault("players_status", {}).update(checkedAt=nowiso, games=len(data["players"]),
                                                   mismatches=sum(1 for d in data["players"] if d.get("mismatch")))
     fits = [f for d in data["lineups"] for f in (d.get("fit") or {}).values() if f]
@@ -287,15 +316,26 @@ def main():
                                                        "plusMinusOff": sum(1 for f in fits if f.get("maxPmErr", 0) > 0),
                                                        "actionsOffCourt": sum(f.get("offcourt", 0) for f in fits),
                                                        "unrecordedSwapsPerTeamGame": round(sum(f.get("unrecorded", 0) for f in fits) / max(1, len(fits)), 1)})
-    meta.setdefault("pshots_status", {}).update(checkedAt=nowiso, games=len(data["pshots"]))
-    bad = [f"{d['espnId']} {t}" for d in data["events"] for t, x in d.get("teams", {}).items() if x.get("ok") is False]
-    meta.setdefault("events_status", {}).update(checkedAt=nowiso, games=len(data["events"]), badTeamGames=len(bad),
-                                                 notes="Team-games failing reconciliation: " + ", ".join(bad))
+    psrc = collections.Counter(v for d in data["pshots"] for v in (d.get("src") or {}).values())
+    pbad = [f"{d['date']} {t}" for d in data["pshots"] for t, x in d.get("teams", {}).items() if x.get("ok") is False]
+    meta["pshots_status"] = {"checkedAt": nowiso, "games": len(data["pshots"]), "basket": {"x": 25, "y": 0},
+                             "sources": {"nbl": psrc.get("nbl", 0), "espn": psrc.get("espn", 0)},
+                             "badTeamGames": len(pbad), "notes": sh_rep[:40] + ([f"left out: {', '.join(pbad)}"] if pbad else []),
+                             "method": "Every shot from the NBL's own play-by-play (position, shooter, two or three) wherever it "
+                                       "reproduces this site's box score (nbl_shots.py); otherwise ESPN's play-by-play (pshots.py)",
+                             "frame": "x across the court 0-50 ft with the basket at 25, y = feet from the basket toward halfway"}
+    bad = [f"{d['date']} {t}" for d in data["events"] for t, x in d.get("teams", {}).items() if x.get("ok") is False]
+    esrc = collections.Counter(v for d in data["events"] for v in (d.get("src") or {}).values())
+    meta["events_status"] = {"checkedAt": nowiso, "games": len(data["events"]), "badTeamGames": len(bad),
+                             "sources": {"nbl": esrc.get("nbl", 0), "espn": esrc.get("espn", 0)},
+                             "notes": ev_rep[:40] + ([f"left out (don't reconcile with the box score): {', '.join(bad)}"] if bad else []),
+                             "method": "Rotations, clutch, possessions and assists from the NBL's own play-by-play wherever its "
+                                       "lineups reproduce the official box score (nbl_events.py); otherwise from ESPN's (events.py)"}
     for c in COLS:
         json.dump(data[c], open(os.path.join(root, "data", c + ".json"), "w"), separators=(",", ":"), sort_keys=True)
     json.dump(meta, open(os.path.join(root, "data", "meta.json"), "w"), indent=1)
     print(json.dumps({"games": len(data["games"]), "held": held, "pending": pending, "warnings": warnings,
-                      "changes": changes, "lineups": lu_rep}, indent=1))
+                      "changes": changes, "lineups": lu_rep, "shots": sh_rep, "events": ev_rep}, indent=1))
     # Player cards: bios + NBA/NCAA history (bios.py; refreshes new players and a few stale ones per run).
     # A failure here never affects the game data written above.
     try:

@@ -24,6 +24,8 @@ lineups come from: 'src' {team: 'nbl' | 'espn'}.
 """
 import collections
 
+import nbl_shots as NS
+
 STATS = ["pts", "fgm", "fga", "tpm", "tpa", "ftm", "fta", "oreb", "dreb", "tov"]
 MIN_TOL = 5          # seconds
 NBL_SRC = "https://nbl.com.au/ (the NBL's play-by-play)"
@@ -61,15 +63,39 @@ def dur(v):
     return float(v) * 60
 
 
+def starters(m, plays):
+    """{team: the five who start}. The official starter flags, completed from the feed when the NBL's data is missing
+    some (it happens for a while after a game, or after a later edit): a player whose first substitution is going
+    off started the game, and so did one who played but never came on or off."""
+    out = {}
+    for t in (m["home"], m["away"]):
+        on = {p["pid"] for p in m["players"] if p["team"] == t and p.get("starter")}
+        if len(on) < 5:
+            first = {}
+            for a in plays:
+                if (a.get("type") or "").lower() == "substitution" and a.get("team") == t and a.get("pid"):
+                    first.setdefault(a["pid"], (a.get("sub") or "").lower())
+            for pid, st in first.items():
+                if len(on) < 5 and st == "out":
+                    on.add(pid)
+            for p in m["players"]:
+                if len(on) < 5 and p["team"] == t and p["pid"] not in first and p["pid"] not in on and dur(p.get("min")) > 0:
+                    on.add(p["pid"])
+        out[t] = on
+    return out
+
+
 def stints(m):
     """m: one match as official.py keeps it ({'home', 'away', 'players', 'teams', 'plays'}).
     -> ([(team, frozenset of player ids, seconds, own totals, opponents' totals)], [problems])"""
     home, away = m["home"], m["away"]
     opp = {home: away, away: home}
-    on = {t: {p["pid"] for p in m["players"] if p["team"] == t and p.get("starter")} for t in opp}
+    plays = [a for a in m["plays"] if a.get("clock")]
+    on = starters(m, plays)
     probs = [f"{t}: {len(on[t])} starters" for t in opp if len(on[t]) != 5]
     out = []
-    plays = [a for a in m["plays"] if a.get("clock")]
+    # shots the official box score doesn't count (taken back by the scorers) don't count here either
+    keep = set(NS.clean({**m, "plays": plays})[0])
     pers = sorted({per_no(a) for a in plays} | {1, 2, 3, 4})
     for per in pers:
         L = plen(per)
@@ -90,7 +116,7 @@ def stints(m):
                 flush(t)
                 cur[t] = [s, 0.0, {k: 0 for k in STATS}, {k: 0 for k in STATS}]
             return cur[t]
-        for a in (a for a in plays if per_no(a) == per):
+        for i, a in ((i, a) for i, a in enumerate(plays) if per_no(a) == per):
             tnow = L - csec(a["clock"])
             if tnow > last:
                 for t in opp:
@@ -105,6 +131,8 @@ def stints(m):
             if team not in opp:
                 continue
             d = {}
+            if ty in ("2pt", "3pt") and i not in keep:
+                continue
             if ty in ("2pt", "3pt"):
                 d["fga"] = 1
                 if ty == "3pt":
@@ -134,10 +162,14 @@ def stints(m):
     return out, probs, max(pers)
 
 
-def check(m, S, probs, nper):
-    """-> {team: [reasons]} against the official box score (empty list = reproduces it)"""
+def check(m, S, probs, nper, site=None):
+    """-> {team: [reasons]} against the official box score (empty list = reproduces it). site: {team: this site's
+    team box score} - used for the team totals when the NBL's data is missing them (as it is for a while after some
+    games)."""
     expect = 2400 + 300 * max(0, nper - 4)
-    tbox = {x["team"]: x for x in m["teams"]}
+    tbox = {x["team"]: x for x in m["teams"] if x.get("fga") is not None}
+    for t, b in (site or {}).items():
+        tbox.setdefault(t, b)
     res = {}
     for t in (m["home"], m["away"]):
         why = [p for p in probs if p.startswith(t + ":")]
@@ -248,8 +280,9 @@ def apply(lineups, games, players, off, pairs, index, prev=None):
                 lineups[eid] = doc
             continue
         S, probs, nper = stints(m)
-        why = check(m, S, probs, nper)
+        why = check(m, S, probs, nper, {g["home"]["team"]: g["home"], g["away"]["team"]: g["away"]})
         names = {p["pid"]: p["name"] for p in m["players"]}
+        pv = (prev or {}).get(eid) or {}
         for t in teams:
             units = units_of(S, t, espn_of)
             bad = why.get(t) or []
@@ -257,6 +290,16 @@ def apply(lineups, games, players, off, pairs, index, prev=None):
                 s = site_ok(units, t, g, P.get(eid))
                 if s:
                     bad = [f"page check: {s}"]
+            if bad and (pv.get("src") or {}).get(t) == "nbl" and pv["teams"].get(t) and not site_ok(pv["teams"][t], t, g, P.get(eid)):
+                # this run's NBL data doesn't add up but last run's did: keep last run's (the NBL's feed is sometimes
+                # incomplete for a while after a game or an edit)
+                doc["teams"][t] = pv["teams"][t]
+                doc["fit"][t] = (pv.get("fit") or {}).get(t)
+                src[t] = "nbl"
+                doc["names"].update({k: v for k, v in (pv.get("names") or {}).items() if k not in doc["names"]})
+                n["nbl (last run's)"] += 1
+                rep.append(f"{tag} {t}: this run's NBL play-by-play doesn't add up ({'; '.join(bad[:2])}) - last run's NBL lineups kept")
+                continue
             if bad:
                 n["espn" if doc["teams"].get(t) else "left out"] += 1
                 rep.append(f"{tag} {t}: NBL play-by-play not used ({'; '.join(bad[:3])})"

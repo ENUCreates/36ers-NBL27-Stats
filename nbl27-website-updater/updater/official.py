@@ -235,8 +235,10 @@ PBP_SKIP = {"possession", "possessionArrow", "fixture"}
 def rosetta_current(dest):
     """Current-season official data straight from the NBL's API, in the same row shapes as the nblR files:
     -> (res rows, box rows, team rows, roster profiles, play-by-play). Same-day, unlike the weekly nblR files.
-    play-by-play: {match id: {'home', 'away', 'players', 'teams', 'plays'}} for nbl_lineups.py - the plays in the
-    feed's own order (game order), each {per, pt (period type), clock, type, sub, ok (made), team, pid}."""
+    play-by-play: {match id: {'home', 'away', 'players', 'teams', 'plays'}} for nbl_lineups.py, nbl_shots.py and
+    nbl_events.py - the plays in the feed's own order (game order), each {per, pt (period type), clock, type, sub,
+    ok (made), team, pid, aid (the feed's action id), s1/s2 (the feed's running score)}, and for a shot its court
+    position {x, y} (percent of the court's length and width)."""
     lst = rget(f"nbl/matches/in/season/{ROSETTA_YEAR}?limit=400", dest, fresh=True)["data"]
     res, box, team, pbp = [], [], [], {}
     for m in sorted(lst, key=lambda m: (m.get("start_time") or "", m["id"])):
@@ -288,22 +290,33 @@ def rosetta_current(dest):
         num = lambda v: iv(v) if v not in (None, "") else None
         P = [{"pid": (x.get("player") or {}).get("id"), "team": site(x.get("team")), "starter": bool(x.get("starter")),
               "min": x.get("minutes_string") or x.get("minutes"), "pm": x.get("plus_minus"),
-              "name": f"{sv((x.get('player') or {}).get('first_name'))} {sv((x.get('player') or {}).get('last_name'))}".strip()}
+              "name": f"{sv((x.get('player') or {}).get('first_name'))} {sv((x.get('player') or {}).get('last_name'))}".strip(),
+              **{k: num(x.get(f)) for k, f in (("pts", "points"), ("fgm", "field_goals_made"), ("fga", "field_goals_attempted"),
+                                               ("tpm", "three_points_made"), ("tpa", "three_points_attempted"),
+                                               ("ftm", "free_throws_made"), ("fta", "free_throws_attempted"),
+                                               ("ast", "assists"), ("stl", "steals"), ("blk", "blocks"),
+                                               ("tov", "turnovers"), ("oreb", "offensive_rebounds"),
+                                               ("dreb", "defensive_rebounds"))}}
              for x in d.get("player_match_statistics") or [] if sv(x.get("period")) == "0"]
         T = [{"team": site(x.get("team")), "pts": num(x.get("points")), "fgm": num(x.get("field_goals_made")),
               "fga": num(x.get("field_goals_attempted")), "tpm": num(x.get("three_points_made")),
               "tpa": num(x.get("three_points_attempted")), "ftm": num(x.get("free_throws_made")),
               "fta": num(x.get("free_throws_attempted")), "oreb": num(x.get("offensive_rebounds")),
-              "dreb": num(x.get("defensive_rebounds")), "tov": num(x.get("turnovers"))}
+              "dreb": num(x.get("defensive_rebounds")), "tov": num(x.get("turnovers")), "ast": num(x.get("assists"))}
              for x in d.get("team_match_statistics") or [] if sv(x.get("period")) == "0"]
         A = []
         for a in d.get("play_by_play") or []:
             if a.get("action_type") in PBP_SKIP:
                 continue
             pl = a.get("player") if isinstance(a.get("player"), dict) else {}
-            A.append({"per": a.get("period"), "pt": a.get("period_type"), "clock": a.get("clock"), "type": a.get("action_type"),
-                      "sub": a.get("sub_type"), "ok": bool(a.get("success")), "pid": pl.get("id") or a.get("personId"),
-                      "team": site(a.get("team")) or site(pl.get("team"))})
+            row = {"per": a.get("period"), "pt": a.get("period_type"), "clock": a.get("clock"), "type": a.get("action_type"),
+                   "sub": a.get("sub_type"), "ok": bool(a.get("success")), "pid": pl.get("id") or a.get("personId"),
+                   "team": site(a.get("team")) or site(pl.get("team")), "aid": a.get("action_id"),
+                   "s1": a.get("score_1"), "s2": a.get("score_2")}
+            if a.get("action_type") in ("2pt", "3pt"):
+                c = a.get("coordinates") or {}
+                row["x"], row["y"] = c.get("x"), c.get("y")
+            A.append(row)
         pbp[m["id"]] = {"home": site(d.get("home_team") or m.get("home_team")), "away": site(d.get("away_team") or m.get("away_team")),
                         "players": P, "teams": T, "plays": A}
     roster = rget(f"nbl/players/in/season/{ROSETTA_YEAR}", dest, fresh=True)["data"]
@@ -382,7 +395,8 @@ def compare(games, players, off):
     games/players: this site's games.json / players.json lists."""
     idx, lines, trows = nbl27_index(off), _lines(off), _team_rows(off)
     P = {p["espnId"]: p for p in players}
-    res = {"pairs": {}, "fix_players": [], "fix_teams": [], "add_players": [], "notes": [], "checked": [], "missing": []}
+    res = {"pairs": {}, "fix_players": [], "fix_teams": [], "add_players": [], "notes": [], "checked": [], "missing": [],
+           "no_team_totals": []}
     cand = []
     for g in games:
         k = (g["date"], frozenset((g["home"]["team"], g["away"]["team"])))
@@ -423,12 +437,14 @@ def compare(games, players, off):
             # team totals: only from an internally consistent official team row with the same final score
             tr = trows.get((mid, team))
             if tr is None:
+                res["no_team_totals"].append([eid, team])       # rebuild.py keeps last run's team corrections
                 continue
             opts = {f: sum(iv(r[c]) for r in rows) for f, c in STAT}
             tcol = lambda f, c: "score" if f == "pts" else c       # the team row's points field is empty; its score is the total
             ok = iv(tr["score"]) == T["pts"] and all(iv(tr[tcol(f, c)]) == opts[f] for f, c in STAT if f in SCORING)
             if not ok:
                 res["notes"].append(f"{g['date']} {team}: official team row inconsistent or different score (team totals not changed)")
+                res["no_team_totals"].append([eid, team])
                 continue
             off_t = {"oreb": iv(tr["rebounds_offensive"]) + iv(tr.get("rebounds_team_offensive")),
                      "dreb": iv(tr["rebounds_defensive"]) + iv(tr.get("rebounds_team_defensive")),
