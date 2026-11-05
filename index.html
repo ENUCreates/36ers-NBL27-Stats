@@ -937,7 +937,7 @@ function renderTeam(){
   el.querySelectorAll("[data-sm]").forEach(b=>b.onclick=()=>{shotMode=b.dataset.sm;renderTeam()});
 }
 
-function emptyMsg(){return `<div class="empty"><strong>No box scores loaded yet</strong>Games appear here as the daily update adds them. </div>`}
+function emptyMsg(){return `<div class="empty"><strong>No box scores loaded yet</strong>Games appear here as the daily update adds them.</div>`}
 
 function renderStatus(){
   const el=document.getElementById("status");
@@ -2202,7 +2202,8 @@ if(location.hash&&byCode[location.hash.slice(1)])show("team");
 recalc();
 
 (async()=>{
-  // GitHub Pages version: read the season data files published alongside this page.
+  // The season data: JSON files published alongside this page (the same files the GitHub site serves), rebuilt and
+  // republished by the daily update. Fetched fresh at most every 10 minutes.
   const bust="?v="+Math.floor(Date.now()/600000);
   const get=async f=>{try{const r=await fetch("data/"+f+bust,{cache:"no-store"});return r.ok?await r.json():null}catch(e){return null}};
   const [g,sh,pl,lu,ps,ev,meta,bi]=await Promise.all(["games.json","shots.json","players.json","lineups.json","pshots.json","events.json","meta.json","bios.json"].map(get));
