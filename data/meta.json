@@ -1,16 +1,14 @@
 {
  "status": {
-  "lastGameDate": "2026-11-05",
+  "lastGameDate": "2026-11-06",
   "source": "ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where it doesn't add up); full rebuild once a day",
-  "updatedAt": "2026-11-06T08:58:55+11:00",
-  "games": 54,
+  "updatedAt": "2026-11-07T08:59:04+11:00",
+  "games": 55,
   "changes": [
-   "added 2026-11-05 Illawarra Hawks 107 at Cairns Taipans 95",
-   "pshots: 1 game(s) updated",
-   "events: 1 game(s) updated"
+   "added 2026-11-06 New Zealand Breakers 77 at Tasmania JackJumpers 79"
   ],
   "official": {
-   "games": 54,
+   "games": 55,
    "pending": 0,
    "names": {
     "4278777": "Shaun Bruce",
@@ -510,7 +508,7 @@
     "2026-10-21 Tasmania JackJumpers: official box has Ryley Haywood (00:21, 0 pts), ESPN's box score does not - added from the official box score",
     "2026-10-21 Tasmania JackJumpers: official box has Jed Richardson (00:21, 0 pts), ESPN's box score does not - added from the official box score"
    ],
-   "checkedAt": "2026-11-06T08:58:55+11:00"
+   "checkedAt": "2026-11-07T08:59:04+11:00"
   }
  },
  "shots_status": {
@@ -518,69 +516,69 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-11-06T08:58:55+11:00",
-  "games": 54,
+  "checkedAt": "2026-11-07T08:59:04+11:00",
+  "games": 55,
   "medianErr": 0.24,
   "mismatches": 0,
   "sources": {
-   "nbl": 108,
+   "nbl": 110,
    "espn": 0
   }
  },
  "players_status": {
-  "checkedAt": "2026-11-06T08:58:55+11:00",
-  "games": 54,
+  "checkedAt": "2026-11-07T08:59:04+11:00",
+  "games": 55,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-11-06T08:58:55+11:00",
-  "games": 54,
+  "checkedAt": "2026-11-07T08:59:04+11:00",
+  "games": 55,
   "invalid": 0,
   "method": "Who is on the floor: the NBL's own play-by-play (every substitution recorded) wherever it reproduces the official box score - every player's minutes and plus-minus (nbl_lineups.py); otherwise solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
   "fit": {
-   "teamGames": 108,
+   "teamGames": 110,
    "minutesOver30s": 0,
    "plusMinusOff": 1,
    "actionsOffCourt": 0,
    "unrecordedSwapsPerTeamGame": 0.1
   },
   "sources": {
-   "nbl": 107,
+   "nbl": 109,
    "espn": 1
   },
   "notes": [
-   "lineups by team-game: espn 1, nbl 107",
+   "lineups by team-game: espn 1, nbl 109",
    "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)"
   ]
  },
  "pshots_status": {
-  "checkedAt": "2026-11-06T08:58:55+11:00",
-  "games": 54,
+  "checkedAt": "2026-11-07T08:59:04+11:00",
+  "games": 55,
   "basket": {
    "x": 25,
    "y": 0
   },
   "sources": {
-   "nbl": 108,
+   "nbl": 110,
    "espn": 0
   },
   "badTeamGames": 0,
   "notes": [
-   "shots by team-game: nbl 108"
+   "shots by team-game: nbl 110"
   ],
   "method": "Every shot from the NBL's own play-by-play (position, shooter, two or three) wherever it reproduces this site's box score (nbl_shots.py); otherwise ESPN's play-by-play (pshots.py)",
   "frame": "x across the court 0-50 ft with the basket at 25, y = feet from the basket toward halfway"
  },
  "events_status": {
-  "checkedAt": "2026-11-06T08:58:55+11:00",
-  "games": 54,
+  "checkedAt": "2026-11-07T08:59:04+11:00",
+  "games": 55,
   "badTeamGames": 0,
   "sources": {
-   "nbl": 107,
+   "nbl": 109,
    "espn": 1
   },
   "notes": [
-   "events by team-game: espn 1, nbl 107",
+   "events by team-game: espn 1, nbl 109",
    "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL events not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)"
   ],
   "method": "Rotations, clutch, possessions and assists from the NBL's own play-by-play wherever its lineups reproduce the official box score (nbl_events.py); otherwise from ESPN's (events.py)"
