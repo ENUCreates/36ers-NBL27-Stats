@@ -2352,7 +2352,7 @@ function renderLadder(){
     `Adj. net = team strength per 100 possessions. Run home = how strong the remaining opponents are. Home edge used: ${sgn(S.homeEdge)} points a game.`,
     `Ladder ties are split by wins, then wins between the tied teams, then points difference.`,
     `Tips: each game's chance comes from the same model (both teams' strength, home edge ${sgn(S.homeEdge)} points, and how much single games swing). The margin is the expected winning margin. A played game keeps the last tip made before it, and tips are never re-done afterwards. Back-tested tips, for games played before tips were kept, use only the games played before that day.`,
-    `Injuries aren't modelled. See the Injuries tab.`,
+    `Who's available: for each game to come, both teams are adjusted for players out (from the injury list) or back, compared with the games their strength is built on. A player's value comes from his Game Score per 40 minutes this season, scaled by a fit on 1,458 past NBL games where the box scores show who played. Players already missing from most games barely move it. Rest isn't included: it made no measurable difference in those seasons.`,
     `Updated ${upd} with games through ${dShort(S.lastGame)}.${late?` ${late} finished game${late===1?" isn't":"s aren't"} in the data yet and ${late===1?"is":"are"} simulated.`:""}`].map(x=>`<span>${x}</span>`).join("");
 }
 
@@ -2424,13 +2424,14 @@ async function drawMX(g){
   const rk=n=>n?` (${ordinal(n)})`:"";
   let why=`<table class="why"><tr><td>Strength</td><td>${c(H)} ${sgn(w.rH)}${rk(w.rkH)} · ${c(A)} ${sgn(w.rA)}${rk(w.rkA)}</td><td class="v">${Math.abs(gap)<0.05?"Even":`${c(gap>=0?H:A)} +${f1(Math.abs(gap))}`}</td></tr>
     <tr><td>Home court</td><td>${c(H)} at home</td><td class="v">${c(H)} +${f1(w.hca||0)}</td></tr>
+    ${w.adjH!=null?(()=>{const net=(w.adjH||0)-(w.adjA||0);return `<tr><td>Who's available</td><td>${c(H)} ${sgn(w.adjH)} · ${c(A)} ${sgn(w.adjA)}</td><td class="v">${Math.abs(net)<0.05?"Even":`${c(net>=0?H:A)} +${f1(Math.abs(net))}`}</td></tr>`})():""}
     <tr class="tot"><td>Expected margin</td><td></td><td class="v">${c(fav)} by ${f1(Math.abs(mg))}</td></tr>
     <tr><td>Win chance</td><td>Games swing ±${Math.round(w.sd||13)} pts</td><td class="v">${c(p>=0.5?H:A)} ${pp}%</td></tr></table>
-    <p class="mxnote">Strength = points a game better or worse than an average team on a neutral court. Single games swing about ±${Math.round(w.sd||13)} points either way and each team's strength is still uncertain, which turns the expected margin into the win chance.</p>`;
+    <p class="mxnote">Strength = points a game better or worse than an average team on a neutral court, with whoever has played so far. Who's available = the change for this game from players out or back (see the facts). Single games swing about ±${Math.round(w.sd||13)} points either way and each team's strength is still uncertain, which turns the expected margin into the win chance.</p>`;
   const bd=w.build||{},bl=t=>{const x=bd[t]||{};return `<b>${c(t)}</b><span>${x.margin==null?"–":sgn(x.margin)} → <b>${x.adj==null?"–":sgn(x.adj)}</b> → <b>${sgn(x.rating)}</b></span>`};
   why+=`<p class="mxnote">How each strength is built, per game: actual margin → without shooting luck → after opponents and sample size</p><div class="build">${bl(H)}${bl(A)}</div>`;
   // key facts, grouped
-  const KIND=[["model","Why the strengths differ","in"],["out","Injuries","ni"],["h2h","Head to head",""],["style","Style of play",""],["form","Form",""],["rest","Rest and travel","ni"],["split","Home and away",""],["close","Close games",""]];
+  const KIND=[["model","Why the strengths differ","in"],["out","Who's available",m.why?.adjH!=null?"in":""],["h2h","Head to head",""],["style","Style of play",""],["form","Form",""],["rest","Rest and travel","ni"],["split","Home and away",""],["close","Close games",""]];
   const F=m.facts||[];
   const facts=KIND.map(([k,l,tag])=>{const fs=F.filter(f=>f.k===k);return fs.length?`<div class="fgrp"><span class="fk">${l}</span>${tag==="in"?`<span class="fin">In the %</span>`:tag==="ni"?`<span class="fni">Not in the %</span>`:""}<ul>${fs.map(f=>`<li>${f.t}</li>`).join("")}</ul></div>`:""}).join("");
   // tale of the tape
@@ -2458,7 +2459,7 @@ async function drawMX(g){
   const h2h=(m.h2h||[]).length?(m.h2h.map(x=>`<div class="r"><span>${dShort(x.date)} · ${c(x.home)} ${x.hs}–${x.as} ${c(x.away)}</span><span>at ${disp(x.home)}</span></div>`).join("")):`<div class="r"><span class="mut">First meeting this season</span></div>`;
   // what this view is: today's facts, or the facts as they stood before a played game
   const asof=m.asOf?new Date(m.asOf.length>10?m.asOf:m.asOf+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"}):"";
-  const head=m.state==="pre"?`<p class="mxnote">Facts as of ${asof}, refreshed every morning. Strength, home court and shooting luck are in the percentage; injuries and rest are not.</p>`
+  const head=m.state==="pre"?`<p class="mxnote">Facts as of ${asof}, refreshed every morning. Strength, home court, shooting luck and who's available are in the percentage. Rest isn't: it made no measurable difference in 1,466 NBL games since 2015.</p>`
     :m.state==="frozen"?`<p class="mxnote">The facts as they stood before the game (${asof}), when it was tipped.</p>`
     :`<p class="mxnote">Back-tested: the model and numbers use only the games before ${asof}. The injury list wasn't kept then.</p>`;
   box.innerHTML=`${head}<div class="mx-grid"><div><h4>Why ${c(p>=0.5?H:A)} ${pp}%</h4>${why}<h4>Key facts</h4>${facts||`<p class="mxnote">No standout facts.</p>`}</div>

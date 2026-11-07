@@ -9,8 +9,9 @@ For each game:
           shooting luck taken out, adjusted for opponents and pulled toward average for small samples), the home
           edge, the expected margin and the chance; plus how each team's strength is built (actual margin ->
           without shooting luck -> after opponents and sample size)
-  facts   the key matchup facts, most important first, each tagged: in the % (strength, shooting luck) or not
-          (injuries, rest), or context (head to head, form, style of play, home/away, close games)
+  facts   the key matchup facts, most important first, each tagged: in the % (strength, shooting luck, who's
+          available: availability.py) or not (rest: no measurable effect in 1,466 NBL games since 2015), or context
+          (head to head, form, style of play, home/away, close games)
   tape    both teams' season numbers with league ranks (the same formulas as the League table)
   h2h     this season's earlier meetings; rest days; injury list; leading scorers
 
@@ -210,6 +211,9 @@ def snapshot(g, fx, games_before, S, R, hca, gsd, P, inj, state, asof, p=None, m
         p, m = g.get("pHome"), g.get("margin")
     why = {"rH": R[H]["rating"], "rA": R[A]["rating"], "rkH": rk.get(H), "rkA": rk.get(A), "hca": hca, "margin": m,
            "p": p, "sd": gsd, "build": {}}
+    av = g.get("avail") if state == "pre" else None
+    if av:
+        why.update(adjH=av["h"], adjA=av["a"], availH=av["hp"], availA=av["ap"])
     for t in (H, A):
         mg = S[t].get("margin") if S[t]["gp"] else None
         why["build"][t] = {"margin": round(mg, 1) if mg is not None else None, "luck": R[t]["luck"],
@@ -240,8 +244,20 @@ def snapshot(g, fx, games_before, S, R, hca, gsd, P, inj, state, asof, p=None, m
         verb = f"lost {abs(x['luck']):.1f} points a game to" if x["luck"] < 0 else f"gained {x['luck']:.1f} points a game from"
         F.append({"k": "model", "t": f"{nm} have {verb} shooting luck{most}" + (f": {'; '.join(parts)}" if parts else "")
                   + f". The model takes luck out, so it rates them {ordn(rk[t])} on strength; they're {ordn(S[t]['ladder'])} on the ladder at {S[t]['wl'][0]}-{S[t]['wl'][1]}."})
-    # 2. injury list (not in the %)
-    if inj is not None:
+    # 2. availability (in the %): each player who changes this team's strength for this game, then the rest of the list
+    if av:
+        for t, tot, det in ((H, av["h"], av["hp"]), (A, av["a"], av["ap"])):
+            nm = SHORT.get(t, t)
+            listed = [r for r in (inj or {}).get(t, []) if r["cls"] != "retired"]
+            parts = [f"{x['name']} {sgn(x['pts'])} ({x['why']})" for x in det]
+            quiet = [r["name"] for r in listed if r.get("id") not in {x["id"] for x in det}]
+            txt = f"{nm} {sgn(tot)} points for who's available: " + ("; ".join(parts) if parts else "no changes worth a quarter of a point") + "."
+            if quiet:
+                names = quiet[0] if len(quiet) == 1 else ", ".join(quiet[:-1]) + " and " + quiet[-1]
+                txt += f" {names} {'is' if len(quiet) == 1 else 'are'} on the injury list but barely change{'s' if len(quiet) == 1 else ''} it: " \
+                       f"{'he has' if len(quiet) == 1 else 'they have'} missed most of {poss(nm)} games already or rarely play{'s' if len(quiet) == 1 else ''}."
+            F.append({"k": "out", "t": txt})
+    elif inj is not None:
         for t in (H, A):
             nm, lst = SHORT.get(t, t), [r for r in inj.get(t, []) if r["cls"] != "retired"]
             if not lst:

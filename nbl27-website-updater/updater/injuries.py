@@ -282,10 +282,12 @@ def main():
     rows.sort(key=lambda r: (CLUBS.index(r["team"]), order.get(r["cls"], 0), -(r.get("mpg") or 0), r["name"]))
     doc = {"status": st, "players": rows, "others": others(rows, tg, pl)}
     write(root, doc)
-    # the matchup facts quote the injury list: refresh them with this one
+    # the tips (ladder.py: who's available) and the matchup facts use the injury list: redo both with this one
     import subprocess
-    r = subprocess.run([sys.executable, "-I", os.path.join(HERE, "matchups.py"), root], capture_output=True, text=True)
-    print((r.stdout or r.stderr).strip().splitlines()[-1] if (r.stdout or r.stderr).strip() else "matchups: no output")
+    for script in ("ladder.py", "matchups.py"):
+        r = subprocess.run([sys.executable, "-I", os.path.join(HERE, script), root], capture_output=True, text=True)
+        out = (r.stdout or r.stderr).strip()
+        print(out.splitlines()[-1][:300] if out else f"{script}: no output")
     by = collections.Counter(r["cls"] for r in rows)
     print(f"injuries: {len(rows)} listed ({by.get('out', 0)} out, {by.get('dtd', 0)} day-to-day, {by.get('season', 0)} for the season, "
           f"{by.get('retired', 0)} retired){' - KEPT FROM ' + str(st.get('listRead')) if st.get('stale') else ''}; "

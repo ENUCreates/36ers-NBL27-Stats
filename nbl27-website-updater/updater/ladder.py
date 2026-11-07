@@ -19,7 +19,9 @@ the same API official.py reads). Deterministic: a fixed random seed, so the same
      Ladder order in each run: wins, then wins between the tied teams, then points difference in those games, then
      overall points difference.
   5. Projected record = the average wins, rounded so the ladder still adds up (largest remainder).
-  6. Round by round: every game still to play gets a tip (chance the home team wins and expected margin, from the
+  6. Availability: for each game to come, both teams' strengths are adjusted for who is out or back compared with
+     the games they were built on (availability.py: the injury list, calibrated on 1,458 past NBL games).
+  7. Round by round: every game still to play gets a tip (chance the home team wins and expected margin, from the
      same model). When a game has been played, it keeps the last tip made before it; games played before tips were
      kept get a back-tested tip (the model fitted on only the games before that date). Tips are never re-done later.
 
@@ -31,6 +33,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import numpy as np  # noqa: E402
 import official as O  # noqa: E402
+import availability as AV  # noqa: E402
 
 SYD = datetime.timezone(datetime.timedelta(hours=11))   # dates as the site uses them (NBL27 runs in AEDT)
 SIMS, SEED = 100000, 27
@@ -176,20 +179,21 @@ def rate(games, players, bios, TEAMS):
             "sig_adj": float(sig_adj), "tau_m": tau_m, "luck_t": luck_t, "gp_t": gp_t, "shoot": shoot, "lg3": lg3, "lgft": lgft}
 
 
-def predict(M, home, away):
-    """Chance the home team wins and its expected margin: the posterior mixture of (home - away strength + home edge)
-    plus the game-to-game noise, worked out exactly (the season simulation draws from the same model)."""
+def predict(M, home, away, extra=0.0):
+    """Chance the home team wins and its expected margin: the posterior mixture of (home - away strength + home edge
+    + extra, the availability adjustment) plus the game-to-game noise, worked out exactly (the season simulation draws
+    from the same model)."""
     i, j = M["ix"][home], M["ix"][away]
     p = m = 0.0
     for w, (mk, Ck) in zip(M["wt"], M["POST"]):
-        d = mk[i] - mk[j] + M["hca"]
+        d = mk[i] - mk[j] + M["hca"] + extra
         v = Ck[i, i] + Ck[j, j] - 2 * Ck[i, j] + M["hca_sd"] ** 2 + M["sig_raw"] ** 2
         p += w * 0.5 * (1 + math.erf(d / math.sqrt(2 * v)))
         m += w * d
     return p, m
 
 
-def build(games, players, bios, fx, prev=None):
+def build(games, players, bios, fx, prev=None, injuries=None):
     TEAMS = sorted({t for r in fx for t in (r["home"], r["away"])})
     ix = {t: i for i, t in enumerate(TEAMS)}
     N = len(TEAMS)
@@ -233,12 +237,16 @@ def build(games, players, bios, fx, prev=None):
         if len(sel):
             R[sel] = rng.multivariate_normal(POST[k][0], POST[k][1], size=len(sel))
     R[:, N] = rng.normal(hca, hca_sd, size=SIMS)
+    # who's available for each game to come (availability.py): points added to each side's strength
+    V, _lg40 = AV.values(games, players)
+    ADJ = AV.adjust(V, injuries, sched)
+    adjd = np.array([a["h"][0] - a["a"][0] for a in ADJ], float)
     sh = np.array([ix[r["home"]] for r in sched], int); sa = np.array([ix[r["away"]] for r in sched], int)
     wins = np.tile(np.array([W[t] for t in TEAMS], float), (SIMS, 1))
     pdiff = np.tile(np.array([PF[t] - PA[t] for t in TEAMS], float), (SIMS, 1))
     marg = np.zeros((SIMS, 0))
     if len(sched):
-        marg = R[:, sh] - R[:, sa] + R[:, [N]] + rng.normal(0, sig_raw, size=(SIMS, len(sched)))
+        marg = R[:, sh] - R[:, sa] + R[:, [N]] + adjd + rng.normal(0, sig_raw, size=(SIMS, len(sched)))
         marg = np.where(np.abs(marg) < 0.5, np.where(marg >= 0, 0.5, -0.5), marg)     # no draws
         hw = marg > 0
         for k in range(len(sched)):
@@ -325,12 +333,14 @@ def build(games, players, bios, fx, prev=None):
                    f"The {len(sched)} remaining games played out {SIMS:,} times; projected record = average wins, "
                    "rounded so the ladder adds up",
                    "Ladder ties: wins, then wins between the tied teams, then points difference in those games, then overall",
-                   "Injuries are not modelled"],
+                   "Availability: each game to come adjusts both teams for who is out or back compared with the games "
+                   "their strength is built on (availability.py, calibrated on 1,458 NBL games 2015-26)"],
     }
     # ---- round by round: a tip for every game still to play; for every game played, the tip made before it ----
     # A game played since the last run keeps the last tip made before it (that run's prediction, from data that did
     # not include the game). A game played before tips were kept gets a back-tested tip: the same model fitted on
     # only the games played before that game's date. Tips of played games are never recomputed.
+    adj_of = {r["id"]: a for r, a in zip(sched, ADJ)}
     prev_g = {x["id"]: x for x in ((prev or {}).get("games") or []) if x.get("id")}
     prev_at = ((prev or {}).get("status") or {}).get("computedAt")
     out_games, need_bt = [], collections.defaultdict(list)
@@ -348,8 +358,10 @@ def build(games, players, bios, fx, prev=None):
             else:
                 need_bt[g["date"]].append(e)
         else:
-            pr, mg = predict(M, r["home"], r["away"])
+            a = adj_of.get(r["id"]) or {"h": (0.0, []), "a": (0.0, [])}
+            pr, mg = predict(M, r["home"], r["away"], a["h"][0] - a["a"][0])
             e["pHome"], e["margin"] = round(float(pr), 4), round(float(mg), 2)
+            e["avail"] = {"h": a["h"][0], "a": a["a"][0], "hp": a["h"][1], "ap": a["a"][1]}
         out_games.append(e)
     for d, lst in sorted(need_bt.items()):
         Md = rate([g for g in games if g["date"] < d], [x for x in players if x["date"] < d], bios, TEAMS)
@@ -364,6 +376,8 @@ def build(games, players, bios, fx, prev=None):
             t["ok"] = bool((t["p"] >= 0.5) == (e["hs"] > e["as"]))
             rec[t["src"]][0] += int(t["ok"]); rec[t["src"]][1] += 1
     status["tips"] = rec
+    status["injuries"] = {"listRead": ((injuries or {}).get("status") or {}).get("listRead"), "bGS": AV.B_GS, "bRepl": AV.B_REPL,
+                          "k": AV.K, "since": "2026-11-08"}
     status["currentRound"] = next((e["round"] for e in out_games if e.get("hs") is None), None)
     return {"status": status, "teams": teams, "games": out_games}
 
@@ -373,7 +387,9 @@ def main():
     try:
         fp = os.path.join(root, "data", "ladder.json")
         prev = json.load(open(fp)) if os.path.exists(fp) else None
-        doc = build(load(root, "games"), load(root, "players"), {b["id"]: b for b in load(root, "bios")}, fixture(), prev)
+        fi = os.path.join(root, "data", "injuries.json")
+        injuries = json.load(open(fi)) if os.path.exists(fi) else None
+        doc = build(load(root, "games"), load(root, "players"), {b["id"]: b for b in load(root, "bios")}, fixture(), prev, injuries)
     except Exception as ex:
         print("ladder: not rebuilt, previous projection kept:", repr(ex))
         sys.exit(1)
