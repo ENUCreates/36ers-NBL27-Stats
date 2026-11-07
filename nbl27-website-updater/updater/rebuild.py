@@ -16,7 +16,8 @@ however old, is picked up. Steps:
   6. Safety: a previously published game that ESPN no longer lists is kept, with a warning. If fewer than
      90% of the previously published games come back, nothing is written at all.
   7. Write data/*.json + data/meta.json and print a change report (also stored in meta.status.changes).
-  8. Refresh the Player cards (bios.py), then the projected ladder (ladder.py -> data/ladder.json).
+  8. Refresh the Player cards (bios.py), then the projected ladder (ladder.py -> data/ladder.json) and the matchup
+     facts (matchups.py -> data/matchups.json, data/matchups_played.json).
      The injury list (injuries.py -> data/injuries.json) is a separate step of the daily update, after this one.
 
 Usage: python3 rebuild.py <repo_root> [settle_hours=8]
@@ -352,6 +353,13 @@ def main():
             print("ladder step failed: previous projection kept")
     except Exception as ex:
         print("ladder step failed: previous projection kept:", ex)
+    # Matchup facts for every game (matchups.py; injuries.py runs it again once today's injury list is in)
+    try:
+        r = U.run_script("matchups.py", [root])
+        if r.returncode:
+            print("matchups step failed: previous facts kept")
+    except Exception as ex:
+        print("matchups step failed: previous facts kept:", ex)
 
 
 if __name__ == "__main__":

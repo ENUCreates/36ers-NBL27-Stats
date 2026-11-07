@@ -409,6 +409,52 @@ table.heat td.h{text-align:center;min-width:46px;background:color-mix(in srgb,va
 .mtip.no{color:var(--bad)}
 .mtip.none{color:var(--muted);font-weight:500}
 @media (max-width:760px){.mrow{grid-template-columns:minmax(0,1fr);gap:8px}.mtip{text-align:left}.mup{grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr);gap:8px}.mside .nm .lg{display:none}.mside .nm .sh{display:inline}}
+/* Matchup facts: click a game in the round-by-round tips to open the facts behind its percentage */
+.mrow.clk{cursor:pointer;transition:background .15s}
+.mrow.clk:hover{background:var(--soft)}
+.mrow.clk:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.mrow .chev{display:inline-block;margin-left:8px;font:600 12px/1 var(--mono);color:var(--muted);transition:transform .15s}
+.mrow[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.mrow[aria-expanded="true"]{background:var(--soft);border-bottom-color:transparent}
+.mx{background:var(--soft);border-bottom:1px solid var(--line);padding:4px 14px 18px}
+.mx-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.mx-grid{grid-template-columns:minmax(0,1fr)}}
+.mx h4{font:700 15px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 8px;color:var(--ink)}
+.mx .mxnote{font:500 11px/1.4 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:10px 0 0}
+.mx .mxres{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin-top:12px;font:600 14px/1.3 var(--display);letter-spacing:.05em;text-transform:uppercase}
+.why{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.why td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:normal;font-size:13px;vertical-align:top}
+.why td:first-child{font:600 12px/1.3 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);width:120px}
+.why td.v{text-align:right;font-weight:600;color:var(--ink);white-space:nowrap}
+.why tr.tot td{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.why tr:last-child td{border-bottom:0}
+.build{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin-top:8px;font:500 12px/1.4 var(--mono);color:var(--muted)}
+.build b{color:var(--ink);font-weight:500}
+.fgrp{margin-top:10px}
+.fgrp .fk{font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.fgrp .fni{margin-left:8px;font:500 10px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--warn);border:1px solid var(--warn);border-radius:999px;padding:2px 6px}
+.fgrp .fin{margin-left:8px;font:500 10px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--good);border:1px solid var(--good);border-radius:999px;padding:2px 6px}
+.fgrp ul{margin:6px 0 0;padding-left:18px}
+.fgrp li{margin:4px 0;font-size:13.5px;line-height:1.45;color:var(--ink)}
+.tape{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;table-layout:fixed}
+.tape th,.tape td{padding:6px 8px;border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap}
+.tape th{font:600 12px/1 var(--display);letter-spacing:.06em}
+.tape td.l{text-align:center;color:var(--muted);font:600 11px/1.2 var(--display);letter-spacing:.06em;text-transform:uppercase;white-space:normal}
+.tape td.a{text-align:left}
+.tape td.h{text-align:right}
+.tape td b{color:var(--accent-text);font-weight:600}
+.tape td .rk{color:var(--muted);font:500 11px var(--mono);margin:0 4px}
+.tape tr:last-child td{border-bottom:0}
+.tape .wl5 i{font-style:normal;font:600 12px var(--mono);margin:0 1px}
+.tape .wl5 i.w{color:var(--good)}
+.tape .wl5 i.l{color:var(--bad)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.two .col{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px}
+.two .col .ch{display:flex;align-items:center;gap:6px;font:700 13px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.two .col div.r{display:flex;justify-content:space-between;gap:8px;padding:3px 0}
+.two .col div.r span:last-child{color:var(--muted);font:500 12px var(--mono);white-space:nowrap}
+@media (max-width:560px){.two{grid-template-columns:minmax(0,1fr)}.why td:first-child{width:84px}.why td{font-size:12.5px;padding:7px 8px}
+  .tape th,.tape td{white-space:normal;font-size:12px;padding:5px 6px}.tape td .rk{display:inline-block;margin:2px 3px 0}.mx{padding:4px 10px 16px}}
 /* Injuries */
 .injhead{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px}
 .injhead b{color:var(--ink);font-weight:500}
@@ -2327,7 +2373,8 @@ function tipRow(g){
       tip=`<div class="mtip ${t.ok?"ok":"no"}">${t.ok?"✓":"✗"} Tipped ${cc(th?g.home:g.away)}<span class="sub">${pc}% · ${t.src==="live"?"tipped "+dShort(String(t.at||"").slice(0,10)):"back-tested"}</span></div>`}
     else tip=`<div class="mtip none">No tip</div>`;
   }
-  return `<div class="mrow"><div class="mwhen"><b>${day} · ${tm}</b>${g.venue||""}</div><div class="mup">${side(g.home,"home "+hc)}${mid}${side(g.away,"away "+ac)}</div>${tip}</div>`;
+  const open=mxOpen.has(g.id);
+  return `<div class="mrow clk" role="button" tabindex="0" aria-expanded="${open}" data-id="${g.id}" title="Show the matchup facts"><div class="mwhen"><b>${day} · ${tm}</b>${g.venue||""}</div><div class="mup">${side(g.home,"home "+hc)}${mid}${side(g.away,"away "+ac)}</div>${tip.replace(/<\/div>$/,`<span class="chev" aria-hidden="true">▾</span></div>`)}</div><div class="mx" id="mx-${g.id}" ${open?"":"hidden"}></div>`;
 }
 function renderTips(){
   const box=document.getElementById("rtips"),pk=document.getElementById("rpicker"),rec=document.getElementById("tiprec");if(!box)return;
@@ -2343,6 +2390,73 @@ function renderTips(){
   const R=G.filter(g=>g.round===lround).sort((a,b)=>a.start<b.start?-1:1),ds=R.map(g=>g.date).sort();
   const done=R.filter(g=>g.hs!=null&&g.tip),okN=done.filter(g=>g.tip.ok).length,left=R.filter(g=>g.hs==null).length;
   box.innerHTML=`<div class="rhead"><span>Round ${lround}</span><span class="mut">${dShort(ds[0])}${ds[ds.length-1]!==ds[0]?" – "+dShort(ds[ds.length-1]):""} · ${R.length} game${R.length===1?"":"s"}${left&&left<R.length?` · ${left} to play`:""}</span>${done.length?`<span class="mut">${okN} of ${done.length} tips right</span>`:""}</div>`+R.map(tipRow).join("");
+  box.querySelectorAll(".mrow.clk").forEach(r=>{const go=()=>toggleMX(r.dataset.id);r.onclick=go;r.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});
+  R.forEach(g=>{if(mxOpen.has(g.id))drawMX(g)});
+}
+
+// ---- Matchup facts (data/matchups.json for games still to play, data/matchups_played.json for games played), written
+// by the daily update (matchups.py): how the model got the percentage, the key facts behind it, both teams' numbers.
+// Read only when a game is first opened.
+const mxOpen=new Set();let MXD=null,MXP=null;
+const jget=async f=>{try{const r=await fetch("data/"+f+"?v="+Math.floor(Date.now()/600000),{cache:"no-store"});return r.ok?await r.json():null}catch(e){return null}};
+function toggleMX(id){
+  const g=(LADDER?.games||[]).find(x=>x.id===id);if(!g)return;
+  const row=document.querySelector(`.mrow[data-id="${id}"]`),box=document.getElementById("mx-"+id);
+  if(mxOpen.has(id)){mxOpen.delete(id);if(row)row.setAttribute("aria-expanded","false");if(box)box.hidden=true;return}
+  mxOpen.add(id);if(row)row.setAttribute("aria-expanded","true");drawMX(g);
+}
+async function drawMX(g){
+  const box=document.getElementById("mx-"+g.id);if(!box)return;box.hidden=false;
+  const played=g.hs!=null;
+  if(played?!MXP:!MXD){box.innerHTML=`<p class="mxnote">Loading the matchup facts…</p>`;if(played)MXP=await jget("matchups_played.json")||{games:{}};else MXD=await jget("matchups.json")||{games:{},teams:{}}}
+  if(!mxOpen.has(g.id))return;
+  const D=played?MXP:MXD,m=D?.games?.[g.id];
+  if(!m){box.innerHTML=`<p class="mxnote">No matchup facts for this game yet. The daily update adds them.</p>`;return}
+  const TM=m.teams||MXD?.teams||{},H=g.home,A=g.away,c=t=>TEAMS[t]?.c||t,w=m.why||{};
+  // why: strength gap + home court = expected margin -> chance
+  const gap=(w.rH??0)-(w.rA??0),mg=w.margin??(gap+(w.hca||0)),p=w.p??0.5,fav=mg>=0?H:A,pp=Math.round(100*Math.max(p,1-p));
+  const rk=n=>n?` (${ordinal(n)})`:"";
+  let why=`<table class="why"><tr><td>Strength</td><td>${c(H)} ${sgn(w.rH)}${rk(w.rkH)} · ${c(A)} ${sgn(w.rA)}${rk(w.rkA)}</td><td class="v">${Math.abs(gap)<0.05?"Even":`${c(gap>=0?H:A)} +${f1(Math.abs(gap))}`}</td></tr>
+    <tr><td>Home court</td><td>${c(H)} at home</td><td class="v">${c(H)} +${f1(w.hca||0)}</td></tr>
+    <tr class="tot"><td>Expected margin</td><td></td><td class="v">${c(fav)} by ${f1(Math.abs(mg))}</td></tr>
+    <tr><td>Win chance</td><td>Games swing ±${Math.round(w.sd||13)} pts</td><td class="v">${c(p>=0.5?H:A)} ${pp}%</td></tr></table>
+    <p class="mxnote">Strength = points a game better or worse than an average team on a neutral court. Single games swing about ±${Math.round(w.sd||13)} points either way and each team's strength is still uncertain, which turns the expected margin into the win chance.</p>`;
+  const bd=w.build||{},bl=t=>{const x=bd[t]||{};return `<b>${c(t)}</b><span>${x.margin==null?"–":sgn(x.margin)} → <b>${x.adj==null?"–":sgn(x.adj)}</b> → <b>${sgn(x.rating)}</b></span>`};
+  why+=`<p class="mxnote">How each strength is built, per game: actual margin → without shooting luck → after opponents and sample size</p><div class="build">${bl(H)}${bl(A)}</div>`;
+  // key facts, grouped
+  const KIND=[["model","Why the strengths differ","in"],["out","Injuries","ni"],["h2h","Head to head",""],["style","Style of play",""],["form","Form",""],["rest","Rest and travel","ni"],["split","Home and away",""],["close","Close games",""]];
+  const F=m.facts||[];
+  const facts=KIND.map(([k,l,tag])=>{const fs=F.filter(f=>f.k===k);return fs.length?`<div class="fgrp"><span class="fk">${l}</span>${tag==="in"?`<span class="fin">In the %</span>`:tag==="ni"?`<span class="fni">Not in the %</span>`:""}<ul>${fs.map(f=>`<li>${f.t}</li>`).join("")}</ul></div>`:""}).join("");
+  // tale of the tape
+  const th=TM[H]?.tape||{},ta=TM[A]?.tape||{},rest=m.rest||{};
+  const pc=(v,d=1)=>v==null?"–":(100*v).toFixed(d)+"%",n1=v=>v==null?"–":f1(v),wl=x=>x?`${x[0]}–${x[1]}`:"–";
+  const rows=[["Ladder",t=>`${wl(t.wl)}${t.ladder?` (${ordinal(t.ladder)})`:""}`,null],["Home / away",t=>`${wl(t.home)} / ${wl(t.away)}`,null],
+    ["Last five",t=>`<span class="wl5">${(t.last5||"–").split("").map(x=>`<i class="${x==="W"?"w":"l"}">${x}</i>`).join("")}</span>`,null],
+    ["Model strength",t=>sgn(t.rating),"ratingRk"],["Net rating",t=>sgn(t.net),"net"],["Offensive rating",t=>n1(t.ortg),"ortg"],["Defensive rating",t=>n1(t.drtg),"drtg"],
+    ["Pace",t=>n1(t.pace),"pace",1],["eFG%",t=>pc(t.efg),"efg"],["eFG% allowed",t=>pc(t.oefg),"oefg"],["Turnover %",t=>pc(t.tov),"tov"],["Turnovers forced",t=>pc(t.otov),"otov"],
+    ["Off. rebound %",t=>pc(t.orb),"orb"],["Def. rebound %",t=>pc(t.drb),"drb"],["Free throws a shot",t=>t.ftr==null?"–":t.ftr.toFixed(2),"ftr"],["Free throws allowed",t=>t.oftr==null?"–":t.oftr.toFixed(2),"oftr"],
+    ["Shots from three",t=>pc(t.tpar,0),"tpar",1],["3P% (usual)",t=>`${pc(t.tpp)} <span class="rk">(${pc(t.shoot?.xtp)})</span>`,null],["Opp. 3P% (expected)",t=>`${pc(t.otpp)} <span class="rk">(${pc(t.shoot?.oxtp)})</span>`,null],
+    ["Shots at the rim",t=>pc(t.rim,0),"rim",1],["Transition points",t=>`${n1(t.trans)} / ${n1(t.otrans)}`,"trans"],["Second-chance points",t=>`${n1(t.sc)} / ${n1(t.osc)}`,"sc"],
+    ["Shooting luck",t=>t.luck==null?"–":sgn(t.luck),null],["Close games",t=>wl(t.close),null]];
+  const rkOf=(t,k)=>k==="ratingRk"?t.ratingRk:t.rk?.[k];
+  let tape=`<table class="tape"><thead><tr><th class="h" style="text-align:right">${code(H)}</th><th style="text-align:center;width:38%"></th><th style="text-align:left">${code(A)}</th></tr></thead><tbody>`;
+  rows.forEach(([l,f,k,neutral])=>{const ra=k?rkOf(th,k):null,rb=k?rkOf(ta,k):null,bh=k&&!neutral&&ra&&rb&&ra<rb,ba=k&&!neutral&&ra&&rb&&rb<ra;
+    tape+=`<tr><td class="h">${ra?`<span class="rk">${ordinal(ra)}</span>`:""}${bh?`<b>${f(th)}</b>`:f(th)}</td><td class="l">${l}</td><td class="a">${ba?`<b>${f(ta)}</b>`:f(ta)}${rb?`<span class="rk">${ordinal(rb)}</span>`:""}</td></tr>`});
+  const rd=t=>{const r=rest[t]||{};return r.days==null?"–":`${r.days} day${r.days===1?"":"s"}`};
+  tape+=`<tr><td class="h">${rd(H)}</td><td class="l">Rest before</td><td class="a">${rd(A)}</td></tr></tbody></table>
+    <p class="mxnote">Ranks are among the 10 teams, 1st = best (pace, shots from three and at the rim: 1st = most). Transition and second-chance points: scored / allowed a game.</p>`;
+  // leading scorers and injury list
+  const lead=t=>(TM[t]?.leaders||[]).map(x=>`<div class="r"><span>${x.name}${x.out?` <span class="ist ${x.out}" style="padding:2px 6px;font-size:10px">${x.out==="dtd"?"Day-to-day":x.out==="season"?"Season":"Out"}</span>`:""}</span><span>${f1(x.ppg)} pts · ${f1(x.mpg)} min</span></div>`).join("")||`<div class="r"><span class="mut">–</span></div>`;
+  const injl=t=>{const L=TM[t]?.injuries;if(!L)return `<div class="r"><span class="mut">Not kept for this game</span></div>`;const R=L.filter(x=>x.cls!=="retired");return R.length?R.map(x=>`<div class="r"><span>${x.name} <span class="mut">${x.injury||""}</span></span><span>${x.cls==="dtd"?"Day-to-day":x.cls==="season"?"Season":x.ret||"TBC"}</span></div>`).join(""):`<div class="r"><span class="mut">Nobody listed</span></div>`};
+  const two=(f)=>`<div class="two"><div class="col"><div class="ch">${code(H)}${c(H)}</div>${f(H)}</div><div class="col"><div class="ch">${code(A)}${c(A)}</div>${f(A)}</div></div>`;
+  const h2h=(m.h2h||[]).length?(m.h2h.map(x=>`<div class="r"><span>${dShort(x.date)} · ${c(x.home)} ${x.hs}–${x.as} ${c(x.away)}</span><span>at ${disp(x.home)}</span></div>`).join("")):`<div class="r"><span class="mut">First meeting this season</span></div>`;
+  // what this view is: today's facts, or the facts as they stood before a played game
+  const asof=m.asOf?new Date(m.asOf.length>10?m.asOf:m.asOf+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"}):"";
+  const head=m.state==="pre"?`<p class="mxnote">Facts as of ${asof}, refreshed every morning. Strength, home court and shooting luck are in the percentage; injuries and rest are not.</p>`
+    :m.state==="frozen"?`<p class="mxnote">The facts as they stood before the game (${asof}), when it was tipped.</p>`
+    :`<p class="mxnote">Back-tested: the model and numbers use only the games before ${asof}. The injury list wasn't kept then.</p>`;
+  box.innerHTML=`${head}<div class="mx-grid"><div><h4>Why ${c(p>=0.5?H:A)} ${pp}%</h4>${why}<h4>Key facts</h4>${facts||`<p class="mxnote">No standout facts.</p>`}</div>
+    <div><h4>Tale of the tape</h4>${tape}<h4>Leading scorers</h4>${two(lead)}<h4>Injury list</h4>${two(injl)}<h4>Head to head this season</h4><div class="two" style="grid-template-columns:1fr"><div class="col">${h2h}</div></div></div></div>`;
 }
 
 // ---- Injuries: data/injuries.json = the league's injury list as basketball.com.au publishes it (status, injury and
