@@ -19,6 +19,9 @@ the same API official.py reads). Deterministic: a fixed random seed, so the same
      Ladder order in each run: wins, then wins between the tied teams, then points difference in those games, then
      overall points difference.
   5. Projected record = the average wins, rounded so the ladder still adds up (largest remainder).
+  6. Round by round: every game still to play gets a tip (chance the home team wins and expected margin, from the
+     same model). When a game has been played, it keeps the last tip made before it; games played before tips were
+     kept get a back-tested tip (the model fitted on only the games before that date). Tips are never re-done later.
 
 Usage: python3 ladder.py <repo_root>        writes data/ladder.json (exit 0), or exits 1 and leaves the old file
 """
@@ -54,11 +57,12 @@ def fixture():
             continue
         start = O.sv(m.get("start_time"))
         d = datetime.datetime.fromisoformat(start[:19]).replace(tzinfo=datetime.timezone.utc).astimezone(SYD)
-        out.append({"home": O.TEAMNAME.get(m["home_team"]["name"], m["home_team"]["name"]),
+        rnd = O.sv(m.get("round"))
+        out.append({"id": str(m.get("id")), "home": O.TEAMNAME.get(m["home_team"]["name"], m["home_team"]["name"]),
                     "away": O.TEAMNAME.get(m["away_team"]["name"], m["away_team"]["name"]),
                     "date": d.strftime("%Y-%m-%d"), "start": start, "status": O.sv(m.get("match_status")).lower(),
-                    "round": O.sv(m.get("round"))})
-    return out
+                    "round": int(rnd) if rnd.isdigit() else None, "venue": O.sv((m.get("venue") or {}).get("name"))})
+    return sorted(out, key=lambda r: r["start"])
 
 
 def career(b):
@@ -77,23 +81,11 @@ def career(b):
     return c
 
 
-def build(games, players, bios, fx):
-    TEAMS = sorted({t for r in fx for t in (r["home"], r["away"])})
+def rate(games, players, bios, TEAMS):
+    """Team ratings from these games only: posterior (mixture over tau) of each team's strength, the home edge and
+    the game-to-game noise, plus the shooting-luck figures shown on the page."""
     ix = {t: i for i, t in enumerate(TEAMS)}
     N = len(TEAMS)
-    # each played game is one fixture match: same home and away teams, the nearest date (within 2 days)
-    day = lambda s: datetime.date.fromisoformat(s)
-    used = set()
-    for g in sorted(games, key=lambda g: g["date"]):
-        c = [k for k, r in enumerate(fx) if k not in used and r["home"] == g["home"]["team"] and r["away"] == g["away"]["team"]
-             and abs((day(r["date"]) - day(g["date"])).days) <= 2]
-        if not c:
-            raise RuntimeError(f"{g['date']} {g['away']['team']} at {g['home']['team']} is not in the NBL's fixture")
-        used.add(min(c, key=lambda k: abs((day(fx[k]["date"]) - day(g["date"])).days)))
-    sched = [r for k, r in enumerate(fx) if k not in used]
-    late = [r for r in sched if r["status"] == "complete"]
-    total_games = len(fx)
-
     # ---- shooting: league rates, player estimates, expected makes per team-game ----
     S = lambda k: sum(g[s][k] for g in games for s in ("home", "away"))
     lg3 = S("tpm") / S("tpa") if games else 0.345
@@ -180,6 +172,43 @@ def build(games, players, bios, fx):
     tau_m = float((wt * TAUS).sum())
     mr, Cr = post(y_raw, tau_m, sig_raw)
     hca, hca_sd = float(mr[N]), float(math.sqrt(Cr[N, N]))
+    return {"ix": ix, "N": N, "mu": mu, "POST": POST, "wt": wt, "hca": hca, "hca_sd": hca_sd, "sig_raw": float(sig_raw),
+            "sig_adj": float(sig_adj), "tau_m": tau_m, "luck_t": luck_t, "gp_t": gp_t, "shoot": shoot, "lg3": lg3, "lgft": lgft}
+
+
+def predict(M, home, away):
+    """Chance the home team wins and its expected margin: the posterior mixture of (home - away strength + home edge)
+    plus the game-to-game noise, worked out exactly (the season simulation draws from the same model)."""
+    i, j = M["ix"][home], M["ix"][away]
+    p = m = 0.0
+    for w, (mk, Ck) in zip(M["wt"], M["POST"]):
+        d = mk[i] - mk[j] + M["hca"]
+        v = Ck[i, i] + Ck[j, j] - 2 * Ck[i, j] + M["hca_sd"] ** 2 + M["sig_raw"] ** 2
+        p += w * 0.5 * (1 + math.erf(d / math.sqrt(2 * v)))
+        m += w * d
+    return p, m
+
+
+def build(games, players, bios, fx, prev=None):
+    TEAMS = sorted({t for r in fx for t in (r["home"], r["away"])})
+    ix = {t: i for i, t in enumerate(TEAMS)}
+    N = len(TEAMS)
+    # each played game is one fixture match: same home and away teams, the nearest date (within 2 days)
+    day = lambda s: datetime.date.fromisoformat(s)
+    match_of = {}                               # fixture index -> the game in games.json
+    for g in sorted(games, key=lambda g: g["date"]):
+        c = [k for k, r in enumerate(fx) if k not in match_of and r["home"] == g["home"]["team"] and r["away"] == g["away"]["team"]
+             and abs((day(r["date"]) - day(g["date"])).days) <= 2]
+        if not c:
+            raise RuntimeError(f"{g['date']} {g['away']['team']} at {g['home']['team']} is not in the NBL's fixture")
+        match_of[min(c, key=lambda k: abs((day(fx[k]["date"]) - day(g["date"])).days))] = g
+    sched = [r for k, r in enumerate(fx) if k not in match_of]
+    late = [r for r in sched if r["status"] == "complete"]
+    total_games = len(fx)
+
+    M = rate(games, players, bios, TEAMS)
+    mu, POST, wt, hca, hca_sd, sig_raw, sig_adj, tau_m = (M[k] for k in ("mu", "POST", "wt", "hca", "hca_sd", "sig_raw", "sig_adj", "tau_m"))
+    luck_t, gp_t, shoot, lg3, lgft = (M[k] for k in ("luck_t", "gp_t", "shoot", "lg3", "lgft"))
 
     # ---- current records ----
     W, L, PF, PA = (collections.Counter() for _ in range(4))
@@ -298,20 +327,65 @@ def build(games, players, bios, fx):
                    "Ladder ties: wins, then wins between the tied teams, then points difference in those games, then overall",
                    "Injuries are not modelled"],
     }
-    return {"status": status, "teams": teams}
+    # ---- round by round: a tip for every game still to play; for every game played, the tip made before it ----
+    # A game played since the last run keeps the last tip made before it (that run's prediction, from data that did
+    # not include the game). A game played before tips were kept gets a back-tested tip: the same model fitted on
+    # only the games played before that game's date. Tips of played games are never recomputed.
+    prev_g = {x["id"]: x for x in ((prev or {}).get("games") or []) if x.get("id")}
+    prev_at = ((prev or {}).get("status") or {}).get("computedAt")
+    out_games, need_bt = [], collections.defaultdict(list)
+    for k, r in enumerate(fx):
+        e = {"id": r["id"], "round": r["round"], "start": r["start"], "date": r["date"], "venue": r["venue"],
+             "home": r["home"], "away": r["away"]}
+        g = match_of.get(k)
+        if g:
+            e["hs"], e["as"] = g["home"]["pts"], g["away"]["pts"]
+            pg = prev_g.get(r["id"])
+            if pg and pg.get("hs") is None and pg.get("pHome") is not None:
+                e["tip"] = {"p": pg["pHome"], "m": pg["margin"], "at": prev_at, "src": "live"}
+            elif pg and pg.get("tip"):
+                e["tip"] = dict(pg["tip"])
+            else:
+                need_bt[g["date"]].append(e)
+        else:
+            pr, mg = predict(M, r["home"], r["away"])
+            e["pHome"], e["margin"] = round(float(pr), 4), round(float(mg), 2)
+        out_games.append(e)
+    for d, lst in sorted(need_bt.items()):
+        Md = rate([g for g in games if g["date"] < d], [x for x in players if x["date"] < d], bios, TEAMS)
+        for e in lst:
+            pr, mg = predict(Md, e["home"], e["away"])
+            e["tip"] = {"p": round(float(pr), 4), "m": round(float(mg), 2), "at": d, "src": "backtest",
+                        "games": sum(1 for g in games if g["date"] < d)}
+    rec = {"live": [0, 0], "backtest": [0, 0]}
+    for e in out_games:
+        t = e.get("tip")
+        if t and e.get("hs") is not None:
+            t["ok"] = bool((t["p"] >= 0.5) == (e["hs"] > e["as"]))
+            rec[t["src"]][0] += int(t["ok"]); rec[t["src"]][1] += 1
+    status["tips"] = rec
+    status["currentRound"] = next((e["round"] for e in out_games if e.get("hs") is None), None)
+    return {"status": status, "teams": teams, "games": out_games}
 
 
 def main():
     root = sys.argv[1] if len(sys.argv) > 1 else "."
     try:
-        doc = build(load(root, "games"), load(root, "players"), {b["id"]: b for b in load(root, "bios")}, fixture())
+        fp = os.path.join(root, "data", "ladder.json")
+        prev = json.load(open(fp)) if os.path.exists(fp) else None
+        doc = build(load(root, "games"), load(root, "players"), {b["id"]: b for b in load(root, "bios")}, fixture(), prev)
     except Exception as ex:
         print("ladder: not rebuilt, previous projection kept:", repr(ex))
         sys.exit(1)
-    json.dump(doc, open(os.path.join(root, "data", "ladder.json"), "w"), separators=(",", ":"))
+    out = os.path.join(root, "data", "ladder.json")          # write a copy, then swap it in (never half a file)
+    with open(out + ".tmp", "w") as f:
+        json.dump(doc, f, separators=(",", ":"))
+    os.replace(out + ".tmp", out)
     st = doc["status"]
+    tp = st["tips"]
     print(f"ladder: {st['gamesPlayed']} games played, {st['gamesLeft']} simulated {SIMS:,} times; home edge "
-          f"{st['homeEdge']:+.2f}; " + ", ".join(f"{t['pos']}. {t['team']} {t['proj'][0]}-{t['proj'][1]}" for t in doc["teams"]))
+          f"{st['homeEdge']:+.2f}; " + ", ".join(f"{t['pos']}. {t['team']} {t['proj'][0]}-{t['proj'][1]}" for t in doc["teams"])
+          + f"; tips right: live {tp['live'][0]}/{tp['live'][1]}, back-tested {tp['backtest'][0]}/{tp['backtest'][1]}")
 
 
 if __name__ == "__main__":

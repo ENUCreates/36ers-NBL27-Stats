@@ -379,6 +379,36 @@ table.heat th{text-align:center}
 table.heat th.tm{text-align:left}
 table.heat td.h{text-align:center;min-width:46px;background:color-mix(in srgb,var(--accent) calc(var(--a) * .85%),transparent)}
 :root[data-bg="white"] table.heat td.h{background:color-mix(in srgb,var(--accent) calc(var(--a) * .7%),transparent)}
+/* Round-by-round tips: home team on the left; the tipped side of the bar in red */
+.tiprec{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+.tiprec b{color:var(--ink);font-weight:500}
+.rchips .chip{min-width:40px;justify-content:center}
+.rchips .chip.now:not([aria-pressed="true"]){box-shadow:inset 0 -2px 0 var(--accent)}
+.rhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;padding:12px 14px;border-bottom:1px solid var(--line);font:700 18px/1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.rhead .mut{font:500 12px var(--mono);letter-spacing:.04em}
+.mrow{display:grid;grid-template-columns:164px minmax(0,1fr) 150px;gap:16px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line)}
+.mrow:last-child{border-bottom:0}
+.mwhen{font:500 11px/1.4 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.mwhen b{display:block;color:var(--ink);font-weight:500;font-size:12px}
+.mup{display:grid;grid-template-columns:minmax(0,1fr) 132px minmax(0,1fr);gap:12px;align-items:center}
+.mside{display:flex;align-items:center;gap:8px;min-width:0}
+.mside.away{flex-direction:row-reverse;text-align:right}
+.mside .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+.mside.fav .nm,.mside.win .nm{color:var(--ink);font-weight:600}
+.mside .nm .sh{display:none}
+.wbar{display:flex;height:8px;border-radius:999px;overflow:hidden;background:var(--soft)}
+.wbar i{display:block;height:100%}
+.wbar i.f{background:var(--accent)}
+.wbar i.u{background:var(--line)}
+.wpct{display:flex;justify-content:space-between;margin-top:5px;font:500 11px/1 var(--mono);color:var(--muted)}
+.mscore{display:flex;justify-content:center;align-items:baseline;gap:8px;font:700 22px/1 var(--display);color:var(--muted)}
+.mscore b.w{color:var(--ink)}
+.mtip{text-align:right;font:600 14px/1.25 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.mtip .sub{display:block;font:500 11px/1.4 var(--mono);letter-spacing:.03em;color:var(--muted)}
+.mtip.ok{color:var(--good)}
+.mtip.no{color:var(--bad)}
+.mtip.none{color:var(--muted);font-weight:500}
+@media (max-width:760px){.mrow{grid-template-columns:minmax(0,1fr);gap:8px}.mtip{text-align:left}.mup{grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr);gap:8px}.mside .nm .lg{display:none}.mside .nm .sh{display:inline}}
 /* Injuries */
 .injhead{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px}
 .injhead b{color:var(--ink);font-weight:500}
@@ -455,6 +485,10 @@ table.heat td.h{text-align:center;min-width:46px;background:color-mix(in srgb,va
       <span><i style="background:var(--accent)"></i>Red lines: top 2 go straight to the semi-finals, 3rd to 6th play the play-in</span>
       <span>Tap a team to open its sheet</span>
     </div>
+    <h3 class="sech">Round-by-round tips</h3>
+    <div class="tiprec" id="tiprec"></div>
+    <div class="chips rchips" id="rpicker" style="margin-bottom:12px"></div>
+    <div class="panel" id="rtips"></div>
     <h3 class="sech">Chance of each finishing position (%)</h3>
     <div class="panel scroll" id="ladpos"></div>
     <div class="notes fblock" id="ladnote"></div>
@@ -2249,7 +2283,7 @@ const ladderOf=team=>(LADDER?.teams||[]).find(t=>t.team===team);
 function renderLadder(){
   const el=document.getElementById("ladder"),pe=document.getElementById("ladpos"),ne=document.getElementById("ladnote");if(!el)return;
   const T=LADDER?.teams||[],S=LADDER?.status||{};
-  if(!T.length){el.innerHTML=`<div class="empty"><strong>No projection yet</strong>The daily update adds it.</div>`;pe.innerHTML="";ne.innerHTML="";return}
+  if(!T.length){el.innerHTML=`<div class="empty"><strong>No projection yet</strong>The daily update adds it.</div>`;pe.innerHTML="";ne.innerHTML="";renderTips();return}
   const run=t=>t.runHomeRank==null?"–":t.runHomeRank===1?"Hardest":t.runHomeRank===T.length?"Easiest":ordinal(t.runHomeRank)+" hardest";
   const tm=t=>`<td class="tm"><button data-team="${TEAMS[t.team]?.c}"><span class="lpos">${t.pos}</span>${code(t.team)}<span class="nm">${disp(t.team)}</span></button></td>`;
   el.innerHTML=`<table><thead><tr><th class="tm">Team</th><th>Now</th><th>Projected</th><th title="The middle 80% of simulated seasons">Likely wins</th><th>Top 2</th><th>Top 6</th><th title="Team strength per 100 possessions, shooting luck taken out">Adj. net</th><th title="Points a game gained (+) or lost (−) from threes and free throws made above or below expectation">Shooting luck</th><th title="How strong the remaining opponents are">Run home</th><th>Games left</th></tr></thead><tbody>${
@@ -2257,6 +2291,7 @@ function renderLadder(){
   pe.innerHTML=`<table class="heat"><thead><tr><th class="tm">Team</th>${T.map((_,i)=>`<th>${ordinal(i+1)}</th>`).join("")}</tr></thead><tbody>${
     T.map(t=>`<tr>${tm(t)}${(t.posProb||[]).map(v=>`<td class="h" style="--a:${Math.round(v*100)}">${v<0.005?"":pc0(v)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
   [el,pe].forEach(x=>x.querySelectorAll("td.tm button").forEach(b=>b.onclick=()=>{current=b.dataset.team;show("team")}));
+  renderTips();
   const late=(S.finishedNotInData||[]).length,upd=S.computedAt?new Date(S.computedAt).toLocaleString("en-AU",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"–";
   ne.innerHTML=[`<b>HOW IT'S WORKED OUT</b>`,
     `Projected = the average record over ${(S.sims||0).toLocaleString("en-AU")} simulations of the ${S.gamesLeft} games left in the NBL's fixture, rounded so the ladder adds up to ${S.totalGames} wins. Likely wins = the middle 80% of those simulated seasons.`,
@@ -2264,8 +2299,50 @@ function renderLadder(){
     `Shooting luck = points a game gained (+) or lost (−) from threes and free throws made above or below expectation. Expectation = what each shooter usually hits (this season plus his past seasons on the Player cards), plus the defence's small effect on 3P% allowed. It's taken out because it doesn't carry over from game to game.`,
     `Adj. net = team strength per 100 possessions. Run home = how strong the remaining opponents are. Home edge used: ${sgn(S.homeEdge)} points a game.`,
     `Ladder ties are split by wins, then wins between the tied teams, then points difference.`,
+    `Tips: each game's chance comes from the same model (both teams' strength, home edge ${sgn(S.homeEdge)} points, and how much single games swing). The margin is the expected winning margin. A played game keeps the last tip made before it, and tips are never re-done afterwards. Back-tested tips, for games played before tips were kept, use only the games played before that day.`,
     `Injuries aren't modelled. See the Injuries tab.`,
     `Updated ${upd} with games through ${dShort(S.lastGame)}.${late?` ${late} finished game${late===1?" isn't":"s aren't"} in the data yet and ${late===1?"is":"are"} simulated.`:""}`].map(x=>`<span>${x}</span>`).join("");
+}
+
+// ---- Round-by-round tips (games in data/ladder.json): every game still to play has the chance the home team wins and
+// the expected margin from the ladder's model; every game played keeps the tip made before it ("live"), or a
+// back-tested tip (the model fitted on only the games before that day) for games played before tips were kept.
+let lround=null;
+const utc=iso=>new Date(/Z$|[+-]\d\d:?\d\d$/.test(iso)?iso:iso+"Z");
+function tipRow(g){
+  const w=utc(g.start),day=w.toLocaleDateString("en-AU",{weekday:"short"})+" "+w.toLocaleDateString("en-AU",{day:"numeric",month:"short"}),tm=w.toLocaleTimeString("en-AU",{hour:"numeric",minute:"2-digit"}).replace(/\s/g,"");
+  const side=(team,cls)=>`<div class="mside ${cls}">${code(team)}<span class="nm"><span class="lg">${disp(team)}</span><span class="sh">${TEAMS[team]?.c||team}</span></span></div>`;
+  const cc=t=>TEAMS[t]?.c||t;
+  let mid,tip,hc="",ac="";
+  if(g.hs==null){
+    const p=g.pHome??0.5,fh=p>=0.5,pp=Math.round(100*p),fav=fh?g.home:g.away;
+    hc=fh?"fav":"";ac=fh?"":"fav";
+    mid=`<div><div class="wbar" title="Chance of winning: ${disp(g.home)} ${pp}%, ${disp(g.away)} ${100-pp}%"><i class="${fh?"f":"u"}" style="width:${pp}%"></i><i class="${fh?"u":"f"}" style="width:${100-pp}%"></i></div><div class="wpct"><span>${pp}%</span><span>${100-pp}%</span></div></div>`;
+    tip=`<div class="mtip">${cc(fav)} by ${Math.max(1,Math.round(Math.abs(g.margin??0)))}<span class="sub">${Math.max(pp,100-pp)}% chance</span></div>`;
+  }else{
+    const hw=g.hs>g.as;hc=hw?"win":"";ac=hw?"":"win";
+    mid=`<div class="mscore"><b class="${hw?"w":""}">${g.hs}</b><span>–</span><b class="${hw?"":"w"}">${g.as}</b></div>`;
+    const t=g.tip;
+    if(t){const th=t.p>=0.5,pc=Math.round(100*Math.max(t.p,1-t.p));
+      tip=`<div class="mtip ${t.ok?"ok":"no"}">${t.ok?"✓":"✗"} Tipped ${cc(th?g.home:g.away)}<span class="sub">${pc}% · ${t.src==="live"?"tipped "+dShort(String(t.at||"").slice(0,10)):"back-tested"}</span></div>`}
+    else tip=`<div class="mtip none">No tip</div>`;
+  }
+  return `<div class="mrow"><div class="mwhen"><b>${day} · ${tm}</b>${g.venue||""}</div><div class="mup">${side(g.home,"home "+hc)}${mid}${side(g.away,"away "+ac)}</div>${tip}</div>`;
+}
+function renderTips(){
+  const box=document.getElementById("rtips"),pk=document.getElementById("rpicker"),rec=document.getElementById("tiprec");if(!box)return;
+  const G=(LADDER?.games||[]).filter(g=>g.round!=null&&g.start);
+  if(!G.length){box.innerHTML=`<div class="empty"><strong>No tips yet</strong>The daily update adds them.</div>`;pk.innerHTML="";rec.innerHTML="";return}
+  const rounds=[...new Set(G.map(g=>g.round))].sort((a,b)=>a-b),S=LADDER.status||{};
+  const cur=S.currentRound??rounds[rounds.length-1];
+  if(lround==null||!rounds.includes(lround))lround=cur;
+  pk.innerHTML=`<span class="k" style="align-self:center;font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:4px">Round</span>`+rounds.map(r=>`<button class="chip${r===cur?" now":""}" aria-pressed="${r===lround}" data-r="${r}" title="Round ${r}${r===cur?" (this round)":""}">${r}</button>`).join("");
+  pk.querySelectorAll("button").forEach(b=>b.onclick=()=>{lround=+b.dataset.r;renderTips()});
+  const T=S.tips||{},rc=x=>{x=x||[0,0];return `<b>${x[0]} of ${x[1]}</b>${x[1]?` (${Math.round(100*x[0]/x[1])}%)`:""}`};
+  rec.innerHTML=`<span>Tips right · live ${rc(T.live)}</span><span>back-tested ${rc(T.backtest)}</span><span>Home team on the left · times in your time zone</span>`;
+  const R=G.filter(g=>g.round===lround).sort((a,b)=>a.start<b.start?-1:1),ds=R.map(g=>g.date).sort();
+  const done=R.filter(g=>g.hs!=null&&g.tip),okN=done.filter(g=>g.tip.ok).length,left=R.filter(g=>g.hs==null).length;
+  box.innerHTML=`<div class="rhead"><span>Round ${lround}</span><span class="mut">${dShort(ds[0])}${ds[ds.length-1]!==ds[0]?" – "+dShort(ds[ds.length-1]):""} · ${R.length} game${R.length===1?"":"s"}${left&&left<R.length?` · ${left} to play`:""}</span>${done.length?`<span class="mut">${okN} of ${done.length} tips right</span>`:""}</div>`+R.map(tipRow).join("");
 }
 
 // ---- Injuries: data/injuries.json = the league's injury list as basketball.com.au publishes it (status, injury and
