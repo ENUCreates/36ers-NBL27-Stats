@@ -17,7 +17,7 @@ import hashlib, json, os, sys
 MANIFEST = "nbl27-website-updater/claude_published.json"
 PAGE = "nbl27-website-updater/claude_page.html"
 DATA = ["games.json", "shots.json", "players.json", "lineups.json", "pshots.json", "events.json", "meta.json",
-        "bios.json", "photos.json", "coachlineups.json"]
+        "bios.json", "photos.json", "coachlineups.json", "ladder.json", "injuries.json"]
 DIRS = ["photos", "coachphotos"]            # *.webp
 MAX_FILES = 200                             # the Artifact tool takes at most 255 files per publish
 

@@ -1,0 +1,7 @@
+Transcribe data, do not summarise. For EVERY club table on this page, output one line per player whose Status is anything other than "Available", in exactly this format and nothing else:
+CLUB | PLAYER | STATUS | INJURY | RETURN | ROW DATE
+Copy each cell exactly as written (keep 'TBC', round numbers and dates as written). ROW DATE = any date/time shown for that row or its note (else -). After the rows, output these lines exactly:
+COUNTS | <the page's own summary counts, exactly as written>
+UPDATED | <the page's own last-updated text, exactly as written>
+CLUBS SEEN | <the club names whose tables you read>
+If a club table is not in the text you were given, list it under CLUBS MISSING | ...

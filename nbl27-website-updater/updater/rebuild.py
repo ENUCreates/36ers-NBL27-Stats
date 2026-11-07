@@ -16,6 +16,8 @@ however old, is picked up. Steps:
   6. Safety: a previously published game that ESPN no longer lists is kept, with a warning. If fewer than
      90% of the previously published games come back, nothing is written at all.
   7. Write data/*.json + data/meta.json and print a change report (also stored in meta.status.changes).
+  8. Refresh the Player cards (bios.py), then the projected ladder (ladder.py -> data/ladder.json).
+     The injury list (injuries.py -> data/injuries.json) is a separate step of the daily update, after this one.
 
 Usage: python3 rebuild.py <repo_root> [settle_hours=8]
 """
@@ -342,6 +344,14 @@ def main():
         U.run_script("bios.py", [root])
     except Exception as ex:
         print("bios step failed:", ex)
+    # Projected ladder (ladder.py): simulates the rest of the season from the data just written and the NBL's own
+    # fixture. If it fails, the previous data/ladder.json stays (its status.computedAt shows when it was made).
+    try:
+        r = U.run_script("ladder.py", [root])
+        if r.returncode:
+            print("ladder step failed: previous projection kept")
+    except Exception as ex:
+        print("ladder step failed: previous projection kept:", ex)
 
 
 if __name__ == "__main__":

@@ -362,6 +362,45 @@ table.hcc .lgm,table.hcc .fnm,table.hcc .lgo{display:none}
 footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:16px;max-width:90ch}
 @media (max-width:760px){.grid2{grid-template-columns:minmax(0,1fr)}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tile:nth-child(2){border-right:0}.tile:nth-child(-n+2){border-bottom:1px solid var(--line)}.ff{grid-template-columns:92px minmax(0,1fr) 54px 40px}}
 @media (prefers-reduced-motion:no-preference){.bar .fill{transition:width .3s,left .3s}}
+/* Projected ladder: the finals cut-offs (2nd, 6th) as red lines; the position chances shaded in 36ers red */
+:root{--warn:#ffcf70;--warn-bg:#4a3a14}
+:root[data-bg="white"]{--warn:#8a5a00;--warn-bg:#fdf1d8}
+#ladder th.tm,#ladder td.tm,#ladpos th.tm,#ladpos td.tm{min-width:236px}
+@media (max-width:600px){#ladder th.tm,#ladder td.tm,#ladpos th.tm,#ladpos td.tm{min-width:186px}}
+.lpos{display:inline-block;width:22px;margin-right:6px;font:700 16px/1 var(--display);color:var(--muted);text-align:right;flex:none}
+#ladder td.proj{font-weight:600;font-size:15px;color:var(--ink);background:var(--soft)}
+#ladder tr.cut td{border-bottom:2px solid var(--accent)}
+.mut{color:var(--muted)}
+td.tl,th.tl{text-align:left}
+.sech{font:700 18px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;margin:22px 0 10px}
+.notes{color:var(--muted);font-size:12px;margin-top:12px;text-transform:uppercase;letter-spacing:.02em;max-width:110ch}
+.notes a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+table.heat th{text-align:center}
+table.heat th.tm{text-align:left}
+table.heat td.h{text-align:center;min-width:46px;background:color-mix(in srgb,var(--accent) calc(var(--a) * .85%),transparent)}
+:root[data-bg="white"] table.heat td.h{background:color-mix(in srgb,var(--accent) calc(var(--a) * .7%),transparent)}
+/* Injuries */
+.injhead{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px}
+.injhead b{color:var(--ink);font-weight:500}
+.injhead a{color:var(--accent-text);text-decoration:none}
+.injt{margin-bottom:14px;overflow:hidden}
+.injteam{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);font:700 18px/1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.injteam .mut{font:500 12px var(--mono);letter-spacing:.04em;margin-left:auto}
+.injt table{table-layout:fixed;min-width:860px}
+.injt table td.tl{white-space:normal}
+.injt table td.lp{white-space:normal}
+.injt tr:last-child td{border-bottom:0}
+.ist{display:inline-block;font:600 12px/1 var(--mono);padding:4px 8px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
+.ist.out{background:var(--bad-bg);color:var(--bad)}
+.ist.dtd{background:var(--warn-bg);color:var(--warn)}
+.ist.season{background:var(--bad);color:var(--bg)}
+.ist.retired{background:var(--soft);color:var(--muted);border-color:var(--line)}
+.flag{display:inline-block;margin-left:8px;font:600 11px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--warn)}
+.warnline{margin:0 0 12px;padding:10px 12px;border:1px solid var(--warn);border-radius:8px;background:var(--warn-bg);color:var(--warn);font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+.injstrip{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:10px 16px;border-top:1px solid var(--line);font-size:13px}
+.injstrip .k{font:600 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.linkbtn{all:unset;cursor:pointer;margin-left:auto;color:var(--accent-text);font:600 13px/1 var(--display);letter-spacing:.08em;text-transform:uppercase}
+.linkbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
 
 <script>try{if(localStorage.getItem("nbl27-bg")==="white")document.documentElement.setAttribute("data-bg","white")}catch(e){}</script>
@@ -381,9 +420,11 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
 
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" id="tab-league" aria-selected="true">League table</button>
+    <button class="tab" role="tab" id="tab-ladder" aria-selected="false">Projected ladder</button>
     <button class="tab" role="tab" id="tab-team" aria-selected="false">Team sheet</button>
     <button class="tab" role="tab" id="tab-players" aria-selected="false">Players</button>
     <button class="tab" role="tab" id="tab-cards" aria-selected="false">Player cards</button>
+    <button class="tab" role="tab" id="tab-injuries" aria-selected="false">Injuries</button>
     <button class="tab" role="tab" id="tab-coaches" aria-selected="false">Head coaches</button>
     <button class="tab" role="tab" id="tab-lineups" aria-selected="false">Lineups</button>
     <button class="tab" role="tab" id="tab-h2h" aria-selected="false">H2H Lineups</button>
@@ -406,6 +447,17 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
     <div class="fblock" id="lnote" style="color:var(--muted);font-size:12px;margin-top:10px;text-transform:uppercase;letter-spacing:.02em" hidden></div>
     <p id="lbad" style="color:var(--muted);font-size:12px;margin:8px 0 0;max-width:90ch;text-transform:uppercase;letter-spacing:.03em" hidden></p>
     <div class="panel" id="tstats" style="margin-top:22px"></div>
+  </section>
+
+  <section id="view-ladder" hidden>
+    <div class="panel scroll" id="ladder"></div>
+    <div class="legend" style="margin-top:10px">
+      <span><i style="background:var(--accent)"></i>Red lines: top 2 go straight to the semi-finals, 3rd to 6th play the play-in</span>
+      <span>Tap a team to open its sheet</span>
+    </div>
+    <h3 class="sech">Chance of each finishing position (%)</h3>
+    <div class="panel scroll" id="ladpos"></div>
+    <div class="notes fblock" id="ladnote"></div>
   </section>
 
   <section id="view-team" hidden>
@@ -440,6 +492,11 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
   <section id="view-cards" hidden>
     <div class="chips" id="cpicker" style="margin-bottom:12px"></div>
     <div id="cards"></div>
+  </section>
+
+  <section id="view-injuries" hidden>
+    <div class="chips" id="ipicker" style="margin-bottom:12px"></div>
+    <div id="injuries"></div>
   </section>
 
   <section id="view-coaches" hidden>
@@ -514,7 +571,7 @@ footer{color:var(--muted);font-size:12px;display:flex;flex-direction:column;gap:
       <span>Clutch = last 5:00 of the 4th quarter or OT with the margin 5 or fewer.</span>
       <span>On/Off = team ratings per 100 possessions with a player on / off the floor.</span>
     </div>
-    <span id="foot-note">Sources: ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play. Rebuilt and checked once a day (8:58am Sydney).</span>
+    <span id="foot-note">Sources: ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play; projected ladder simulated from this data and the NBL's fixture; injury list from the league's list as basketball.com.au publishes it. Rebuilt and checked once a day (8:58am Sydney).</span>
   </footer>
 </div>
 
@@ -903,10 +960,14 @@ function renderTeam(){
   const r=ROWS.find(x=>x.name===byCode[current]);
   if(!r){el.innerHTML=`<div class="panel">${emptyMsg()}</div>`;return}
   const tile=(k,l,fmt)=>`<div class="tile"><span class="k">${l}</span><span class="v">${fmt(r[k])}</span><span class="r">${rkBadge(k,r.name)} <span style="white-space:nowrap">· League Ave ${fmt(LG[k])}</span></span></div>`;
+  // the projected final record (Projected ladder tab) and who is on the league's injury list (Injuries tab)
+  const lad=ladderOf(r.name),inj=(INJ?.players||[]).filter(x=>x.team===r.name&&x.cls!=="retired");
+  const injStrip=inj.length?`<div class="injstrip"><span class="k">Injury list</span>${inj.map(x=>`<span>${x.name} <span class="mut">(${x.injury||"–"}, ${x.cls==="dtd"?"day-to-day":x.cls==="season"?"season":x.ret||"TBC"})</span></span>`).join(`<span class="mut">·</span>`)}<button class="linkbtn" data-goto="injuries">Injuries ›</button></div>`:"";
   el.innerHTML=`
   <div class="panel">
-    <div class="team-head"><h2>${code(r.name)} ${disp(r.name)}</h2><span class="rec">${r.w}–${r.l} · ${r.gp} games · ${f1(r.ppg)} PPG / ${f1(r.oppg)} opp</span></div>
+    <div class="team-head"><h2>${code(r.name)} ${disp(r.name)}</h2><span class="rec">${r.w}–${r.l} · ${r.gp} games · ${f1(r.ppg)} PPG / ${f1(r.oppg)} opp${lad?` · <button class="linkbtn" style="margin:0" data-goto="ladder">Projected ${lad.proj[0]}–${lad.proj[1]} (${ordinal(lad.pos)})</button>`:""}</span></div>
     <div class="tiles">${tile("net","Net rating",sgn)}${tile("ortg","Offensive rtg",f1)}${tile("drtg","Defensive rtg",f1)}${tile("pace","Pace",f1)}</div>
+    ${injStrip}
   </div>
   <div class="grid2" style="margin-top:18px">
     <div class="panel card"><h3>Offense · four factors</h3><p class="note">Bar shows gap to league average (green = better). Rank of 10.</p>
@@ -929,6 +990,7 @@ function renderTeam(){
       <td>${f1(g.poss)}</td><td>${f1(g.ortg)}</td><td>${f1(g.drtg)}</td><td>${sgn(g.ortg-g.drtg)}</td><td>${pct(g.efg)}</td><td>${pct(g.oefg)}</td>
       <td><a href="${g.src}" target="_blank" rel="noopener">box</a></td></tr>`}).join("")}</tbody></table></div>`;
   el.querySelectorAll("[data-sm]").forEach(b=>b.onclick=()=>{shotMode=b.dataset.sm;renderTeam()});
+  el.querySelectorAll("[data-goto]").forEach(b=>b.onclick=()=>{if(b.dataset.goto==="injuries"){isel=current;try{localStorage.setItem("nbl27-inj",isel)}catch(e){}}show(b.dataset.goto)});
 }
 
 function emptyMsg(){return `<div class="empty"><strong>No box scores loaded yet</strong>Games appear here as the daily update adds them.</div>`}
@@ -942,10 +1004,10 @@ function renderStatus(){
   const notes=[...new Set(GAMES.filter(g=>g.note).map(g=>g.note))];
   const O=META?.official,fx=(O?.applied||[]).length;
   const offTxt=O&&O.games!=null?` Checked against the NBL's official box scores: ${O.games} game${O.games===1?"":"s"}${O.pending?` (${O.pending} not published by the NBL yet)`:""}, ${fx?`${fx} figure${fx===1?"":"s"} corrected to the official value (assists, rebounds and similar; points, shooting, minutes and +/- already match)`:"no differences"}.`:"";
-  document.getElementById("foot-note").textContent="Sources: ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where the NBL's doesn't add up). Rebuilt and checked once a day (8:58am Sydney)."+offTxt+(notes.length?" "+notes.join(" "):"");
+  document.getElementById("foot-note").textContent="Sources: ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where the NBL's doesn't add up); projected ladder simulated from this data and the NBL's fixture; injury list from the league's list as basketball.com.au publishes it. Rebuilt and checked once a day (8:58am Sydney)."+offTxt+(notes.length?" "+notes.join(" "):"");
 }
 
-function recalc(){FDATA=null;const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();computeExtras();renderStatus();renderLeague();renderTeam();renderPlayers();renderLineups();renderRotations();if(!document.getElementById("view-cards").hidden)renderCards();if(!document.getElementById("view-coaches").hidden)renderCoaches();if(!document.getElementById("view-h2h").hidden)renderH2H()}
+function recalc(){FDATA=null;const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();computeExtras();renderStatus();renderLeague();renderTeam();renderPlayers();renderLineups();renderRotations();renderLadder();renderInjuries();if(!document.getElementById("view-cards").hidden)renderCards();if(!document.getElementById("view-coaches").hidden)renderCoaches();if(!document.getElementById("view-h2h").hidden)renderH2H()}
 
 
 let PLAYERDOCS=[],PSTATUS=null,pview="adv",pminVal=10,psort={k:"min",d:-1},pphotos=true;
@@ -2177,14 +2239,80 @@ function renderCoaches(){
   el.innerHTML=coachCard(c);hcWire(c);renderCoachLineups();
 }
 
+// ---- Projected ladder: data/ladder.json, rebuilt by the daily update (ladder.py) from this site's data and the
+// NBL's own fixture. Every number here comes from that file; nothing is simulated in the browser.
+let LADDER=null,INJ=null,isel="ALL";
+try{const s=localStorage.getItem("nbl27-inj");if(s&&(s==="ALL"||byCode[s]))isel=s}catch(e){}
+const pc0=v=>v==null||!isFinite(v)?"–":v>=0.995&&v<1?">99":v>0&&v<0.005?"<1":String(Math.round(v*100));
+const dShort=iso=>iso?new Date(iso+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"}):"";
+const ladderOf=team=>(LADDER?.teams||[]).find(t=>t.team===team);
+function renderLadder(){
+  const el=document.getElementById("ladder"),pe=document.getElementById("ladpos"),ne=document.getElementById("ladnote");if(!el)return;
+  const T=LADDER?.teams||[],S=LADDER?.status||{};
+  if(!T.length){el.innerHTML=`<div class="empty"><strong>No projection yet</strong>The daily update adds it.</div>`;pe.innerHTML="";ne.innerHTML="";return}
+  const run=t=>t.runHomeRank==null?"–":t.runHomeRank===1?"Hardest":t.runHomeRank===T.length?"Easiest":ordinal(t.runHomeRank)+" hardest";
+  const tm=t=>`<td class="tm"><button data-team="${TEAMS[t.team]?.c}"><span class="lpos">${t.pos}</span>${code(t.team)}<span class="nm">${disp(t.team)}</span></button></td>`;
+  el.innerHTML=`<table><thead><tr><th class="tm">Team</th><th>Now</th><th>Projected</th><th title="The middle 80% of simulated seasons">Likely wins</th><th>Top 2</th><th>Top 6</th><th title="Team strength per 100 possessions, shooting luck taken out">Adj. net</th><th title="Points a game gained (+) or lost (−) from threes and free throws made above or below expectation">Shooting luck</th><th title="How strong the remaining opponents are">Run home</th><th>Games left</th></tr></thead><tbody>${
+    T.map(t=>`<tr class="${t.pos===2||t.pos===6?"cut":""}">${tm(t)}<td>${t.now[0]}–${t.now[1]}</td><td class="proj">${t.proj[0]}–${t.proj[1]}</td><td>${t.range[0]}–${t.range[1]}</td><td>${pc0(t.top2)}%</td><td>${pc0(t.top6)}%</td><td>${sgn(t.net100)}</td><td>${t.luck==null?"–":sgn(t.luck)}</td><td>${run(t)}</td><td>${t.left} <span class="mut">(${t.leftHome} home)</span></td></tr>`).join("")}</tbody></table>`;
+  pe.innerHTML=`<table class="heat"><thead><tr><th class="tm">Team</th>${T.map((_,i)=>`<th>${ordinal(i+1)}</th>`).join("")}</tr></thead><tbody>${
+    T.map(t=>`<tr>${tm(t)}${(t.posProb||[]).map(v=>`<td class="h" style="--a:${Math.round(v*100)}">${v<0.005?"":pc0(v)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  [el,pe].forEach(x=>x.querySelectorAll("td.tm button").forEach(b=>b.onclick=()=>{current=b.dataset.team;show("team")}));
+  const late=(S.finishedNotInData||[]).length,upd=S.computedAt?new Date(S.computedAt).toLocaleString("en-AU",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"–";
+  ne.innerHTML=[`<b>HOW IT'S WORKED OUT</b>`,
+    `Projected = the average record over ${(S.sims||0).toLocaleString("en-AU")} simulations of the ${S.gamesLeft} games left in the NBL's fixture, rounded so the ladder adds up to ${S.totalGames} wins. Likely wins = the middle 80% of those simulated seasons.`,
+    `Team strength = point margin per game, adjusted for the opponent and home court, with shooting luck taken out, then pulled toward average by how few games each team has played. Each simulation also varies every team's strength by how uncertain it still is.`,
+    `Shooting luck = points a game gained (+) or lost (−) from threes and free throws made above or below expectation. Expectation = what each shooter usually hits (this season plus his past seasons on the Player cards), plus the defence's small effect on 3P% allowed. It's taken out because it doesn't carry over from game to game.`,
+    `Adj. net = team strength per 100 possessions. Run home = how strong the remaining opponents are. Home edge used: ${sgn(S.homeEdge)} points a game.`,
+    `Ladder ties are split by wins, then wins between the tied teams, then points difference.`,
+    `Injuries aren't modelled. See the Injuries tab.`,
+    `Updated ${upd} with games through ${dShort(S.lastGame)}.${late?` ${late} finished game${late===1?" isn't":"s aren't"} in the data yet and ${late===1?"is":"are"} simulated.`:""}`].map(x=>`<span>${x}</span>`).join("");
+}
+
+// ---- Injuries: data/injuries.json = the league's injury list as basketball.com.au publishes it (status, injury and
+// expected return copied exactly), read by the daily update; injuries.py adds the box-score columns.
+function injRow(r){
+  const st=r.cls==="retired"?"Retired":r.status;
+  const ret=(r.ret||"–")+(r.roundDate?` <span class="mut">(starts ${dShort(r.roundDate)})</span>`:"");
+  const missed=r.gp?(r.missed?`${r.missed} in a row`:"0"):(r.teamGames?`All ${r.teamGames}`:"–");
+  const flag=r.playedLast&&r.cls!=="dtd"?`<span class="flag" title="He played in his team's latest game, so the list may not have caught up">Played last game</span>`:"";
+  return `<tr><td class="tm">${pname(r.id,r.name,r.team)}${flag}</td><td class="tl"><span class="ist ${r.cls}">${st}</span></td><td class="tl">${r.injury||"–"}</td><td class="tl">${ret}</td><td>${missed}</td><td class="lp">${r.lastPlayed?dShort(r.lastPlayed):"Not this season"}</td><td>${r.mpg==null?"–":f1(r.mpg)}</td><td>${r.ppg==null?"–":f1(r.ppg)}</td></tr>`;
+}
+function renderInjuries(){
+  const pick=document.getElementById("ipicker"),el=document.getElementById("injuries");if(!pick)return;
+  pick.innerHTML=`<button class="chip" aria-pressed="${isel==="ALL"}" data-team="ALL">All teams</button>`+Object.values(TEAMS).map(t=>`<button class="chip" aria-pressed="${t.c===isel}" data-team="${t.c}">${t.c}</button>`).join("");
+  pick.querySelectorAll("button").forEach(b=>b.onclick=()=>{isel=b.dataset.team;try{localStorage.setItem("nbl27-inj",isel)}catch(e){}renderInjuries()});
+  if(!INJ){el.innerHTML=`<div class="panel"><div class="empty"><strong>No injury list yet</strong>The daily update adds it.</div></div>`;return}
+  const S=INJ.status||{},teams=isel==="ALL"?Object.keys(TEAMS):[byCode[isel]],P=INJ.players||[];
+  const cnt=k=>P.filter(r=>r.cls===k&&teams.includes(r.team)).length;
+  let h=`<div class="injhead"><span>League injury list${S.asOf?` · as of <b>${fmtDate(S.asOf)}</b>`:""} · checked <b>${S.listRead?fmtDate(S.listRead):"–"}</b></span><span><b>${cnt("out")}</b> out</span><span><b>${cnt("dtd")}</b> day-to-day</span><span><b>${cnt("season")}</b> out for the season</span>${cnt("retired")?`<span><b>${cnt("retired")}</b> retired</span>`:""}${S.source?`<a href="${S.source}" target="_blank" rel="noopener">Source ›</a>`:""}</div>`;
+  if(S.stale&&S.warning)h+=`<p class="warnline">${S.warning}</p>`;
+  else if(S.asOf&&S.listRead&&(new Date(S.listRead)-new Date(S.asOf))/864e5>6)h+=`<p class="warnline">The league's list hasn't been updated since ${fmtDate(S.asOf)}, so some entries may be out of date. Games missed and last played are current.</p>`;
+  const head=`<colgroup><col style="width:22%"><col style="width:14%"><col style="width:13%"><col style="width:19%"><col style="width:9%"><col style="width:12%"><col style="width:5.5%"><col style="width:5.5%"></colgroup><thead><tr><th class="tm">Player</th><th class="tl">Status</th><th class="tl">Injury</th><th class="tl">Expected return</th><th>Games missed</th><th>Last played</th><th>MPG</th><th>PPG</th></tr></thead>`;
+  teams.forEach(team=>{const R=P.filter(r=>r.team===team);
+    h+=`<div class="panel injt"><div class="injteam">${code(team)}<span>${disp(team)}</span><span class="mut">${R.length?`${R.length} listed`:"Nobody listed"}</span></div>${R.length?`<div class="scroll"><table>${head}<tbody>${R.map(injRow).join("")}</tbody></table></div>`:""}</div>`});
+  const OO=(INJ.others||[]).filter(r=>teams.includes(r.team));
+  h+=`<h3 class="sech">Also missed their team's latest game</h3>`+(OO.length?`<div class="panel scroll"><table><thead><tr><th class="tm">Player</th><th class="tl">Team</th><th>Games missed</th><th>Last played</th><th>MPG</th><th>PPG</th></tr></thead><tbody>${
+    OO.map(r=>`<tr><td class="tm">${pname(r.id,r.name,r.team)}</td><td class="tl">${disp(r.team)}</td><td>${r.missed} in a row</td><td>${dShort(r.lastPlayed)}</td><td>${f1(r.mpg)}</td><td>${f1(r.ppg)}</td></tr>`).join("")}</tbody></table></div>`
+    :`<div class="panel"><div class="empty" style="padding:18px 16px">Every regular rotation player who isn't on the list played in his team's latest game.</div></div>`);
+  h+=`<div class="notes fblock"><b>NOTES</b>
+    <span>Source: the league's injury list as <a href="${S.source||"#"}" target="_blank" rel="noopener">basketball.com.au</a> publishes it, checked once a day by the daily update. "As of" is the date that page says it last took the league's list. Status, injury and expected return are copied exactly as listed there.</span>
+    <span>Games missed (in a row, up to the team's latest game), last played, MPG and PPG come from this site's box scores. "Played last game" means he played in his team's latest game, so the list may not have caught up yet.</span>
+    <span>"Round N" returns show the day that round starts in the NBL's fixture.</span>
+    <span>Also missed = players averaging 10+ minutes over 3+ games who sat out their team's latest game but aren't on the list (rest, coach's decision, or not listed yet).</span>
+    <span>Checked ${S.checkedAt?new Date(S.checkedAt).toLocaleString("en-AU",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"–"} with games through ${dShort(S.lastGame)}.</span></div>`;
+  el.innerHTML=h;
+}
+
 // re-draw the open tab (used when the headshots arrive)
 function renderVisible(){const on=x=>!document.getElementById("view-"+x).hidden;
-  if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("h2h"))renderH2H();if(on("rotations"))renderRotations();if(on("cards"))renderCards();if(on("coaches"))renderCoaches()}
+  if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("h2h"))renderH2H();if(on("rotations"))renderRotations();if(on("cards"))renderCards();if(on("coaches"))renderCoaches();if(on("ladder"))renderLadder();if(on("injuries"))renderInjuries()}
 function show(v){
-  ["league","team","players","cards","coaches","lineups","h2h","rotations"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
-  if(v!=="league"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
-  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();
+  ["league","ladder","team","players","cards","injuries","coaches","lineups","h2h","rotations"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
+  if(v!=="league"&&v!=="ladder"&&v!=="injuries"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
+  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();if(v==="ladder")renderLadder();if(v==="injuries")renderInjuries();
 }
+document.getElementById("tab-ladder").onclick=()=>show("ladder");
+document.getElementById("tab-injuries").onclick=()=>show("injuries");
 document.getElementById("tab-cards").onclick=()=>show("cards");
 document.getElementById("tab-coaches").onclick=()=>show("coaches");
 document.getElementById("tab-rotations").onclick=()=>show("rotations");
@@ -2200,7 +2328,8 @@ recalc();
   // republished by the daily update. Fetched fresh at most every 10 minutes.
   const bust="?v="+Math.floor(Date.now()/600000);
   const get=async f=>{try{const r=await fetch("data/"+f+bust,{cache:"no-store"});return r.ok?await r.json():null}catch(e){return null}};
-  const [g,sh,pl,lu,ps,ev,meta,bi]=await Promise.all(["games.json","shots.json","players.json","lineups.json","pshots.json","events.json","meta.json","bios.json"].map(get));
+  const [g,sh,pl,lu,ps,ev,meta,bi,lad,inj]=await Promise.all(["games.json","shots.json","players.json","lineups.json","pshots.json","events.json","meta.json","bios.json","ladder.json","injuries.json"].map(get));
+  LADDER=lad&&Array.isArray(lad.teams)?lad:null;INJ=inj&&Array.isArray(inj.players)?inj:null;
   META=meta?.status||null;SHOTMETA=meta?.shots_status||null;PSTATUS=meta?.players_status||null;LSTATUS=meta?.lineups_status||null;PSHOTMETA=meta?.pshots_status||null;ESTATUS=meta?.events_status||null;
   GAMES=(g||[]).filter(x=>x&&x.away&&x.home);SHOTS=(sh||[]).filter(d=>d&&d.teams);PLAYERDOCS=(pl||[]).filter(d=>d&&d.teams);LINEDOCS=(lu||[]).filter(d=>d&&d.teams);PSHOTS=(ps||[]).filter(d=>d&&d.teams);EVENTS=(ev||[]).filter(d=>d&&d.teams);BIOS={};(bi||[]).forEach(b=>{if(b&&b.id)BIOS[b.id]=b});
   // headshot list (data/photos.json -> data/photos/<id>.webp), fetched at start-up: every player name shows his photo
