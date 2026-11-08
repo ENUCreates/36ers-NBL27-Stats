@@ -1,15 +1,16 @@
 {
  "status": {
-  "lastGameDate": "2026-11-07",
+  "lastGameDate": "2026-11-08",
   "source": "ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where it doesn't add up); full rebuild once a day",
-  "updatedAt": "2026-11-08T08:59:07+11:00",
-  "games": 57,
+  "updatedAt": "2026-11-09T08:58:49+11:00",
+  "games": 59,
   "changes": [
-   "added 2026-11-07 Brisbane Bullets 92 at Melbourne United 120",
-   "added 2026-11-07 Illawarra Hawks 78 at Adelaide 36ers 106"
+   "added 2026-11-08 Cairns Taipans 100 at Perth Wildcats 92",
+   "added 2026-11-08 South East Melbourne Phoenix 99 at Sydney Kings 110",
+   "added from the official box score: 2026-11-08 Patrick Ryan (South East Melbourne Phoenix, 00:16) - ESPN's box score leaves him out"
   ],
   "official": {
-   "games": 57,
+   "games": 59,
    "pending": 0,
    "names": {
     "4278777": "Shaun Bruce",
@@ -473,6 +474,35 @@
       "pm": -3,
       "src": "nbl"
      }
+    },
+    {
+     "eid": "401875307",
+     "date": "2026-11-08",
+     "team": "South East Melbourne Phoenix",
+     "official": "00:16",
+     "row": {
+      "id": "4910882",
+      "name": "Patrick Ryan",
+      "pos": "G",
+      "starter": false,
+      "min": 0.2667,
+      "pts": 0,
+      "fgm": 0,
+      "fga": 0,
+      "tpm": 0,
+      "tpa": 0,
+      "ftm": 0,
+      "fta": 0,
+      "oreb": 0,
+      "dreb": 0,
+      "ast": 0,
+      "stl": 0,
+      "blk": 0,
+      "tov": 0,
+      "pf": 0,
+      "pm": 1,
+      "src": "nbl"
+     }
     }
    ],
    "applied": [
@@ -502,16 +532,18 @@
     "2026-10-16 Deonte Williams (Adelaide 36ers) added from the official box score: 00:02, 0 pts, +1 (ESPN's box score leaves him out)",
     "2026-10-18 Kody Stattmann (Tasmania JackJumpers) added from the official box score: 00:12, 0 pts, +1 (ESPN's box score leaves him out)",
     "2026-10-21 Ryley Haywood (Tasmania JackJumpers) added from the official box score: 00:21, 0 pts, -3 (ESPN's box score leaves him out)",
-    "2026-10-21 Jed Richardson (Tasmania JackJumpers) added from the official box score: 00:21, 0 pts, -3 (ESPN's box score leaves him out)"
+    "2026-10-21 Jed Richardson (Tasmania JackJumpers) added from the official box score: 00:21, 0 pts, -3 (ESPN's box score leaves him out)",
+    "2026-11-08 Patrick Ryan (South East Melbourne Phoenix) added from the official box score: 00:16, 0 pts, +1 (ESPN's box score leaves him out)"
    ],
    "notes": [
     "2026-10-04 New Zealand Breakers: official box has Tukaha Cooper (00:28, 0 pts), ESPN's box score does not - added from the official box score",
     "2026-10-16 Adelaide 36ers: official box has Deonte Williams (00:02, 0 pts), ESPN's box score does not - added from the official box score",
     "2026-10-18 Tasmania JackJumpers: official box has Kody Stattmann (00:12, 0 pts), ESPN's box score does not - added from the official box score",
     "2026-10-21 Tasmania JackJumpers: official box has Ryley Haywood (00:21, 0 pts), ESPN's box score does not - added from the official box score",
-    "2026-10-21 Tasmania JackJumpers: official box has Jed Richardson (00:21, 0 pts), ESPN's box score does not - added from the official box score"
+    "2026-10-21 Tasmania JackJumpers: official box has Jed Richardson (00:21, 0 pts), ESPN's box score does not - added from the official box score",
+    "2026-11-08 South East Melbourne Phoenix: official box has Patrick Ryan (00:16, 0 pts), ESPN's box score does not - added from the official box score"
    ],
-   "checkedAt": "2026-11-08T08:59:07+11:00"
+   "checkedAt": "2026-11-09T08:58:49+11:00"
   }
  },
  "shots_status": {
@@ -519,73 +551,82 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-11-08T08:59:07+11:00",
-  "games": 57,
+  "checkedAt": "2026-11-09T08:58:49+11:00",
+  "games": 59,
   "medianErr": 0.24,
-  "mismatches": 1,
+  "mismatches": 2,
   "sources": {
-   "nbl": 114,
+   "nbl": 118,
    "espn": 0
   }
  },
  "players_status": {
-  "checkedAt": "2026-11-08T08:59:07+11:00",
-  "games": 57,
+  "checkedAt": "2026-11-09T08:58:49+11:00",
+  "games": 59,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-11-08T08:59:07+11:00",
-  "games": 57,
+  "checkedAt": "2026-11-09T08:58:49+11:00",
+  "games": 59,
   "invalid": 0,
   "method": "Who is on the floor: the NBL's own play-by-play (every substitution recorded) wherever it reproduces the official box score - every player's minutes and plus-minus (nbl_lineups.py); otherwise solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
   "fit": {
-   "teamGames": 114,
+   "teamGames": 118,
    "minutesOver30s": 0,
    "plusMinusOff": 1,
    "actionsOffCourt": 0,
-   "unrecordedSwapsPerTeamGame": 0.1
+   "unrecordedSwapsPerTeamGame": 0.4
   },
   "sources": {
    "nbl": 113,
-   "espn": 1
+   "espn": 5
   },
   "notes": [
-   "lineups by team-game: espn 1, nbl 111, no official play-by-play 1",
+   "lineups by team-game: espn 5, nbl 113",
    "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)",
-   "2026-10-23 Melbourne United at Perth Wildcats: the NBL's play-by-play came back empty this run - last run's lineups kept"
+   "2026-11-08 Cairns Taipans at Perth Wildcats Perth Wildcats: NBL play-by-play not used (dreb 27, official 26; Kristian Doolittle 2400s on the floor, official 2111s; Cameron Huefner 198s on the floor, official 1267s)",
+   "2026-11-08 Cairns Taipans at Perth Wildcats Cairns Taipans: NBL play-by-play not used (fga 75, official 74; Jaylon Brown 1055s on the floor, official 1705s; Shaun Bruce 1082s on the floor, official 1361s)",
+   "2026-11-08 South East Melbourne Phoenix at Sydney Kings Sydney Kings: NBL play-by-play not used (Kendric Davis -1, official +1; Makuach Maluach -14, official -12; Will Johnston +22, official +24)",
+   "2026-11-08 South East Melbourne Phoenix at Sydney Kings South East Melbourne Phoenix: NBL play-by-play not used (pts 101, official 99; fgm 35, official 34; fga 87, official 86)"
   ]
  },
  "pshots_status": {
-  "checkedAt": "2026-11-08T08:59:07+11:00",
-  "games": 57,
+  "checkedAt": "2026-11-09T08:58:49+11:00",
+  "games": 59,
   "basket": {
    "x": 25,
    "y": 0
   },
   "sources": {
-   "nbl": 114,
+   "nbl": 118,
    "espn": 0
   },
   "badTeamGames": 0,
   "notes": [
-   "shots by team-game: nbl 112, no NBL play-by-play 1",
-   "2026-10-23 Melbourne United at Perth Wildcats: the NBL's play-by-play came back empty this run - last run's shots kept"
+   "shots by team-game: nbl 118",
+   "2026-11-08 Cairns Taipans at Perth Wildcats Cairns Taipans: NBL shots FGM-FGA 35-75 3P 20-44 FT 10-14, box 35-74 3P 20-44 FT 10-14; players: Shaun Bruce [5, 9] vs box [5, 8]",
+   "2026-11-08 South East Melbourne Phoenix at Sydney Kings: South East Melbourne Phoenix (no shooter recorded): 1 shot(s) the official box score doesn't count left out",
+   "2026-11-08 South East Melbourne Phoenix at Sydney Kings South East Melbourne Phoenix: NBL shots FGM-FGA 35-87 3P 17-45 FT 14-17, box 34-86 3P 17-45 FT 14-17; players: Angus Glover [5, 12] vs box [4, 11]"
   ],
   "method": "Every shot from the NBL's own play-by-play (position, shooter, two or three) wherever it reproduces this site's box score (nbl_shots.py); otherwise ESPN's play-by-play (pshots.py)",
   "frame": "x across the court 0-50 ft with the basket at 25, y = feet from the basket toward halfway"
  },
  "events_status": {
-  "checkedAt": "2026-11-08T08:59:07+11:00",
-  "games": 57,
-  "badTeamGames": 0,
+  "checkedAt": "2026-11-09T08:58:49+11:00",
+  "games": 59,
+  "badTeamGames": 1,
   "sources": {
    "nbl": 113,
-   "espn": 1
+   "espn": 5
   },
   "notes": [
-   "events by team-game: espn 1, nbl 111, no NBL play-by-play 1",
+   "events by team-game: espn 5, nbl 113",
    "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL events not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)",
-   "2026-10-23 Melbourne United at Perth Wildcats: the NBL's play-by-play came back empty this run - last run's events kept"
+   "2026-11-08 Cairns Taipans at Perth Wildcats Perth Wildcats: NBL events not used (dreb 27, official 26; Kristian Doolittle 2400s on the floor, official 2111s; Cameron Huefner 198s on the floor, official 1267s)",
+   "2026-11-08 Cairns Taipans at Perth Wildcats Cairns Taipans: NBL events not used (fga 75, official 74; Jaylon Brown 1055s on the floor, official 1705s; Shaun Bruce 1082s on the floor, official 1361s)",
+   "2026-11-08 South East Melbourne Phoenix at Sydney Kings Sydney Kings: NBL events not used (Kendric Davis -1, official +1; Makuach Maluach -14, official -12; Will Johnston +22, official +24)",
+   "2026-11-08 South East Melbourne Phoenix at Sydney Kings South East Melbourne Phoenix: NBL events not used (pts 101, official 99; fgm 35, official 34; fga 87, official 86)",
+   "left out (don't reconcile with the box score): 2026-11-08 Perth Wildcats"
   ],
   "method": "Rotations, clutch, possessions and assists from the NBL's own play-by-play wherever its lineups reproduce the official box score (nbl_events.py); otherwise from ESPN's (events.py)"
  }
