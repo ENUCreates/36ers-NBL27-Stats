@@ -2,11 +2,9 @@
  "status": {
   "lastGameDate": "2026-11-08",
   "source": "ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where it doesn't add up); full rebuild once a day",
-  "updatedAt": "2026-11-10T17:57:31+11:00",
+  "updatedAt": "2026-11-11T08:59:36+11:00",
   "games": 59,
-  "changes": [
-   "players: 59 game(s) updated"
-  ],
+  "changes": [],
   "official": {
    "games": 59,
    "pending": 0,
@@ -577,7 +575,7 @@
     "2026-10-21 Tasmania JackJumpers: official box has Jed Richardson (00:21, 0 pts), ESPN's box score does not - added from the official box score",
     "2026-11-08 South East Melbourne Phoenix: official box has Patrick Ryan (00:16, 0 pts), ESPN's box score does not - added from the official box score"
    ],
-   "checkedAt": "2026-11-10T17:57:31+11:00"
+   "checkedAt": "2026-11-11T08:59:36+11:00"
   }
  },
  "shots_status": {
@@ -585,7 +583,7 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-11-10T17:57:31+11:00",
+  "checkedAt": "2026-11-11T08:59:36+11:00",
   "games": 59,
   "medianErr": 0.24,
   "mismatches": 0,
@@ -595,12 +593,12 @@
   }
  },
  "players_status": {
-  "checkedAt": "2026-11-10T17:57:31+11:00",
+  "checkedAt": "2026-11-11T08:59:36+11:00",
   "games": 59,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-11-10T17:57:31+11:00",
+  "checkedAt": "2026-11-11T08:59:36+11:00",
   "games": 59,
   "invalid": 0,
   "method": "Who is on the floor: the NBL's own play-by-play (every substitution recorded) wherever it reproduces the official box score - every player's minutes and plus-minus (nbl_lineups.py); otherwise solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
@@ -621,7 +619,7 @@
   ]
  },
  "pshots_status": {
-  "checkedAt": "2026-11-10T17:57:31+11:00",
+  "checkedAt": "2026-11-11T08:59:36+11:00",
   "games": 59,
   "basket": {
    "x": 25,
@@ -639,7 +637,7 @@
   "frame": "x across the court 0-50 ft with the basket at 25, y = feet from the basket toward halfway"
  },
  "events_status": {
-  "checkedAt": "2026-11-10T17:57:31+11:00",
+  "checkedAt": "2026-11-11T08:59:36+11:00",
   "games": 59,
   "badTeamGames": 0,
   "sources": {
