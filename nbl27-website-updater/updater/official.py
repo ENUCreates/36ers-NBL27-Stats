@@ -31,9 +31,10 @@ STAT = (("pts", "points"), ("fgm", "field_goals_made"), ("fga", "field_goals_att
         ("oreb", "rebounds_offensive"), ("dreb", "rebounds_defensive"), ("ast", "assists"), ("stl", "steals"),
         ("blk", "blocks"), ("tov", "turnovers"), ("pf", "fouls_personal"))
 SCORING = ("pts", "fgm", "fga", "tpm", "tpa", "ftm", "fta")
-# Fields set to the official value when it differs. Scoring, minutes and +/- already match the official box scores
-# exactly (any difference there is only reported). Fouls are left alone: the official feed's personal-foul field
-# leaves out offensive fouls, while ESPN's PF counts every foul, as a FIBA box score does.
+# Fields set to the official value when it differs. Scoring and +/- already match the official box scores exactly
+# (any difference there is only reported); minutes match to the minute, and take the official box score's seconds.
+# Fouls are left alone: the official feed's personal-foul field leaves out offensive fouls, while ESPN's PF counts
+# every foul, as a FIBA box score does (it equals the feed's total-fouls field in every player line).
 FIX = ("ast", "tov", "oreb", "dreb", "stl", "blk")
 NICK = {"mitch": "mitchell", "matt": "matthew", "nick": "nicholas", "will": "william", "sam": "samuel", "tom": "thomas",
         "tommy": "thomas", "josh": "joshua", "chris": "christopher", "dan": "daniel", "danny": "daniel", "mike": "michael",
@@ -396,7 +397,7 @@ def compare(games, players, off):
     idx, lines, trows = nbl27_index(off), _lines(off), _team_rows(off)
     P = {p["espnId"]: p for p in players}
     res = {"pairs": {}, "fix_players": [], "fix_teams": [], "add_players": [], "notes": [], "checked": [], "missing": [],
-           "no_team_totals": []}
+           "no_team_totals": [], "secs": []}
     cand = []
     for g in games:
         k = (g["date"], frozenset((g["home"]["team"], g["away"]["team"])))
@@ -419,6 +420,9 @@ def compare(games, players, off):
                 bad = [f for f, c in STAT if f in SCORING and x.get(f, 0) != iv(r[c])]
                 if abs(x.get("min", 0) * 60 - secs(r["minutes"])) > 60:
                     bad.append("min")
+                elif secs(r["minutes"]) > 0:
+                    # ESPN gives whole minutes; the official box score has them to the second
+                    res["secs"].append({"eid": eid, "team": team, "id": x["id"], "sec": secs(r["minutes"])})
                 if iv(r.get("plus_minus")) != x.get("pm", 0) and sv(r.get("plus_minus")) != "":
                     bad.append("+/-")
                 if bad:
@@ -501,6 +505,10 @@ def apply(games, players, cmp):
             if x["id"] == c["id"]:
                 x[c["field"]] = c["official"]
         out.append(f"{G[c['eid']]['date']} {c['name']} ({c['team']}) {c['field']} {c['ours']}->{c['official']}")
+    for c in cmp.get("secs") or []:           # minutes to the second (not listed as a change: nothing was wrong)
+        for x in P[c["eid"]]["teams"][c["team"]]:
+            if x["id"] == c["id"]:
+                x["min"] = round(c["sec"] / 60, 4)
     for c in cmp["fix_teams"]:
         g = G[c["eid"]]
         T = g["home"] if g["home"]["team"] == c["team"] else g["away"]

@@ -234,6 +234,15 @@ def main():
                 T = g["home"] if g["home"]["team"] == c["team"] else g["away"]
                 if T.get(c["field"]) == c["ours"]:
                     T[c["field"]] = c["official"]
+        # minutes to the second (the official box score's): keep last run's where ESPN's whole minutes still agree
+        for eid, d in new["players"].items():
+            pv = (prev_by["players"].get(eid) or {}).get("teams") or {}
+            for team, L in (d.get("teams") or {}).items():
+                old = {x["id"]: x.get("min") for x in pv.get(team, [])}
+                for x in L:
+                    m = old.get(x["id"])
+                    if isinstance(m, float) and abs(m - (x.get("min") or 0)) <= 0.51:
+                        x["min"] = m
         for c in prev_off.get("added") or []:      # re-add only where ESPN's box score still leaves the player out
             g, r = G_.get(c["eid"]), c["row"]
             L = ((new["players"].get(c["eid"]) or {}).get("teams") or {}).get(c["team"])
