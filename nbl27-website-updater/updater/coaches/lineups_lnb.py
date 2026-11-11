@@ -37,6 +37,9 @@ SEASONS = {"paris2022": ("2022-23", "Paris Basketball", "PAB", "will-weaver")}
 NOTE = ("the league's own play-by-play (lnb.fr match centre), which records every substitution, checked game by game "
         "against its official box scores (both teams' points and each of the club's players' minutes and +/-). "
         "Regular season only")
+# seasons on the Head coaches tab that this source can't do (the match centre's pages for them are empty): the page says why
+NONE = {"2005-06|Paris Basket Racing": "gordon-herbert", "2006-07|Élan Béarnais Pau-Orthez": "gordon-herbert"}
+NONE_WHY = "the league's match centre has no box scores or play-by-play for this season"
 SHOT = re.compile(r"^([23]) pts\b.*\b(réussi|raté)$")
 FT = re.compile(r"^Lancer franc\b.*\b(réussi|raté)$")
 
@@ -249,6 +252,8 @@ def main(root):
         ag = {k: sum(u[3][i] for u in units) for i, k in enumerate(K)}
         print(f"{season} {team}: {used} of {len(games)} games used, {len(units)} fives, {len(players)} players, "
               f"{sum(u[1] for u in units) / 60:.0f} min; for {fo['pts']} pts {fo['fgm']}/{fo['fga']} FG {fo['oreb']}+{fo['dreb']} reb {fo['tov']} tov, against {ag['pts']} pts")
+    for k, coach in NONE.items():
+        D["seasons"][k] = {"coach": coach, "league": LEAGUE, "none": NONE_WHY}
     if "--dry" not in sys.argv:
         tmp = fp + ".tmp"
         json.dump(D, open(tmp, "w"), separators=(",", ":"), ensure_ascii=False)
