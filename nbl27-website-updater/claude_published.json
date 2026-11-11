@@ -1,6 +1,6 @@
 {
 "data/bios.json": "2251f5f4325948f5213e18ced3a3ebd5b75485c91311346cebfdd5f524d62df2",
-"data/coachlineups.json": "4dfd46f5dbedbf20e2b8dce92e72bc9b83bdcfef44f884d26a2ce98cbf1e1f55",
+"data/coachlineups.json": "d9d9851af96c795d076a71f36781af0dbceac1b775c15800dbd02ad02af0d924",
 "data/coachphotos/0000997448fd4f63642e9add1fa865f5.webp": "61a2360df7522f5f017981267309bfaf77b1eed140f05da2ae64125872a742b1",
 "data/coachphotos/0080e87aad9a46b1972a4b8ca84fcca9.webp": "eecf6a7a019c92bb8eef493e3dcae41e8e7c7be654762a0863efecef3ab08d4c",
 "data/coachphotos/016ed2928cbd7bd4d5d50ee59b183d6d.webp": "d932b4869f43caa2da987fc5449ab99e7e301346b4d673bf3fbe45eb4fb58f5e",
@@ -432,5 +432,5 @@
 "data/players.json": "62deb05b6bf5df9fd0895aa0f98a73837a8a881a656779a634168040ded96f25",
 "data/pshots.json": "b25220f035db903dd590a955d8a3fe1f3183003c15c97674bed2a7dfe41cfe50",
 "data/shots.json": "a69a7a89360f00602e979fea211fefa200029600e7b411657d3c16483790c7da",
-"page": "f3dc9fc772e0998df86380ce9ab20c91795a2e23899fc841ad5711952956d754"
+"page": "4d91ab64af2b72477c7d3e9233c22d5dca273826e7197b25a88de4ec34d9727f"
 }
