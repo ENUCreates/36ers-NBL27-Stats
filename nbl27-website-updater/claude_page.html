@@ -2309,7 +2309,7 @@ function renderCoachLineups(){
   const head=sub=>`<div class="card-head"><h3>Lineups, ${s.season}</h3><span class="rec">${disp(s.team)}${sub?` · ${sub}`:""}</span></div>`;
   if(!s.live&&!COACHLU){loadCoachLineups();el.innerHTML=head("")+`<p class="note">${COACHLU_ST==="error"?"Couldn't load the lineup data.":"Lineup data is loading."}</p>`;return}
   const src=s.live?null:COACHLU.seasons?.[s.season+"|"+s.team];
-  if(s.league&&!src){el.innerHTML=head("")+`<p class="note">No lineups for this season: there's no play-by-play here for the ${s.league}.</p>`;return}
+  if(s.league&&(!src||src.none)){el.innerHTML=head("")+`<p class="note">No lineups for this season: ${src?.none||"there's no play-by-play here for the "+s.league}.</p>`;return}
   if(s.live&&!LINEDOCS.length){el.innerHTML=head("")+`<p class="note">Lineup data is loading.</p>`;return}
   const res=coachLineupRows(s,hclSize);
   if(!res){el.innerHTML=head("")+`<p class="note">No lineup data for this season.</p>`;return}
