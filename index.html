@@ -2329,6 +2329,7 @@ function renderCoachLineups(){
     return `<td>${fmt(r[k])}</td>`};
   const label=hclSize===5?"Lineup":hclSize===3?"Trio":"Pair",games=res.of!=null?`${res.used} of ${res.of} games`:`${res.used} games`;
   const notes=(s.live?["NBL27 so far: the Lineups tab's data (the NBL's own play-by-play, checked game by game against each player's official minutes and +/-)"]
+      :src?.note?[`${s.league} ${s.season}: ${src.note}`]
       :src?.league?[`${s.league} ${s.season}: ESPN's play-by-play, with who was on the floor solved from the recorded substitutions, every player's actions and his box-score minutes and +/- (as the Lineups tab does), then checked game by game against ESPN's box scores (points, shots and minutes)`]
       :["Rebuilt from the NBL's official play-by-play and checked game by game against the official box scores (points, shots and every player's minutes)"])
     .concat((src?.keys||[]).includes("ftx")?["One free throw per trip, worth 2 or 3: each counts as a possession"]:[])
