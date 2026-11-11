@@ -497,14 +497,19 @@ table.heat tbody tr:hover td.h{background:color-mix(in srgb,var(--accent) calc(v
 .injt{margin-bottom:22px;overflow:hidden}
 .injteam{display:flex;align-items:center;gap:10px;padding:0 0 10px;font:700 condensed 21px/1 var(--display)}
 .injteam .mut{font:400 normal 13px var(--body);margin-left:auto}
-.injt table{table-layout:fixed;min-width:860px}
-.injt table td.tl,.injt table td.lp{white-space:normal}
-.ist{display:inline-block;font:700 13px/1 var(--body);padding:0;border:0;border-radius:0;background:none;white-space:nowrap}
+/* fixed columns, so text wraps inside its own column instead of running into the next one */
+.injt table{table-layout:fixed;min-width:900px}
+.injt table th,.injt table td.tm,.injt table td.tl,.injt table td.lp{white-space:normal;overflow-wrap:break-word}
+.injt td.tm .pn{white-space:normal;max-width:100%}
+.injt td.tm .pn>span:last-child{min-width:0}
+.ist{display:inline-block;font:700 13px/1.25 var(--body);padding:0;border:0;border-radius:0;background:none;white-space:nowrap}
+.injt .ist{white-space:normal}
+.injt td .mut{white-space:nowrap}
 .ist.out{color:var(--bad)}
 .ist.dtd{color:var(--warn)}
-.ist.season{color:var(--bad);box-shadow:inset 0 -2px 0 var(--bad)}
+.ist.season{color:var(--bad)}
 .ist.retired{color:var(--muted)}
-.flag{display:inline-block;margin-left:8px;font:600 11.5px/1 var(--body);color:var(--warn)}
+.flag{display:block;margin-top:4px;font:600 11.5px/1.3 var(--body);color:var(--warn)}
 .warnline{margin:0 0 12px;padding:9px 12px;border-left:3px solid var(--warn);background:var(--warn-bg);color:var(--warn);font-size:11.5px;text-transform:uppercase;letter-spacing:.02em}
 
 /* Notes (in capitals), formulas and sources */
@@ -2507,7 +2512,7 @@ function injRow(r){
   const ret=(r.ret||"–")+(r.roundDate?` <span class="mut">(starts ${dShort(r.roundDate)})</span>`:"");
   const missed=r.gp?(r.missed?`${r.missed} in a row`:"0"):(r.teamGames?`All ${r.teamGames}`:"–");
   const flag=r.playedLast&&r.cls!=="dtd"?`<span class="flag" title="He played in his team's latest game, so the list may not have caught up">Played last game</span>`:"";
-  return `<tr><td class="tm">${pname(r.id,r.name,r.team)}${flag}</td><td class="tl"><span class="ist ${r.cls}">${st}</span></td><td class="tl">${r.injury||"–"}</td><td class="tl">${ret}</td><td>${missed}</td><td class="lp">${r.lastPlayed?dShort(r.lastPlayed):"Not this season"}</td><td>${r.mpg==null?"–":f1(r.mpg)}</td><td>${r.ppg==null?"–":f1(r.ppg)}</td></tr>`;
+  return `<tr><td class="tm">${pname(r.id,r.name,r.team)}</td><td class="tl"><span class="ist ${r.cls}">${st}</span>${flag}</td><td class="tl">${r.injury||"–"}</td><td class="tl">${ret}</td><td>${missed}</td><td class="lp">${r.lastPlayed?dShort(r.lastPlayed):"Not this season"}</td><td>${r.mpg==null?"–":f1(r.mpg)}</td><td>${r.ppg==null?"–":f1(r.ppg)}</td></tr>`;
 }
 function renderInjuries(){
   const pick=document.getElementById("ipicker"),el=document.getElementById("injuries");if(!pick)return;
@@ -2519,7 +2524,7 @@ function renderInjuries(){
   let h=`<div class="injhead"><span>League injury list${S.asOf?` · as of <b>${fmtDate(S.asOf)}</b>`:""} · checked <b>${S.listRead?fmtDate(S.listRead):"–"}</b></span><span><b>${cnt("out")}</b> out</span><span><b>${cnt("dtd")}</b> day-to-day</span><span><b>${cnt("season")}</b> out for the season</span>${cnt("retired")?`<span><b>${cnt("retired")}</b> retired</span>`:""}${S.source?`<a href="${S.source}" target="_blank" rel="noopener">Source ›</a>`:""}</div>`;
   if(S.stale&&S.warning)h+=`<p class="warnline">${S.warning}</p>`;
   else if(S.asOf&&S.listRead&&(new Date(S.listRead)-new Date(S.asOf))/864e5>6)h+=`<p class="warnline">The league's list hasn't been updated since ${fmtDate(S.asOf)}, so some entries may be out of date. Games missed and last played are current.</p>`;
-  const head=`<colgroup><col style="width:22%"><col style="width:14%"><col style="width:13%"><col style="width:19%"><col style="width:9%"><col style="width:12%"><col style="width:5.5%"><col style="width:5.5%"></colgroup><thead><tr><th class="tm">Player</th><th class="tl">Status</th><th class="tl">Injury</th><th class="tl">Expected return</th><th>Games missed</th><th>Last played</th><th>MPG</th><th>PPG</th></tr></thead>`;
+  const head=`<colgroup><col style="width:21.5%"><col style="width:15.5%"><col style="width:14%"><col style="width:16.5%"><col style="width:10.5%"><col style="width:11%"><col style="width:5.5%"><col style="width:5.5%"></colgroup><thead><tr><th class="tm">Player</th><th class="tl">Status</th><th class="tl">Injury</th><th class="tl">Expected return</th><th>Games missed</th><th>Last played</th><th>MPG</th><th>PPG</th></tr></thead>`;
   teams.forEach(team=>{const R=P.filter(r=>r.team===team);
     h+=`<div class="panel injt"><div class="injteam">${code(team)}<span>${disp(team)}</span><span class="mut">${R.length?`${R.length} listed`:"Nobody listed"}</span></div>${R.length?`<div class="scroll"><table>${head}<tbody>${R.map(injRow).join("")}</tbody></table></div>`:""}</div>`});
   const OO=(INJ.others||[]).filter(r=>teams.includes(r.team));
