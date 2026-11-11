@@ -1,12 +1,14 @@
 {
  "status": {
-  "lastGameDate": "2026-11-08",
+  "lastGameDate": "2026-11-11",
   "source": "ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where it doesn't add up); full rebuild once a day",
-  "updatedAt": "2026-11-11T08:59:36+11:00",
-  "games": 59,
-  "changes": [],
+  "updatedAt": "2026-11-12T08:59:25+11:00",
+  "games": 60,
+  "changes": [
+   "added 2026-11-11 Illawarra Hawks 120 at South East Melbourne Phoenix 110"
+  ],
   "official": {
-   "games": 59,
+   "games": 60,
    "pending": 0,
    "names": {
     "4278777": "Shaun Bruce",
@@ -575,7 +577,7 @@
     "2026-10-21 Tasmania JackJumpers: official box has Jed Richardson (00:21, 0 pts), ESPN's box score does not - added from the official box score",
     "2026-11-08 South East Melbourne Phoenix: official box has Patrick Ryan (00:16, 0 pts), ESPN's box score does not - added from the official box score"
    ],
-   "checkedAt": "2026-11-11T08:59:36+11:00"
+   "checkedAt": "2026-11-12T08:59:25+11:00"
   }
  },
  "shots_status": {
@@ -583,70 +585,75 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-11-11T08:59:36+11:00",
-  "games": 59,
+  "checkedAt": "2026-11-12T08:59:25+11:00",
+  "games": 60,
   "medianErr": 0.24,
   "mismatches": 0,
   "sources": {
-   "nbl": 118,
+   "nbl": 120,
    "espn": 0
   }
  },
  "players_status": {
-  "checkedAt": "2026-11-11T08:59:36+11:00",
-  "games": 59,
+  "checkedAt": "2026-11-12T08:59:25+11:00",
+  "games": 60,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-11-11T08:59:36+11:00",
-  "games": 59,
+  "checkedAt": "2026-11-12T08:59:25+11:00",
+  "games": 60,
   "invalid": 0,
   "method": "Who is on the floor: the NBL's own play-by-play (every substitution recorded) wherever it reproduces the official box score - every player's minutes and plus-minus (nbl_lineups.py); otherwise solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
   "fit": {
-   "teamGames": 118,
+   "teamGames": 120,
    "minutesOver30s": 0,
    "plusMinusOff": 1,
    "actionsOffCourt": 0,
-   "unrecordedSwapsPerTeamGame": 0.1
+   "unrecordedSwapsPerTeamGame": 0.3
   },
   "sources": {
    "nbl": 117,
-   "espn": 1
+   "espn": 3
   },
   "notes": [
-   "lineups by team-game: espn 1, nbl 117",
-   "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)"
+   "lineups by team-game: espn 3, nbl 117",
+   "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)",
+   "2026-11-11 Illawarra Hawks at South East Melbourne Phoenix South East Melbourne Phoenix: NBL play-by-play not used (pts 112, official 110; ftm 17, official 15; fta 23, official 21)",
+   "2026-11-11 Illawarra Hawks at South East Melbourne Phoenix Illawarra Hawks: NBL play-by-play not used (Kelan Martin +13, official +15; William Hickey +16, official +18; Milton Doyle +0, official +5)"
   ]
  },
  "pshots_status": {
-  "checkedAt": "2026-11-11T08:59:36+11:00",
-  "games": 59,
+  "checkedAt": "2026-11-12T08:59:25+11:00",
+  "games": 60,
   "basket": {
    "x": 25,
    "y": 0
   },
   "sources": {
-   "nbl": 118,
+   "nbl": 120,
    "espn": 0
   },
   "badTeamGames": 0,
   "notes": [
-   "shots by team-game: nbl 118"
+   "shots by team-game: nbl 120",
+   "2026-11-11 Illawarra Hawks at South East Melbourne Phoenix South East Melbourne Phoenix: NBL shots FGM-FGA 41-80 3P 13-42 FT 17-23, box 41-80 3P 13-42 FT 15-21"
   ],
   "method": "Every shot from the NBL's own play-by-play (position, shooter, two or three) wherever it reproduces this site's box score (nbl_shots.py); otherwise ESPN's play-by-play (pshots.py)",
   "frame": "x across the court 0-50 ft with the basket at 25, y = feet from the basket toward halfway"
  },
  "events_status": {
-  "checkedAt": "2026-11-11T08:59:36+11:00",
-  "games": 59,
+  "checkedAt": "2026-11-12T08:59:25+11:00",
+  "games": 60,
   "badTeamGames": 0,
   "sources": {
    "nbl": 117,
-   "espn": 1
+   "espn": 3
   },
   "notes": [
-   "events by team-game: espn 1, nbl 117",
-   "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL events not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)"
+   "events by team-game: espn 3, nbl 117",
+   "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL events not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)",
+   "2026-11-11 Illawarra Hawks at South East Melbourne Phoenix South East Melbourne Phoenix: NBL events not used (pts 112, official 110; ftm 17, official 15; fta 23, official 21)",
+   "2026-11-11 Illawarra Hawks at South East Melbourne Phoenix Illawarra Hawks: NBL events not used (Kelan Martin +13, official +15; William Hickey +16, official +18; Milton Doyle +0, official +5)"
   ],
   "method": "Rotations, clutch, possessions and assists from the NBL's own play-by-play wherever its lineups reproduce the official box score (nbl_events.py); otherwise from ESPN's (events.py)"
  }
