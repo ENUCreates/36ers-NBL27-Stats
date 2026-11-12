@@ -284,7 +284,7 @@ def main():
     write(root, doc)
     # the tips (ladder.py: who's available) and the matchup facts use the injury list: redo both with this one
     import subprocess
-    for script in ("ladder.py", "matchups.py"):
+    for script in ("ladder.py", "matchups.py", "recaps.py"):      # recaps.py: only games still without a recap
         r = subprocess.run([sys.executable, "-I", os.path.join(HERE, script), root], capture_output=True, text=True)
         out = (r.stdout or r.stderr).strip()
         print(out.splitlines()[-1][:300] if out else f"{script}: no output")

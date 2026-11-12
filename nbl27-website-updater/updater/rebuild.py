@@ -17,7 +17,8 @@ however old, is picked up. Steps:
      90% of the previously published games come back, nothing is written at all.
   7. Write data/*.json + data/meta.json and print a change report (also stored in meta.status.changes).
   8. Refresh the Player cards (bios.py), then the projected ladder (ladder.py -> data/ladder.json) and the matchup
-     facts (matchups.py -> data/matchups.json, data/matchups_played.json).
+     facts (matchups.py -> data/matchups.json, data/matchups_played.json), then what happened in each newly played
+     game (recaps.py -> the game's 'recap' in data/matchups_played.json).
      The injury list (injuries.py -> data/injuries.json) is a separate step of the daily update, after this one.
 
 Usage: python3 rebuild.py <repo_root> [settle_hours=8]
@@ -369,6 +370,13 @@ def main():
             print("matchups step failed: previous facts kept")
     except Exception as ex:
         print("matchups step failed: previous facts kept:", ex)
+    # What happened in each game played since the last run (recaps.py: into data/matchups_played.json, once per game)
+    try:
+        r = U.run_script("recaps.py", [root])
+        if r.returncode:
+            print("recaps step failed: the new games have no recap yet")
+    except Exception as ex:
+        print("recaps step failed: the new games have no recap yet:", ex)
 
 
 if __name__ == "__main__":

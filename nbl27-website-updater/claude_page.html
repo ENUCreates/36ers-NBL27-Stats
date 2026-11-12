@@ -462,6 +462,18 @@ table.heat tbody tr:hover td.h{background:color-mix(in srgb,var(--accent) calc(v
 .why tr:hover td{background:var(--bg)}.why tr.tot:hover td{background:color-mix(in srgb,var(--accent) 12%,var(--bg))}
 .build{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin-top:8px;font:400 12.5px/1.4 var(--body);color:var(--muted)}
 .build b{color:var(--ink);font-weight:600}
+.recap{padding-bottom:18px;margin-bottom:16px;border-bottom:2px solid var(--ink)}
+.recap h4:first-child{margin-top:0}
+.mx h4.pre{margin-top:0}
+.qs{border-collapse:collapse;width:100%;max-width:440px;background:var(--bg);border-top:2px solid var(--ink)}
+.qs th,.qs td{padding:7px 10px;text-align:right;font-size:13px;border-bottom:1px solid var(--line-soft);font-variant-numeric:tabular-nums}
+.qs th{font:600 11.5px/1 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.qs td.tm{text-align:left;font-weight:600;white-space:nowrap}
+.qs td.tm img,.qs td.tm .code{vertical-align:middle;margin-right:6px}
+.qs td.hi{font-weight:700;color:var(--ink)}
+.qs td{color:var(--muted)}
+.qs td.f{font-weight:800;color:var(--ink);font-size:14.5px}
+.qs tr.w td.tm{font-weight:800}
 .fgrp{margin-top:12px}
 .fgrp .fk{font:700 13px/1 var(--body);color:var(--ink)}
 .fgrp .fni,.fgrp .fin{margin-left:8px;font:500 11.5px/1 var(--body);border:0;padding:0;border-radius:0}
@@ -2497,12 +2509,22 @@ async function drawMX(g){
   const injl=t=>{const L=TM[t]?.injuries;if(!L)return `<div class="r"><span class="mut">Not kept for this game</span></div>`;const R=L.filter(x=>x.cls!=="retired");return R.length?R.map(x=>`<div class="r"><span>${x.name} <span class="mut">${x.injury||""}</span></span><span>${x.cls==="dtd"?"Day-to-day":x.cls==="season"?"Season":x.ret||"TBC"}</span></div>`).join(""):`<div class="r"><span class="mut">Nobody listed</span></div>`};
   const two=(f)=>`<div class="two"><div class="col"><div class="ch">${code(H)}${c(H)}</div>${f(H)}</div><div class="col"><div class="ch">${code(A)}${c(A)}</div>${f(A)}</div></div>`;
   const h2h=(m.h2h||[]).length?(m.h2h.map(x=>`<div class="r"><span>${dShort(x.date)} · ${c(x.home)} ${x.hs}–${x.as} ${c(x.away)}</span><span>at ${disp(x.home)}</span></div>`).join("")):`<div class="r"><span class="mut">First meeting this season</span></div>`;
+  // what happened (played games): quarter scores and the recap's facts, written by the daily update (recaps.py)
+  const rc=played?m.recap:null;let recap="";
+  if(rc){
+    const ln=rc.line,per=i=>i<4?"Q"+(i+1):(ln.h.length===5?"OT":"OT"+(i-3));
+    const qs=ln?`<table class="qs"><thead><tr><th></th>${ln.h.map((_,i)=>`<th>${per(i)}</th>`).join("")}<th>Final</th></tr></thead><tbody>${[[H,ln.h,g.hs,g.hs>g.as],[A,ln.a,g.as,g.as>g.hs]].map(([t,q,tot,w])=>`<tr class="${w?"w":""}"><td class="tm">${code(t)}${c(t)}</td>${q.map((v,i)=>`<td class="${v>(t===H?ln.a:ln.h)[i]?"hi":""}">${v}</td>`).join("")}<td class="f">${tot}</td></tr>`).join("")}</tbody></table>`:"";
+    const RK=[["tip","The tip"],["won","The numbers that mattered"],["perf","Standout performances"],["flow","How it unfolded"]];
+    const grp=k=>{const fs=(rc.facts||[]).filter(f=>f.k===k);return fs.length?`<div class="fgrp"><span class="fk">${RK.find(x=>x[0]===k)[1]}</span><ul>${fs.map(f=>`<li>${f.t}</li>`).join("")}</ul></div>`:""};
+    recap=`<div class="recap"><h4>What happened</h4><div class="mx-grid"><div>${qs}${grp("tip")}${grp("flow")}</div><div>${grp("won")}${grp("perf")}</div></div>
+      <p class="mxnote">Worked out by the daily update from the box score and the play-by-play. "Usual" and "average" = that team's or player's own numbers this season before the game.</p></div>`;
+  }
   // what this view is: today's facts, or the facts as they stood before a played game
   const asof=m.asOf?new Date(m.asOf.length>10?m.asOf:m.asOf+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"}):"";
   const head=m.state==="pre"?`<p class="mxnote">Facts as of ${asof}, refreshed every morning. Strength, home court, shooting luck and who's available are in the percentage. Rest isn't: it made no measurable difference in 1,466 NBL games since 2015.</p>`
     :m.state==="frozen"?`<p class="mxnote">The facts as they stood before the game (${asof}), when it was tipped.</p>`
     :`<p class="mxnote">Back-tested: the model and numbers use only the games before ${asof}. The injury list wasn't kept then.</p>`;
-  box.innerHTML=`${head}<div class="mx-grid"><div><h4>Why ${c(p>=0.5?H:A)} ${pp}%</h4>${why}<h4>Key facts</h4>${facts||`<p class="mxnote">No standout facts.</p>`}</div>
+  box.innerHTML=`${recap}${rc?`<h4 class="pre">Before the game</h4>`:""}${head}<div class="mx-grid"><div><h4>Why ${c(p>=0.5?H:A)} ${pp}%</h4>${why}<h4>Key facts</h4>${facts||`<p class="mxnote">No standout facts.</p>`}</div>
     <div><h4>Tale of the tape</h4>${tape}<h4>Leading scorers</h4>${two(lead)}<h4>Injury list</h4>${two(injl)}<h4>Head to head this season</h4><div class="two" style="grid-template-columns:1fr"><div class="col">${h2h}</div></div></div></div>`;
 }
 
