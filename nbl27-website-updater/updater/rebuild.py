@@ -175,6 +175,8 @@ def main():
     import nbl_lineups as NL
     import nbl_shots as NS
     import nbl_events as NE
+    import nbl_periods as NP
+    pe_rep = []
     lu_rep, lu_n, sh_rep, ev_rep = [], {}, [], []
     try:
         import official as O
@@ -206,6 +208,8 @@ def main():
         # rotations, clutch, possessions and the assist network: the NBL's play-by-play too, wherever its lineups
         # reproduce the official box score; ESPN's (events.py) stay for any other team-game
         ev_rep, _ = NE.apply(new["events"], glist, plist, off, cmp["pairs"], O.nbl27_index(off), prev_by["events"])
+        # team stats by period (quarters, overtime) for the tips' played games: the NBL's feed, where they add up
+        pe_rep = NP.apply(glist, off, O.nbl27_index(off), prev.get("games"))
         names = {i: p["name"] for i, p in cmp["pairs"].items()}
         for i, n in (prev_off.get("names") or {}).items():
             names.setdefault(i, n)          # keep spellings learned from games the official files no longer list
@@ -217,6 +221,8 @@ def main():
         NL.keep_previous(new["lineups"], prev_by["lineups"])
         NS.keep_previous(new["pshots"], new["shots"], prev_by["pshots"], prev_by["shots"])
         NE.keep_previous(new["events"], prev_by["events"])
+        NP.keep_previous(list(new["games"].values()), prev.get("games"))
+        pe_rep = ["official data unavailable: last run's team stats by period kept"]
         ev_rep = ["official data unavailable: last run's NBL play-by-play events kept"]
         lu_rep = ["official data unavailable: last run's NBL play-by-play lineups kept"]
         sh_rep = ["official data unavailable: last run's NBL play-by-play shots kept"]
@@ -344,6 +350,10 @@ def main():
                              "notes": ev_rep[:40] + ([f"left out (don't reconcile with the box score): {', '.join(bad)}"] if bad else []),
                              "method": "Rotations, clutch, possessions and assists from the NBL's own play-by-play wherever its "
                                        "lineups reproduce the official box score (nbl_events.py); otherwise from ESPN's (events.py)"}
+    meta["periods_status"] = {"checkedAt": nowiso, "games": sum(1 for g in data["games"] if g.get("periods")),
+                              "notes": pe_rep[:40],
+                              "method": "Each team's stats by quarter (and overtime) from the NBL's own feed, kept only where they "
+                                        "add up to its full-game row and to this site's box score (nbl_periods.py)"}
     for c in COLS:
         json.dump(data[c], open(os.path.join(root, "data", c + ".json"), "w"), separators=(",", ":"), sort_keys=True)
     json.dump(meta, open(os.path.join(root, "data", "meta.json"), "w"), indent=1)

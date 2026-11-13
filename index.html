@@ -602,6 +602,12 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
 #view-sim .notes span{display:block;margin-bottom:6px}
 :root{--simaway:#8aa0c8}
 :root[data-bg="white"]{--simaway:#5a6f96}
+.rbx{margin-top:18px}
+.rbx .pbar{justify-content:flex-start}
+.rbx .seg .chip{padding:7px 10px;font-size:12.5px}
+.rbt{max-width:560px}
+.rbt thead th{font:600 11.5px/1.2 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.rbx .simbox tr.st td{font-weight:500}
 </style>
 
 <script>try{if(localStorage.getItem("nbl27-bg")==="white")document.documentElement.setAttribute("data-bg","white")}catch(e){}</script>
@@ -1236,6 +1242,73 @@ function renderStatus(){
 function recalc(){FDATA=null;const c=compute(GAMES);ROWS=c.rows;LG=c.lg;computeShots();computeExtras();renderStatus();renderLeague();renderTeam();renderPlayers();renderLineups();renderRotations();renderLadder();renderInjuries();if(!document.getElementById("view-cards").hidden)renderCards();if(!document.getElementById("view-coaches").hidden)renderCoaches();if(!document.getElementById("view-h2h").hidden)renderH2H()}
 
 
+// box score and team stats of a played game (round-by-round tips)
+const RBX={},RBXS={};
+const RBF=["pts","fgm","fga","tpm","tpa","ftm","fta","oreb","dreb","ast","stl","blk","tov","pf"];
+function rbxFind(g,H,A){
+  const day=d=>Date.parse(d+"T00:00:00Z")/864e5;
+  const row=GAMES.filter(x=>x.home.team===H&&x.away.team===A&&Math.abs(day(x.date)-day(g.date))<=1).sort((a,b)=>Math.abs(day(a.date)-day(g.date))-Math.abs(day(b.date)-day(g.date)))[0];
+  if(!row)return null;const eid=row.id.replace("espn-","");
+  return {row,doc:PLAYERDOCS.find(d=>d.espnId===eid)};
+}
+function rbxWrap(g,H,A){
+  const f=rbxFind(g,H,A);if(!f)return "";
+  const k=f.row.id;RBX[k]={...f,H,A};RBXS[k]=RBXS[k]||{v:"team",t:H,p:"full"};
+  return `<div class="rbx" data-rbxg="${k}">${rbxHtml(k)}</div>`;
+}
+function rbxHtml(k){
+  const {row,doc,H,A}=RBX[k],S=RBXS[k],c=t=>TEAMS[t]?.c||t,P=row.periods;
+  const tabs=`<div class="seg">${[["team","Team stats"],["box","Box score"]].map(([v,l])=>`<button class="chip" data-rbx="v" data-val="${v}" aria-pressed="${S.v===v}">${l}</button>`).join("")}</div>`;
+  let sub="",body="";
+  if(S.v==="box"){
+    sub=`<div class="seg">${[H,A].map(t=>`<button class="chip" data-rbx="t" data-val="${t}" aria-pressed="${S.t===t}">${c(t)}</button>`).join("")}</div>`;
+    body=rbxBox(row,doc,S.t);
+  }else{
+    const opts=[["full","Full time"]];
+    if(P){opts.push(["h1","1st half"],["h2","2nd half"]);P.per.forEach((l,i)=>opts.push(["p"+i,l]))}
+    if(!opts.some(o=>o[0]===S.p))S.p="full";
+    sub=`<div class="seg">${opts.map(([v,l])=>`<button class="chip" data-rbx="p" data-val="${v}" aria-pressed="${S.p===v}">${l}</button>`).join("")}</div>`;
+    body=rbxTeam(row,H,A,S.p);
+  }
+  return `<h4>The box score</h4><div class="pbar">${tabs}${sub}</div>${body}`;
+}
+function rbxSum(row,side,p){
+  const P=row.periods,o={};
+  if(!P){RBF.forEach(f=>o[f]=row[side][f]);return o}
+  const idx=p==="full"?P.per.map((_,i)=>i):p==="h1"?[0,1]:p==="h2"?P.per.map((_,i)=>i).filter(i=>i>=2):[+p.slice(1)];
+  RBF.forEach((f,j)=>o[f]=idx.reduce((s,i)=>s+P[side][i][j],0));return o;
+}
+function rbxTeam(row,H,A,p){
+  const h=rbxSum(row,"home",p),a=rbxSum(row,"away",p),c=t=>TEAMS[t]?.c||t,P=row.periods;
+  const lab=p==="full"?"Full time":p==="h1"?"1st half":p==="h2"?"2nd half"+(P&&P.per.length>4?" (with overtime)":""):P.per[+p.slice(1)];
+  const sh=(m,n)=>`${m}-${n}`,pc=(m,n)=>n?pct(m/n)+"%":"–";
+  const R=[["Points",x=>x.pts,x=>x.pts,1],["Field goals",x=>sh(x.fgm,x.fga),x=>x.fgm,1],["FG%",x=>pc(x.fgm,x.fga),x=>x.fga?x.fgm/x.fga:null,1],
+    ["2-pointers",x=>sh(x.fgm-x.tpm,x.fga-x.tpa),x=>x.fgm-x.tpm,1],["2P%",x=>pc(x.fgm-x.tpm,x.fga-x.tpa),x=>x.fga-x.tpa?(x.fgm-x.tpm)/(x.fga-x.tpa):null,1],
+    ["3-pointers",x=>sh(x.tpm,x.tpa),x=>x.tpm,1],["3P%",x=>pc(x.tpm,x.tpa),x=>x.tpa?x.tpm/x.tpa:null,1],
+    ["Free throws",x=>sh(x.ftm,x.fta),x=>x.ftm,1],["FT%",x=>pc(x.ftm,x.fta),x=>x.fta?x.ftm/x.fta:null,1],
+    ["eFG%",x=>pc(x.fgm+0.5*x.tpm,x.fga),x=>x.fga?(x.fgm+0.5*x.tpm)/x.fga:null,1],
+    ["Off. rebounds",x=>x.oreb,x=>x.oreb,1],["Def. rebounds",x=>x.dreb,x=>x.dreb,1],["Rebounds",x=>x.oreb+x.dreb,x=>x.oreb+x.dreb,1],
+    ["Assists",x=>x.ast,x=>x.ast,1],["Steals",x=>x.stl,x=>x.stl,1],["Blocks",x=>x.blk,x=>x.blk,1],["Turnovers",x=>x.tov,x=>x.tov,-1],[P?.fouls==="personal"?"Personal fouls":"Fouls",x=>x.pf,x=>x.pf,-1]];
+  const tb=R.map(([l,f,v,d])=>{const vh=v(h),va=v(a),bh=vh!=null&&va!=null&&(vh-va)*d>0,ba=vh!=null&&va!=null&&(va-vh)*d>0;
+    return `<tr><td class="h">${bh?`<b>${f(h)}</b>`:f(h)}</td><td class="l">${l}</td><td class="a">${ba?`<b>${f(a)}</b>`:f(a)}</td></tr>`}).join("");
+  return `<table class="tape rbt"><thead><tr><th class="h" style="text-align:right">${code(H)}</th><th style="text-align:center;width:38%">${lab}: ${c(H)} ${h.pts}–${a.pts} ${c(A)}</th><th style="text-align:left">${code(A)}</th></tr></thead><tbody>${tb}</tbody></table>
+    <p class="mxnote">${P?"The official NBL team stats for each quarter (and overtime); the halves and full time add them up, and match the box score.":"Full time only: the quarter-by-quarter team stats aren't in yet for this game."} Bold = the better side.${P?(P.fouls==="personal"?" The NBL's feed has only personal fouls for this game (no technicals), so they can be fewer than in the box score.":" Fouls = every foul the NBL charges to the team, technicals included, so can be one more than in the box score."):""}</p>`;
+}
+function rbxBox(row,doc,t){
+  const side=row.home.team===t?"home":"away",T=row[side],L=(doc?.teams?.[t]||[]);
+  if(!L.length)return `<p class="mxnote">The player box score isn't in yet for this game.</p>`;
+  const pl=L.filter(r=>r.min>0).sort((a,b)=>(b.starter-a.starter)||(b.min-a.min)),dnp=L.filter(r=>!(r.min>0));
+  const mm=m=>{const s=Math.round(m*60);return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`};
+  const tr=(r,tot)=>`<td>${tot?"":mm(r.min)}</td><td><b>${r.pts}</b></td><td>${r.fgm}-${r.fga}</td><td>${r.tpm}-${r.tpa}</td><td>${r.ftm}-${r.fta}</td><td>${r.oreb}</td><td>${r.dreb}</td><td>${r.oreb+r.dreb}</td><td>${r.ast}</td><td>${r.stl}</td><td>${r.blk}</td><td>${r.tov}</td><td>${r.pf}</td>`;
+  return `<div class="scroll"><table class="simbox"><thead><tr><th class="tm">${code(t)} ${disp(t)}</th><th>MIN</th><th>PTS</th><th>FG</th><th>3P</th><th>FT</th><th>OR</th><th>DR</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th><th>PF</th><th>+/−</th></tr></thead><tbody>
+    ${pl.map(r=>`<tr class="${r.starter?"st":""}"><td class="tm">${ppname(r.id,r.name,t)}${r.starter?`<span class="simst">S</span>`:""}</td>${tr(r)}<td>${r.pm==null?"–":(r.pm>0?"+":"")+r.pm}</td></tr>`).join("")}
+    <tr class="avg"><td class="tm">Team</td>${tr(T,true)}<td></td></tr>
+    <tr class="avg"><td class="tm">Shooting</td><td></td><td></td><td>${pct(T.fga?T.fgm/T.fga:null)}%</td><td>${pct(T.tpa?T.tpm/T.tpa:null)}%</td><td>${pct(T.fta?T.ftm/T.fta:null)}%</td><td colspan="10"></td></tr></tbody></table></div>
+    ${dnp.length?`<p class="mxnote">Did not play: ${dnp.map(r=>r.name).join(", ")}</p>`:""}
+    <p class="mxnote">S = starter. Team = the team's totals, team rebounds and team turnovers included, so they can be more than the players' sum. Player stats are for the whole game: the NBL's feed has them by game only, not by quarter.</p>`;
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-rbx]");if(!b)return;const w=b.closest(".rbx"),k=w?.dataset.rbxg;if(!k||!RBX[k])return;
+  RBXS[k][b.dataset.rbx]=b.dataset.val;w.innerHTML=rbxHtml(k)});
 let PLAYERDOCS=[],PSTATUS=null,pview="adv",pminVal=10,psort={k:"min",d:-1},pphotos=true;
 try{pphotos=localStorage.getItem("nbl27-pphotos")!=="0"}catch(e){}
 // a player's name in the Players tab: with his photo unless the Photos switch is off
@@ -2606,7 +2679,7 @@ async function drawMX(g){
     const RK=[["tip","The tip"],["won","The numbers that mattered"],["perf","Standout performances"],["flow","How it unfolded"]];
     const grp=k=>{const fs=(rc.facts||[]).filter(f=>f.k===k);return fs.length?`<div class="fgrp"><span class="fk">${RK.find(x=>x[0]===k)[1]}</span><ul>${fs.map(f=>`<li>${f.t}</li>`).join("")}</ul></div>`:""};
     recap=`<div class="recap"><h4>What happened</h4><div class="mx-grid"><div>${qs}${grp("tip")}${grp("flow")}</div><div>${grp("won")}${grp("perf")}</div></div>
-      <p class="mxnote">Worked out by the daily update from the box score and the play-by-play. "Usual" and "average" = that team's or player's own numbers this season before the game.</p></div>`;
+      <p class="mxnote">Worked out by the daily update from the box score and the play-by-play. "Usual" and "average" = that team's or player's own numbers this season before the game.</p>${rbxWrap(g,H,A)}</div>`;
   }
   // what this view is: today's facts, or the facts as they stood before a played game
   const asof=m.asOf?new Date(m.asOf.length>10?m.asOf:m.asOf+"T00:00:00").toLocaleDateString("en-AU",{day:"numeric",month:"short"}):"";

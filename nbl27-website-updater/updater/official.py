@@ -236,8 +236,8 @@ PBP_SKIP = {"possession", "possessionArrow", "fixture"}
 def rosetta_current(dest):
     """Current-season official data straight from the NBL's API, in the same row shapes as the nblR files:
     -> (res rows, box rows, team rows, roster profiles, play-by-play). Same-day, unlike the weekly nblR files.
-    play-by-play: {match id: {'home', 'away', 'players', 'teams', 'plays'}} for nbl_lineups.py, nbl_shots.py and
-    nbl_events.py - the plays in the feed's own order (game order), each {per, pt (period type), clock, type, sub,
+    play-by-play: {match id: {'home', 'away', 'players', 'teams', 'plays', 'periods'}} for nbl_lineups.py, nbl_shots.py,
+    nbl_events.py and nbl_periods.py - the plays in the feed's own order (game order), each {per, pt (period type), clock, type, sub,
     ok (made), team, pid, aid (the feed's action id), s1/s2 (the feed's running score)}, and for a shot its court
     position {x, y} (percent of the court's length and width)."""
     lst = rget(f"nbl/matches/in/season/{ROSETTA_YEAR}?limit=400", dest, fresh=True)["data"]
@@ -305,6 +305,15 @@ def rosetta_current(dest):
               "fta": num(x.get("free_throws_attempted")), "oreb": num(x.get("offensive_rebounds")),
               "dreb": num(x.get("defensive_rebounds")), "tov": num(x.get("turnovers")), "ast": num(x.get("assists"))}
              for x in d.get("team_match_statistics") or [] if sv(x.get("period")) == "0"]
+        # every team row, the full game's (period 0) and each period's (1-4, and overtime's), for nbl_periods.py
+        Q = [{"per": sv(x.get("period")), "pt": sv(x.get("period_type")), "team": site(x.get("team")),
+              **{k: num(x.get(f)) for k, f in (("pts", "points"), ("fgm", "field_goals_made"), ("fga", "field_goals_attempted"),
+                                               ("tpm", "three_points_made"), ("tpa", "three_points_attempted"),
+                                               ("ftm", "free_throws_made"), ("fta", "free_throws_attempted"),
+                                               ("oreb", "offensive_rebounds"), ("dreb", "defensive_rebounds"),
+                                               ("ast", "assists"), ("stl", "steals"), ("blk", "blocks"),
+                                               ("tov", "turnovers"), ("pf", "personal_fouls"), ("fouls", "fouls"))}}
+             for x in d.get("team_match_statistics") or []]
         A = []
         for a in d.get("play_by_play") or []:
             if a.get("action_type") in PBP_SKIP:
@@ -319,7 +328,7 @@ def rosetta_current(dest):
                 row["x"], row["y"] = c.get("x"), c.get("y")
             A.append(row)
         pbp[m["id"]] = {"home": site(d.get("home_team") or m.get("home_team")), "away": site(d.get("away_team") or m.get("away_team")),
-                        "players": P, "teams": T, "plays": A}
+                        "players": P, "teams": T, "plays": A, "periods": Q}
     roster = rget(f"nbl/players/in/season/{ROSETTA_YEAR}", dest, fresh=True)["data"]
     return res, box, team, roster, pbp
 
