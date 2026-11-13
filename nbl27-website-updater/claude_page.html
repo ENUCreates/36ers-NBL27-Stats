@@ -2105,7 +2105,7 @@ function renderRotations(){
 // Bio + history come from the "bios" collection (built daily from ESPN; extra verified sources are merged field by field).
 let BIOS={},csel={},PHOTOS={},loadPhotos=null,photosAsked=false;
 // earlier seasons' official headshots (Head coaches lineups: players with no NBL27 photo), "c:<image id>" -> file
-const XPHOTOS={};
+const XPHOTOS={"hc:adam-forde":"data/coachheads/adam-forde.webp","hc:brian-goorjian":"data/coachheads/brian-goorjian.webp","hc:gordon-herbert":"data/coachheads/gordon-herbert.webp","hc:jacob-chance":"data/coachheads/jacob-chance.webp","hc:john-rillie":"data/coachheads/john-rillie.webp","hc:josh-king":"data/coachheads/josh-king.webp","hc:justin-tatum":"data/coachheads/justin-tatum.webp","hc:scott-roth":"data/coachheads/scott-roth.webp","hc:trevor-gleeson":"data/coachheads/trevor-gleeson.webp","hc:will-weaver":"data/coachheads/will-weaver.webp"};
 // headshots are a separate collection, fetched once at start-up: every player name on the page shows his photo
 function wantPhotos(){if(photosAsked||!loadPhotos)return;photosAsked=true;try{loadPhotos()}catch(e){photosAsked=false}}
 const ccFlag=cc=>cc&&/^[A-Za-z]{2}$/.test(cc)?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt(0))):"";
@@ -2447,7 +2447,7 @@ function coachCard(c){
   const note=c.note?`<p class="hc-note">${c.note.charAt(0).toUpperCase()+c.note.slice(1)}.</p>`:"";
   return `<article class="panel pcard">
     <div class="pc-head" style="--tc:${col}">
-      ${avatar({name:c.name},team,true)}
+      ${avatar({id:"hc:"+c.id,name:c.name},team,true)}
       <div style="min-width:0"><h2 class="pc-name">${c.name}</h2>
         <div class="pc-sub">${code(team)}<span>${disp(team)}</span><span class="pill">Head coach</span></div>
         <div class="bio">${bio}</div>${note}</div>

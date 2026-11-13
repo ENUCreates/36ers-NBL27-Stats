@@ -19,7 +19,7 @@ PAGE = "nbl27-website-updater/claude_page.html"
 DATA = ["games.json", "shots.json", "players.json", "lineups.json", "pshots.json", "events.json", "meta.json",
         "bios.json", "photos.json", "coachlineups.json", "ladder.json", "injuries.json", "matchups.json",
         "matchups_played.json"]
-DIRS = ["photos", "coachphotos"]            # *.webp
+DIRS = ["photos", "coachphotos", "coachheads"]  # *.webp
 MAX_FILES = 200                             # the Artifact tool takes at most 255 files per publish
 
 
