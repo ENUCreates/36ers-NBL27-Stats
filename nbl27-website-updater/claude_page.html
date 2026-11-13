@@ -602,7 +602,7 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
 .rbt{max-width:560px}
 .rbt thead th{font:600 11.5px/1.2 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .rbx .simbox tr.st td{font-weight:500}
-.rbx .simst{font-size:14px;margin-left:4px}
+.simst{font-size:14px;margin-left:4px}
 </style>
 
 <script>try{if(localStorage.getItem("nbl27-bg")==="white")document.documentElement.setAttribute("data-bg","white")}catch(e){}</script>
@@ -3239,9 +3239,9 @@ function simBox(g,ti){
   const T={};for(const k of ["min","pts","fgm","fga","tpm","tpa","ftm","fta","oreb","dreb","ast","stl","blk","tov","pf"])T[k]=rows.reduce((s,r)=>s+r[k],0);
   const tr=(r,tot)=>`<td>${tot?"":simClock(r.min*60)}</td><td><b>${r.pts}</b></td><td>${r.fgm}-${r.fga}</td><td>${r.tpm}-${r.tpa}</td><td>${r.ftm}-${r.fta}</td><td>${r.oreb}</td><td>${r.dreb}</td><td>${r.oreb+r.dreb}</td><td>${r.ast}</td><td>${r.stl}</td><td>${r.blk}</td><td>${r.tov}</td><td>${r.pf}</td>`;
   return `<div class="scroll"><table class="simbox"><thead><tr><th class="tm">${code(t)} ${disp(t)}</th><th>MIN</th><th>PTS</th><th>FG</th><th>3P</th><th>FT</th><th>OR</th><th>DR</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th><th>PF</th><th>+/−</th></tr></thead><tbody>
-    ${rows.map(r=>`<tr class="${r.start?"st":""}"><td class="tm">${ppname(r.id,r.name,t)}${r.start?`<span class="simst">S</span>`:""}</td>${tr(r)}<td>${r.pm>0?"+":""}${r.pm}</td></tr>`).join("")}
+    ${rows.map(r=>`<tr class="${r.start?"st":""}"><td class="tm">${ppname(r.id,r.name,t)}${r.start?`<span class="simst">*</span>`:""}</td>${tr(r)}<td>${r.pm>0?"+":""}${r.pm}</td></tr>`).join("")}
     <tr class="avg"><td class="tm">Team</td>${tr(T,true)}<td></td></tr>
-    <tr class="avg"><td class="tm">Shooting</td><td></td><td></td><td>${pct(T.fga?T.fgm/T.fga:null)}%</td><td>${pct(T.tpa?T.tpm/T.tpa:null)}%</td><td>${pct(T.fta?T.ftm/T.fta:null)}%</td><td colspan="10"></td></tr></tbody></table></div>`;
+    <tr class="avg"><td class="tm">Shooting</td><td></td><td></td><td>${pct(T.fga?T.fgm/T.fga:null)}%</td><td>${pct(T.tpa?T.tpm/T.tpa:null)}%</td><td>${pct(T.fta?T.ftm/T.fta:null)}%</td><td colspan="10"></td></tr></tbody></table></div><p class="simnote">* = starter</p>`;
 }
 function simCharts(g){
   return `<div class="simtwo">${[0,1].map(ti=>{const t=ti?g.away:g.home,sel=simShotSel[t]||"";
