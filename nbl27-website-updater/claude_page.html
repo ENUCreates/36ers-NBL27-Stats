@@ -533,6 +533,69 @@ footer .fblock b{display:block;column-span:all;margin-bottom:6px}
 footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
 #foot-note{max-width:110ch}
 @media (max-width:760px){.grid2{grid-template-columns:minmax(0,1fr)}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tile:nth-child(3){border-left:0;padding-left:0}.tile:nth-child(n+3){border-top:1px solid var(--line)}.ff{grid-template-columns:96px minmax(0,1fr) 46px 36px}}
+
+/* Simulator */
+.simbar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:0 0 14px}
+.simgo{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;padding:9px 16px}
+.simgo:hover{filter:brightness(1.08)}
+.simgo[disabled]{opacity:.7;cursor:progress}
+.simprog{color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+.simplans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:16px}
+@media (max-width:1000px){.simplans{grid-template-columns:minmax(0,1fr)}}
+.simplanbox details{border:1px solid var(--line);background:var(--panel)}
+.simplanbox summary{cursor:pointer;padding:10px 12px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;list-style:none}
+.simplanbox summary::-webkit-details-marker{display:none}
+.simplanbox summary::before{content:"▸";color:var(--muted);font-size:12px}
+.simplanbox details[open] summary::before{content:"▾"}
+.simpt{display:inline-flex;align-items:center;gap:8px;font:700 14px var(--body);color:var(--ink)}
+.simpt img.logo,.simpt .code{width:28px;height:21px;line-height:21px}
+.simps{color:var(--muted);font-size:12.5px}
+.simplanbox table{font-size:13px}
+.simplanbox th,.simplanbox td{padding:5px 7px}
+.simplanbox td input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;margin:0;cursor:pointer}
+.simmin{width:58px;font:500 13px var(--body);padding:4px 6px;background:var(--bg);color:var(--ink);border:1px solid var(--line);text-align:right}
+.simplanbox tr.off td{opacity:.55}
+.simplanbox tr.off td:nth-child(2){opacity:1}
+.simwhy{display:block;font-size:11px;color:var(--warn);text-transform:uppercase;letter-spacing:.02em;margin-top:2px;white-space:normal}
+.simplanfoot{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:10px 12px 0}
+.warnt{color:var(--warn);font-size:12px}
+.simnote{font:400 11.5px/1.45 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.02em;margin:10px 12px 12px}
+.simsum h4,.simone h4{font:700 condensed 17px/1 var(--display);margin:20px 0 8px;color:var(--ink)}
+.simsum h4 .mut{font:500 12px var(--body)}
+.simodds{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center}
+.simside{display:flex;align-items:center;gap:8px;font:600 14px var(--body);color:var(--ink)}
+.simside b{font:800 condensed 30px/1 var(--display)}
+.simside img.logo,.simside .code{width:36px;height:27px;line-height:27px}
+.simbar2{display:flex;height:12px;background:var(--soft)}
+.simbar2 i{display:block;height:100%}
+@media (max-width:600px){.simodds{grid-template-columns:1fr 1fr}.simbar2{grid-column:1/3;grid-row:2}.simside.r{justify-content:flex-end}.simside span{display:none}}
+.simfacts{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;color:var(--muted);font-size:13px}
+.simfacts b{color:var(--ink);font-weight:600}
+.simcmp{margin:12px 0 0;padding:9px 12px;border-left:3px solid var(--accent);background:var(--bg);font-size:13px;color:var(--muted)}
+.simcmp b{color:var(--ink)}
+.simq{margin-top:10px}
+.simtwo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+@media (max-width:1100px){.simtwo{grid-template-columns:minmax(0,1fr)}}
+.simbox{font-size:12.5px}
+.simbox th,.simbox td{padding:5px 6px}
+.simbox tr.avg td{font-weight:600;color:var(--ink)}
+.simst{margin-left:6px;font:700 10px var(--body);color:var(--muted)}
+.simgames td,.simgames th{padding:5px 8px;font-size:13px}
+.chip.sm{padding:5px 8px;font-size:12px}
+.simone .simhd{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.simone .simhd h3{margin:0;font:800 condensed clamp(20px,3vw,26px)/1.1 var(--display)}
+.simpbpw{max-height:560px;overflow-y:auto;border-top:2px solid var(--ink)}
+.simpbp{font-size:13px}
+.simpbp th{position:sticky;top:0;z-index:1}
+.simpbp td.pl{white-space:normal;text-align:left;min-width:240px}
+.simpbp td.tm img.logo,.simpbp td.tm .code{width:26px;height:19px;line-height:19px}
+.simpbp tr.sc td{color:var(--ink);font-weight:600}
+.simpbp tr.qrow td{background:var(--bg);font-weight:700;color:var(--ink)}
+.simpbp td{color:var(--muted)}
+.simone .sc-pick select{max-width:100%}
+#view-sim .notes span{display:block;margin-bottom:6px}
+:root{--simaway:#8aa0c8}
+:root[data-bg="white"]{--simaway:#5a6f96}
 </style>
 
 <script>try{if(localStorage.getItem("nbl27-bg")==="white")document.documentElement.setAttribute("data-bg","white")}catch(e){}</script>
@@ -561,6 +624,7 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
     <button class="tab" role="tab" id="tab-lineups" aria-selected="false">Lineups</button>
     <button class="tab" role="tab" id="tab-h2h" aria-selected="false">H2H Lineups</button>
     <button class="tab" role="tab" id="tab-rotations" aria-selected="false">Rotations</button>
+    <button class="tab" role="tab" id="tab-sim" aria-selected="false">Simulator</button>
   </nav>
 
   <section id="view-league">
@@ -687,6 +751,25 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
   <section id="view-rotations" hidden>
     <div class="chips tpick" id="rpicker" style="margin-bottom:12px"></div>
     <div id="rotations"></div>
+  </section>
+
+  <section id="view-sim" hidden>
+    <div class="h2h-top">
+      <div class="h2h-side"><span class="k">Home</span><div class="chips tpick" id="simpickH" role="group" aria-label="Home team"></div></div>
+      <button class="chip h2h-swap" id="simswap" title="Swap home and away" aria-label="Swap home and away">⇄</button>
+      <div class="h2h-side"><span class="k">Away</span><div class="chips tpick" id="simpickA" role="group" aria-label="Away team"></div></div>
+    </div>
+    <div class="simbar" id="simbar"></div>
+    <div id="simplan"></div>
+    <div id="sim"></div>
+    <div id="simout"></div>
+    <div class="notes">
+      <span>How a game is played: one possession at a time, with a game clock. On each one, the five on the floor are each team's planned rotation; who ends the possession, and how (a shot, a trip to the line or a turnover), comes from each player's own rates this season; a shot's zone and its chance of going in from his own shot log and percentages, moved by how well the defence guards that zone; then rebounds, assists, steals, blocks and fouls from both teams' and players' rates. Pace from both teams' possessions per 40 minutes. Five fouls and a player is out.</span>
+      <span>Every rate is pulled toward the bench's numbers this season by how little of it there is, so a player with few minutes looks like a typical bench player.</span>
+      <span>Taking a player out costs his team his own numbers, and the strain on the rest: a five that has to use more possessions than it usually does takes worse shots and turns it over more. Sized so that sitting a regular costs about what the tips' injury adjustment says he is worth.</span>
+      <span>Checked against the season: every game played so far, re-played with the players who played it, comes out like the real games on average (possessions, points, shooting, free throws, rebounds, assists, turnovers, steals, blocks, fouls) and gives each player about his real minutes. For the games to come, its win chances are close to the round-by-round tips; they differ most where the tips take out a team's luck shooting threes and free throws, which the simulator does not.</span>
+      <span>Home court is worth the tip model's home edge (about 2.3 points). Simulated play-by-play and shots are made up from these numbers: they are not real events, and the same five players are not assumed to play any better or worse together than their own numbers say.</span>
+    </div>
   </section>
 
   <footer>
@@ -1523,9 +1606,9 @@ function shotPool(team,pid,opp,keep){
 function leagueShots(){const out=[];PSHOTS.forEach(d=>{if(!d.date||d.date<SEASON_START)return;for(const T of Object.values(d.teams||{})){if(T.ok===false)continue;for(const p of Object.values(T.p||{}))(p.s||[]).forEach(s=>out.push(s))}});return out}
 // Court drawing + zone table for one team or one player (used by Players > Shot chart, the Player cards and the team
 // sheet); opp: the shots opponents took against the team, shaded green where they shoot below the League Ave
-function shotChartParts(name,sel,opp,keep){
+function shotChartParts(name,sel,opp,keep,given){
   const B=shotBasket();
-  const {shots,games,bad}=shotPool(name,sel||null,opp,keep);
+  const {shots,games,bad}=given?{shots:given,games:1,bad:[]}:shotPool(name,sel||null,opp,keep);
   const Z=tally9(shots,B),L=tally9(leagueShots(),B);
   const fga=Z.reduce((t,z)=>t+z.a,0),fgm=Z.reduce((t,z)=>t+z.m,0);
   const tpa=[3,4,5,6,7].reduce((t,k)=>t+Z[k].a,0),tpm=[3,4,5,6,7].reduce((t,k)=>t+Z[k].m,0),efg=fga?(fgm+0.5*tpm)/fga:null;
@@ -2566,17 +2649,547 @@ function renderInjuries(){
 // re-draw the open tab (used when the headshots arrive)
 function renderVisible(){const on=x=>!document.getElementById("view-"+x).hidden;
   if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("h2h"))renderH2H();if(on("rotations"))renderRotations();if(on("cards"))renderCards();if(on("coaches"))renderCoaches();if(on("ladder"))renderLadder();if(on("injuries"))renderInjuries()}
+/*SIM-ENGINE-START*/
+// Game simulator engine (Simulator tab). No DOM, so the same code runs in the page and in the checks
+// (nbl27-website-updater/updater/simcheck.js).
+//   SIM.model(data)                       this season's numbers for every team and player, from the box scores
+//                                         (players.json), the player shot logs (pshots.json) and the on-court
+//                                         stints (lineups.json)
+//   SIM.plan(M, team, choices)            who plays and how much: availability, minutes, starters, closers
+//   SIM.game(M, home, away, plans, seed)  one game, possession by possession: box score, play-by-play, shots
+// Every rate is the player's or team's own this season, pulled toward the league average by how little of it
+// there is. Shot locations are drawn from the player's own shots (pshots.json), so the shot chart looks like his.
+const SIM=(()=>{
+const Z2=[0,1,2],Z3=[3,4],ZP=[2,2,2,3,3];          // zones: 0 restricted area, 1 paint, 2 mid-range, 3 corner 3, 4 above-break 3
+const ZNAME=["at the rim","in the paint","from mid-range","from the corner","from above the break"];
+const AST_Z=[0.5,0.45,0.42,0.92,0.78];                // relative chance a make is assisted, by zone (shape only: scaled to each team's own rate)
+const AND1=0.09;
+// tuned so that every played game, re-played with the players who played it, comes out like the real ones on
+// average (updater/simcheck.js): possessions, blocks, fouls, the home edge
+const PACE_T=1.055,PACE_NSF=0.85,BLK_Z=[2.2,1.8,0.9,0.35,0.35],AST_K=0.56,REB_K=1.03,FTA_K=0.93,FG_K=0.017,FG3_K=0.008;
+// the cost of usage: a five that normally ends fewer possessions than a typical five has to end them anyway, less well
+// (and the reverse, half as much). Sized so that sitting a player costs about what the tip model's availability
+// adjustment says he is worth (availability.py, fitted on 1,458 NBL games); see the check.
+let USE_EFF=0.22,USE_TOV=0.6;
+                                      // and-one chance on a make at the rim or in the paint
+function rng(seed){let a=seed>>>0;return()=>{a=a+0x6D2B79F5>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function pick(r,ws){let s=0;for(const w of ws)s+=w;if(s<=0)return Math.floor(r()*ws.length);let x=r()*s;for(let i=0;i<ws.length;i++){x-=ws[i];if(x<=0)return i}return ws.length-1}
+const shrink=(x,n,prior,k)=>(x+k*prior)/(n+k);
+const K=["fga","fgm","tpa","tpm","fta","ftm","oreb","dreb","ast","stl","blk","tov","pf","pts"];
+
+// ------------------------------------------------------------------------------------------------ the numbers
+function model(D){
+  const since=D.since||"",B=D.basket||{x:25,y:0};
+  const T={},P={},LG={g:0,min:0,poss:0};K.forEach(k=>LG[k]=0);
+  const team=n=>T[n]||(T[n]={name:n,g:0,min:0,poss:0,oposs:0,f:Object.fromEntries(K.map(k=>[k,0])),a:Object.fromEntries(K.map(k=>[k,0])),
+    z:{a:[0,0,0,0,0],m:[0,0,0,0,0]},oz:{a:[0,0,0,0,0],m:[0,0,0,0,0]},games:[],lu:0,ids:new Set()});
+  const docs=(D.players||[]).filter(d=>d.date>=since&&d.teams).sort((a,b)=>a.date<b.date?-1:1);
+  const poss=s=>s.fga-s.oreb+s.tov+0.44*s.fta;
+  for(const d of docs){
+    const names=Object.keys(d.teams);if(names.length!==2)continue;
+    const tot={};
+    for(const n of names){const s=Object.fromEntries(K.map(k=>[k,0]));let mins=0;
+      for(const r of d.teams[n]){K.forEach(k=>s[k]+=r[k]||0);mins+=r.min||0}
+      s.len=mins/5;tot[n]=s}
+    for(const n of names){const o=names.find(x=>x!==n),t=team(n),s=tot[n],a=tot[o];
+      t.g++;t.min+=s.len;t.poss+=poss(s);t.oposs+=poss(a);K.forEach(k=>{t.f[k]+=s[k];t.a[k]+=a[k]});t.games.push(d.espnId);
+      LG.g++;LG.min+=s.len;LG.poss+=poss(s);K.forEach(k=>LG[k]+=s[k]);
+      for(const r of d.teams[n]){if(!r.min)continue;const id=r.id,p=P[n+"|"+id]||(P[n+"|"+id]={id,team:n,name:r.name,gp:0,min:0,starts:0,games:[],
+          z:{a:[0,0,0,0,0],m:[0,0,0,0,0]},xy:[[],[],[],[],[]],prof:new Array(40).fill(0),lg:0,...Object.fromEntries(K.map(k=>[k,0]))});
+        p.gp++;p.min+=r.min;p.starts+=r.starter?1:0;p.games.push(d.espnId);p.name=r.name;K.forEach(k=>p[k]+=r[k]||0);t.ids.add(id)}}
+  }
+  // shot locations (only the shot logs that are complete)
+  const LZ={a:[0,0,0,0,0],m:[0,0,0,0,0]},LXY=[[],[],[],[],[]];
+  for(const d of (D.pshots||[])){if(!(d.date>=since)||!d.teams)continue;const names=Object.keys(d.teams);
+    for(const n of names){const S=d.teams[n],o=names.find(x=>x!==n);if(!S||S.ok===false||!T[n])continue;
+      for(const [id,q] of Object.entries(S.p||{})){const p=P[n+"|"+id];
+        for(const s of q.s||[]){const z=s[3];if(z==null||z<0||z>4)continue;
+          LZ.a[z]++;LZ.m[z]+=s[2]?1:0;T[n].z.a[z]++;T[n].z.m[z]+=s[2]?1:0;
+          if(T[o]){T[o].oz.a[z]++;T[o].oz.m[z]+=s[2]?1:0}
+          if(s[0]!=null&&s[1]!=null){LXY[z].push([s[0],s[1]]);if(p)p.xy[z].push([s[0],s[1]])}
+          if(p){p.z.a[z]++;p.z.m[z]+=s[2]?1:0}}}}}
+  // on-court stints, minute by minute (regulation only)
+  for(const d of (D.lineups||[])){if(!(d.date>=since)||!d.teams)continue;
+    for(const [n,stints] of Object.entries(d.teams)){if(!T[n]||!Array.isArray(stints)||!stints.length)continue;
+      let t0=0;const seen=new Set(),on={};
+      for(const st of stints){const sec=st.sec||0;
+        for(const id of st.p||[]){seen.add(id);const p=P[n+"|"+id];if(!p)continue;
+          for(let x=t0;x<Math.min(t0+sec,2400);){const m=Math.floor(x/60),e=Math.min((m+1)*60,t0+sec,2400);p.prof[m]+=e-x;x=e}}
+        t0+=sec}
+      if(Math.abs(t0-2400)>130&&t0<2400)continue;
+      T[n].lu++;seen.forEach(id=>{const p=P[n+"|"+id];if(p)p.lg++})}}
+  // league rates
+  const lgMin=LG.min*5;                                // player-minutes
+  const L={pace:40*LG.poss/LG.min,per:{},z:LZ.a.map((a,z)=>LZ.m[z]/a),share2:Z2.map(z=>LZ.a[z]/Z2.reduce((t,k)=>t+LZ.a[k],0)),
+    share3:Z3.map(z=>LZ.a[z]/Z3.reduce((t,k)=>t+LZ.a[k],0)),tp:LG.tpm/LG.tpa,ft:LG.ftm/LG.fta,tpr:LG.tpa/LG.fga,
+    fg2:(LG.fgm-LG.tpm)/(LG.fga-LG.tpa),xy:LXY,B};
+  K.forEach(k=>L.per[k]=LG[k]/lgMin);
+  L.orb=LG.oreb/(LG.oreb+LG.dreb);
+  L.tovp=LG.tov/LG.poss;L.ftap=LG.fta/LG.poss;L.astm=LG.ast/LG.fgm;L.stlt=LG.stl/LG.tov;L.blkm=LG.blk/(LG.fga-LG.fgm);
+  L.pfg=LG.pf/LG.g;L.ftag=LG.fta/LG.g;L.possg=LG.poss/LG.g;
+  // player-rebounds per missed shot: the rest are team rebounds
+  L.preb=(LG.oreb+LG.dreb)/((LG.fga-LG.fgm)+0.55*(LG.fta-LG.ftm));
+  // teams
+  for(const t of Object.values(T)){
+    const f=t.f,a=t.a;
+    t.pace=shrink(40*t.poss/t.min*t.g,t.g,L.pace,4)/1;           // possessions per 40 minutes
+    t.pace=(t.poss/t.min*40*t.g+4*L.pace)/(t.g+4);
+    t.orb=shrink(f.oreb,f.oreb+a.dreb,L.orb,120);                   // own offensive rebounding
+    t.orbA=shrink(a.oreb,a.oreb+f.dreb,L.orb,120);                  // offensive rebounding allowed
+    t.tovF=shrink(a.tov,t.oposs,L.tovp,500)/L.tovp;                 // turnovers forced, vs league
+    t.ftaA=shrink(a.fta,t.oposs,L.ftap,500)/L.ftap;                 // free throws allowed, vs league
+    t.astm=shrink(f.ast,f.fgm,L.astm,150);                          // share of makes assisted
+    t.stlt=shrink(f.stl,a.tov,L.stlt,80);                           // share of forced turnovers that are steals
+    t.blkm=shrink(f.blk,a.fga-a.fgm,L.blkm,250);                    // share of opponents' misses blocked
+    t.dz=Z2.concat(Z3).map(z=>shrink(t.oz.m[z],t.oz.a[z],L.z[z],z<3?140:220)-L.z[z]);   // FG% allowed by zone, vs league
+    const o3=a.tpa/Math.max(1,a.fga);t.d3=shrink(o3*t.g,t.g,L.tpr,8)/L.tpr;           // share of threes allowed, vs league
+  }
+  // players. A player with few minutes is pulled toward what players with few minutes do (the bench this season:
+  // under 15 minutes a game), not toward the league average: the minutes he'd fill are bench minutes
+  const PK={min:45},RB={min:0,fga:0,fgm:0,tpa:0,tpm:0},rep_={};K.forEach(k=>rep_[k]=0);
+  for(const p of Object.values(P))if(p.min/p.gp<15){RB.min+=p.min;K.forEach(k=>rep_[k]+=p[k])}
+  L.rep={};K.forEach(k=>L.rep[k]=RB.min?rep_[k]/RB.min:L.per[k]);
+  L.repFg=RB.min&&rep_.fga?(rep_.fgm/rep_.fga)-(LG.fgm/LG.fga):0;     // bench FG% against the league's
+  for(const p of Object.values(P)){
+    const per=k=>shrink(p[k],p.min,L.rep[k],PK.min);
+    p.mpg=p.min/p.gp;
+    p.r={};K.forEach(k=>p.r[k]=per(k));
+    p.tpr=shrink(p.tpa,p.fga,L.tpr,10);
+    const a2=Z2.reduce((t,z)=>t+p.z.a[z],0),a3=Z3.reduce((t,z)=>t+p.z.a[z],0);
+    p.s2=Z2.map((z,i)=>(p.z.a[z]+4*L.share2[i])/(a2+4));
+    p.s3=Z3.map((z,i)=>(p.z.a[z]+3*L.share3[i])/(a3+3));
+    // shooting: 2s by zone from the shot log; 3s from the box score (more of them), split corner/above-break as the league does
+    const tp=shrink(p.tpm,p.tpa,L.tp+L.repFg,60),lg3=(L.z[3]*L.share3[0]+L.z[4]*L.share3[1]);
+    p.fz=[0,1,2].map(z=>shrink(p.z.m[z],p.z.a[z],L.z[z]+L.repFg,z===0?14:z===1?16:20)).concat([3,4].map(z=>L.z[z]+(tp-lg3)));
+    // the 2s from the shot log may be fewer than the box score's: nudge them to the box score's 2P%
+    const fg2box=shrink(p.fgm-p.tpm,p.fga-p.tpa,L.fg2+L.repFg,40),fg2z=Z2.reduce((t,z,i)=>t+p.s2[i]*p.fz[z],0);
+    for(const z of Z2)p.fz[z]=Math.min(0.85,Math.max(0.15,p.fz[z]+(fg2box-fg2z)*0.6));
+    p.ft=shrink(p.ftm,p.fta,L.ft,20);
+    // what his possessions end in, per minute: a shot, a trip to the line, a turnover
+    const madeIn=p.r.fga*(1-p.tpr)*(p.s2[0]*p.fz[0]+p.s2[1]*p.fz[1]);
+    p.uFga=p.r.fga;p.uTrip=Math.max(0.0005,FTA_K*(p.r.fta-AND1*madeIn)/2);p.uTov=p.r.tov;
+    p.u=p.uFga+p.uTrip+p.uTov;
+    p.st=p.gp?p.starts/p.gp:0;
+    p.prof=p.lg?p.prof.map(s=>s/(60*p.lg)):null;
+  }
+  { let um=0,mm=0;for(const p of Object.values(P)){um+=p.u*p.min;mm+=p.min}L.u5=5*um/mm; }
+  const byTeam={};for(const p of Object.values(P)){(byTeam[p.team]=byTeam[p.team]||[]).push(p)}
+  for(const n of Object.keys(byTeam))byTeam[n].sort((a,b)=>b.min/b.gp-a.min/a.gp);
+  return {T,P:byTeam,L,B,teams:Object.keys(T).sort()};
+}
+
+// ------------------------------------------------------------------------------------------------ who plays
+// choices: {out:Set(ids) or [ids], mins:{id:minutes}, start:[ids], close:[ids]}
+function plan(M,team,ch){
+  ch=ch||{};const out=new Set(ch.out||[]);
+  const all=M.P[team]||[];const ps=all.filter(p=>!out.has(p.id));
+  const tg=M.T[team]?.g||1;
+  // each player's usual shape through a game: his own stints, or (no stints) the team's bench shape
+  const bench=new Array(40).fill(0);let nb=0;
+  for(const p of all)if(p.prof&&p.st<0.3){p.prof.forEach((v,m)=>bench[m]+=v);nb++}
+  const flat=bench.map(v=>nb?v/nb:0.2);
+  const shape=p=>{const s=(p.prof&&p.lg>=1?p.prof:flat).map(v=>v+0.002);const t=s.reduce((a,b)=>a+b,0);return s.map(v=>v/t)};
+  // minutes: the choice, else his usual minutes when he plays; then everyone scaled to fill 200
+  const want=ps.map(p=>ch.mins&&ch.mins[p.id]!=null?Math.max(0,Math.min(40,+ch.mins[p.id])):p.mpg);
+  const fixed=ps.map(p=>ch.mins&&ch.mins[p.id]!=null);
+  let T=want.slice();
+  for(let it=0;it<30;it++){const free=T.reduce((t,v,i)=>t+(fixed[i]?0:v),0),need=200-T.reduce((t,v,i)=>t+(fixed[i]?v:0),0);
+    if(free<=0)break;const k=need/free;T=T.map((v,i)=>fixed[i]?v:Math.min(40,v*k));if(Math.abs(T.reduce((a,b)=>a+b,0)-200)<0.05)break}
+  const tot=T.reduce((a,b)=>a+b,0);if(tot>0&&Math.abs(tot-200)>0.5)T=T.map(v=>v*200/tot);
+  // minute-by-minute chance of being on (iterative fitting: each row to his minutes, each minute to five)
+  let q=ps.map((p,i)=>shape(p).map(v=>v*T[i]));
+  for(let it=0;it<60;it++){
+    for(let m=0;m<40;m++){const s=q.reduce((t,r)=>t+r[m],0);if(s>0)q.forEach(r=>r[m]=Math.min(1,r[m]*5/s))}
+    q.forEach((r,i)=>{const s=r.reduce((a,b)=>a+b,0);if(s>0)r.forEach((v,m)=>r[m]=Math.min(1,v*T[i]/s))})}
+  let start=(ch.start||[]).filter(id=>ps.some(p=>p.id===id));
+  if(start.length!==5){const rest=ps.filter(p=>!start.includes(p.id)).sort((a,b)=>(b.st-a.st)||(b.mpg-a.mpg));start=start.concat(rest.slice(0,5-start.length).map(p=>p.id))}
+  const close=(ch.close||[]).filter(id=>ps.some(p=>p.id===id));
+  return {team,ps,T,q,start,close:close.length===5?close:[],n:ps.length};
+}
+
+// ------------------------------------------------------------------------------------------------ one game
+const SHOT_TXT=[["layup","driving layup","dunk","putback layup","reverse layup"],["floating jump shot","hook shot","driving floating jump shot","turnaround jump shot"],
+  ["jump shot","pull-up jump shot","fadeaway jump shot","step back jump shot"],["three point jumper","corner three"],["three point jumper","pull-up three point jumper","step back three point jumper"]];
+const TOV_TXT=["bad pass","lost ball","travelling","offensive foul","shot clock violation","out of bounds","3 second violation"];
+function game(M,home,away,plans,seed,opt){
+  opt=opt||{};const LOG=opt.log!==false,r=rng(seed);const L=M.L,B=M.B;
+  const TM=[M.T[home],M.T[away]],PL=[plans[0]||plan(M,home),plans[1]||plan(M,away)];
+  const UE=opt.useEff==null?USE_EFF:opt.useEff,UT=opt.useTov==null?USE_TOV:opt.useTov;
+  const HOME=opt.homeEdge==null?0.0065:opt.homeEdge;           // make-chance edge for the home side: worth the tip model's home edge (see the check)
+  const S=PL.map(pl=>pl.ps.map(p=>({p,sec:0,on:false,stint:0,...Object.fromEntries(K.map(k=>[k,0])),pm:0})));
+  const score=[0,0],line=[[],[]],pbp=[],shots=[[],[]];
+  const on=[[],[]];
+  const nm=x=>x.p.name;
+  const log=(per,clk,ti,s,k)=>{if(LOG)pbp.push({q:per,c:Math.max(0,Math.round(clk)),t:ti,s,h:score[0],a:score[1],k:k||""})};
+  // pace: both teams' possessions per 40, as the league's
+  const pace=TM[0].pace*TM[1].pace/L.pace;
+  const orbOf=o=>Math.min(0.5,Math.max(0.12,L.orb+(TM[o].orb-L.orb)+(TM[1-o].orbA-L.orb)));
+  const meanPoss=2400/(2*pace),orbPer=0.13,putT=6.5,firstT=Math.max(8,(meanPoss-orbPer*putT-1.0)*PACE_T);
+  let per=1,clk=600,poss=r()<0.5?0:1;const arrow=1-poss;
+  const tos=[[0,0],[0,0]];let run=[0,0];
+  const fouls=[0,0];                                             // team fouls this quarter (bonus from the fifth)
+  const elapsed=()=>per<=4?(per-1)*600+(600-clk):2400+(per-5)*300+(300-clk);
+  const minute=()=>Math.min(39,Math.floor(elapsed()/60));
+  const putOn=(ti,ids)=>{const now=S[ti].filter(x=>x.on);const want=ids.map(id=>S[ti].find(x=>x.p.id===id)).filter(Boolean);
+    const offs=now.filter(x=>!want.includes(x)),ons=want.filter(x=>!x.on);
+    offs.forEach(x=>{x.on=false});ons.forEach(x=>{x.on=true;x.stint=0});
+    on[ti]=S[ti].filter(x=>x.on);
+    if(LOG&&offs.length&&elapsed()>0)for(let i=0;i<ons.length;i++)log(per,clk,ti,`Substitution: ${nm(ons[i])} in, ${offs[i]?nm(offs[i]):""} out`,"sub")};
+  const sit=x=>x.pf>=5;
+  const desire=(ti,x,t)=>{
+    const pl=PL[ti],i=pl.ps.indexOf(x.p),m=Math.min(39,Math.floor(t/60));
+    if(sit(x)||i<0)return -9;
+    let d=pl.q[i][m];
+    // minutes so far against what the plan expects by now
+    let exp=0;for(let k=0;k<m;k++)exp+=pl.q[i][k];exp+=pl.q[i][m]*((t%60)/60);
+    d+=0.06*(exp-x.sec/60);
+    if(x.on&&x.stint>480)d-=0.03*(x.stint-480)/60;            // tired: a long stint
+    if(per<=4&&x.pf>=per+1&&!(per===4&&clk<240))d-=0.35;      // foul trouble
+    if(pl.close.length&&((per===4&&clk<=180)||per>4))d+=pl.close.includes(x.p.id)?1:-0.3;
+    return d+(r()-0.5)*0.04;
+  };
+  const subs=(ti,full)=>{
+    const t=elapsed(),xs=S[ti].map(x=>({x,d:desire(ti,x,t)}));
+    // the first three minutes of each half belong to the starters: only a fifth foul brings a change
+    const settled=!((per===1||per===3)&&clk>420);
+    let cur=xs.filter(o=>o.x.on).sort((a,b)=>a.d-b.d),bench=xs.filter(o=>!o.x.on).sort((a,b)=>b.d-a.d);
+    const ids=new Set(cur.map(o=>o.x.p.id));
+    // anyone who must come off (five fouls), then swaps worth making
+    for(const o of cur.filter(o=>sit(o.x))){const b=bench.shift();if(b){ids.delete(o.x.p.id);ids.add(b.x.p.id)}}
+    cur=cur.filter(o=>ids.has(o.x.p.id));
+    let i=0,j=0;const gap=full?0.04:0.12;
+    while(settled&&i<cur.length&&j<bench.length&&bench[j].d>cur[i].d+gap){if(bench[j].d<=-9)break;ids.delete(cur[i].x.p.id);ids.add(bench[j].x.p.id);i++;j++}
+    if(ids.size<5){for(const b of bench){if(ids.size>=5)break;if(!ids.has(b.x.p.id))ids.add(b.x.p.id)}}
+    const want=[...ids];if(want.sort().join()!==on[ti].map(x=>x.p.id).sort().join())putOn(ti,want);
+  };
+  const tick=d=>{for(const ti of [0,1])for(const x of on[ti]){x.sec+=d;x.stint+=d}clk-=d};
+  const score_=(ti,pts)=>{score[ti]+=pts;for(const x of on[ti])x.pm+=pts;for(const x of on[1-ti])x.pm-=pts;run[ti]+=pts;run[1-ti]=0};
+  const wpick=(xs,f)=>xs[pick(r,xs.map(f))];
+  const dist=xy=>xy?Math.round(Math.hypot(xy[0]-B.x,xy[1]-B.y)):null;
+  const where=(x,z)=>{const own=x.p.xy[z];const pool=own.length>=3?own:(own.length&&r()<0.5?own:L.xy[z]);return pool.length?pool[Math.floor(r()*pool.length)]:null};
+  const ft=(ti,x,n,why)=>{let made=0;
+    for(let k=1;k<=n;k++){const ok=r()<x.p.ft;x.fta++;if(ok){x.ftm++;x.pts++;score_(ti,1);made++}
+      log(per,clk,ti,`${nm(x)} ${ok?"makes":"misses"} free throw ${k} of ${n}`,"ft");
+      if(!ok&&k===n)return "miss"}
+    return "made"};
+  const foulOn=(dti,why,shooter)=>{const d=wpick(on[dti],x=>x.p.r.pf+0.01);d.pf++;fouls[dti]++;
+    log(per,clk,dti,`${nm(d)} ${why}${shooter?` (on ${nm(shooter)})`:""}`+(d.pf>=5?` — fouls out`:""),"foul");return d};
+  const rebound=(o,ftMiss)=>{                                  // after a miss: -> who has the ball
+    const keep=r()<orbOf(o)*(ftMiss?0.55:1);const ti=keep?o:1-o;
+    if(r()<Math.min(0.98,L.preb*REB_K)){const k=keep?"oreb":"dreb";const x=wpick(on[ti],y=>y.p.r[k]+0.005);x[k]++;log(per,clk,ti,`${nm(x)} ${keep?"offensive":"defensive"} rebound`,"reb")}
+    else log(per,clk,ti,`${ti===0?home:away} team rebound`,"reb");
+    return keep};
+  // one chance: -> "end" (possession over) or "again" (offensive rebound)
+  const chance=(o,second)=>{
+    const d=1-o,off=on[o],def=on[d],tm=TM[o],dt=TM[d];
+    const left=clk,late=(per>=4&&clk<=60);
+    // late in a game, the side behind fouls straight away
+    const lead=score[o]-score[d];
+    if(late&&lead>0&&lead<=8&&!(per===4&&clk<=0)){const t=Math.min(left,2+r()*4);tick(t);
+      const x=wpick(off,y=>y.p.ft*y.p.ft);foulOn(d,"foul (intentional)",x);
+      const res=ft(o,x,2);if(res==="miss")return rebound(o,true)?"again":"end";return "end"}
+    if(late&&lead>0&&clk<=24&&lead>8){tick(left);return "end"}       // runs out the clock
+    let t=second?putT*(0.4+r()*1.2):firstT*(0.45+r()*1.1);
+    if(t>=left)t=left;                                       // the shot goes up at the buzzer
+    tick(t);
+    // who ends it, and how
+    // how much more than usual this five has to carry: above 1, worse shots and more turnovers
+    let ratio=L.u5/off.reduce((t,y)=>t+y.p.u,0);ratio=Math.min(1.6,Math.max(0.7,ratio));
+    const strain=ratio>1?ratio-1:(ratio-1)/2;
+    const x=wpick(off,y=>y.p.uFga+y.p.uTrip*dt.ftaA+y.p.uTov*dt.tovF*Math.pow(ratio,UT));
+    const wT=x.p.uTov*dt.tovF*Math.pow(ratio,UT),wF=x.p.uTrip*dt.ftaA,wS=x.p.uFga;
+    const what=pick(r,[wS,wF,wT]);
+    if(what===2){x.tov++;const s=r()<dt.stlt?wpick(def,y=>y.p.r.stl+0.005):null;if(s)s.stl++;
+      const k=s?(r()<0.6?"bad pass":"lost ball"):TOV_TXT[2+Math.floor(r()*5)];
+      log(per,clk,o,`${nm(x)} turnover (${k})${s?`, stolen by ${nm(s)}`:""}`,"tov");
+      if(k==="offensive foul"){x.pf++;fouls[o]++}
+      if(!s)return "dead";return "end"}
+    if(what===1){foulOn(d,"shooting foul",x);const res=ft(o,x,2);if(res==="miss")return rebound(o,true)?"again":"end";return "dead"}
+    // a shot
+    const three=r()<Math.min(0.85,x.p.tpr*Math.pow(dt.d3,0.6));
+    const z=three?Z3[pick(r,x.p.s3)]:Z2[pick(r,x.p.s2)];
+    let pm=x.p.fz[z]+dt.dz[z]+FG_K+(z>=3?FG3_K:0)-UE*strain+(o===0?HOME:-HOME)+(second&&z<2?0.04:0);
+    pm=Math.min(0.9,Math.max(0.05,pm));
+    const ok=r()<pm,xy=where(x,z),ft_=dist(xy);x.fga++;if(three)x.tpa++;
+    const desc=SHOT_TXT[z][Math.floor(r()*SHOT_TXT[z].length)],ftx=ft_!=null&&z>=2?`${ft_}-foot `:"";
+    if(LOG&&xy)shots[o].push([xy[0],xy[1],ok?1:0,z,x.p.id]);
+    if(ok){x.fgm++;if(three)x.tpm++;x.pts+=ZP[z];score_(o,ZP[z]);
+      let a=null;const pa=Math.min(0.95,tm.astm*AST_Z[z]/AST_K);
+      if(r()<pa&&off.length>1)a=wpick(off.filter(y=>y!==x),y=>y.p.r.ast+0.005);
+      if(a)a.ast++;
+      log(per,clk,o,`${nm(x)} makes ${ftx}${desc}${a?` (${nm(a)} assists)`:""}`,"make");
+      if(z<2&&r()<AND1){foulOn(d,"shooting foul",x);ft(o,x,1);return "dead"}
+      return "made"}
+    let b=null;if(r()<dt.blkm*BLK_Z[z]){b=wpick(def,y=>y.p.r.blk+0.002);b.blk++}
+    log(per,clk,o,`${nm(x)} misses ${ftx}${desc}${b?` (blocked by ${nm(b)})`:""}`,"miss");
+    if(clk<=0)return "end";
+    return rebound(o,false)?"again":"end";
+  };
+  // non-shooting fouls: the gap between a team's fouls and its fouls that send someone to the line
+  const nsf=Math.max(0,(L.pfg-L.ftag/2.1-1.6)/L.possg)*PACE_NSF;
+  putOn(0,PL[0].start);putOn(1,PL[1].start);
+  if(LOG)log(1,600,-1,`Start of the 1st quarter: ${poss===0?home:away} win the jump ball`,"q");
+  for(;;){
+    // a period
+    while(clk>0){
+      const o=poss;let second=false,res;
+      // a foul away from the ball (its free throws, in the bonus, are among the trips to the line below)
+      if(r()<nsf&&clk>30){const t=Math.min(clk,2+r()*10);tick(t);foulOn(1-o,"personal foul",null);subs(0);subs(1);continue}
+      for(let n=0;n<8;n++){res=chance(o,second);if(res!=="again"||clk<=0)break;second=true}
+      if(res==="dead"||res==="made"){subs(0);subs(1)}
+      // a timeout after a run against you
+      const d=1-o;if(res==="made"&&run[o]>=8&&tos[d][per<=2?0:1]<(per<=2?2:3)&&clk>60){tos[d][per<=2?0:1]++;run=[0,0];log(per,clk,d,`${d===0?home:away} timeout`,"to");subs(0,true);subs(1,true)}
+      poss=1-o;
+    }
+    line[0].push(score[0]-line[0].reduce((a,b)=>a+b,0));line[1].push(score[1]-line[1].reduce((a,b)=>a+b,0));
+    const qn=per<=4?["1st","2nd","3rd","4th"][per-1]+" quarter":per===5?"overtime":`overtime ${per-4}`;
+    if(LOG)log(per,0,-1,`End of the ${qn}: ${score[0]}–${score[1]}`,"end");
+    if(per>=4&&score[0]!==score[1])break;
+    per++;clk=per<=4?600:300;fouls[0]=fouls[1]=0;run=[0,0];
+    poss=per<=4?((per%2===0)?arrow:1-arrow):(r()<0.5?0:1);
+    if(LOG)log(per,clk,-1,`Start of the ${per<=4?["1st","2nd","3rd","4th"][per-1]+" quarter":per===5?"overtime":`overtime ${per-4}`}`,"q");
+    if(per===3){for(const ti of [0,1]){const st=PL[ti].start.filter(id=>{const x=S[ti].find(y=>y.p.id===id);return x&&!sit(x)});
+      if(st.length===5)putOn(ti,st);else subs(ti,true)}}
+    else{subs(0,true);subs(1,true)}
+    if(per>12)break;
+  }
+  const box=S.map((xs,ti)=>xs.filter(x=>x.sec>0||x.on).map(x=>({id:x.p.id,name:x.p.name,start:PL[ti].start.includes(x.p.id),min:x.sec/60,
+    ...Object.fromEntries(K.map(k=>[k,x[k]])),pm:x.pm})));
+  return {home,away,score,line,box,pbp,shots,ot:per-4>0?per-4:0,seed};
+}
+// who is out by default: the injury list (out, for the season, retired), and anyone who hasn't played in any of his
+// team's last four games and isn't listed as day-to-day (released, or not in the side)
+function usualOut(M,team,inj){
+  const out={},T=M.T[team];if(!T)return out;const last=new Set(T.games.slice(-4));
+  const listed={};for(const x of (inj||[]))if(x.team===team&&x.id)listed[x.id]=x;
+  for(const p of M.P[team]||[]){const l=listed[p.id];
+    if(l&&["out","season","retired"].includes(l.cls)){out[p.id]=`${l.status}${l.injury?` (${l.injury})`:""}`;continue}
+    if(l&&l.cls==="dtd")continue;
+    if(!p.games.some(g=>last.has(g)))out[p.id]="hasn't played in the last 4 games"}
+  return out;
+}
+return {model,plan,game,usualOut,rng,ZNAME};
+})();
+if(typeof module!=="undefined")module.exports=SIM;
+/*SIM-ENGINE-END*/
+const simC=n=>TEAMS[n]?.c||n;
+// ---- Simulator tab: pick two teams, plan each side's rotation, play the game once or many times (SIM engine above)
+let SIMM=null,simH="Adelaide 36ers",simA="Melbourne United",simCh={},simN=1,simRes=null,simGame=null,simBusy=false,simDirty=false;
+let simOpenPlan={},simPq="all",simScoring=false,simShotSel={},simShowAll=false;
+try{const s=JSON.parse(localStorage.getItem("nbl27-sim")||"{}");if(TEAMS[s.h])simH=s.h;if(TEAMS[s.a]&&s.a!==simH)simA=s.a;if([1,10,100,1000].includes(s.n))simN=s.n}catch(e){}
+const simSave=()=>{try{localStorage.setItem("nbl27-sim",JSON.stringify({h:simH,a:simA,n:simN}))}catch(e){}};
+function simModel(){
+  if(!SIMM&&PLAYERDOCS.length)SIMM=SIM.model({players:PLAYERDOCS,pshots:PSHOTS,lineups:LINEDOCS,since:SEASON_START,basket:shotBasket()});
+  return SIMM;
+}
+const simUsualOut=t=>SIM.usualOut(SIMM,t,INJ?.players);
+function simChoice(t){return simCh[t]||(simCh[t]={out:new Set(Object.keys(simUsualOut(t))),mins:{},start:[],close:[]})}
+function simChanged(t){const c=simCh[t];if(!c)return false;const u=Object.keys(simUsualOut(t)).sort().join();
+  return [...c.out].sort().join()!==u||Object.keys(c.mins).length>0||c.start.length>0||c.close.length>0}
+function simPlan(t,usual){
+  if(usual)return SIM.plan(SIMM,t,{out:Object.keys(simUsualOut(t))});
+  const c=simChoice(t);return SIM.plan(SIMM,t,{out:[...c.out],mins:c.mins,start:c.start.length===5?c.start:[],close:c.close.length===5?c.close:[]});
+}
+const simClock=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,"0")}`;
+const simQ=q=>q<=4?"Q"+q:(q===5?"OT":"OT"+(q-4));
+
+function renderSim(){
+  const el=document.getElementById("sim");if(!el)return;
+  if(!simModel()){el.innerHTML=`<div class="panel"><div class="empty"><strong>Loading</strong>The simulator is built from this season's box scores, shot logs and stints. They're still loading.</div></div>`;return}
+  // the two team pickers (picking the other side's team swaps them)
+  const pick=(id,me,other,set)=>{const box=document.getElementById(id);box.innerHTML=tchips(TEAMS[me].c);
+    box.querySelectorAll("button").forEach(b=>b.onclick=()=>{const n=byCode[b.dataset.team];if(!n||n===me)return;
+      if(n===other){const h=simH;simH=simA;simA=h}else set(n);simRes=simGame=null;simDirty=false;simShotSel={};simSave();renderSim()})};
+  pick("simpickH",simH,simA,n=>simH=n);pick("simpickA",simA,simH,n=>simA=n);
+  document.getElementById("simswap").onclick=()=>{const h=simH;simH=simA;simA=h;simRes=simGame=null;simDirty=false;simSave();renderSim()};
+  renderSimBar();renderSimPlans();renderSimOut();
+}
+
+function renderSimBar(){
+  const bar=document.getElementById("simbar");
+  bar.innerHTML=`<div class="seg" role="group" aria-label="How many games">${[1,10,100,1000].map(n=>`<button class="chip" data-n="${n}" aria-pressed="${n===simN}">${n===1?"1 game":n.toLocaleString("en-AU")+" games"}</button>`).join("")}</div>
+    <button class="chip simgo" id="simgo"${simBusy?" disabled":""}>${simBusy?"Simulating…":`Simulate ${disp(simH)} v ${disp(simA)}`}</button>
+    <span class="simprog" id="simprog"></span>`;
+  bar.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{simN=+b.dataset.n;simSave();renderSimBar()});
+  document.getElementById("simgo").onclick=()=>simRun();
+}
+
+// ---- rotation plans
+function renderSimPlans(){
+  const el=document.getElementById("simplan");
+  el.innerHTML=`<div class="simplans">${[simH,simA].map((t,i)=>simPlanBox(t,i)).join("")}</div>`;
+  for(const t of [simH,simA]){
+    const box=el.querySelector(`[data-team="${TEAMS[t].c}"]`),c=simChoice(t);
+    box.querySelector("details").ontoggle=e=>{simOpenPlan[t]=e.target.open};
+    box.querySelectorAll("input[data-k]").forEach(inp=>inp.onchange=()=>{
+      const id=inp.dataset.id,k=inp.dataset.k;
+      if(k==="play"){if(inp.checked)c.out.delete(id);else{c.out.add(id);c.start=c.start.filter(x=>x!==id);c.close=c.close.filter(x=>x!==id);delete c.mins[id]}}
+      if(k==="start"){if(inp.checked){if(c.start.length>=5){inp.checked=false;return}c.start.push(id);c.out.delete(id)}else c.start=c.start.filter(x=>x!==id)}
+      if(k==="close"){if(inp.checked){if(c.close.length>=5){inp.checked=false;return}c.close.push(id);c.out.delete(id)}else c.close=c.close.filter(x=>x!==id)}
+      if(k==="min"){const v=inp.value.trim();if(v==="")delete c.mins[id];else{const n=Math.max(0,Math.min(40,+v));if(isFinite(n)){c.mins[id]=n;c.out.delete(id)}}}
+      if(simRes||simGame)simDirty=true;renderSimPlans();renderSimDirty()});
+    box.querySelector(".simreset").onclick=()=>{delete simCh[t];if(simRes||simGame)simDirty=true;renderSimPlans();renderSimDirty()};
+  }
+}
+function simPlanBox(t,side){
+  const c=simChoice(t),pl=simPlan(t),plu=simPlan(t,true),out=simUsualOut(t);
+  const planned={};pl.ps.forEach((p,i)=>planned[p.id]=pl.T[i]);
+  const usual={};plu.ps.forEach((p,i)=>usual[p.id]=plu.T[i]);
+  const ps=(SIMM.P[t]||[]).slice().sort((a,b)=>(c.out.has(a.id)-c.out.has(b.id))||((planned[b.id]||0)-(planned[a.id]||0))||(b.mpg-a.mpg));
+  const st=new Set(pl.start),cl=new Set(c.close);
+  const rows=ps.map(p=>{const off=c.out.has(p.id),why=off?(out[p.id]||"left out"):"";
+    return `<tr class="${off?"off":""}"><td class="tm">${ppname(p.id,p.name,t)}${why?`<span class="simwhy">${why}</span>`:""}</td>
+      <td><input type="checkbox" data-k="play" data-id="${p.id}"${off?"":" checked"} aria-label="${p.name} plays"></td>
+      <td><input type="checkbox" data-k="start" data-id="${p.id}"${st.has(p.id)&&!off?" checked":""} aria-label="${p.name} starts"></td>
+      <td><input type="checkbox" data-k="close" data-id="${p.id}"${cl.has(p.id)?" checked":""} aria-label="${p.name} closes"></td>
+      <td><input type="number" class="simmin" data-k="min" data-id="${p.id}" min="0" max="40" step="1" value="${c.mins[p.id]!=null?c.mins[p.id]:""}" placeholder="${off?"–":f1(planned[p.id])}" aria-label="${p.name} minutes"></td>
+      <td>${off?"–":f1(planned[p.id])}</td><td>${f1(p.mpg)}</td><td>${p.gp}</td></tr>`}).join("");
+  const changed=simChanged(t);
+  const startNote=c.start.length&&c.start.length!==5?`<span class="warnt">Pick five starters (${c.start.length} ticked): until then the usual starters start.</span>`:"";
+  const closeNote=c.close.length&&c.close.length!==5?`<span class="warnt">Pick five closers (${c.close.length} ticked): until then nobody is kept on to close.</span>`:"";
+  return `<div class="simplanbox" data-team="${TEAMS[t].c}"><details${simOpenPlan[t]?" open":""}><summary><span class="simpt">${code(t)}<b>${disp(t)}</b> ${side?"(away)":"(home)"}</span>
+      <span class="simps">${changed?"Your plan":"Usual rotation"} · ${pl.n} players · starting ${pl.start.map(id=>{const p=pl.ps.find(x=>x.id===id);return p?p.name.split(" ").slice(-1)[0]:""}).join(", ")}</span></summary>
+    <div class="scroll"><table class="simpt-t"><thead><tr><th class="tm">Player</th><th>Plays</th><th>Starts</th><th>Closes</th><th>Your minutes</th><th>Planned</th><th>Usual MPG</th><th>GP</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="simplanfoot">${startNote}${closeNote}<button class="chip simreset"${changed?"":" disabled"}>Back to the usual rotation</button></div>
+    <p class="simnote">Planned = the minutes each player gets: yours where you set them, everyone else scaled from their usual minutes so the five on the floor add up to 200. Closers stay on for the last three minutes of the fourth quarter and overtime (fouls permitting). Out by default: the injury list, and anyone who hasn't played in the team's last four games.</p>
+    </details></div>`;
+}
+function renderSimDirty(){const d=document.getElementById("simdirty");if(d)d.hidden=!simDirty}
+
+// ---- running
+function simRun(){
+  if(simBusy)return;const H=simH,A=simA,N=simN;
+  const plans=[simPlan(H),simPlan(A)],usual=[simPlan(H,true),simPlan(A,true)];
+  const cmp=simChanged(H)||simChanged(A);
+  const base=(Date.now()%1e9)|0;const seed=i=>(base+i*7919)>>>0;
+  simDirty=false;simShotSel={};simPq="all";
+  if(N===1){simGame=SIM.game(SIMM,H,A,plans,seed(0));simGame.plans=plans;simRes=null;renderSimOut();renderSimBar();return}
+  simBusy=true;simGame=null;renderSimBar();
+  const R={H,A,N,plans,games:[],sum:[{},{}],cmp:cmp?{w:0,m:0}:null,base};
+  let i=0;
+  const step=()=>{const end=Math.min(N,i+(N>=1000?100:50));
+    for(;i<end;i++){const g=SIM.game(SIMM,H,A,plans,seed(i),{log:false});
+      const top=g.box.map(b=>b.reduce((x,r)=>r.pts>x.pts?r:x,{pts:-1,name:""}));
+      R.games.push({s:seed(i),h:g.score[0],a:g.score[1],ot:g.ot,top:top.map(x=>[x.name,x.pts])});
+      g.box.forEach((b,ti)=>{for(const r of b){const x=R.sum[ti][r.id]||(R.sum[ti][r.id]={id:r.id,name:r.name,g:0,min:0,pts:0,reb:0,ast:0,stl:0,blk:0,tov:0,pf:0,fgm:0,fga:0,tpm:0,tpa:0,ftm:0,fta:0,pm:0});
+        x.g++;for(const k of ["min","pts","ast","stl","blk","tov","pf","fgm","fga","tpm","tpa","ftm","fta","pm"])x[k]+=r[k];x.reb+=r.oreb+r.dreb}});
+      if(R.cmp){const u=SIM.game(SIMM,H,A,usual,seed(i),{log:false});R.cmp.w+=u.score[0]>u.score[1]?1:0;R.cmp.m+=u.score[0]-u.score[1]}}
+    const pr=document.getElementById("simprog");if(pr)pr.textContent=`${i.toLocaleString("en-AU")} of ${N.toLocaleString("en-AU")}`;
+    if(i<N)setTimeout(step,0);else{simBusy=false;simRes=R;simShowAll=false;renderSimBar();renderSimOut()}};
+  setTimeout(step,0);
+}
+
+// ---- results
+function renderSimOut(){
+  const el=document.getElementById("simout");
+  const dirty=`<p class="warnline" id="simdirty"${simDirty?"":" hidden"}>You've changed a rotation plan since these results: simulate again to use it.</p>`;
+  if(simRes)el.innerHTML=dirty+simMulti(simRes)+`<div id="simone">${simGame?simOne(simGame):""}</div>`;
+  else if(simGame)el.innerHTML=dirty+`<div id="simone">${simOne(simGame)}</div>`;
+  else el.innerHTML=`<div class="panel"><div class="empty"><strong>Pick the two teams and how many games, then Simulate</strong>One game gives a full box score, play-by-play and shot chart. More games give each side's win share and average box score, and any one of them can be opened in full.</div></div>`;
+  simWire();
+}
+function simWire(){
+  const el=document.getElementById("simout");
+  el.querySelectorAll("[data-seed]").forEach(b=>b.onclick=()=>{const R=simRes;if(!R)return;
+    simGame=SIM.game(SIMM,R.H,R.A,R.plans,+b.dataset.seed);simGame.plans=R.plans;simGame.no=+b.dataset.no;simShotSel={};simPq="all";
+    document.getElementById("simone").innerHTML=simOne(simGame);simWire();document.getElementById("simone").scrollIntoView({block:"start",behavior:"smooth"})});
+  const all=el.querySelector("#simall");if(all)all.onclick=()=>{simShowAll=true;renderSimOut()};
+  el.querySelectorAll("[data-pq]").forEach(b=>b.onclick=()=>{simPq=b.dataset.pq;simRefreshPbp()});
+  const sc=el.querySelector("#simscoring");if(sc)sc.onchange=()=>{simScoring=sc.checked;simRefreshPbp()};
+  el.querySelectorAll("select[data-shots]").forEach(s=>s.onchange=()=>{simShotSel[s.dataset.shots]=s.value;const box=document.getElementById("simshots");if(box&&simGame){box.innerHTML=simCharts(simGame);simWire()}});
+}
+function simRefreshPbp(){const box=document.getElementById("simpbp");if(box&&simGame){box.innerHTML=simPbp(simGame);simWire()}}
+
+function simMulti(R){
+  const N=R.games.length,hw=R.games.filter(g=>g.h>g.a).length,hp=hw/N;
+  const mg=R.games.map(g=>g.h-g.a).sort((a,b)=>a-b),med=mg[Math.floor(N/2)];
+  const avg=k=>R.games.reduce((t,g)=>t+g[k],0)/N,ot=R.games.filter(g=>g.ot).length;
+  const H=R.H,A=R.A,cH="var(--accent)",cA="var(--simaway)";
+  // margin chart: home margin in 3-point bins
+  const lo=Math.max(-45,Math.floor(Math.min(...mg)/3)*3),hi=Math.min(45,Math.ceil((Math.max(...mg)+1)/3)*3);
+  const bins=[];for(let x=lo;x<hi;x+=3)bins.push({x,n:R.games.filter(g=>{const d=g.h-g.a;return d>=x&&d<x+3}).length});
+  const mx=Math.max(1,...bins.map(b=>b.n)),W=640,Hh=150,bw=W/bins.length;
+  const bars=bins.map((b,i)=>{const h=b.n/mx*(Hh-24),mid=b.x+1.5;return `<rect x="${(i*bw+1).toFixed(1)}" y="${(Hh-18-h).toFixed(1)}" width="${(bw-2).toFixed(1)}" height="${h.toFixed(1)}" fill="${mid>0?cH:cA}" opacity=".85"><title>${b.x>0?disp(H)+" by "+b.x+"–"+(b.x+2):b.x+3<=0?disp(A)+" by "+(-b.x-2)+"–"+(-b.x):"Within a point"}: ${b.n} of ${N}</title></rect>`}).join("");
+  const zi=bins.findIndex(b=>b.x<=0&&b.x+3>0);
+  const axis=bins.filter((b,i)=>b.x%9===0).map(b=>{const i=bins.indexOf(b);return `<text x="${(i*bw).toFixed(1)}" y="${Hh-4}" font-size="10" fill="var(--muted)" text-anchor="middle">${b.x===0?"0":b.x>0?"+"+b.x:b.x}</text>`}).join("");
+  const svg=`<svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="How the ${N} games finished">${bars}${zi>=0?`<line x1="${(zi*bw+bw/2).toFixed(1)}" x2="${(zi*bw+bw/2).toFixed(1)}" y1="0" y2="${Hh-16}" stroke="var(--muted)" stroke-dasharray="3 3"/>`:""}${axis}</svg>`;
+  const pick=(f)=>{let b=null;for(const g of R.games)if(!b||f(g,b))b=g;return b};
+  const close=pick((g,b)=>Math.abs(g.h-g.a)<Math.abs(b.h-b.a)),bigH=pick((g,b)=>g.h-g.a>b.h-b.a),bigA=pick((g,b)=>g.a-g.h>b.a-b.h);
+  const typ=R.games.find(g=>g.h-g.a===med)||R.games[0];
+  const no=g=>R.games.indexOf(g)+1;
+  const qb=(g,lab)=>`<button class="chip" data-seed="${g.s}" data-no="${no(g)}">${lab}: ${g.h}–${g.a}${g.ot?" (OT)":""}</button>`;
+  const avgBox=ti=>{const xs=Object.values(R.sum[ti]).map(x=>({...x,mpg:x.min/N})).sort((a,b)=>b.mpg-a.mpg);const t=ti?A:H;
+    return `<div class="scroll"><table class="simbox"><thead><tr><th class="tm">${code(t)} ${disp(t)}</th><th>MIN</th><th>PTS</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th><th>PF</th><th>FG%</th><th>3PM</th><th>3P%</th><th>FT%</th><th>+/−</th></tr></thead><tbody>
+      ${xs.filter(x=>x.mpg>=0.5).map(x=>`<tr><td class="tm">${ppname(x.id,x.name,t)}</td><td>${f1(x.mpg)}</td><td>${f1(x.pts/N)}</td><td>${f1(x.reb/N)}</td><td>${f1(x.ast/N)}</td><td>${f1(x.stl/N)}</td><td>${f1(x.blk/N)}</td><td>${f1(x.tov/N)}</td><td>${f1(x.pf/N)}</td><td>${pct(x.fga?x.fgm/x.fga:null)}</td><td>${f1(x.tpm/N)}</td><td>${pct(x.tpa?x.tpm/x.tpa:null)}</td><td>${pct(x.fta?x.ftm/x.fta:null)}</td><td>${(x.pm/N>=0?"+":"")+f1(x.pm/N)}</td></tr>`).join("")}</tbody></table></div>`};
+  const show=simShowAll?R.games:R.games.slice(0,50);
+  const list=`<div class="scroll"><table class="simgames"><thead><tr><th>#</th><th class="tm">Result</th><th>Margin</th><th class="tm">Top scorers</th><th></th></tr></thead><tbody>
+    ${show.map((g,i)=>{const w=g.h>g.a?H:A;return `<tr><td>${R.games.indexOf(g)+1}</td><td class="tm">${simC(H)} ${g.h}–${g.a} ${simC(A)}${g.ot?" <span class='mut'>OT</span>":""}</td><td>${simC(w)} by ${Math.abs(g.h-g.a)}</td><td class="tm mut">${g.top[0][0]} ${g.top[0][1]} · ${g.top[1][0]} ${g.top[1][1]}</td><td><button class="chip sm" data-seed="${g.s}" data-no="${R.games.indexOf(g)+1}">Open</button></td></tr>`}).join("")}</tbody></table></div>
+    ${!simShowAll&&N>50?`<button class="chip" id="simall">Show all ${N.toLocaleString("en-AU")} games</button>`:""}`;
+  const cmp=R.cmp?`<p class="simcmp"><b>With both usual rotations</b> (the same ${N.toLocaleString("en-AU")} games, same luck): ${disp(H)} win ${pct(R.cmp.w/N).replace(/\.\d$/,"")}%, average margin ${(R.cmp.m/N>=0?"+":"")+f1(R.cmp.m/N)}. <b>With your plan:</b> ${pct(hp).replace(/\.\d$/,"")}%, ${(avg("h")-avg("a")>=0?"+":"")+f1(avg("h")-avg("a"))}.</p>`:"";
+  return `<div class="panel card simsum">
+    <div class="simodds"><div class="simside">${code(H)}<span>${disp(H)}</span><b>${(100*hp).toFixed(0)}%</b></div>
+      <div class="simbar2"><i style="width:${(100*hp).toFixed(1)}%;background:${cH}"></i><i style="width:${(100-100*hp).toFixed(1)}%;background:${cA}"></i></div>
+      <div class="simside r"><b>${(100-100*hp).toFixed(0)}%</b><span>${disp(A)}</span>${code(A)}</div></div>
+    <div class="simfacts"><span>${N.toLocaleString("en-AU")} games</span><span>Average score <b>${f1(avg("h"))}–${f1(avg("a"))}</b></span><span>Middle result <b>${med>0?disp(H)+" by "+med:med<0?disp(A)+" by "+(-med):"a tie after 40"}</b></span><span>Went to overtime <b>${ot}</b> (${pct(ot/N).replace(/\.\d$/,"")}%)</span></div>
+    ${cmp}
+    <h4>How the games finished <span class="mut">(${disp(H)}'s margin; ${disp(H)} wins to the right)</span></h4>${svg}
+    <div class="chips simq">${qb(typ,"A typical game")}${qb(close,"The closest")}${qb(bigH,"Biggest "+simC(H)+" win")}${bigA.a>bigA.h?qb(bigA,"Biggest "+simC(A)+" win"):""}</div>
+    <h4>Average box score per game</h4>${avgBox(0)}<div style="height:14px"></div>${avgBox(1)}
+    <h4>Every game</h4>${list}
+    <p class="simnote">Each game is played possession by possession from this season's numbers (see the notes at the foot of the tab). Open any game for its box score, play-by-play and shot chart.</p></div>`;
+}
+
+function simOne(g){
+  const H=g.home,A=g.away,ln=g.line;
+  const qs=`<table class="qs"><thead><tr><th></th>${ln[0].map((_,i)=>`<th>${simQ(i+1)}</th>`).join("")}<th>Final</th></tr></thead><tbody>${[[H,ln[0],g.score[0],g.score[0]>g.score[1]],[A,ln[1],g.score[1],g.score[1]>g.score[0]]].map(([t,q,tot,w],k)=>`<tr class="${w?"w":""}"><td class="tm">${code(t)}${simC(t)}</td>${q.map((v,i)=>`<td class="${v>ln[1-k][i]?"hi":""}">${v}</td>`).join("")}<td class="f">${tot}</td></tr>`).join("")}</tbody></table>`;
+  const w=g.score[0]>g.score[1]?H:A;
+  return `<div class="panel card simone">
+    <div class="simhd"><h3>${g.no?`Game ${g.no}: `:""}${disp(H)} ${g.score[0]} – ${g.score[1]} ${disp(A)}${g.ot?` <span class="mut">(${g.ot>1?g.ot+" overtimes":"overtime"})</span>`:""}</h3><span class="rec">${disp(w)} by ${Math.abs(g.score[0]-g.score[1])} · simulated</span></div>
+    ${qs}
+    <h4>Box score</h4>${simBox(g,0)}<div style="height:14px"></div>${simBox(g,1)}
+    <h4>Shot chart</h4><div id="simshots">${simCharts(g)}</div>
+    <h4>Play-by-play</h4><div id="simpbp">${simPbp(g)}</div></div>`;
+}
+function simBox(g,ti){
+  const t=ti?g.away:g.home,rows=g.box[ti].slice().sort((a,b)=>(b.start-a.start)||(b.min-a.min));
+  const T={};for(const k of ["min","pts","fgm","fga","tpm","tpa","ftm","fta","oreb","dreb","ast","stl","blk","tov","pf"])T[k]=rows.reduce((s,r)=>s+r[k],0);
+  const tr=(r,tot)=>`<td>${tot?"":simClock(r.min*60)}</td><td><b>${r.pts}</b></td><td>${r.fgm}-${r.fga}</td><td>${r.tpm}-${r.tpa}</td><td>${r.ftm}-${r.fta}</td><td>${r.oreb}</td><td>${r.dreb}</td><td>${r.oreb+r.dreb}</td><td>${r.ast}</td><td>${r.stl}</td><td>${r.blk}</td><td>${r.tov}</td><td>${r.pf}</td>`;
+  return `<div class="scroll"><table class="simbox"><thead><tr><th class="tm">${code(t)} ${disp(t)}</th><th>MIN</th><th>PTS</th><th>FG</th><th>3P</th><th>FT</th><th>OR</th><th>DR</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th><th>PF</th><th>+/−</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr class="${r.start?"st":""}"><td class="tm">${ppname(r.id,r.name,t)}${r.start?`<span class="simst">S</span>`:""}</td>${tr(r)}<td>${r.pm>0?"+":""}${r.pm}</td></tr>`).join("")}
+    <tr class="avg"><td class="tm">Team</td>${tr(T,true)}<td></td></tr>
+    <tr class="avg"><td class="tm">Shooting</td><td></td><td></td><td>${pct(T.fga?T.fgm/T.fga:null)}%</td><td>${pct(T.tpa?T.tpm/T.tpa:null)}%</td><td>${pct(T.fta?T.ftm/T.fta:null)}%</td><td colspan="10"></td></tr></tbody></table></div>`;
+}
+function simCharts(g){
+  return `<div class="simtwo">${[0,1].map(ti=>{const t=ti?g.away:g.home,sel=simShotSel[t]||"";
+    const all=g.shots[ti],ids=[...new Set(all.map(s=>s[4]))],nm=id=>(g.box[ti].find(r=>r.id===id)||{}).name||id;
+    const shots=sel?all.filter(s=>s[4]===sel):all;
+    const P=shotChartParts(t,null,false,null,shots);
+    return `<div style="min-width:0"><div class="sc-pick">${code(t)}<select data-shots="${t}" aria-label="${disp(t)} shots"><option value="">${disp(t)}: every shot</option>${ids.sort((a,b)=>all.filter(s=>s[4]===b).length-all.filter(s=>s[4]===a).length).map(id=>`<option value="${id}"${id===sel?" selected":""}>${nm(id)} (${all.filter(s=>s[4]===id).length} FGA)</option>`).join("")}</select>
+      <span class="rec">${P.fgm}/${P.fga} · ${pct(P.fga?P.fgm/P.fga:null)}% FG · ${pct(P.efg)}% eFG</span></div>${P.svg}</div>`}).join("")}</div>
+    <div class="sc-leg" style="margin-top:8px"><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" class="mk"/></svg> Made</span><span><svg width="12" height="12"><path d="M2,2l8,8m0,-8l-8,8" stroke="var(--miss)" stroke-width="2"/></svg> Missed</span><span>Shading: FG% in this game against the League Ave from that zone. Each shot is placed at a spot the shooter has really shot from this season.</span></div>`;
+}
+function simPbp(g){
+  const qs=[...new Set(g.pbp.map(x=>x.q))];
+  const rows=g.pbp.filter(x=>(simPq==="all"||String(x.q)===simPq)&&(!simScoring||["make","ft","q","end"].includes(x.k)&&!(x.k==="ft"&&/misses/.test(x.s))));
+  const tn=x=>x.t<0?"":x.t?g.away:g.home;
+  return `<div class="pbar"><div class="seg">${[["all","Whole game"],...qs.map(q=>[String(q),simQ(q)])].map(([k,l])=>`<button class="chip" data-pq="${k}" aria-pressed="${simPq===k}">${l}</button>`).join("")}</div>
+      <label class="gck"><input type="checkbox" id="simscoring"${simScoring?" checked":""}> Scoring plays only</label></div>
+    <div class="scroll simpbpw"><table class="simpbp"><thead><tr><th>Time</th><th class="tm">Team</th><th class="tm">Play</th><th>${simC(g.home)}</th><th>${simC(g.away)}</th></tr></thead><tbody>
+    ${rows.map(x=>{const t=tn(x),sc=x.k==="make"||(x.k==="ft"&&/makes/.test(x.s));
+      return `<tr class="${x.k==="q"||x.k==="end"?"qrow":sc?"sc":""}"><td>${simQ(x.q)} ${simClock(x.c)}</td><td class="tm">${t?code(t):""}</td><td class="tm pl">${x.s}</td><td>${x.h}</td><td>${x.a}</td></tr>`}).join("")}</tbody></table></div>`;
+}
 function show(v){
   try{document.getElementById("tab-"+v).scrollIntoView({block:"nearest",inline:"nearest"})}catch(e){}
-  ["league","ladder","team","players","cards","injuries","coaches","lineups","h2h","rotations"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
+  ["league","ladder","team","players","cards","injuries","coaches","lineups","h2h","rotations","sim"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
   if(v!=="league"&&v!=="ladder"&&v!=="injuries"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
-  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();if(v==="ladder")renderLadder();if(v==="injuries")renderInjuries();
+  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="sim")renderSim();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();if(v==="ladder")renderLadder();if(v==="injuries")renderInjuries();
 }
 document.getElementById("tab-ladder").onclick=()=>show("ladder");
 document.getElementById("tab-injuries").onclick=()=>show("injuries");
 document.getElementById("tab-cards").onclick=()=>show("cards");
 document.getElementById("tab-coaches").onclick=()=>show("coaches");
 document.getElementById("tab-rotations").onclick=()=>show("rotations");
+document.getElementById("tab-sim").onclick=()=>show("sim");
 document.getElementById("tab-league").onclick=()=>show("league");
 document.getElementById("tab-team").onclick=()=>show("team");
 document.getElementById("tab-players").onclick=()=>show("players");
