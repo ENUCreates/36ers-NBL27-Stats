@@ -95,3 +95,134 @@ def keep_previous(games, prev_games):
     for g in games:
         if prev.get(g["id"]):
             g["periods"] = prev[g["id"]]
+
+
+# ---- players by period: the NBL's play-by-play, each player's line per quarter (and overtime)
+# Written into each game's players.json doc as
+#     periods: {"per": ["Q1", ...], "f": PFIELDS, "p": {player id: [[...] per period]}, "bad": {player id: [fields]}}
+# min = seconds on the floor (from the substitutions), pm = the score while he was on the floor. A player's field is
+# listed in "bad" (and the page shows "–" for it by quarter) wherever his periods don't add up to his line in this
+# site's box score (minutes within 5 seconds); everything else adds up to it exactly.
+import nbl_lineups as NL  # noqa: E402
+import nbl_shots as NS  # noqa: E402
+
+PFIELDS = ["min", "pts", "fgm", "fga", "tpm", "tpa", "ftm", "fta", "oreb", "dreb", "ast", "stl", "blk", "tov", "pf", "pm"]
+# fouls a player is charged with (a coach's or the bench's technicals go to no player; "drawn" is the foul drawn)
+PLAYER_FOULS = {"personal", "offensive", "flagrant", "disruptive", "category one technical", "category two technical"}
+
+
+def player_lines(m):
+    """m: one match as official.py keeps it -> ({NBL player id: {period no.: Counter}}, [period nos.])"""
+    home, away = m["home"], m["away"]
+    opp = {home: away, away: home}
+    plays = [a for a in m["plays"] if a.get("clock")]
+    on = NL.starters(m, plays)
+    keep = set(NS.clean({**m, "plays": plays})[0])
+    R = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
+    pers = sorted({NL.per_no(a) for a in plays} | {1, 2, 3, 4})
+    for per in pers:
+        L, last = NL.plen(per), 0.0
+        for i, a in ((i, a) for i, a in enumerate(plays) if NL.per_no(a) == per):
+            tnow = L - NL.csec(a["clock"])
+            if tnow > last:
+                for t in opp:
+                    for p in on[t]:
+                        R[p][per]["min"] += tnow - last
+                last = tnow
+            ty, st, team, pid = (a.get("type") or "").lower(), (a.get("sub") or "").lower(), a.get("team"), a.get("pid")
+            if ty == "substitution":
+                if team in on and pid and st in ("in", "out"):
+                    (on[team].add if st == "in" else on[team].discard)(pid)
+                continue
+            d, pts = {}, 0
+            if ty in ("2pt", "3pt"):
+                if i not in keep:
+                    continue
+                d["fga"] = 1
+                if ty == "3pt":
+                    d["tpa"] = 1
+                if a.get("ok"):
+                    d["fgm"], pts = 1, (3 if ty == "3pt" else 2)
+                    if ty == "3pt":
+                        d["tpm"] = 1
+            elif ty == "freethrow":
+                d["fta"] = 1
+                if a.get("ok"):
+                    d["ftm"], pts = 1, 1
+            elif ty == "rebound" and st in ("offensive", "defensive"):
+                d["oreb" if st == "offensive" else "dreb"] = 1
+            elif ty in ("turnover", "assist", "steal", "block"):
+                d[{"turnover": "tov", "assist": "ast", "steal": "stl", "block": "blk"}[ty]] = 1
+            elif ty == "foul" and st in PLAYER_FOULS:
+                d["pf"] = 1
+            if pts:
+                d["pts"] = pts
+            if pid:
+                for k, v in d.items():
+                    R[pid][per][k] += v
+            if pts and team in opp:
+                for p in on[team]:
+                    R[p][per]["pm"] += pts
+                for p in on[opp[team]]:
+                    R[p][per]["pm"] -= pts
+        if L > last:
+            for t in opp:
+                for p in on[t]:
+                    R[p][per]["min"] += L - last
+    return R, pers
+
+
+def apply_players(pdocs, games, off, pairs, index, prev=None):
+    """pdocs: {espn id: players.json doc}, edited in place. -> report lines"""
+    pbp = (off or {}).get("pbp") or {}
+    nbl_of = {k: v["pid"] for k, v in pairs.items() if v.get("pid")}
+    rep, n, nbad = [], collections.Counter(), collections.Counter()
+    for g in games:
+        eid = g["id"].replace("espn-", "")
+        doc = pdocs.get(eid)
+        if not doc:
+            continue
+        doc.pop("periods", None)
+        m = pbp.get(index.get((g["date"], frozenset((g["home"]["team"], g["away"]["team"])))))
+        if m is None or not m.get("plays"):
+            pv = ((prev or {}).get(eid) or {}).get("periods")
+            if pv:
+                doc["periods"] = pv
+                n["last run's kept"] += 1
+            else:
+                n["no NBL play-by-play"] += 1
+            continue
+        R, pers = player_lines(m)
+        labels = [f"Q{p}" if p <= 4 else ("OT" if len(pers) == 5 else f"OT{p - 4}") for p in pers]
+        out, bad = {}, {}
+        for t, L in (doc.get("teams") or {}).items():
+            for r in L:
+                if not (r.get("min") or 0) > 0:
+                    continue
+                pid = nbl_of.get(r["id"]) or (r["id"][4:] if str(r["id"]).startswith("nbl-") else None)
+                q = R.get(pid) or {}
+                rows = [[q.get(p, {}).get(f, 0) for f in PFIELDS] for p in pers]
+                b = []
+                for j, f in enumerate(PFIELDS):
+                    v = sum(x[j] for x in rows)
+                    if (abs(v - r["min"] * 60) > 5) if f == "min" else (v != (r.get(f) or 0)):
+                        b.append(f)
+                        nbad[f] += 1
+                for x in rows:
+                    x[0] = round(x[0])
+                out[r["id"]] = rows
+                if b:
+                    bad[r["id"]] = b
+                    rep.append(f"{g['date']} {r['name']}: by quarter doesn't add up to the box score for {', '.join(b)}")
+        doc["periods"] = {"per": labels, "f": PFIELDS, "p": out, "bad": bad, "src": "nbl"}
+        n["every player adds up" if not bad else "some fields left out"] += 1
+    rep.insert(0, "players by period: " + ", ".join(f"{v} {k}" for k, v in sorted(n.items()))
+               + (f"; fields left out: {dict(nbad)}" if nbad else ""))
+    return rep
+
+
+def keep_previous_players(pdocs, prev):
+    for eid, doc in pdocs.items():
+        pv = ((prev or {}).get(eid) or {}).get("periods")
+        if pv:
+            doc["periods"] = pv

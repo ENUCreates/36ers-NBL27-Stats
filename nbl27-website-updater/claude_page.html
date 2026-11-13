@@ -1251,30 +1251,26 @@ function rbxWrap(g,H,A){
   return `<div class="rbx" data-rbxg="${k}">${rbxHtml(k)}</div>`;
 }
 function rbxHtml(k){
-  const {row,doc,H,A}=RBX[k],S=RBXS[k],c=t=>TEAMS[t]?.c||t,P=row.periods;
+  const {row,doc,H,A}=RBX[k],S=RBXS[k],c=t=>TEAMS[t]?.c||t,box=S.v==="box",per=box?doc?.periods?.per:row.periods?.per;
   const tabs=`<div class="seg">${[["team","Team stats"],["box","Box score"]].map(([v,l])=>`<button class="chip" data-rbx="v" data-val="${v}" aria-pressed="${S.v===v}">${l}</button>`).join("")}</div>`;
-  let sub="",body="";
-  if(S.v==="box"){
-    sub=`<div class="seg">${[H,A].map(t=>`<button class="chip" data-rbx="t" data-val="${t}" aria-pressed="${S.t===t}">${c(t)}</button>`).join("")}</div>`;
-    body=rbxBox(row,doc,S.t);
-  }else{
-    const opts=[["full","Full time"]];
-    if(P){opts.push(["h1","1st half"],["h2","2nd half"]);P.per.forEach((l,i)=>opts.push(["p"+i,l]))}
-    if(!opts.some(o=>o[0]===S.p))S.p="full";
-    sub=`<div class="seg">${opts.map(([v,l])=>`<button class="chip" data-rbx="p" data-val="${v}" aria-pressed="${S.p===v}">${l}</button>`).join("")}</div>`;
-    body=rbxTeam(row,H,A,S.p);
-  }
-  return `<h4>The box score</h4><div class="pbar">${tabs}${sub}</div>${body}`;
+  const opts=[["full","Full time"]];
+  if(per){opts.push(["h1","1st half"],["h2",per.length>4?"2nd half + OT":"2nd half"]);per.forEach((l,i)=>opts.push(["p"+i,l]))}
+  const p=opts.some(o=>o[0]===S.p)?S.p:"full";
+  const pers=`<div class="seg">${opts.map(([v,l])=>`<button class="chip" data-rbx="p" data-val="${v}" aria-pressed="${p===v}">${l}</button>`).join("")}</div>`;
+  const tms=box?`<div class="seg">${[H,A].map(t=>`<button class="chip" data-rbx="t" data-val="${t}" aria-pressed="${S.t===t}">${c(t)}</button>`).join("")}</div>`:"";
+  return `<h4>The box score</h4><div class="pbar">${tabs}${tms}${pers}</div>${box?rbxBox(row,doc,S.t,p):rbxTeam(row,H,A,p)}`;
 }
+const rbxIdx=(n,p)=>p==="full"?[...Array(n).keys()]:p==="h1"?[0,1]:p==="h2"?[...Array(n).keys()].filter(i=>i>=2):[+p.slice(1)];
+const rbxLab=(per,p)=>p==="full"?"Full time":p==="h1"?"1st half":p==="h2"?(per.length>4?"2nd half + OT":"2nd half"):per[+p.slice(1)];
 function rbxSum(row,side,p){
   const P=row.periods,o={};
   if(!P){RBF.forEach(f=>o[f]=row[side][f]);return o}
-  const idx=p==="full"?P.per.map((_,i)=>i):p==="h1"?[0,1]:p==="h2"?P.per.map((_,i)=>i).filter(i=>i>=2):[+p.slice(1)];
+  const idx=rbxIdx(P.per.length,p);
   RBF.forEach((f,j)=>o[f]=idx.reduce((s,i)=>s+P[side][i][j],0));return o;
 }
 function rbxTeam(row,H,A,p){
   const h=rbxSum(row,"home",p),a=rbxSum(row,"away",p),c=t=>TEAMS[t]?.c||t,P=row.periods;
-  const lab=p==="full"?"Full time":p==="h1"?"1st half":p==="h2"?"2nd half"+(P&&P.per.length>4?" (with overtime)":""):P.per[+p.slice(1)];
+  const lab=P?rbxLab(P.per,p):"Full time";
   const sh=(m,n)=>`${m}-${n}`,pc=(m,n)=>n?pct(m/n)+"%":"–";
   const R=[["Points",x=>x.pts,x=>x.pts,1],["Field goals",x=>sh(x.fgm,x.fga),x=>x.fgm,1],["FG%",x=>pc(x.fgm,x.fga),x=>x.fga?x.fgm/x.fga:null,1],
     ["2-pointers",x=>sh(x.fgm-x.tpm,x.fga-x.tpa),x=>x.fgm-x.tpm,1],["2P%",x=>pc(x.fgm-x.tpm,x.fga-x.tpa),x=>x.fga-x.tpa?(x.fgm-x.tpm)/(x.fga-x.tpa):null,1],
@@ -1288,18 +1284,32 @@ function rbxTeam(row,H,A,p){
   return `<table class="tape rbt"><thead><tr><th class="h" style="text-align:right">${code(H)}</th><th style="text-align:center;width:38%">${lab}: ${c(H)} ${h.pts}–${a.pts} ${c(A)}</th><th style="text-align:left">${code(A)}</th></tr></thead><tbody>${tb}</tbody></table>
     <p class="mxnote">${P?"The official NBL team stats for each quarter (and overtime); the halves and full time add them up, and match the box score.":"Full time only: the quarter-by-quarter team stats aren't in yet for this game."} Bold = the better side.${P?(P.fouls==="personal"?" The NBL's feed has only personal fouls for this game (no technicals), so they can be fewer than in the box score.":" Fouls = every foul the NBL charges to the team, technicals included, so can be one more than in the box score."):""}</p>`;
 }
-function rbxBox(row,doc,t){
-  const side=row.home.team===t?"home":"away",T=row[side],L=(doc?.teams?.[t]||[]);
+function rbxBox(row,doc,t,p){
+  const side=row.home.team===t?"home":"away",L=(doc?.teams?.[t]||[]),Q=doc?.periods,full=p==="full"||!Q;
   if(!L.length)return `<p class="mxnote">The player box score isn't in yet for this game.</p>`;
-  const pl=L.filter(r=>r.min>0).sort((a,b)=>(b.starter-a.starter)||(b.min-a.min)),dnp=L.filter(r=>!(r.min>0));
+  let pl,T,bad={};
+  if(full){
+    pl=L.filter(r=>r.min>0).map(r=>({...r}));T=row[side];
+  }else{
+    const idx=rbxIdx(Q.per.length,p),F=Q.f;
+    pl=L.filter(r=>Q.p[r.id]).map(r=>{const o={id:r.id,name:r.name,starter:r.starter};F.forEach((f,j)=>o[f]=idx.reduce((s,i)=>s+Q.p[r.id][i][j],0));o.min/=60;return o})
+      .filter(o=>o.min>0||RBF.some(f=>o[f]));
+    (Object.keys(Q.bad||{})).forEach(id=>bad[id]=new Set(Q.bad[id]));
+    T=row.periods?rbxSum(row,side,p):null;
+  }
+  pl.sort((a,b)=>(b.starter-a.starter)||(b.min-a.min));
+  const dnp=full?L.filter(r=>!(r.min>0)):[];
   const mm=m=>{const s=Math.round(m*60);return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`};
-  const tr=(r,tot)=>`<td>${tot?"":mm(r.min)}</td><td><b>${r.pts}</b></td><td>${r.fgm}-${r.fga}</td><td>${r.tpm}-${r.tpa}</td><td>${r.ftm}-${r.fta}</td><td>${r.oreb}</td><td>${r.dreb}</td><td>${r.oreb+r.dreb}</td><td>${r.ast}</td><td>${r.stl}</td><td>${r.blk}</td><td>${r.tov}</td><td>${r.pf}</td>`;
-  return `<div class="scroll"><table class="simbox"><thead><tr><th class="tm">${code(t)} ${disp(t)}</th><th>MIN</th><th>PTS</th><th>FG</th><th>3P</th><th>FT</th><th>OR</th><th>DR</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th><th>PF</th><th>+/−</th></tr></thead><tbody>
-    ${pl.map(r=>`<tr class="${r.starter?"st":""}"><td class="tm">${ppname(r.id,r.name,t)}${r.starter?`<span class="simst">S</span>`:""}</td>${tr(r)}<td>${r.pm==null?"–":(r.pm>0?"+":"")+r.pm}</td></tr>`).join("")}
-    <tr class="avg"><td class="tm">Team</td>${tr(T,true)}<td></td></tr>
-    <tr class="avg"><td class="tm">Shooting</td><td></td><td></td><td>${pct(T.fga?T.fgm/T.fga:null)}%</td><td>${pct(T.tpa?T.tpm/T.tpa:null)}%</td><td>${pct(T.fta?T.ftm/T.fta:null)}%</td><td colspan="10"></td></tr></tbody></table></div>
+  const X=(r,...f)=>(bad[r.id]&&f.some(k=>bad[r.id].has(k)));
+  const v=(r,f,txt)=>X(r,f)?"–":(txt??r[f]);
+  const tr=(r,tot)=>`<td>${tot?"":v(r,"min",mm(r.min))}</td><td><b>${v(r,"pts")}</b></td><td>${X(r,"fgm","fga")?"–":`${r.fgm}-${r.fga}`}</td><td>${X(r,"tpm","tpa")?"–":`${r.tpm}-${r.tpa}`}</td><td>${X(r,"ftm","fta")?"–":`${r.ftm}-${r.fta}`}</td><td>${v(r,"oreb")}</td><td>${v(r,"dreb")}</td><td>${X(r,"oreb","dreb")?"–":r.oreb+r.dreb}</td><td>${v(r,"ast")}</td><td>${v(r,"stl")}</td><td>${v(r,"blk")}</td><td>${v(r,"tov")}</td><td>${v(r,"pf")}</td>`;
+  const lab=full?"":` · ${rbxLab(Q.per,p)}`,anyBad=pl.some(r=>bad[r.id]);
+  return `<div class="scroll"><table class="simbox"><thead><tr><th class="tm">${code(t)} ${disp(t)}${lab}</th><th>MIN</th><th>PTS</th><th>FG</th><th>3P</th><th>FT</th><th>OR</th><th>DR</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th><th>PF</th><th>+/−</th></tr></thead><tbody>
+    ${pl.map(r=>`<tr class="${r.starter?"st":""}"><td class="tm">${ppname(r.id,r.name,t)}${r.starter?`<span class="simst">S</span>`:""}</td>${tr(r)}<td>${X(r,"pm")||r.pm==null?"–":(r.pm>0?"+":"")+r.pm}</td></tr>`).join("")}
+    ${T?`<tr class="avg"><td class="tm">Team</td>${tr(T,true)}<td></td></tr>
+    <tr class="avg"><td class="tm">Shooting</td><td></td><td></td><td>${pct(T.fga?T.fgm/T.fga:null)}%</td><td>${pct(T.tpa?T.tpm/T.tpa:null)}%</td><td>${pct(T.fta?T.ftm/T.fta:null)}%</td><td colspan="10"></td></tr>`:""}</tbody></table></div>
     ${dnp.length?`<p class="mxnote">Did not play: ${dnp.map(r=>r.name).join(", ")}</p>`:""}
-    <p class="mxnote">S = starter. Team = the team's totals, team rebounds and team turnovers included, so they can be more than the players' sum. Player stats are for the whole game: the NBL's feed has them by game only, not by quarter.</p>`;
+    <p class="mxnote">S = starter. Team = the team's totals, team rebounds and team turnovers included, so they can be more than the players' sum.${full?(Q?"":" Quarter-by-quarter player stats aren't in yet for this game."):` Players by quarter are built from the NBL's play-by-play (minutes from the substitutions, +/− from the score while on the floor) and add up to the full-game box score${anyBad?"; – = a stat the NBL's play-by-play credits differently from its box score for that player, so it isn't split by quarter":""}. The team rows are the NBL's official team stats for the period.`}</p>`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-rbx]");if(!b)return;const w=b.closest(".rbx"),k=w?.dataset.rbxg;if(!k||!RBX[k])return;
   RBXS[k][b.dataset.rbx]=b.dataset.val;w.innerHTML=rbxHtml(k)});
