@@ -608,6 +608,7 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
 .rbt{max-width:560px}
 .rbt thead th{font:600 11.5px/1.2 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .rbx .simbox tr.st td{font-weight:500}
+.rbx .simst{font-size:14px;margin-left:4px}
 </style>
 
 <script>try{if(localStorage.getItem("nbl27-bg")==="white")document.documentElement.setAttribute("data-bg","white")}catch(e){}</script>
@@ -1311,11 +1312,11 @@ function rbxBox(row,doc,t,p){
   const tr=(r,tot)=>`<td>${tot?"":v(r,"min",mm(r.min))}</td><td><b>${v(r,"pts")}</b></td><td>${X(r,"fgm","fga")?"–":`${r.fgm}-${r.fga}`}</td><td>${X(r,"tpm","tpa")?"–":`${r.tpm}-${r.tpa}`}</td><td>${X(r,"ftm","fta")?"–":`${r.ftm}-${r.fta}`}</td><td>${v(r,"oreb")}</td><td>${v(r,"dreb")}</td><td>${X(r,"oreb","dreb")?"–":r.oreb+r.dreb}</td><td>${v(r,"ast")}</td><td>${v(r,"stl")}</td><td>${v(r,"blk")}</td><td>${v(r,"tov")}</td><td>${v(r,"pf")}</td>`;
   const lab=full?"":` · ${rbxLab(Q.per,p)}`,anyBad=pl.some(r=>bad[r.id]);
   return `<div class="scroll"><table class="simbox"><thead><tr><th class="tm">${code(t)} ${disp(t)}${lab}</th><th>MIN</th><th>PTS</th><th>FG</th><th>3P</th><th>FT</th><th>OR</th><th>DR</th><th>REB</th><th>AST</th><th>STL</th><th>BLK</th><th>TO</th><th>PF</th><th>+/−</th></tr></thead><tbody>
-    ${pl.map(r=>`<tr class="${r.starter?"st":""}"><td class="tm">${ppname(r.id,r.name,t)}${r.starter?`<span class="simst">S</span>`:""}</td>${tr(r)}<td>${X(r,"pm")||r.pm==null?"–":(r.pm>0?"+":"")+r.pm}</td></tr>`).join("")}
+    ${pl.map(r=>`<tr class="${r.starter?"st":""}"><td class="tm">${ppname(r.id,r.name,t)}${r.starter?`<span class="simst">*</span>`:""}</td>${tr(r)}<td>${X(r,"pm")||r.pm==null?"–":(r.pm>0?"+":"")+r.pm}</td></tr>`).join("")}
     ${T?`<tr class="avg"><td class="tm">Team</td>${tr(T,true)}<td></td></tr>
     <tr class="avg"><td class="tm">Shooting</td><td></td><td></td><td>${pct(T.fga?T.fgm/T.fga:null)}%</td><td>${pct(T.tpa?T.tpm/T.tpa:null)}%</td><td>${pct(T.fta?T.ftm/T.fta:null)}%</td><td colspan="10"></td></tr>`:""}</tbody></table></div>
     ${dnp.length?`<p class="mxnote">Did not play: ${dnp.map(r=>r.name).join(", ")}</p>`:""}
-    <p class="mxnote">S = starter. Team = the team's totals, team rebounds and team turnovers included, so they can be more than the players' sum.${full?(Q?"":" Quarter-by-quarter player stats aren't in yet for this game."):` Players by quarter are built from the NBL's play-by-play (minutes from the substitutions, +/− from the score while on the floor) and add up to the full-game box score${anyBad?"; – = a stat the NBL's play-by-play credits differently from its box score for that player, so it isn't split by quarter":""}. The team rows are the NBL's official team stats for the period.`}</p>`;
+    <p class="mxnote">* = starter. Team = the team's totals, team rebounds and team turnovers included, so they can be more than the players' sum.${full?(Q?"":" Quarter-by-quarter player stats aren't in yet for this game."):` Players by quarter are built from the NBL's play-by-play (minutes from the substitutions, +/− from the score while on the floor) and add up to the full-game box score${anyBad?"; – = a stat the NBL's play-by-play credits differently from its box score for that player, so it isn't split by quarter":""}. The team rows are the NBL's official team stats for the period.`}</p>`;
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-rbx]");if(!b)return;const w=b.closest(".rbx"),k=w?.dataset.rbxg;if(!k||!RBX[k])return;
   RBXS[k][b.dataset.rbx]=b.dataset.val;w.innerHTML=rbxHtml(k)});
