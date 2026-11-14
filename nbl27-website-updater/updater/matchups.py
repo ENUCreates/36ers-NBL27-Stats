@@ -209,6 +209,8 @@ def snapshot(g, fx, games_before, S, R, hca, gsd, P, inj, state, asof, p=None, m
     lk = sorted([t for t in R if R[t]["luck"] is not None], key=lambda t: R[t]["luck"])
     if p is None:
         p, m = g.get("pHome"), g.get("margin")
+    # the home edge this game gets: none in another club's home building (ladder.py venue_edge)
+    hca = round(hca * g.get("edge", 1.0), 2)
     why = {"rH": R[H]["rating"], "rA": R[A]["rating"], "rkH": rk.get(H), "rkA": rk.get(A), "hca": hca, "margin": m,
            "p": p, "sd": gsd, "build": {}}
     av = g.get("avail") if state == "pre" else None

@@ -14,6 +14,12 @@ the same API official.py reads). Deterministic: a fixed random seed, so the same
   2. Ratings: a Bayesian fit of those adjusted margins (team strength ~ N(0, tau^2), tau weighted by the data and a
      prior from typical NBL seasons), so a team's rating is pulled toward average by how few games it has played.
   3. The home edge for future games comes from the actual margins (shooting at home is part of playing at home).
+     It is one number for the league, not one per team: over 1,399 NBL home games (2015-16 to 2025-26) the spread
+     of true home advantage between clubs is too small to measure (best estimate under half a point a game; any
+     one club's or one season's own figure is noise), so team-by-team figures would make the tips worse. What does
+     change it is WHERE the game is (venue_edge): a game in a building that is another club's home (a neutral-venue
+     round, or a derby in the arena both clubs call home) has no home edge. The 67 such games in those seasons were
+     predicted better with none (margin error 5% lower; the listed home team did 1.9 points worse than with one).
   4. The rest of the season (every regular-season game in the NBL's fixture that is not yet in data/games.json) is
      played out SIMS times, each with team strengths drawn from their uncertainty and game margins ~ N(expected, sd).
      Ladder order in each run: wins, then wins between the tied teams, then points difference in those games, then
@@ -68,6 +74,25 @@ def fixture():
     return sorted(out, key=lambda r: r["start"])
 
 
+def venue_edge(fx):
+    """Share of the home edge each fixture game gets, {fixture id: 1.0 or 0.0}: 0 where the venue is the main home
+    venue of the away club (a derby in a shared arena, or the listed home team playing in the visitors' building)
+    or of a third club (a neutral-venue round); 1 everywhere else, a club's other home venues included."""
+    cnt = collections.defaultdict(collections.Counter)
+    for r in fx:
+        if r["venue"] and r["venue"] != "TBC":
+            cnt[r["home"]][r["venue"]] += 1
+    main = {t: c.most_common(1)[0][0] for t, c in cnt.items()}
+    owners = collections.defaultdict(set)
+    for t, v in main.items():
+        owners[v].add(t)
+    out = {}
+    for r in fx:
+        own = owners.get(r["venue"], set())
+        out[r["id"]] = 0.0 if r["away"] in own or (own and r["home"] not in own) else 1.0
+    return out
+
+
 def career(b):
     """Weighted past-season makes/attempts from a Player card (NBL seasons, ESPN NBA/college, other leagues)."""
     c = collections.Counter()
@@ -84,9 +109,10 @@ def career(b):
     return c
 
 
-def rate(games, players, bios, TEAMS):
+def rate(games, players, bios, TEAMS, edge=None):
     """Team ratings from these games only: posterior (mixture over tau) of each team's strength, the home edge and
-    the game-to-game noise, plus the shooting-luck figures shown on the page."""
+    the game-to-game noise, plus the shooting-luck figures shown on the page. edge: {game id: share of the home
+    edge that game had (venue_edge)}, 1 where not given."""
     ix = {t: i for i, t in enumerate(TEAMS)}
     N = len(TEAMS)
     # ---- shooting: league rates, player estimates, expected makes per team-game ----
@@ -142,13 +168,13 @@ def rate(games, players, bios, TEAMS):
         luck_t[h] += luck["home"] - luck["away"]; luck_t[a] += luck["away"] - luck["home"]
         gp_t[h] += 1; gp_t[a] += 1
         m = g["home"]["pts"] - g["away"]["pts"]
-        rows.append((ix[h], ix[a], m, m - luck["home"] + luck["away"]))
+        rows.append((ix[h], ix[a], m, m - luck["home"] + luck["away"], (edge or {}).get(g["id"], 1.0)))
 
     # ---- ratings ----
     G = len(rows)
     X = np.zeros((max(G, 1), N + 1))
     for k, (h, a, *_r) in enumerate(rows):
-        X[k, h] = 1; X[k, a] = -1; X[k, N] = 1
+        X[k, h] = 1; X[k, a] = -1; X[k, N] = _r[-1]
     y_raw = np.array([r[2] for r in rows] or [0.0], float)
     y_adj = np.array([r[3] for r in rows] or [0.0], float)
     if not G:
@@ -179,15 +205,15 @@ def rate(games, players, bios, TEAMS):
             "sig_adj": float(sig_adj), "tau_m": tau_m, "luck_t": luck_t, "gp_t": gp_t, "shoot": shoot, "lg3": lg3, "lgft": lgft}
 
 
-def predict(M, home, away, extra=0.0):
+def predict(M, home, away, extra=0.0, f=1.0):
     """Chance the home team wins and its expected margin: the posterior mixture of (home - away strength + home edge
-    + extra, the availability adjustment) plus the game-to-game noise, worked out exactly (the season simulation draws
-    from the same model)."""
+    * f, the venue's share of it + extra, the availability adjustment) plus the game-to-game noise, worked out exactly
+    (the season simulation draws from the same model)."""
     i, j = M["ix"][home], M["ix"][away]
     p = m = 0.0
     for w, (mk, Ck) in zip(M["wt"], M["POST"]):
-        d = mk[i] - mk[j] + M["hca"] + extra
-        v = Ck[i, i] + Ck[j, j] - 2 * Ck[i, j] + M["hca_sd"] ** 2 + M["sig_raw"] ** 2
+        d = mk[i] - mk[j] + f * M["hca"] + extra
+        v = Ck[i, i] + Ck[j, j] - 2 * Ck[i, j] + (f * M["hca_sd"]) ** 2 + M["sig_raw"] ** 2
         p += w * 0.5 * (1 + math.erf(d / math.sqrt(2 * v)))
         m += w * d
     return p, m
@@ -210,7 +236,9 @@ def build(games, players, bios, fx, prev=None, injuries=None):
     late = [r for r in sched if r["status"] == "complete"]
     total_games = len(fx)
 
-    M = rate(games, players, bios, TEAMS)
+    VE = venue_edge(fx)
+    edge = {g["id"]: VE[fx[k]["id"]] for k, g in match_of.items()}       # played games: game id -> share of the edge
+    M = rate(games, players, bios, TEAMS, edge)
     mu, POST, wt, hca, hca_sd, sig_raw, sig_adj, tau_m = (M[k] for k in ("mu", "POST", "wt", "hca", "hca_sd", "sig_raw", "sig_adj", "tau_m"))
     luck_t, gp_t, shoot, lg3, lgft = (M[k] for k in ("luck_t", "gp_t", "shoot", "lg3", "lgft"))
 
@@ -246,7 +274,8 @@ def build(games, players, bios, fx, prev=None, injuries=None):
     pdiff = np.tile(np.array([PF[t] - PA[t] for t in TEAMS], float), (SIMS, 1))
     marg = np.zeros((SIMS, 0))
     if len(sched):
-        marg = R[:, sh] - R[:, sa] + R[:, [N]] + adjd + rng.normal(0, sig_raw, size=(SIMS, len(sched)))
+        vf = np.array([VE[r["id"]] for r in sched], float)
+        marg = R[:, sh] - R[:, sa] + R[:, [N]] * vf + adjd + rng.normal(0, sig_raw, size=(SIMS, len(sched)))
         marg = np.where(np.abs(marg) < 0.5, np.where(marg >= 0, 0.5, -0.5), marg)     # no draws
         hw = marg > 0
         for k in range(len(sched)):
@@ -332,6 +361,8 @@ def build(games, players, bios, fx, prev=None, injuries=None):
                    "Ratings pulled toward average by how few games each team has played",
                    f"The {len(sched)} remaining games played out {SIMS:,} times; projected record = average wins, "
                    "rounded so the ladder adds up",
+                   "Home edge: one figure for the league (clubs' true home advantages differ by too little to measure), "
+                   "and none where the game is in another club's home building: a neutral-venue round or a shared-arena derby",
                    "Ladder ties: wins, then wins between the tied teams, then points difference in those games, then overall",
                    "Availability: each game to come adjusts both teams for who is out or back compared with the games "
                    "their strength is built on (availability.py, calibrated on 1,458 NBL games 2015-26)"],
@@ -347,6 +378,8 @@ def build(games, players, bios, fx, prev=None, injuries=None):
     for k, r in enumerate(fx):
         e = {"id": r["id"], "round": r["round"], "start": r["start"], "date": r["date"], "venue": r["venue"],
              "home": r["home"], "away": r["away"]}
+        if VE[r["id"]] != 1.0:
+            e["edge"] = VE[r["id"]]             # share of the home edge at this venue (left out where it is all of it)
         g = match_of.get(k)
         if g:
             e["hs"], e["as"] = g["home"]["pts"], g["away"]["pts"]
@@ -359,14 +392,14 @@ def build(games, players, bios, fx, prev=None, injuries=None):
                 need_bt[g["date"]].append(e)
         else:
             a = adj_of.get(r["id"]) or {"h": (0.0, []), "a": (0.0, [])}
-            pr, mg = predict(M, r["home"], r["away"], a["h"][0] - a["a"][0])
+            pr, mg = predict(M, r["home"], r["away"], a["h"][0] - a["a"][0], VE[r["id"]])
             e["pHome"], e["margin"] = round(float(pr), 4), round(float(mg), 2)
             e["avail"] = {"h": a["h"][0], "a": a["a"][0], "hp": a["h"][1], "ap": a["a"][1]}
         out_games.append(e)
     for d, lst in sorted(need_bt.items()):
-        Md = rate([g for g in games if g["date"] < d], [x for x in players if x["date"] < d], bios, TEAMS)
+        Md = rate([g for g in games if g["date"] < d], [x for x in players if x["date"] < d], bios, TEAMS, edge)
         for e in lst:
-            pr, mg = predict(Md, e["home"], e["away"])
+            pr, mg = predict(Md, e["home"], e["away"], 0.0, VE[e["id"]])
             e["tip"] = {"p": round(float(pr), 4), "m": round(float(mg), 2), "at": d, "src": "backtest",
                         "games": sum(1 for g in games if g["date"] < d)}
     rec = {"live": [0, 0], "backtest": [0, 0]}
