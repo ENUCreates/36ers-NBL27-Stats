@@ -603,6 +603,57 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
 .rbt thead th{font:600 11.5px/1.2 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .rbx .simbox tr.st td{font-weight:500}
 .simst{font-size:14px;margin-left:4px}
+
+/* Impact tab */
+.imp-top{margin-bottom:14px}
+.imp-ctl{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:flex-end}
+.imp-f{display:flex;flex-direction:column;gap:5px}
+.imp-f .k{font:600 11.5px/1 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.imp-f select{font:500 13px var(--body);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:7px 8px}
+.imp-teams{margin-top:12px;display:flex;flex-wrap:wrap;gap:4px}
+.imp-teams .chip{padding:6px 9px;font-size:12px}
+table.imp td.tm{min-width:200px}
+table.imp .irk{display:inline-block;min-width:24px;margin-right:6px;color:var(--faint);font:600 11.5px var(--body);text-align:right}
+table.imp td.tm.pl{display:flex;align-items:center}
+table.imp td.tm.pl small{margin-left:8px}
+table.imp td.on{font-weight:700;color:var(--ink)}
+table.imp td.on.up{color:var(--good)}table.imp td.on.dn{color:var(--bad)}
+table.imp td.ov{min-width:128px}
+table.imp td.ov b{display:inline-block;min-width:38px}
+table.imp td.ov small{color:var(--faint);font-size:11px;margin-left:4px}
+table.imp td.ov.on b{font-size:14px}
+.ibar{display:inline-block;position:relative;width:46px;height:7px;background:var(--soft);vertical-align:middle;margin-right:8px;border-radius:1px}
+.ibar::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--line)}
+.ibar i{position:absolute;top:0;bottom:0;background:var(--good)}
+.ibar i.n{background:var(--bad)}
+tr.imp-row{cursor:pointer}
+tr.imp-row[aria-expanded="true"] td{background:var(--soft)}
+tr.imp-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+tr.imp-det>td{padding:0;text-align:left;white-space:normal;background:var(--bg)}
+tr.imp-det .imp-x{position:sticky;left:0;box-sizing:border-box;max-width:calc(100vw - 32px)}
+tr.imp-det:hover>td{background:var(--bg)}
+.imp-x{padding:14px 12px 18px;border-left:3px solid var(--accent)}
+.imp-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 18px;margin-bottom:14px}
+.imp-sum>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.imp-sum .k{font:600 11.5px/1 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.imp-sum b{font:700 condensed 28px/1.05 var(--display)}
+.imp-sum small{color:var(--muted);font-size:12px;line-height:1.35;white-space:normal}
+.imp-cols{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px 22px;align-items:start}
+.imp-bx td,.imp-bx th,.imp-car td,.imp-car th{padding:5px 7px;font-size:12.5px}
+.imp-bx td.tm,.imp-car td.tm{font-weight:500;min-width:0;background:transparent}
+.imp-bx tr.tot td{font-weight:700;border-top:1px solid var(--ink);color:var(--ink)}
+.imp-bx td.na{color:var(--faint)}
+.imp-bx td.mut{text-align:left;font-size:11.5px}
+.imp-car tr.cur td{background:var(--soft);font-weight:600}
+.imp-car button.lnk{all:unset;cursor:pointer;color:var(--accent-text);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.imp-car button.lnk:focus-visible{outline:2px solid var(--accent)}
+.imp-x .mxnote{font:400 11.5px/1.45 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 0;white-space:normal}
+.imp-notes span{display:block;margin-bottom:6px}
+@media (max-width:860px){.imp-cols{grid-template-columns:minmax(0,1fr)}.imp-sum{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){table.imp td.tm{min-width:150px}.imp-sum b{font-size:24px}tr.imp-det .imp-x{padding:12px 6px 14px 8px}
+  table.imp .ibar{display:none}table.imp td.ov{min-width:0}table.imp td.ov small{display:none}
+  .imp-bx td,.imp-bx th,.imp-car td,.imp-car th{padding:5px 4px;font-size:12px}
+  .imp-bx td.mut{font-size:10.5px;white-space:normal}.imp-car .hm{display:none}}
 </style>
 
 <script>try{if(localStorage.getItem("nbl27-bg")==="white")document.documentElement.setAttribute("data-bg","white")}catch(e){}</script>
@@ -626,6 +677,7 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
     <button class="tab" role="tab" id="tab-team" aria-selected="false">Team sheet</button>
     <button class="tab" role="tab" id="tab-players" aria-selected="false">Players</button>
     <button class="tab" role="tab" id="tab-cards" aria-selected="false">Player cards</button>
+    <button class="tab" role="tab" id="tab-impact" aria-selected="false">Impact</button>
     <button class="tab" role="tab" id="tab-injuries" aria-selected="false">Injuries</button>
     <button class="tab" role="tab" id="tab-coaches" aria-selected="false">Head coaches</button>
     <button class="tab" role="tab" id="tab-lineups" aria-selected="false">Lineups</button>
@@ -758,6 +810,10 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
   <section id="view-rotations" hidden>
     <div class="chips tpick" id="rpicker" style="margin-bottom:12px"></div>
     <div id="rotations"></div>
+  </section>
+
+  <section id="view-impact" hidden>
+    <div id="impact"></div>
   </section>
 
   <section id="view-sim" hidden>
@@ -2732,7 +2788,7 @@ function renderInjuries(){
 
 // re-draw the open tab (used when the headshots arrive)
 function renderVisible(){const on=x=>!document.getElementById("view-"+x).hidden;
-  if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("h2h"))renderH2H();if(on("rotations"))renderRotations();if(on("cards"))renderCards();if(on("coaches"))renderCoaches();if(on("ladder"))renderLadder();if(on("injuries"))renderInjuries()}
+  if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("h2h"))renderH2H();if(on("rotations"))renderRotations();if(on("cards"))renderCards();if(on("coaches"))renderCoaches();if(on("ladder"))renderLadder();if(on("injuries"))renderInjuries();if(on("impact")&&IMP)renderImpact()}
 /*SIM-ENGINE-START*/
 // Game simulator engine (Simulator tab). No DOM, so the same code runs in the page and in the checks
 // (nbl27-website-updater/updater/simcheck.js).
@@ -3262,11 +3318,126 @@ function simPbp(g){
     ${rows.map(x=>{const t=tn(x),sc=x.k==="make"||(x.k==="ft"&&/makes/.test(x.s));
       return `<tr class="${x.k==="q"||x.k==="end"?"qrow":sc?"sc":""}"><td>${simQ(x.q)} ${simClock(x.c)}</td><td class="tm">${t?code(t):""}</td><td class="tm pl">${x.s}</td><td>${x.h}</td><td>${x.a}</td></tr>`}).join("")}</tbody></table></div>`;
 }
+// ===== Impact tab: every player's offence, defence and overall impact per 100 possessions, NBL16 to NBL27 =====
+// data/impact.json (updater/impact.py, rebuilt every morning): each player-season's box-score part and on-court part,
+// the formula's weights and each season's averages, so a player's breakdown below is the formula worked through.
+let IMP=null,IMPP=null,impS=null,impV="T",impMin=null,impTeam="",impSort=null,impOpen=null;
+try{const v=localStorage.getItem("nbl27-impv");if(["T","O","D"].includes(v))impV=v}catch(e){}
+const IMPF={pts_x:"Points",fga:"Shot attempts",tpa:"3-point attempts",fta:"Free-throw attempts",ast:"Assists",tov:"Turnovers",
+  oreb:"Offensive rebounds",dreb:"Defensive rebounds",stl:"Steals",blk:"Blocks",pf:"Fouls",mpg:"Minutes a game"};
+const IMPS={pts_x:"Points",fga:"Shot attempts",tpa:"3PT attempts",fta:"FT attempts",ast:"Assists",tov:"Turnovers",
+  oreb:"Off. rebounds",dreb:"Def. rebounds",stl:"Steals",blk:"Blocks",pf:"Fouls",mpg:"Minutes a game"};
+const impLab=s=>"NBL"+String(+s.slice(0,4)+1).slice(2);
+const impT=r=>r.o+r.d;
+const isg=v=>v==null||!isFinite(v)?"–":Math.abs(v)<0.05?"0.0":sgn(v);
+const itc=t=>TEAMS[t]?.c||t.slice(0,3).toUpperCase();
+const impMpg=r=>r.g?r.mn/r.g:0;
+const impKey={T:impT,O:r=>r.o,D:r=>r.d};
+function impVal(r,k){return k==="T"?impT(r):k==="mpg"?impMpg(r):k==="n"?r.n:k==="t"?disp(r.t):r[k]}
+function impRanks(season,min){
+  // each player's rank that season (overall, offence, defence) among players with at least min minutes
+  const L=(IMP.seasons[season]?.players||[]).filter(r=>r.mn>=min),R={};
+  ["T","O","D"].forEach(k=>{[...L].sort((a,b)=>impKey[k](b)-impKey[k](a)).forEach((r,i)=>{(R[r.k]=R[r.k]||{})[k]=i+1})});
+  return {R,n:L.length};
+}
+async function renderImpact(){
+  const el=document.getElementById("impact");
+  if(!IMP){
+    el.innerHTML=`<div class="panel"><div class="empty"><strong>Loading the impact ratings…</strong></div></div>`;
+    IMP=await jget("impact.json");
+    if(!IMP){el.innerHTML=`<div class="panel"><div class="empty"><strong>Impact ratings unavailable</strong>The ratings file couldn't be loaded. It is rebuilt every morning.</div></div>`;return}
+    IMPP={};Object.entries(IMP.seasons).forEach(([s,v])=>v.players.forEach(r=>{(IMPP[r.k]=IMPP[r.k]||[]).push([s,r])}));
+  }
+  const S=IMP.seasons,keys=Object.keys(S).sort().reverse(),st=IMP.status||{};
+  if(!impS||!S[impS])impS=keys[0];
+  const cur=S[impS],latest=impS===keys[0],min=impMin??(latest?100:400);
+  const teams=[...new Set(cur.players.flatMap(r=>r.ts||[r.t]))].sort((a,b)=>disp(a).localeCompare(disp(b)));
+  if(impTeam&&!teams.includes(impTeam))impTeam="";
+  const sk=impSort?.k||({T:"T",O:"o",D:"d"})[impV],sd=impSort?.d??-1;
+  let rows=cur.players.filter(r=>r.mn>=min&&(!impTeam||(r.ts||[r.t]).includes(impTeam)));
+  rows.sort((a,b)=>{const x=impVal(a,sk),y=impVal(b,sk);return typeof x==="string"?sd*x.localeCompare(y):sd*(x-y)});
+  const {R,n:nRank}=impRanks(impS,min);
+  const maxT=Math.max(1,...cur.players.filter(r=>r.mn>=min).map(r=>Math.abs(impT(r))));
+  const arrow=k=>sk===k?` data-dir="${sd>0?'▲':'▼'}"`:"";
+  const cell=(v,on)=>`<td class="${on?"on ":""}${v>=1.5?"up":v<=-1.5?"dn":""}">${isg(v)}</td>`;
+  const bar=v=>{const w=Math.min(50,50*Math.abs(v)/maxT);return `<span class="ibar" aria-hidden="true"><i class="${v<0?"n":""}" style="${v<0?`right:50%`:`left:50%`};width:${w}%"></i></span>`};
+  const MINS=[0,100,200,400,600];
+  const head=`<div class="panel imp-top">
+    <div class="imp-ctl">
+      <label class="imp-f"><span class="k">Season</span><select id="impSeason" aria-label="Season">${keys.map(s=>`<option value="${s}"${s===impS?" selected":""}>${impLab(s)} (${s})</option>`).join("")}</select></label>
+      <div class="seg" role="group" aria-label="Rank by">${[["T","Overall"],["O","Offence"],["D","Defence"]].map(([k,l])=>`<button class="chip" data-impv="${k}" aria-pressed="${!impSort&&impV===k}">${l}</button>`).join("")}</div>
+      <label class="imp-f"><span class="k">Minutes</span><select id="impMin" aria-label="Minimum minutes">${MINS.map(m=>`<option value="${m}"${m===min?" selected":""}>${m?m+"+":"All"}</option>`).join("")}</select></label>
+    </div>
+    <div class="chips imp-teams" role="group" aria-label="Team"><button class="chip" data-impt="" aria-pressed="${!impTeam}">All teams</button>${teams.map(t=>`<button class="chip" data-impt="${t}" aria-pressed="${impTeam===t}" title="${disp(t)}">${TEAMS[t]?.c||t.slice(0,3).toUpperCase()}</button>`).join("")}</div>
+  </div>`;
+  const through=latest&&st.through?` · games to ${dShort(st.through)}`:"";
+  const body=rows.map(r=>{const T=impT(r),open=impOpen===r.k;
+    return `<tr class="imp-row${r.mn<100?" low":""}" data-k="${r.k}" tabindex="0" role="button" aria-expanded="${open}">
+      <td class="tm pl"><span class="irk">${R[r.k]?.[impSort?"T":impV]??"–"}</span>${ppname(r.e||("imp:"+r.k),r.n,r.t)}<small>${(r.ts||[r.t]).map(itc).join("/")}</small></td>
+      <td class="ov${sk==="T"?" on":""}">${bar(T)}<b>${isg(T)}</b><small>±${r.sd.toFixed(1)}</small></td>
+      ${cell(r.o,sk==="o")}${cell(r.d,sk==="d")}<td>${isg(r.pg)}</td>
+      <td>${r.g}</td><td>${impMpg(r).toFixed(1)}</td></tr>${open?`<tr class="imp-det"><td colspan="7"><div class="imp-x">${impDetail(r)}</div></td></tr>`:""}`}).join("");
+  el.innerHTML=head+`<div class="panel">
+    <div class="team-head"><h2>${impLab(impS)} impact</h2><span class="rec">${rows.length} players${min?` with ${min}+ minutes`:""}${impTeam?` · ${disp(impTeam)}`:""}${through} · on-court part from ${cur.used} of ${cur.games} games</span></div>
+    <div class="scroll"><table class="imp"><thead><tr><th class="tm"><button data-k="n"${arrow("n")}>Player</button></th><th><button data-k="T"${arrow("T")}>Overall</button></th><th><button data-k="o"${arrow("o")}>Offence</button></th><th><button data-k="d"${arrow("d")}>Defence</button></th><th><button data-k="pg"${arrow("pg")} title="Points a game: overall × his possessions a game on the floor">Pts/g</button></th><th><button data-k="g"${arrow("g")}>GP</button></th><th><button data-k="mpg"${arrow("mpg")}>MPG</button></th></tr></thead>
+    <tbody>${body||`<tr><td class="tm" colspan="7" style="text-align:left;color:var(--muted)">No players with ${min}+ minutes${impTeam?" for "+disp(impTeam):""}.</td></tr>`}</tbody></table></div>
+  </div>`+impNotes(cur,st);
+  el.querySelector("#impSeason").onchange=e=>{impS=e.target.value;impOpen=null;impMin=null;renderImpact()};
+  el.querySelector("#impMin").onchange=e=>{impMin=+e.target.value;renderImpact()};
+  el.querySelectorAll("[data-impv]").forEach(b=>b.onclick=()=>{impV=b.dataset.impv;impSort=null;try{localStorage.setItem("nbl27-impv",impV)}catch(e){}renderImpact()});
+  el.querySelectorAll("[data-impt]").forEach(b=>b.onclick=()=>{impTeam=b.dataset.impt;renderImpact()});
+  el.querySelectorAll("table.imp th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;
+    impSort=k===sk?{k,d:-sd}:{k,d:["n","t"].includes(k)?1:-1};renderImpact()});
+  el.querySelectorAll(".imp-row").forEach(tr=>{const go=()=>{impOpen=impOpen===tr.dataset.k?null:tr.dataset.k;renderImpact()};
+    tr.onclick=e=>{if(e.target.closest("a"))return;go()};tr.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});
+  el.querySelectorAll("[data-imps]").forEach(b=>b.onclick=e=>{e.stopPropagation();impS=b.dataset.imps;impMin=null;impTeam="";impOpen=b.dataset.impk;renderImpact();
+    requestAnimationFrame(()=>{const r=el.querySelector(`.imp-row[data-k="${b.dataset.impk}"]`);if(r)r.scrollIntoView({block:"center"})})});
+}
+function impDetail(r){
+  const st=IMP.status,S=IMP.seasons[impS],F=st.feats,wO=st.weights.O,wD=st.weights.D,lab=impLab(impS);
+  const c=(w,j)=>w==null?null:w*(r.r[j]-S.avg[j]);
+  let sO=0,sD=0;
+  const rows=F.map((f,j)=>{const o=c(wO[f],j),d=c(wD[f],j);sO+=o||0;sD+=d||0;
+    const fmt=v=>v==null?`<td class="na">–</td>`:`<td class="${v>=0.25?"up":v<=-0.25?"dn":""}">${isg(v)}</td>`;
+    return `<tr><td class="tm">${IMPS[f]}${f==="pts_x"?"*":""}</td><td>${r.r[j].toFixed(1)}</td><td>${S.avg[j].toFixed(1)}</td>${fmt(o)}${fmt(d)}</tr>`}).join("");
+  const min=impMin??(impS===Object.keys(IMP.seasons).sort().pop()?100:400),{R,n}=impRanks(impS,min),rk=R[r.k];
+  const ppg=r.g?r.ps/r.g:0;
+  const car=(IMPP[r.k]||[]).slice().sort((a,b)=>a[0].localeCompare(b[0])).map(([s,x])=>{const q=impRanks(s,200).R[x.k];
+    return `<tr class="${s===impS?"cur":""}"><td class="tm"><button class="lnk" data-imps="${s}" data-impk="${x.k}">${impLab(s)}</button></td><td>${(x.ts||[x.t]).map(itc).join("/")}</td><td class="hm">${x.g}</td><td class="hm">${Math.round(x.mn)}</td><td>${isg(x.o)}</td><td>${isg(x.d)}</td><td><b>${isg(impT(x))}</b></td><td>${q?.T?"#"+q.T:"–"}</td></tr>`}).join("");
+  return `<div class="imp-sum">
+      <div><span class="k">Offence</span><b>${isg(r.o)}</b><small>box score ${isg(r.ob)} · on-court ${isg(r.oc)}</small></div>
+      <div><span class="k">Defence</span><b>${isg(r.d)}</b><small>box score ${isg(r.db)} · on-court ${isg(r.dc)}</small></div>
+      <div><span class="k">Overall</span><b>${isg(impT(r))}</b><small>±${r.sd.toFixed(1)}${rk?` · #${rk.T} of ${n} (offence #${rk.O}, defence #${rk.D})`:""}</small></div>
+      <div><span class="k">A game</span><b>${isg(r.pg)}</b><small>points, over his ${ppg.toFixed(0)} possessions a game on the floor</small></div>
+    </div>
+    <div class="imp-cols">
+      <div><div class="scroll"><table class="imp-bx"><thead><tr><th class="tm">${lab}, per 100 possessions</th><th>His</th><th>Avg</th><th>Off</th><th>Def</th></tr></thead><tbody>${rows}
+        <tr class="tot"><td class="tm">Box-score part</td><td></td><td></td><td>${isg(r.ob)}</td><td>${isg(r.db)}</td></tr>
+        <tr><td class="tm">On-court part</td><td colspan="2" class="mut">his lineups' results</td><td>${isg(r.oc)}</td><td>${isg(r.dc)}</td></tr>
+        <tr class="tot"><td class="tm">Impact</td><td></td><td></td><td>${isg(r.o)}</td><td>${isg(r.d)}</td></tr></tbody></table></div>
+        <p class="mxnote">Each row: weight × (his rate − the ${lab} average). Minutes a game is per game, not per 100. *Points with his threes and free throws counted at his expected percentage. ${r.mn<100?"Under 100 minutes: mostly the estimate for a player in his role. ":""}${r.ts?"Played for "+r.ts.map(disp).join(" and ")+".":""}</p></div>
+      <div><div class="scroll"><table class="imp-car"><thead><tr><th class="tm">Season</th><th>Team</th><th class="hm">GP</th><th class="hm">Min</th><th>Off</th><th>Def</th><th>Overall</th><th>Rank</th></tr></thead><tbody>${car}</tbody></table></div>
+        <p class="mxnote">Every NBL season since NBL16. Rank: overall, among that season's players with 200+ minutes. Tap a season to open its ladder.</p></div>
+    </div>`;
+}
+function impNotes(cur,st){
+  const w=st.weights||{},f=st.forward||{};
+  const w2=(W,k)=>(W[k]>=0?"+":"−")+Math.abs(W[k]).toFixed(2);
+  const ol=Object.keys(w.O||{}).sort((a,b)=>Math.abs(w.O[b])-Math.abs(w.O[a])),dl=Object.keys(w.D||{}).sort((a,b)=>Math.abs(w.D[b])-Math.abs(w.D[a]));
+  return `<div class="notes imp-notes">
+    <span>Impact = the points per 100 possessions a player adds to his team's scoring (offence) or takes off the opponent's (defence) while he's on the floor, against an average NBL player. Overall = offence + defence: about +5 is elite, 0 average, −3 deep bench. Pts/g = overall × his possessions a game on the floor.</span>
+    <span>Each half = a box-score part + an on-court part. Box-score part = each weight × (his rate per 100 possessions − the season's average). Offence: ${ol.map(k=>`${IMPF[k].toLowerCase()} ${w2(w.O,k)}${k==="mpg"?" a minute":""}`).join(", ")}. Defence: ${dl.map(k=>`${IMPF[k].toLowerCase()} ${w2(w.D,k)}${k==="mpg"?" a minute":""}`).join(", ")}. Each rate is pulled toward the league's by ${st.kShr||200} possessions, so a player with few minutes looks average.</span>
+    <span>The weights come from the NBL itself: ${(st.stints||0).toLocaleString()} stretches with the same ten players on the floor, from every game since NBL16 whose play-by-play adds up to the official box score. They are fitted on how a player's box score in his other games predicted how his lineups scored and defended, so stats that only mirror a result (a defensive rebound exists because the opponent missed) don't get credit for it. Shooting threes and getting to the line predict much better than points: whether shots drop swings a lot over a season.</span>
+    <span>On-court part = how his lineups actually scored and defended once the other nine players and home court are allowed for, pulled toward zero until he has a lot of court time behind him: on offence one number for his NBL career (its season-to-season swings proved to be noise), on defence a career number plus a small part for the season. Luck is taken out everywhere: every three and free throw counts at the shooter's expected percentage, not whether it went in.</span>
+    <span>Checked: in each of eight seasons (${f.seasons||"2018-19 to 2025-26"}) fitted on the games before mid-season and used to predict the rest (${f.games||541} games) from who was on the floor, it picked ${f.winner||63.2}% of the winners (team ratings alone ${f.teamOnly||59.1}%, the box score alone ${f.boxOnly||60.4}%, plus-minus alone ${f.pmOnly||62.7}%) and missed the margin by ${f.rmse||13.9} points on average (team ratings ${f.rmseTeam||14.2}).</span>
+    <span>± = one standard deviation of the estimate: players within about 2 points of each other aren't reliably different. ${impLab(impS)}: the on-court part uses the ${cur.used} of ${cur.games} games whose play-by-play adds up; the box score uses every game. Rebuilt every morning; past seasons move a little as new games sharpen each player's career numbers. Updated ${st.computedAt?dShort(st.computedAt.slice(0,10)):"–"}.</span>
+  </div>`;
+}
 function show(v){
   try{document.getElementById("tab-"+v).scrollIntoView({block:"nearest",inline:"nearest"})}catch(e){}
-  ["league","ladder","team","players","cards","injuries","coaches","lineups","h2h","rotations","sim"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
+  ["league","ladder","team","players","cards","impact","injuries","coaches","lineups","h2h","rotations","sim"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
   if(v!=="league"&&v!=="ladder"&&v!=="injuries"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
-  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="sim")renderSim();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();if(v==="ladder")renderLadder();if(v==="injuries")renderInjuries();
+  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="sim")renderSim();if(v==="impact")renderImpact();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();if(v==="ladder")renderLadder();if(v==="injuries")renderInjuries();
 }
 document.getElementById("tab-ladder").onclick=()=>show("ladder");
 document.getElementById("tab-injuries").onclick=()=>show("injuries");
@@ -3274,6 +3445,7 @@ document.getElementById("tab-cards").onclick=()=>show("cards");
 document.getElementById("tab-coaches").onclick=()=>show("coaches");
 document.getElementById("tab-rotations").onclick=()=>show("rotations");
 document.getElementById("tab-sim").onclick=()=>show("sim");
+document.getElementById("tab-impact").onclick=()=>show("impact");
 document.getElementById("tab-league").onclick=()=>show("league");
 document.getElementById("tab-team").onclick=()=>show("team");
 document.getElementById("tab-players").onclick=()=>show("players");

@@ -18,7 +18,8 @@ however old, is picked up. Steps:
   7. Write data/*.json + data/meta.json and print a change report (also stored in meta.status.changes).
   8. Refresh the Player cards (bios.py), then the projected ladder (ladder.py -> data/ladder.json) and the matchup
      facts (matchups.py -> data/matchups.json, data/matchups_played.json), then what happened in each newly played
-     game (recaps.py -> the game's 'recap' in data/matchups_played.json).
+     game (recaps.py -> the game's 'recap' in data/matchups_played.json), then every player's impact rating
+     (impact.py -> data/impact.json).
      The injury list (injuries.py -> data/injuries.json) is a separate step of the daily update, after this one.
 
 Usage: python3 rebuild.py <repo_root> [settle_hours=8]
@@ -178,6 +179,7 @@ def main():
     import nbl_periods as NP
     pe_rep = []
     lu_rep, lu_n, sh_rep, ev_rep = [], {}, [], []
+    off_ok = False
     try:
         import official as O
         os.environ["NBL_OFFICIAL_CACHE"] = os.path.join(tmp, "official")
@@ -214,6 +216,7 @@ def main():
         names = {i: p["name"] for i, p in cmp["pairs"].items()}
         for i, n in (prev_off.get("names") or {}).items():
             names.setdefault(i, n)          # keep spellings learned from games the official files no longer list
+        off_ok = True
         off_status = {"games": len(cmp["checked"]), "pending": len(cmp["missing"]), "names": names,
                       "fixes": cmp["fix_players"] + cmp["fix_teams"], "added": cmp["add_players"], "applied": fixes,
                       "notes": cmp["notes"]}
@@ -390,6 +393,18 @@ def main():
             print("recaps step failed: the new games have no recap yet")
     except Exception as ex:
         print("recaps step failed: the new games have no recap yet:", ex)
+    # Player impact (impact.py -> data/impact.json, the Impact tab): every NBL player-season since 2015-16, rated from
+    # the fixed history (impact_hist.json.gz) and NBL27's games with this run's NBL play-by-play. If the official data
+    # couldn't be read this run, or the fit fails, the previous data/impact.json stays (its status.computedAt shows when).
+    if off_ok:
+        try:
+            import impact as IM
+            for line in IM.run(root, off, cmp["pairs"], O.nbl27_index(off)):
+                print(line)
+        except Exception as ex:
+            print("impact step failed: previous ratings kept:", repr(ex)[:300])
+    else:
+        print("impact step skipped (the official data couldn't be read): previous ratings kept")
 
 
 if __name__ == "__main__":
