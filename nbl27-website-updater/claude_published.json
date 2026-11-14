@@ -286,6 +286,7 @@
 "data/coachphotos/ff800ae5280e13ea72a2710af5dabe4c.webp": "eb2dfc9315d0f602aabb57baad59084faddabd93a1c79f0e15adb6d4dbcac909",
 "data/events.json": "e924111c31d6fa6ea4aa7ced942422da9e14427eae0fd56228450e596ec70ccf",
 "data/games.json": "08d8ce619d85907af637ff93e3d38fcd0d11e3027d0f764ab0b5806ec86be9d1",
+"data/impact.json": "3c7148c12a916dd915eb5217f8de8e420b141c7184d7b92cb56ad034dc45e837",
 "data/injuries.json": "dd6003bb7bbeb82b1af7ffff37a3cf1d2dee13ff591a8a750fff596f7100ac1e",
 "data/ladder.json": "af5c689cfe65a97d00f437c92ede7d66d8e9e9d074f8863c4dcbd0abf9063d07",
 "data/lineups.json": "93f86a865a5101f6415866feef53cf0d76746e1813c37e24da73536933614ae4",
@@ -443,5 +444,5 @@
 "data/players.json": "b34bc0534f0b18e8a3a8a0c233ce655ebb2c729927e0bad77a2310695c3282cd",
 "data/pshots.json": "25d9e47eb6700cac7b9984f2015061ede3d421367cf33a6e4bf92e41feddebad",
 "data/shots.json": "3cee175d0beeeee33bfb57221af6ee7e925b2232f45e86a37e1eb9092e628b60",
-"page": "2c2c1e8272976503eb90c967e4165c3a92964c6222b800c247be7796b2294708"
+"page": "766bbd4ef3f1b6a1c9ebb62774c0001f2be0b09977d5c4c2b2209fdddb0c8243"
 }
