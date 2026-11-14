@@ -49,7 +49,11 @@ def pct(x, d=1):
 
 
 def sgn(x, d=1):
-    return "–" if x is None else f"{x:+.{d}f}".replace("-", "−")
+    """signed, with a real minus sign; a value that rounds to zero is plain 0.0"""
+    if x is None:
+        return "–"
+    s = f"{x:+.{d}f}"
+    return s[1:] if float(s) == 0 else s.replace("-", "−")
 
 
 def dshort(iso):
@@ -252,8 +256,12 @@ def snapshot(g, fx, games_before, S, R, hca, gsd, P, inj, state, asof, p=None, m
             nm = SHORT.get(t, t)
             listed = [r for r in (inj or {}).get(t, []) if r["cls"] != "retired"]
             parts = [f"{x['name']} {sgn(x['pts'])} ({x['why']})" for x in det]
+            others = tot - sum(x["pts"] for x in det)        # everyone under a quarter of a point, so the parts add up
+            if parts and round(others, 1) != 0:
+                parts.append(f"smaller changes for the rest of the roster {sgn(others)} between them")
             quiet = [r["name"] for r in listed if r.get("id") not in {x["id"] for x in det}]
-            txt = f"{nm} {sgn(tot)} points for who's available: " + ("; ".join(parts) if parts else "no changes worth a quarter of a point") + "."
+            none = "small changes only, none worth a quarter of a point" if round(tot, 1) != 0 else "no changes worth a quarter of a point"
+            txt = f"{nm} {sgn(tot)} points for who's available: " + ("; ".join(parts) if parts else none) + "."
             if quiet:
                 names = quiet[0] if len(quiet) == 1 else ", ".join(quiet[:-1]) + " and " + quiet[-1]
                 txt += f" {names} {'is' if len(quiet) == 1 else 'are'} on the injury list but barely change{'s' if len(quiet) == 1 else ''} it: " \
@@ -408,14 +416,22 @@ def build(root):
     teams_now = {t: team_part(t, S_now, R_now, P_now, inj_now) for t in TEAMS}
     prev_teams = (load(root, "matchups") or {}).get("teams", {})
     out, cache, n = {}, {}, collections.Counter()
+    now_utc = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
     for x in fx:
         pv = prev.get(x["id"])
         if x.get("hs") is None:
-            out[x["id"]] = snapshot(x, fx, games, S_now, R_now, hca_now, gsd_now, P_now, inj_now, "pre", now)
-            n["pre"] += 1
+            if pv and pv.get("state") == "pre" and (x.get("start") or "9") <= now_utc:
+                # tipped off but not in this site's data yet: the facts as they stood before tip-off stand, with both
+                # teams' numbers of that day (as ladder.py keeps the tip)
+                out[x["id"]] = pv if pv.get("teams") else dict(pv, teams={t: prev_teams.get(t) for t in (x["home"], x["away"])})
+                n["pre, under way"] += 1
+            else:
+                out[x["id"]] = snapshot(x, fx, games, S_now, R_now, hca_now, gsd_now, P_now, inj_now, "pre", now)
+                n["pre"] += 1
         elif pv and pv.get("state") == "pre":
             # played since the last run: keep the facts as they stood before it, with both teams' numbers of that day
-            out[x["id"]] = dict(pv, state="frozen", teams={t: prev_teams.get(t) for t in (x["home"], x["away"])}); n["frozen now"] += 1
+            out[x["id"]] = dict(pv, state="frozen", teams=pv.get("teams") or {t: prev_teams.get(t) for t in (x["home"], x["away"])})
+            n["frozen now"] += 1
         elif pv and pv.get("state") in ("frozen", "backtest"):
             out[x["id"]] = pv; n["kept"] += 1
         else:

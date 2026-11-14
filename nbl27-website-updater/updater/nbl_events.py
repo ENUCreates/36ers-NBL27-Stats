@@ -70,7 +70,7 @@ def build(m, key):
     """one match -> {team: events team entry (events.py's shape)}, last period. key: NBL player id -> site id"""
     home, away = m["home"], m["away"]
     clubs, opp = [home, away], {home: away, away: home}
-    plays = [a for a in m["plays"] if a.get("clock")]
+    plays = NS.plays_of(m)               # less any free throw the official box score doesn't count
     keep_idx, _ = NS.clean({**m, "plays": plays})
     keep = set(keep_idx)
     E = NS.ends({**m, "plays": plays})

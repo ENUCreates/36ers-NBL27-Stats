@@ -77,17 +77,17 @@ def zone(three, X, Y):
     return "mid"
 
 
-def voided(plays):
-    """indices of made shots whose rise in the feed's running score is undone at the next change of score - the
-    scorers taking a basket back (waived after a review, or entered in error). Only a hint: the running score on
-    edited rows isn't always reliable, so clean() uses it just to pick which shot to drop when the official box score
-    shows a player (or the team) with one too many."""
+def voided(plays, types=("2pt", "3pt")):
+    """indices of made shots (or, with types=("freethrow",), made free throws) whose rise in the feed's running score
+    is undone at the next change of score - the scorers taking a basket back (waived after a review, or entered in
+    error). Only a hint: the running score on edited rows isn't always reliable, so clean() and ft_drop() use it just
+    to pick which one to drop when the official box score shows a player (or the team) with one too many."""
     out, prev = set(), None
     for i, a in enumerate(plays):
         cur = (a.get("s1"), a.get("s2"))
         if None in cur:
             continue
-        if prev is not None and a.get("ok") and (a.get("type") or "").lower() in ("2pt", "3pt"):
+        if prev is not None and a.get("ok") and (a.get("type") or "").lower() in types:
             d1, d2 = cur[0] - prev[0], cur[1] - prev[1]
             if d1 > 0 or d2 > 0:
                 for b in plays[i + 1:]:
@@ -152,6 +152,40 @@ def clean(m):
     return [i for i in shots if i not in drop], notes
 
 
+def ft_drop(m):
+    """-> indices (in m['plays']) of the free throws the official box score doesn't count, as clean() does for shots:
+    where a player has more made or missed free throws in the feed than in the official box score, the extra ones go -
+    the made ones the running score marks as taken back, or all of them when that's exactly how many are extra.
+    (13 Nov 2026, Brisbane at New Zealand: a free throw entered with 11 seconds left in the second quarter and taken
+    straight back.) Anything the box score can't settle is kept as it is."""
+    plays = m["plays"]
+    flagged = voided(plays, ("freethrow",))
+    by = collections.defaultdict(lambda: collections.defaultdict(list))
+    for i, a in enumerate(plays):
+        if (a.get("type") or "").lower() == "freethrow" and a.get("pid"):
+            by[a["pid"]][bool(a.get("ok"))].append(i)
+    offp = {p["pid"]: p for p in m["players"] if p.get("fta") is not None and p.get("ftm") is not None}
+    drop = set()
+    for pid, cats in by.items():
+        p = offp.get(pid)
+        if p is None:
+            continue
+        tg = {True: p["ftm"], False: p["fta"] - p["ftm"]}
+        for made, idx in cats.items():
+            extra = len(idx) - tg[made]
+            if extra > 0:
+                fl = [i for i in idx if i in flagged]
+                drop.update(fl[:extra] if len(fl) >= extra else (idx if len(idx) == extra else []))
+    return drop
+
+
+def plays_of(m):
+    """the match's plays that have a game clock, less the free throws the official box score doesn't count
+    (ft_drop) - the list every step that reads the NBL's play-by-play works from"""
+    drop = ft_drop(m)
+    return [a for i, a in enumerate(m["plays"]) if a.get("clock") and i not in drop]
+
+
 def shots_of(m):
     """-> [(team, nbl player id, X, Y, made, zone, three)] in game order, {team: [ftm, fta]}, notes"""
     E = ends(m)
@@ -162,10 +196,13 @@ def shots_of(m):
         three = (a.get("type") or "").lower() == "3pt"
         X, Y = frame(a.get("x"), a.get("y"), E.get((a.get("team"), half(a)), "lo"))
         out.append((a.get("team"), a.get("pid"), X, Y, bool(a.get("ok")), zone(three, X, Y), three))
-    for a in m["plays"]:
-        if (a.get("type") or "").lower() == "freethrow":
+    dft = ft_drop(m)
+    for i, a in enumerate(m["plays"]):
+        if (a.get("type") or "").lower() == "freethrow" and i not in dft:
             ft[a.get("team")][1] += 1
             ft[a.get("team")][0] += bool(a.get("ok"))
+    if dft:
+        notes.append(f"{len(dft)} free throw(s) the official box score doesn't count left out")
     return out, ft, notes
 
 

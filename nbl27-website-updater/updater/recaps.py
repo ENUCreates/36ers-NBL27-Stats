@@ -9,8 +9,10 @@ Every sentence is worked out from this site's own data, nothing is written by ha
   events.json                transition, second-chance and clutch points (from the play-by-play)
   shots.json                 points in the paint
   ladder.json                the tip (chance and expected margin) and the result
-  ESPN's game summary        quarter scores and the running score (site.api.espn.com, the box scores' source; read
-                             from NBL_ESPN_CACHE when the daily update has it, else downloaded once)
+  games.json 'periods'       quarter scores: the NBL's own team stats by period (nbl_periods.py)
+  ESPN's game summary        the running score (site.api.espn.com, the box scores' source; read from NBL_ESPN_CACHE
+                             when the daily update has it, else downloaded once); its quarter scores only for a game
+                             without the NBL's
 
 A recap has the quarter scores and four groups of facts:
   tip    the tip against the result, and why it was right or wrong: the result is replayed with both teams making
@@ -35,7 +37,7 @@ sys.path.insert(0, HERE)
 import ladder as L  # noqa: E402
 from matchups import SHORT, load, ordn  # noqa: E402
 
-VERSION = 1
+VERSION = 2        # 2: quarter scores from the NBL's own team stats by period (ESPN's had a game wrong)
 API = "https://site.api.espn.com/apis/site/v2/sports/basketball/nbl/summary?event={}"
 MIN_GAMES = 3
 QN = {1: "first", 2: "second", 3: "third", 4: "fourth"}
@@ -87,16 +89,24 @@ def when(g):
 
 
 # ---------------------------------------------------------------- the running score (ESPN play-by-play)
-def flow(j, hs, as_):
-    """-> (line {h: [..], a: [..]} or None, timeline [(game sec, home, away)] or None)"""
-    comp = j["header"]["competitions"][0]
-    side = {c["homeAway"]: c for c in comp["competitors"]}
-    try:
-        line = {k[0]: [int(float(x["displayValue"])) for x in side[k].get("linescores", [])] for k in ("home", "away")}
-    except Exception:
-        line = None
+def flow(j, hs, as_, official=None):
+    """-> (line {h: [..], a: [..]} or None, timeline [(game sec, home, away)] or None). official: the quarter scores
+    from the NBL's own team stats by period (games.json 'periods'); they're used when there, ESPN's otherwise (ESPN's
+    linescores have been wrong for a game while still adding up to the final)."""
+    line = None
+    if official and official["h"] and sum(official["h"]) == hs and sum(official["a"]) == as_ and len(official["h"]) == len(official["a"]):
+        line = official
+    elif j is not None:
+        comp = j["header"]["competitions"][0]
+        side = {c["homeAway"]: c for c in comp["competitors"]}
+        try:
+            line = {k[0]: [int(float(x["displayValue"])) for x in side[k].get("linescores", [])] for k in ("home", "away")}
+        except Exception:
+            line = None
     if not line or not line["h"] or sum(line["h"]) != hs or sum(line["a"]) != as_ or len(line["h"]) != len(line["a"]):
         line = None
+    if j is None:
+        return line, None
     pts = []
     for p in j.get("plays") or []:
         try:
@@ -438,10 +448,13 @@ def recap(x, g, pd, ev, sh, games, players, mp):
 
     # ---- how it unfolded
     line = tl = None
+    Pq = g.get("periods")
+    official = {"h": [r[0] for r in Pq["home"]], "a": [r[0] for r in Pq["away"]]} if Pq else None
     try:
-        line, tl = flow(summary(g["id"].replace("espn-", "")), hs, as_)
+        line, tl = flow(summary(g["id"].replace("espn-", "")), hs, as_, official)
     except Exception as ex:
         print("recaps: no ESPN summary for", g["id"], repr(ex))
+        line, tl = flow(None, hs, as_, official)
     if line:
         total = 2400 + 300 * max(0, len(line["h"]) - 4)
         for w, t in flow_facts(tl, line, H, A, hs, as_, total):

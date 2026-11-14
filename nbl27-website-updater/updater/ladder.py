@@ -74,6 +74,12 @@ def fixture():
     return sorted(out, key=lambda r: r["start"])
 
 
+def started(r, now_utc):
+    """a fixture game that is under way or over by the NBL's fixture, or whose tip-off time has passed"""
+    st = r.get("status") or ""
+    return st in ("complete", "in_progress") or (st in ("", "scheduled") and (r.get("start") or "9") <= now_utc)
+
+
 def venue_edge(fx):
     """Share of the home edge each fixture game gets, {fixture id: 1.0 or 0.0}: 0 where the venue is the main home
     venue of the away club (a derby in a shared arena, or the listed home team playing in the visitors' building)
@@ -370,10 +376,12 @@ def build(games, players, bios, fx, prev=None, injuries=None):
     # ---- round by round: a tip for every game still to play; for every game played, the tip made before it ----
     # A game played since the last run keeps the last tip made before it (that run's prediction, from data that did
     # not include the game). A game played before tips were kept gets a back-tested tip: the same model fitted on
-    # only the games played before that game's date. Tips of played games are never recomputed.
+    # only the games played before that game's date. Tips of played games are never recomputed, and neither is the
+    # tip of a game that has tipped off but isn't in this site's data yet (tipAt: when that tip was made).
     adj_of = {r["id"]: a for r, a in zip(sched, ADJ)}
     prev_g = {x["id"]: x for x in ((prev or {}).get("games") or []) if x.get("id")}
     prev_at = ((prev or {}).get("status") or {}).get("computedAt")
+    now_utc = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
     out_games, need_bt = [], collections.defaultdict(list)
     for k, r in enumerate(fx):
         e = {"id": r["id"], "round": r["round"], "start": r["start"], "date": r["date"], "venue": r["venue"],
@@ -381,15 +389,22 @@ def build(games, players, bios, fx, prev=None, injuries=None):
         if VE[r["id"]] != 1.0:
             e["edge"] = VE[r["id"]]             # share of the home edge at this venue (left out where it is all of it)
         g = match_of.get(k)
+        pg = prev_g.get(r["id"])
         if g:
             e["hs"], e["as"] = g["home"]["pts"], g["away"]["pts"]
-            pg = prev_g.get(r["id"])
             if pg and pg.get("hs") is None and pg.get("pHome") is not None:
-                e["tip"] = {"p": pg["pHome"], "m": pg["margin"], "at": prev_at, "src": "live"}
+                e["tip"] = {"p": pg["pHome"], "m": pg["margin"], "at": pg.get("tipAt") or prev_at, "src": "live"}
             elif pg and pg.get("tip"):
                 e["tip"] = dict(pg["tip"])
             else:
                 need_bt[g["date"]].append(e)
+        elif pg and pg.get("hs") is None and pg.get("pHome") is not None and started(r, now_utc):
+            # under way, or over but not in this site's data yet (it settles first, or a check held it): the tip
+            # made before tip-off stands, with who's available as it was then - never a tip made after tip-off
+            e["pHome"], e["margin"] = pg["pHome"], pg["margin"]
+            if pg.get("avail") is not None:
+                e["avail"] = pg["avail"]
+            e["tipAt"] = pg.get("tipAt") or prev_at
         else:
             a = adj_of.get(r["id"]) or {"h": (0.0, []), "a": (0.0, [])}
             pr, mg = predict(M, r["home"], r["away"], a["h"][0] - a["a"][0], VE[r["id"]])

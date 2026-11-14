@@ -8,8 +8,9 @@ one row of FIELDS per period. A game's periods are kept only where, for both tea
 feed's full-game row and, for every field but fouls, to this site's box score, so a half or the full game summed
 from them is the same box score shown everywhere else. Fouls are the feed's team fouls ("fouls": every foul charged to
 the team, technicals included) where the feed fills them in for the game, otherwise its personal fouls; "fouls" in the
-doc says which ("team" or "personal"). Either can differ a little from the fouls in this site's (ESPN's) box score. Otherwise none are written (the page
-then shows only the full game), or last run's are kept when this run's feed can't be read."""
+doc says which ("team" or "personal"). Either can differ a little from the fouls in this site's (ESPN's) box score. Otherwise
+last run's are kept when this run's feed can't be read or doesn't add up, as long as they still add up to this site's
+box score; else none are written (the page then shows only the full game)."""
 import collections
 
 FIELDS = ["pts", "fgm", "fga", "tpm", "tpa", "ftm", "fta", "oreb", "dreb", "ast", "stl", "blk", "tov", "pf"]
@@ -59,6 +60,12 @@ def build(m, home, away):
             "away": [[by[away][k][f] for f in FIELDS] for k in keys], "fouls": kind, "src": "nbl"}, None
 
 
+def adds_up(doc, g):
+    """every field but fouls, summed over the periods, equals this site's box score for both teams"""
+    return all(sum(r[FIELDS.index(f)] for r in doc[side]) == T.get(f)
+               for side, T in (("home", g["home"]), ("away", g["away"])) for f in CHECK)
+
+
 def apply(games, off, index, prev_games=None):
     """games: games.json rows, edited in place. -> report lines"""
     pbp = (off or {}).get("pbp") or {}
@@ -82,9 +89,14 @@ def apply(games, off, index, prev_games=None):
             n["by period"] += 1
             continue
         g.pop("periods", None)
-        if m is None and prev.get(g["id"]):
-            g["periods"] = prev[g["id"]]
+        pv = prev.get(g["id"])
+        if pv and (m is None or adds_up(pv, g)):
+            # this run's feed can't be read, or doesn't add up (the NBL revises a game's numbers now and then):
+            # last run's are kept while they still add up to this site's box score
+            g["periods"] = pv
             n["last run's kept"] += 1
+            if why:
+                rep.append(f"{tag}: this run's team stats by period don't add up ({why}) - last run's kept")
         elif why:
             rep.append(f"{tag}: no team stats by period ({why})")
             n["left out"] += 1
@@ -122,7 +134,7 @@ def player_lines(m):
     whether its substitutions always leave five on the floor for each team)"""
     home, away = m["home"], m["away"]
     opp = {home: away, away: home}
-    plays = [a for a in m["plays"] if a.get("clock")]
+    plays = NS.plays_of(m)               # less any free throw the official box score doesn't count
     on = NL.starters(m, plays)
     keep = set(NS.clean({**m, "plays": plays})[0])
     R = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
