@@ -3368,6 +3368,9 @@ async function renderImpact(){
   const cell=(v,on)=>`<td class="${on?"on ":""}${v>=1.5?"up":v<=-1.5?"dn":""}">${isg(v)}</td>`;
   const bar=v=>{const w=Math.min(50,50*Math.abs(v)/maxT);return `<span class="ibar" aria-hidden="true"><i class="${v<0?"n":""}" style="${v<0?`right:50%`:`left:50%`};width:${w}%"></i></span>`};
   const MINS=[0,100,200,400,600];
+  // the value columns, the one being ranked by first (on a phone it's the one in view)
+  const lead=["T","o","d"].includes(sk)?sk:"T",VC=[lead,...["T","o","d"].filter(k=>k!==lead)];
+  const VL={T:"Overall",o:"Offence",d:"Defence"};
   const head=`<div class="panel imp-top">
     <div class="imp-ctl">
       <label class="imp-f"><span class="k">Season</span><select id="impSeason" aria-label="Season">${keys.map(s=>`<option value="${s}"${s===impS?" selected":""}>${impLab(s)} (${s})</option>`).join("")}</select></label>
@@ -3380,12 +3383,11 @@ async function renderImpact(){
   const body=rows.map(r=>{const T=impT(r),open=impOpen===r.k;
     return `<tr class="imp-row${r.mn<100?" low":""}" data-k="${r.k}" tabindex="0" role="button" aria-expanded="${open}">
       <td class="tm pl"><span class="irk">${R[r.k]?.[impSort?"T":impV]??"–"}</span>${ppname(r.e||("imp:"+r.k),r.n,r.t)}<small>${(r.ts||[r.t]).map(itc).join("/")}</small></td>
-      <td class="ov${sk==="T"?" on":""}">${bar(T)}<b>${isg(T)}</b><small>±${r.sd.toFixed(1)}</small></td>
-      ${cell(r.o,sk==="o")}${cell(r.d,sk==="d")}<td>${isg(r.pg)}</td>
+      ${VC.map(k=>k==="T"?`<td class="ov${sk==="T"?" on":""}">${bar(T)}<b>${isg(T)}</b><small>±${r.sd.toFixed(1)}</small></td>`:cell(r[k],sk===k)).join("")}<td>${isg(r.pg)}</td>
       <td>${r.g}</td><td>${impMpg(r).toFixed(1)}</td></tr>${open?`<tr class="imp-det"><td colspan="7"><div class="imp-x">${impDetail(r)}</div></td></tr>`:""}`}).join("");
   el.innerHTML=head+`<div class="panel">
     <div class="team-head"><h2>${impLab(impS)} impact</h2><span class="rec">${rows.length} players${min?` with ${min}+ minutes`:""}${impTeam?` · ${disp(impTeam)}`:""}${through} · on-court part from ${cur.used} of ${cur.games} games</span></div>
-    <div class="scroll"><table class="imp"><thead><tr><th class="tm"><button data-k="n"${arrow("n")}>Player</button></th><th><button data-k="T"${arrow("T")}>Overall</button></th><th><button data-k="o"${arrow("o")}>Offence</button></th><th><button data-k="d"${arrow("d")}>Defence</button></th><th><button data-k="pg"${arrow("pg")} title="Points a game: overall × his possessions a game on the floor">Pts/g</button></th><th><button data-k="g"${arrow("g")}>GP</button></th><th><button data-k="mpg"${arrow("mpg")}>MPG</button></th></tr></thead>
+    <div class="scroll"><table class="imp"><thead><tr><th class="tm"><button data-k="n"${arrow("n")}>Player</button></th>${VC.map(k=>`<th><button data-k="${k}"${arrow(k)}>${VL[k]}</button></th>`).join("")}<th><button data-k="pg"${arrow("pg")} title="Points a game: overall × his possessions a game on the floor">Pts/g</button></th><th><button data-k="g"${arrow("g")}>GP</button></th><th><button data-k="mpg"${arrow("mpg")}>MPG</button></th></tr></thead>
     <tbody>${body||`<tr><td class="tm" colspan="7" style="text-align:left;color:var(--muted)">No players with ${min}+ minutes${impTeam?" for "+disp(impTeam):""}.</td></tr>`}</tbody></table></div>
   </div>`+impNotes(cur,st);
   el.querySelector("#impSeason").onchange=e=>{impS=e.target.value;impOpen=null;impMin=null;renderImpact()};
