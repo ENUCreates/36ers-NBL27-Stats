@@ -1,7 +1,7 @@
-Transcribe data, do not summarise. For EVERY club table on this page, output one line per player whose Status is anything other than "Available", in exactly this format and nothing else:
+I keep a spreadsheet of this NBL injury report, so please give me its rows rather than a summary. List every player on this page whose Status is not "Available", one per line, as:
 CLUB | PLAYER | STATUS | INJURY | RETURN | ROW DATE
-Copy each cell exactly as written (keep 'TBC', round numbers and dates as written). ROW DATE = any date/time shown for that row or its note (else -). After the rows, output these lines exactly:
-COUNTS | <the page's own summary counts, exactly as written>
-UPDATED | <the page's own last-updated text, exactly as written>
-CLUBS SEEN | <the club names whose tables you read>
-If a club table is not in the text you were given, list it under CLUBS MISSING | ...
+with each cell copied exactly as the page writes it (keep 'TBC', round numbers and dates as written; ROW DATE is any date or time shown for that row or its note, otherwise -). After the rows, add:
+COUNTS | the page's own summary counts, as written
+UPDATED | the page's own last-updated text, as written
+CLUBS SEEN | the clubs whose tables you read
+and, if any club's table isn't in the text you have, CLUBS MISSING | those clubs.
