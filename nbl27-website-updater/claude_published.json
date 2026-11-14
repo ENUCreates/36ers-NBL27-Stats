@@ -1,5 +1,15 @@
 {
 "data/bios.json": "5a91789f6e5ceaad686ab2ed22d2f77923d47b47fcf7756cc9e1a8bb7d37143e",
+"data/coachheads/adam-forde.webp": "691facf6b32b08fcc2ee01642d3315bd36e3588e34cd111a21c29160dafee4b9",
+"data/coachheads/brian-goorjian.webp": "d77a6630df5c57a87f37eaadd61c56d710bbcb47e9a81d127697ba416932168d",
+"data/coachheads/gordon-herbert.webp": "7a368d813d4cf01b52850e316e3c8daae0e3c819e1bce85724903065c6ebdcd9",
+"data/coachheads/jacob-chance.webp": "bc899ab7e9ca5d50eb0ac6213816c4cea4c3ecbd8e557c31f75496ffdf912ef2",
+"data/coachheads/john-rillie.webp": "80e7e7691f090339655c4260a25a1cf4d50cc3387e97338f7f8984960c54b514",
+"data/coachheads/josh-king.webp": "aab258a5d04c6e0054fd2a74bff7d6334f0dd3d9a717fd4d9dfa70a6b8a3eac0",
+"data/coachheads/justin-tatum.webp": "45563ab78061f10dc886d1ca161df29d37c94503704df6e2260c98dee022396a",
+"data/coachheads/scott-roth.webp": "e1a569ad07cb34a2b256a3a277d5ad8c41af169bee56a76843de46f567a04c1d",
+"data/coachheads/trevor-gleeson.webp": "4790c65a27cb1905a9b4afab5c0ad6129f9bef23c360dcd4a8bdb48244376dcf",
+"data/coachheads/will-weaver.webp": "9edbb0def890b614a55acc79e06fdc76833eca1e099d45179871cb4184b00461",
 "data/coachlineups.json": "9ef1cf385cf990e030baac3d9d768e111b400f71e2a385e5ebb094d0f03ffe8f",
 "data/coachphotos/0000997448fd4f63642e9add1fa865f5.webp": "61a2360df7522f5f017981267309bfaf77b1eed140f05da2ae64125872a742b1",
 "data/coachphotos/0080e87aad9a46b1972a4b8ca84fcca9.webp": "eecf6a7a019c92bb8eef493e3dcae41e8e7c7be654762a0863efecef3ab08d4c",
@@ -275,7 +285,7 @@
 "data/coachphotos/ff245e06eed2aba14fb491820b86178a.webp": "18e003f6bf2a4236210ff0097f15c08b1c802916d488bc8cb8aed3c5cc2d0bfa",
 "data/coachphotos/ff800ae5280e13ea72a2710af5dabe4c.webp": "eb2dfc9315d0f602aabb57baad59084faddabd93a1c79f0e15adb6d4dbcac909",
 "data/events.json": "e924111c31d6fa6ea4aa7ced942422da9e14427eae0fd56228450e596ec70ccf",
-"data/games.json": "dade0771e9b287ab7dbad1c474ad2e2873dfa495f44feff6601e9ac82255e9d6",
+"data/games.json": "08d8ce619d85907af637ff93e3d38fcd0d11e3027d0f764ab0b5806ec86be9d1",
 "data/injuries.json": "dd6003bb7bbeb82b1af7ffff37a3cf1d2dee13ff591a8a750fff596f7100ac1e",
 "data/ladder.json": "d6fcecc9040e9478d9d45b7830e7e1a230bc0bf75419a3916a47515ca0b595b9",
 "data/lineups.json": "93f86a865a5101f6415866feef53cf0d76746e1813c37e24da73536933614ae4",
@@ -430,8 +440,8 @@
 "data/photos/5461026.webp": "b66c0942423ca7ecc758b3b71de3f10247958d2ad454e7076a14692a6d43e454",
 "data/photos/5463015.webp": "b25eb747393ca90555b3d58f02880d602e6c2a39972317ca68cc1d244de0bd9d",
 "data/photos/5465370.webp": "de8cfad8af447139a212613451e1544b175e99fe1c18fdfb112a4de6294b38bd",
-"data/players.json": "3db13372a496e074a422e7c10e5f22c1a8df273eb85bbc65368e8fec1addd02d",
+"data/players.json": "b34bc0534f0b18e8a3a8a0c233ce655ebb2c729927e0bad77a2310695c3282cd",
 "data/pshots.json": "25d9e47eb6700cac7b9984f2015061ede3d421367cf33a6e4bf92e41feddebad",
 "data/shots.json": "3cee175d0beeeee33bfb57221af6ee7e925b2232f45e86a37e1eb9092e628b60",
-"page": "5a93efc7c557bf7f13132ab1dfb8d8a58d1b90686581a62335b7993ab905c705"
+"page": "8942647e648b4a3fef23e46838750e072c8acab1c0497d240b03d8856c52258e"
 }
