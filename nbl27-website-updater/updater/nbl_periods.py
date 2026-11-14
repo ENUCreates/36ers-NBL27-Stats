@@ -23,7 +23,11 @@ def build(m, home, away):
     for r in rows:
         if r.get("team") not in (home, away):
             return None, f"a team row for {r.get('team')}"
-        by[r["team"]][(r["per"], r["pt"])] = dict(r)
+        per, pt = str(r["per"]), r["pt"]
+        # the feed numbers an overtime's team row 11, 12, ... and sometimes calls it 'regular'
+        if per.isdigit() and int(per) > 4:
+            per, pt = str(int(per) - 10 if int(per) > 10 else int(per) - 4), "overtime"
+        by[r["team"]][(per, pt)] = dict(r)
     if set(by) != {home, away}:
         return None, "rows for one team only"
     full0 = {t: [v for k, v in by[t].items() if k[0] == "0"] for t in (home, away)}
@@ -100,7 +104,9 @@ def keep_previous(games, prev_games):
 # ---- players by period: the NBL's play-by-play, each player's line per quarter (and overtime)
 # Written into each game's players.json doc as
 #     periods: {"per": ["Q1", ...], "f": PFIELDS, "p": {player id: [[...] per period]}, "bad": {player id: [fields]}}
-# min = seconds on the floor (from the substitutions), pm = the score while he was on the floor. A player's field is
+# min = seconds on the floor (from the substitutions), pm = the score while he was on the floor (both left out for
+# everyone in a game where the substitutions ever leave a team without five on the floor, or where anyone's minutes
+# don't add up). A player's field is
 # listed in "bad" (and the page shows "–" for it by quarter) wherever his periods don't add up to his line in this
 # site's box score (minutes within 5 seconds); everything else adds up to it exactly.
 import nbl_lineups as NL  # noqa: E402
@@ -112,7 +118,8 @@ PLAYER_FOULS = {"personal", "offensive", "flagrant", "disruptive", "category one
 
 
 def player_lines(m):
-    """m: one match as official.py keeps it -> ({NBL player id: {period no.: Counter}}, [period nos.])"""
+    """m: one match as official.py keeps it -> ({NBL player id: {period no.: Counter}}, [period nos.],
+    whether its substitutions always leave five on the floor for each team)"""
     home, away = m["home"], m["away"]
     opp = {home: away, away: home}
     plays = [a for a in m["plays"] if a.get("clock")]
@@ -120,12 +127,14 @@ def player_lines(m):
     keep = set(NS.clean({**m, "plays": plays})[0])
     R = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
     pers = sorted({NL.per_no(a) for a in plays} | {1, 2, 3, 4})
+    floor_ok = True
     for per in pers:
         L, last = NL.plen(per), 0.0
         for i, a in ((i, a) for i, a in enumerate(plays) if NL.per_no(a) == per):
             tnow = L - NL.csec(a["clock"])
             if tnow > last:
                 for t in opp:
+                    floor_ok &= len(on[t]) == 5
                     for p in on[t]:
                         R[p][per]["min"] += tnow - last
                 last = tnow
@@ -167,9 +176,10 @@ def player_lines(m):
                     R[p][per]["pm"] -= pts
         if L > last:
             for t in opp:
+                floor_ok &= len(on[t]) == 5
                 for p in on[t]:
                     R[p][per]["min"] += L - last
-    return R, pers
+    return R, pers, floor_ok
 
 
 def apply_players(pdocs, games, off, pairs, index, prev=None):
@@ -192,7 +202,7 @@ def apply_players(pdocs, games, off, pairs, index, prev=None):
             else:
                 n["no NBL play-by-play"] += 1
             continue
-        R, pers = player_lines(m)
+        R, pers, floor_ok = player_lines(m)
         labels = [f"Q{p}" if p <= 4 else ("OT" if len(pers) == 5 else f"OT{p - 4}") for p in pers]
         out, bad = {}, {}
         for t, L in (doc.get("teams") or {}).items():
@@ -214,6 +224,13 @@ def apply_players(pdocs, games, off, pairs, index, prev=None):
                 if b:
                     bad[r["id"]] = b
                     rep.append(f"{g['date']} {r['name']}: by quarter doesn't add up to the box score for {', '.join(b)}")
+        # one player's minutes off means the substitutions are wrong somewhere: then no one's minutes or +/-
+        # by quarter can be trusted
+        if not floor_ok or any("min" in b for b in bad.values()):
+            for pid in out:
+                bad[pid] = sorted(set(bad.get(pid, [])) | {"min", "pm"}, key=PFIELDS.index)
+            rep.append(f"{g['date']} {g['away']['team']} at {g['home']['team']}: the substitutions don't add up, "
+                       "so minutes and +/- aren't split by quarter")
         doc["periods"] = {"per": labels, "f": PFIELDS, "p": out, "bad": bad, "src": "nbl"}
         n["every player adds up" if not bad else "some fields left out"] += 1
     rep.insert(0, "players by period: " + ", ".join(f"{v} {k}" for k, v in sorted(n.items()))
