@@ -8,7 +8,7 @@
 // USE_EFF, USE_TOV and the home edge) were set from these three checks:
 //   1. the season: every game played, re-played with the players who played it and its real starters, against the
 //      real team-game averages (possessions, points, shooting, free throws, rebounds, assists, steals, blocks,
-//      turnovers, fouls), each player's minutes and points a game, and the home edge (the tip model's, ~2.3 points)
+//      turnovers, fouls), each player's minutes and points a game, and the home edge (the tip model's, from ladder.json)
 //   2. the games to come: win chances and margins (each side's usual rotation, the injury list) against the tips
 //   3. sitting each team's three biggest-minute players: the change in margin against what the tip model's
 //      availability adjustment says each is worth (availability.py, fitted on 1,458 NBL games)
@@ -22,6 +22,7 @@ const SIM = new Function(page.slice(a, b) + ";return SIM;")();
 const SINCE = (page.match(/const SEASON_START="([0-9-]+)"/) || [])[1] || "";
 const meta = J("meta.json"), P = J("players.json").filter(d => d.date >= SINCE), inj = J("injuries.json").players;
 const M = SIM.model({ players: P, pshots: J("pshots.json"), lineups: J("lineups.json"), since: SINCE, basket: meta.pshots_status?.basket });
+M.homePts = J("ladder.json").status.homeEdge;          // as the page does: home court = the tip model's home edge
 const K = ["pts", "fga", "fgm", "tpa", "tpm", "fta", "ftm", "oreb", "dreb", "ast", "stl", "blk", "tov", "pf"];
 const corr = (x, y) => { const mx = x.reduce((s, v) => s + v, 0) / x.length, my = y.reduce((s, v) => s + v, 0) / y.length; let a = 0, b = 0, c = 0; x.forEach((v, i) => { a += (v - mx) * (y[i] - my); b += (v - mx) ** 2; c += (y[i] - my) ** 2 }); return a / Math.sqrt(b * c) };
 

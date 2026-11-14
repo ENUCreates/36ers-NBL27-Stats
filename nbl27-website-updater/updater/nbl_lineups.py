@@ -90,7 +90,7 @@ def stints(m):
     -> ([(team, frozenset of player ids, seconds, own totals, opponents' totals)], [problems])"""
     home, away = m["home"], m["away"]
     opp = {home: away, away: home}
-    plays = [a for a in m["plays"] if a.get("clock")]
+    plays = NS.plays_of(m)               # less any free throw the official box score doesn't count
     on = starters(m, plays)
     probs = [f"{t}: {len(on[t])} starters" for t in opp if len(on[t]) != 5]
     out = []

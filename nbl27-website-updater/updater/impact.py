@@ -43,6 +43,7 @@ Checked when it was built:
 """
 import collections, datetime, gzip, json, math, os, re, sys, unicodedata
 from collections import Counter
+from zoneinfo import ZoneInfo
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -122,7 +123,7 @@ def nbl27(root, off, pairs, index, hist):
     def joint(m):
         home, away = m["home"], m["away"]
         opp = {home: away, away: home}
-        plays = [a for a in m["plays"] if a.get("clock")]
+        plays = NS.plays_of(m)               # less any free throw the official box score doesn't count
         on = NL.starters(m, plays)
         keep = set(NS.clean({**m, "plays": plays})[0])
         nm = {p["pid"]: p["name"] for p in m["players"]}
@@ -408,8 +409,10 @@ def run(root, off, pairs, index):
             rec["e"] = espn[k]
         seasons.setdefault(s, []).append(rec)
     doc = {"status": {
-        "computedAt": datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=11))).isoformat(timespec="seconds"),
-        "through": max((g["date"] for g in sg27), default=None),
+        "computedAt": datetime.datetime.now(ZoneInfo("Australia/Sydney")).isoformat(timespec="seconds"),
+        # the latest game in the data: the box-score part uses every game (the on-court part only those whose
+        # play-by-play adds up, which can leave out the latest)
+        "through": max((g["date"] for g in json.load(open(os.path.join(root, "data", "games.json")))), default=None),
         "stints": M["stints"], "players": M["players"], "feats": FEATS, "off": OFF, "def": DEF,
         "weights": {"O": {f: round(a, 4) for f, a in M["aO"].items()}, "D": {f: round(a, 4) for f, a in M["aD"].items()}},
         "homeEdge": round(M["home"], 2), "sigma": round(M["sig"] / 100, 3), "kShr": K_SHR, "lam": LAM, "forward": FORWARD,
