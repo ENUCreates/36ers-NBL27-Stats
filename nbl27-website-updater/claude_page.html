@@ -831,7 +831,7 @@ tr.imp-det:hover>td{background:var(--bg)}
       <span>Every rate is pulled toward the bench's numbers this season by how little of it there is, so a player with few minutes looks like a typical bench player.</span>
       <span>Taking a player out costs his team his own numbers, and the strain on the rest: a five that has to use more possessions than it usually does takes worse shots and turns it over more. Sized so that sitting a regular costs about what the tips' injury adjustment says he is worth.</span>
       <span>Checked against the season: every game played so far, re-played with the players who played it, comes out like the real games on average (possessions, points, shooting, free throws, rebounds, assists, turnovers, steals, blocks, fouls) and gives each player about his real minutes. For the games to come, its win chances are close to the round-by-round tips; they differ most where the tips take out a team's luck shooting threes and free throws, which the simulator does not.</span>
-      <span>Home court is worth the tip model's home edge (about 2.3 points). Simulated play-by-play and shots are made up from these numbers: they are not real events, and the same five players are not assumed to play any better or worse together than their own numbers say.</span>
+      <span>Home court is worth the tip model's home edge at a club's own venue (<b class="simhe">+2.6</b> points a game): the simulator has no shared or neutral venues. Simulated play-by-play and shots are made up from these numbers: they are not real events, and the same five players are not assumed to play any better or worse together than their own numbers say.</span>
     </div>
   </section>
 
@@ -913,9 +913,11 @@ function computeShots(keep){
 try{const s=localStorage.getItem("nbl27-team");if(s&&byCode[s])current=s}catch(e){}
 if(location.hash&&byCode[location.hash.slice(1)]){current=location.hash.slice(1);}
 
-const pct=v=>v==null||!isFinite(v)?"–":(v*100).toFixed(1);
-const f1=v=>v==null||!isFinite(v)?"–":v.toFixed(1);
-const sgn=v=>v==null||!isFinite(v)?"–":(v>0?"+":"")+v.toFixed(1);
+const nz=x=>/^-0(\.0+)?$/.test(x)?x.slice(1):x;   // a rounded "-0.0" is "0.0"
+const pct=v=>v==null||!isFinite(v)?"–":nz((v*100).toFixed(1));
+const f1=v=>v==null||!isFinite(v)?"–":nz(v.toFixed(1));
+const sgn=v=>{if(v==null||!isFinite(v))return "–";const x=nz(v.toFixed(1));return (v>0&&x!=="0.0"?"+":"")+x};
+const nzt=t=>String(t).replace(/(^|[^\d.,])[−+-]0\.0(?![\d])/g,(m,a)=>a+"0.0");   // the same in written facts
 const i0=v=>v==null||!isFinite(v)?"–":String(Math.round(v));
 const sgn0=v=>{if(v==null||!isFinite(v))return "–";const r=Math.round(v);return (r>0?"+":"")+r};
 const code=n=>LOGOS[n]?`<img class="logo${n==="New Zealand Breakers"?" dark":""}" src="${LOGOS[n]}" alt="">`:`<span class="code" style="background:${TEAMS[n]?.col||'#555'}">${TEAMS[n]?.c||n.slice(0,3).toUpperCase()}</span>`;
@@ -1788,7 +1790,7 @@ function shotChartParts(name,sel,opp,keep,given){
     ${lab(0.6,2.8,3,"start","L corner",9.3)}${lab(W-0.6,2.8,4,"end","R corner",9.3)}
   </svg>`;
   const row=(label,m,a,lm,la,isSub)=>{const f=a?m/a:null,l=la?lm/la:null,d=f!=null&&l!=null?f-l:null;
-    return `<tr${isSub?' class="avg"':''}><td class="tm" style="font-family:var(--body)">${label}</td><td>${m}/${a}</td><td>${pct(f)}</td><td>${fga?pct(a/fga):"–"}</td><td>${pct(l)}</td><td>${lfga?pct(la/lfga):"–"}</td><td class="${d==null||a<5?'':(opp?-d:d)>=0?'up':'dn'}">${d==null?"–":(d>0?"+":"")+(d*100).toFixed(1)}</td></tr>`};
+    return `<tr${isSub?' class="avg"':''}><td class="tm" style="font-family:var(--body)">${label}</td><td>${m}/${a}</td><td>${pct(f)}</td><td>${fga?pct(a/fga):"–"}</td><td>${pct(l)}</td><td>${lfga?pct(la/lfga):"–"}</td><td class="${d==null||a<5?'':(opp?-d:d)>=0?'up':'dn'}">${d==null?"–":ppt(d)}</td></tr>`};
   const rows=[0,1,2].map(k=>row(RNAMES[k],Z[k].m,Z[k].a,L[k].m,L[k].a)).join("")
     +[3,5,6,7,4].map(k=>row(RNAMES[k],Z[k].m,Z[k].a,L[k].m,L[k].a)).join("")
     +row("All threes",tpm,tpa,ltpm,ltpa,true);
@@ -1832,8 +1834,8 @@ const seasonEv=()=>EVENTS.filter(d=>d.date&&d.date>=SEASON_START&&d.teams&&Objec
 const evOk=(d,team)=>!!d.teams?.[team]?.ok;
 const evLineOk=(d,team)=>{if(!evOk(d,team))return false;const l=LINEDOCS.find(x=>x.espnId===d.espnId);return !!l&&!!l.teams?.[team]&&lineupMinOk(l,team)};
 const possF=t=>(t.fga||0)-(t.oreb||0)+(t.tov||0)+0.44*(t.fta||0);
-const ppt=v=>v==null||!isFinite(v)?"–":(v>0?"+":"")+(v*100).toFixed(1);
-const f2=v=>v==null||!isFinite(v)?"–":v.toFixed(2);
+const ppt=v=>{if(v==null||!isFinite(v))return "–";const x=nz((v*100).toFixed(1));return (v>0&&x!=="0.0"?"+":"")+x};
+const f2=v=>v==null||!isFinite(v)?"–":nz(v.toFixed(2));
 const dv=(a,b)=>b>0?a/b:null;
 const z9=()=>Array.from({length:9},()=>({m:0,a:0}));
 const RVAL=[2,2,2,3,3,3,3,3];
@@ -2708,10 +2710,10 @@ async function drawMX(g){
   // key facts, grouped
   const KIND=[["model","Why the strengths differ","in"],["out","Who's available",m.why?.adjH!=null?"in":""],["h2h","Head to head",""],["style","Style of play",""],["form","Form",""],["rest","Rest and travel","ni"],["split","Home and away",""],["close","Close games",""]];
   const F=m.facts||[];
-  const facts=KIND.map(([k,l,tag])=>{const fs=F.filter(f=>f.k===k);return fs.length?`<div class="fgrp"><span class="fk">${l}</span>${tag==="in"?`<span class="fin">In the %</span>`:tag==="ni"?`<span class="fni">Not in the %</span>`:""}<ul>${fs.map(f=>`<li>${f.t}</li>`).join("")}</ul></div>`:""}).join("");
+  const facts=KIND.map(([k,l,tag])=>{const fs=F.filter(f=>f.k===k);return fs.length?`<div class="fgrp"><span class="fk">${l}</span>${tag==="in"?`<span class="fin">In the %</span>`:tag==="ni"?`<span class="fni">Not in the %</span>`:""}<ul>${fs.map(f=>`<li>${nzt(f.t)}</li>`).join("")}</ul></div>`:""}).join("");
   // tale of the tape
   const th=TM[H]?.tape||{},ta=TM[A]?.tape||{},rest=m.rest||{};
-  const pc=(v,d=1)=>v==null?"–":(100*v).toFixed(d)+"%",n1=v=>v==null?"–":f1(v),wl=x=>x?`${x[0]}–${x[1]}`:"–";
+  const pc=(v,d=1)=>v==null?"–":nz((100*v).toFixed(d))+"%",n1=v=>v==null?"–":f1(v),wl=x=>x?`${x[0]}–${x[1]}`:"–";
   const rows=[["Ladder",t=>`${wl(t.wl)}${t.ladder?` (${ordinal(t.ladder)})`:""}`,null],["Home / away",t=>`${wl(t.home)} / ${wl(t.away)}`,null],
     ["Last five",t=>`<span class="wl5">${(t.last5||"–").split("").map(x=>`<i class="${x==="W"?"w":"l"}">${x}</i>`).join("")}</span>`,null],
     ["Model strength",t=>sgn(t.rating),"ratingRk"],["Net rating",t=>sgn(t.net),"net"],["Offensive rating",t=>n1(t.ortg),"ortg"],["Defensive rating",t=>n1(t.drtg),"drtg"],
@@ -2738,7 +2740,7 @@ async function drawMX(g){
     const ln=rc.line,per=i=>i<4?"Q"+(i+1):(ln.h.length===5?"OT":"OT"+(i-3));
     const qs=ln?`<table class="qs"><thead><tr><th></th>${ln.h.map((_,i)=>`<th>${per(i)}</th>`).join("")}<th>Final</th></tr></thead><tbody>${[[H,ln.h,g.hs,g.hs>g.as],[A,ln.a,g.as,g.as>g.hs]].map(([t,q,tot,w])=>`<tr class="${w?"w":""}"><td class="tm">${code(t)}${c(t)}</td>${q.map((v,i)=>`<td class="${v>(t===H?ln.a:ln.h)[i]?"hi":""}">${v}</td>`).join("")}<td class="f">${tot}</td></tr>`).join("")}</tbody></table>`:"";
     const RK=[["tip","The tip"],["won","The numbers that mattered"],["perf","Standout performances"],["flow","How it unfolded"]];
-    const grp=k=>{const fs=(rc.facts||[]).filter(f=>f.k===k);return fs.length?`<div class="fgrp"><span class="fk">${RK.find(x=>x[0]===k)[1]}</span><ul>${fs.map(f=>`<li>${f.t}</li>`).join("")}</ul></div>`:""};
+    const grp=k=>{const fs=(rc.facts||[]).filter(f=>f.k===k);return fs.length?`<div class="fgrp"><span class="fk">${RK.find(x=>x[0]===k)[1]}</span><ul>${fs.map(f=>`<li>${nzt(f.t)}</li>`).join("")}</ul></div>`:""};
     recap=`<div class="recap"><h4>What happened</h4><div class="mx-grid"><div>${qs}${grp("tip")}${grp("flow")}</div><div>${grp("won")}${grp("perf")}</div></div>
       <p class="mxnote">Worked out by the daily update from the box score and the play-by-play. "Usual" and "average" = that team's or player's own numbers this season before the game.</p>${rbxWrap(g,H,A)}</div>`;
   }
@@ -2811,6 +2813,11 @@ const PACE_T=1.055,PACE_NSF=0.85,BLK_Z=[2.2,1.8,0.9,0.35,0.35],AST_K=0.56,REB_K=
 // (and the reverse, half as much). Sized so that sitting a player costs about what the tip model's availability
 // adjustment says he is worth (availability.py, fitted on 1,458 NBL games); see the check.
 let USE_EFF=0.22,USE_TOV=0.6;
+// the home edge: the tip model's home edge in points (ladder.json status.homeEdge, which the page puts on the model as
+// M.homePts; 2.6 if it isn't there), turned into a make-chance edge for the home side (and the same off the away side's).
+// Each 0.01 of make chance is worth about 3.1 points of home margin: measured over every played game, re-played 150
+// times each with and without it (see the check).
+const HOME_PTS=2.6,PTS_PER_EDGE=310;
                                       // and-one chance on a make at the rim or in the paint
 function rng(seed){let a=seed>>>0;return()=>{a=a+0x6D2B79F5>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
 function pick(r,ws){let s=0;for(const w of ws)s+=w;if(s<=0)return Math.floor(r()*ws.length);let x=r()*s;for(let i=0;i<ws.length;i++){x-=ws[i];if(x<=0)return i}return ws.length-1}
@@ -2955,7 +2962,7 @@ function game(M,home,away,plans,seed,opt){
   opt=opt||{};const LOG=opt.log!==false,r=rng(seed);const L=M.L,B=M.B;
   const TM=[M.T[home],M.T[away]],PL=[plans[0]||plan(M,home),plans[1]||plan(M,away)];
   const UE=opt.useEff==null?USE_EFF:opt.useEff,UT=opt.useTov==null?USE_TOV:opt.useTov;
-  const HOME=opt.homeEdge==null?0.0065:opt.homeEdge;           // make-chance edge for the home side: worth the tip model's home edge (see the check)
+  const HOME=opt.homeEdge!=null?opt.homeEdge:(M.homePts!=null?M.homePts:HOME_PTS)/PTS_PER_EDGE;   // make-chance edge for the home side
   const S=PL.map(pl=>pl.ps.map(p=>({p,sec:0,on:false,stint:0,...Object.fromEntries(K.map(k=>[k,0])),pm:0})));
   const score=[0,0],line=[[],[]],pbp=[],shots=[[],[]];
   const on=[[],[]];
@@ -3143,7 +3150,10 @@ function renderSim(){
   pick("simpickH",simH,simA,n=>simH=n);pick("simpickA",simA,simH,n=>simA=n);
   document.getElementById("simswap").onclick=()=>{const h=simH;simH=simA;simA=h;simRes=simGame=null;simDirty=false;simSave();renderSim()};
   renderSimBar();renderSimPlans();renderSimOut();
+  document.querySelectorAll(".simhe").forEach(e=>e.textContent=sgn(simHomePts()));
 }
+// the tip model's home edge at a club's own venue, in points (the simulator has no shared or neutral venues)
+const simHomePts=()=>{const h=LADDER?.status?.homeEdge;return Number.isFinite(h)?h:2.6};
 
 function renderSimBar(){
   const bar=document.getElementById("simbar");
@@ -3199,6 +3209,7 @@ function renderSimDirty(){const d=document.getElementById("simdirty");if(d)d.hid
 // ---- running
 function simRun(){
   if(simBusy)return;const H=simH,A=simA,N=simN;
+  SIMM.homePts=simHomePts();
   const plans=[simPlan(H),simPlan(A)],usual=[simPlan(H,true),simPlan(A,true)];
   const cmp=simChanged(H)||simChanged(A);
   const base=(Date.now()%1e9)|0;const seed=i=>(base+i*7919)>>>0;
