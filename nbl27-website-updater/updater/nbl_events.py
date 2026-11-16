@@ -11,7 +11,11 @@ The rules are events.py's, unchanged:
   - possessions: each one by how it started (steal, dead-ball turnover, defensive rebound, opponent's make, other)
     with its points; transition = a possession after a steal or defensive rebound whose first shot, free throw or
     turnover comes within 7 seconds; second chance = points after an offensive rebound in the same possession;
-  - fg: every made field goal as (scorer, passer or '', zone, value) for the assist network.
+  - fg: every made field goal as (scorer, passer or '', zone, value) for the assist network;
+  - px: by period, [points in the paint (made twos in the restricted area or the key), second-chance points, points
+    off turnovers (scored on a possession that began with the opponent's turnover, until the opponent has the ball)].
+    Checked against the NBL's own figures for 2022-25 (when it still published them): second-chance points within a
+    point in 91-92% of team-games, points off turnovers in 86%; every one within 3 or 4.
 
 A team-game's NBL events are used only when its lineups reproduce the official box score (nbl_lineups.check: five on
 the floor throughout, every player's minutes and plus-minus) and its points and made field goals equal this site's
@@ -79,7 +83,8 @@ def build(m, key):
     T = {c: {"rot": collections.defaultdict(list),
              "clutch": {"sec": 0, "f": collections.Counter(), "a": collections.Counter(), "p": collections.defaultdict(collections.Counter)},
              "poss": {k: [0, 0] for k in ("steal", "dto", "dreb", "make", "other")},
-             "trans": [0, 0], "sc": [0, 0], "fg": collections.Counter(), "pts": 0} for c in clubs}
+             "trans": [0, 0], "sc": [0, 0], "fg": collections.Counter(), "pts": 0,
+             "px": collections.defaultdict(lambda: [0, 0, 0])} for c in clubs}
     pers = sorted({NL.per_no(a) for a in plays} | {1, 2, 3, 4})
     pos = None
     state = {"pos": None}
@@ -199,8 +204,11 @@ def build(m, key):
                     p["pts"] += pv
                     if p["oreb"]:
                         p["sc_pts"] += pv
+                        T[tm]["px"][per][1] += pv           # second-chance points, by period
                     elif p["trans"]:
                         p["tr_pts"] += pv
+                    if p["type"] in ("steal", "dto"):
+                        T[tm]["px"][per][2] += pv           # points off turnovers, by period
             # clutch box
             if clutch:
                 if pv:
@@ -242,11 +250,14 @@ def build(m, key):
                 prev_ft_nonfinal = bool(f and f[0] != f[1])
             else:
                 prev_ft_nonfinal = False
-            # made field goals for the assist network
-            if kind == "fg" and made and sh:
+            # made field goals: points in the paint (restricted area or the key), and the assist network
+            if kind == "fg" and made:
                 X, Y = NS.frame(a.get("x"), a.get("y"), E.get((tm, NS.half(a)), "lo"))
                 z = NS.zone(t == "3pt", X, Y)
-                T[tm]["fg"][(key(sh), key(ast[i]) if i in ast else "", NS.ZC[z], 3 if t == "3pt" else 2)] += 1
+                if z in ("ra", "paint"):
+                    T[tm]["px"][per][0] += 2
+                if sh:
+                    T[tm]["fg"][(key(sh), key(ast[i]) if i in ast else "", NS.ZC[z], 3 if t == "3pt" else 2)] += 1
         if L > last:
             advance(L)
             last = L
@@ -259,6 +270,8 @@ def build(m, key):
             "clutch": {"sec": round(X["clutch"]["sec"]), "f": dict(X["clutch"]["f"]), "a": dict(X["clutch"]["a"]),
                        "p": {a: {k: int(v) for k, v in s.items() if v} for a, s in X["clutch"]["p"].items()}},
             "poss": X["poss"], "trans": X["trans"], "sc": X["sc"], "pts": X["pts"],
+            # by period (1-4, then each overtime): [points in the paint, second-chance points, points off turnovers]
+            "px": [list(X["px"][q]) for q in pers],
             "fg": [[s, a, z, v, n] for (s, a, z, v), n in sorted(X["fg"].items())],
         }
     return out, max(pers)
