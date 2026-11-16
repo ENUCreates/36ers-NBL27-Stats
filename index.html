@@ -1333,29 +1333,11 @@ function rbxSum(row,side,p){
   const idx=rbxIdx(P.per.length,p);
   RBF.forEach((f,j)=>o[f]=idx.reduce((s,i)=>s+P[side][i][j],0));return o;
 }
-// points in the paint, second-chance points and points off turnovers for one team, from the daily update's
-// play-by-play events (by period where it has them; the full game only otherwise)
-function rbxX(row,t,p){
-  const eid=row.id.replace("espn-",""),X=EVENTS.find(d=>d.espnId===eid)?.teams?.[t],P=row.periods;
-  const z=SHOTS.find(d=>d.espnId===eid)?.teams?.[t],zp=z?.ra&&z?.paint?2*(z.ra.m+z.paint.m):null;   // paint points from the shot zones
-  const o={pitp:p==="full"?zp:null,scp:null,pot:null};
-  if(!X)return o;
-  if(X.px&&X.px.length&&(!P||X.px.length===P.per.length)){
-    const all=[...X.px.keys()],idx=P?rbxIdx(P.per.length,p):all,sum=(j,I)=>I.reduce((s,i)=>s+(X.px[i]?.[j]||0),0);
-    o.scp=sum(1,idx);o.pot=sum(2,idx);
-    if(zp==null||sum(0,all)===zp)o.pitp=sum(0,idx);   // by quarter only where the play-by-play's paint count matches the shot zones
-    return o;
-  }
-  if(p==="full"){o.scp=X.sc?.[1]??null;o.pot=X.poss?X.poss.steal[1]+X.poss.dto[1]:null}
-  return o;
-}
 function rbxTeam(row,H,A,p){
-  const h={...rbxSum(row,"home",p),...rbxX(row,H,p)},a={...rbxSum(row,"away",p),...rbxX(row,A,p)},c=t=>TEAMS[t]?.c||t,P=row.periods;
+  const h=rbxSum(row,"home",p),a=rbxSum(row,"away",p),c=t=>TEAMS[t]?.c||t,P=row.periods;
   const lab=P?rbxLab(P.per,p):"Full time";
   const sh=(m,n)=>`${m}-${n}`,pc=(m,n)=>n?pct(m/n)+"%":"–";
-  const nv=v=>v==null?"–":v;
-  const R=[["Points",x=>x.pts,x=>x.pts,1],["Points in the paint",x=>nv(x.pitp),x=>x.pitp,1],["Second-chance points",x=>nv(x.scp),x=>x.scp,1],["Points off turnovers",x=>nv(x.pot),x=>x.pot,1],
-    ["Field goals",x=>sh(x.fgm,x.fga),x=>x.fgm,1],["FG%",x=>pc(x.fgm,x.fga),x=>x.fga?x.fgm/x.fga:null,1],
+  const R=[["Points",x=>x.pts,x=>x.pts,1],["Field goals",x=>sh(x.fgm,x.fga),x=>x.fgm,1],["FG%",x=>pc(x.fgm,x.fga),x=>x.fga?x.fgm/x.fga:null,1],
     ["2-pointers",x=>sh(x.fgm-x.tpm,x.fga-x.tpa),x=>x.fgm-x.tpm,1],["2P%",x=>pc(x.fgm-x.tpm,x.fga-x.tpa),x=>x.fga-x.tpa?(x.fgm-x.tpm)/(x.fga-x.tpa):null,1],
     ["3-pointers",x=>sh(x.tpm,x.tpa),x=>x.tpm,1],["3P%",x=>pc(x.tpm,x.tpa),x=>x.tpa?x.tpm/x.tpa:null,1],
     ["Free throws",x=>sh(x.ftm,x.fta),x=>x.ftm,1],["FT%",x=>pc(x.ftm,x.fta),x=>x.fta?x.ftm/x.fta:null,1],
@@ -1365,7 +1347,7 @@ function rbxTeam(row,H,A,p){
   const tb=R.map(([l,f,v,d])=>{const vh=v(h),va=v(a),bh=vh!=null&&va!=null&&(vh-va)*d>0,ba=vh!=null&&va!=null&&(va-vh)*d>0;
     return `<tr><td class="h">${bh?`<b>${f(h)}</b>`:f(h)}</td><td class="l">${l}</td><td class="a">${ba?`<b>${f(a)}</b>`:f(a)}</td></tr>`}).join("");
   return `<table class="tape rbt"><thead><tr><th class="h" style="text-align:right">${code(H)}</th><th style="text-align:center;width:38%">${lab}: ${c(H)} ${h.pts}–${a.pts} ${c(A)}</th><th style="text-align:left">${code(A)}</th></tr></thead><tbody>${tb}</tbody></table>
-    <p class="mxnote">${P?"The official NBL team stats for each quarter (and overtime); the halves and full time add them up, and match the box score.":"Full time only: the quarter-by-quarter team stats aren't in yet for this game."} Points in the paint (made twos in the restricted area or the key), second-chance points (after an offensive rebound) and points off turnovers (on a possession that began with the other team's turnover) are counted from the play-by-play, as the NBL no longer publishes them: the same counting matched the NBL's own second-chance and off-turnover figures within a point in about 9 games out of 10 over 2022–25. Bold = the better side.${P?(P.fouls==="personal"?" The NBL's feed has only personal fouls for this game (no technicals), so they can be fewer than in the box score.":" Fouls = every foul the NBL charges to the team, technicals included, so can be one more than in the box score."):""}</p>`;
+    <p class="mxnote">${P?"The official NBL team stats for each quarter (and overtime); the halves and full time add them up, and match the box score.":"Full time only: the quarter-by-quarter team stats aren't in yet for this game."} Bold = the better side.${P?(P.fouls==="personal"?" The NBL's feed has only personal fouls for this game (no technicals), so they can be fewer than in the box score.":" Fouls = every foul the NBL charges to the team, technicals included, so can be one more than in the box score."):""}</p>`;
 }
 function rbxBox(row,doc,t,p){
   const side=row.home.team===t?"home":"away",L=(doc?.teams?.[t]||[]),Q=doc?.periods,full=p==="full"||!Q;
@@ -2744,7 +2726,7 @@ async function drawMX(g){
     ["Pace",t=>n1(t.pace),"pace",1],["eFG%",t=>pc(t.efg),"efg"],["eFG% allowed",t=>pc(t.oefg),"oefg"],["Turnover %",t=>pc(t.tov),"tov"],["Turnovers forced",t=>pc(t.otov),"otov"],
     ["Off. rebound %",t=>pc(t.orb),"orb"],["Def. rebound %",t=>pc(t.drb),"drb"],["Free throws a shot",t=>t.ftr==null?"–":t.ftr.toFixed(2),"ftr"],["Free throws allowed",t=>t.oftr==null?"–":t.oftr.toFixed(2),"oftr"],
     ["Shots from three",t=>pc(t.tpar,0),"tpar",1],["3P% (usual)",t=>`${pc(t.tpp)} <span class="rk">(${pc(t.shoot?.xtp)})</span>`,null],["Opp. 3P% (expected)",t=>`${pc(t.otpp)} <span class="rk">(${pc(t.shoot?.oxtp)})</span>`,null],
-    ["Shots at the rim",t=>pc(t.rim,0),"rim",1],["Transition points",t=>`${n1(t.trans)} / ${n1(t.otrans)}`,"trans"],["Second-chance points",t=>`${n1(t.sc)} / ${n1(t.osc)}`,"sc"],["Points in the paint",t=>`${n1(t.pitp)} / ${n1(t.opitp)}`,"pitp"],["Points off turnovers",t=>`${n1(t.pot)} / ${n1(t.opot)}`,"pot"],
+    ["Shots at the rim",t=>pc(t.rim,0),"rim",1],["Transition points",t=>`${n1(t.trans)} / ${n1(t.otrans)}`,"trans"],["Second-chance points",t=>`${n1(t.sc)} / ${n1(t.osc)}`,"sc"],
     ["Shooting luck",t=>t.luck==null?"–":sgn(t.luck),null],["Close games",t=>wl(t.close),null]];
   const rkOf=(t,k)=>k==="ratingRk"?t.ratingRk:t.rk?.[k];
   let tape=`<table class="tape"><thead><tr><th class="h" style="text-align:right">${code(H)}</th><th style="text-align:center;width:38%"></th><th style="text-align:left">${code(A)}</th></tr></thead><tbody>`;
@@ -2752,7 +2734,7 @@ async function drawMX(g){
     tape+=`<tr><td class="h">${ra?`<span class="rk">${ordinal(ra)}</span>`:""}${bh?`<b>${f(th)}</b>`:f(th)}</td><td class="l">${l}</td><td class="a">${ba?`<b>${f(ta)}</b>`:f(ta)}${rb?`<span class="rk">${ordinal(rb)}</span>`:""}</td></tr>`});
   const rd=t=>{const r=rest[t]||{};return r.days==null?"–":`${r.days} day${r.days===1?"":"s"}`};
   tape+=`<tr><td class="h">${rd(H)}</td><td class="l">Rest before</td><td class="a">${rd(A)}</td></tr></tbody></table>
-    <p class="mxnote">Ranks are among the 10 teams, 1st = best (pace, shots from three and at the rim: 1st = most). Transition, second-chance, paint and off-turnover points: scored / allowed a game, ranked on points scored.</p>`;
+    <p class="mxnote">Ranks are among the 10 teams, 1st = best (pace, shots from three and at the rim: 1st = most). Transition and second-chance points: scored / allowed a game.</p>`;
   // leading scorers and injury list
   const lead=t=>(TM[t]?.leaders||[]).map(x=>`<div class="r"><span>${x.name}${x.out?` <span class="ist ${x.out}" style="padding:2px 6px;font-size:10px">${x.out==="dtd"?"Day-to-day":x.out==="season"?"Season":"Out"}</span>`:""}</span><span>${f1(x.ppg)} pts · ${f1(x.mpg)} min</span></div>`).join("")||`<div class="r"><span class="mut">–</span></div>`;
   const injl=t=>{const L=TM[t]?.injuries;if(!L)return `<div class="r"><span class="mut">Not kept for this game</span></div>`;const R=L.filter(x=>x.cls!=="retired");return R.length?R.map(x=>`<div class="r"><span>${x.name} <span class="mut">${x.injury||""}</span></span><span>${x.cls==="dtd"?"Day-to-day":x.cls==="season"?"Season":x.ret||"TBC"}</span></div>`).join(""):`<div class="r"><span class="mut">Nobody listed</span></div>`};

@@ -36,7 +36,7 @@ SHORT = {"Adelaide 36ers": "Adelaide", "Brisbane Bullets": "Brisbane", "Cairns T
 DIRS = {"rating": True, "net": True, "ortg": True, "drtg": False, "pace": None, "margin": True, "efg": True,
         "oefg": False, "tov": False, "otov": True, "orb": True, "drb": True, "ftr": True, "oftr": False, "tpar": None,
         "otpar": None, "tpp": True, "otpp": False, "rim": None, "orim": None, "trans": True, "otrans": False, "sc": True,
-        "osc": False, "pitp": True, "opitp": False, "pot": True, "opot": False, "luck": None, "ppg": True, "oppg": False}
+        "osc": False, "luck": None, "ppg": True, "oppg": False}
 
 
 def ordn(n):
@@ -91,10 +91,6 @@ def season(games, events, shots, players, TEAMS):
             for k in K:
                 t["own"][k] += s.get(k) or 0; t["opp"][k] += o.get(k) or 0
             t["log"].append({"date": g["date"], "opp": o["team"], "home": home, "pts": s["pts"], "opts": o["pts"]})
-    # points in the paint from the shot zones (the NBL's shot locations), the events' own count where a team-game has none
-    zp = {(d["espnId"], t): 2 * (Z["ra"]["m"] + Z["paint"]["m"]) for d in shots for t, Z in d["teams"].items()
-          if Z.get("ok", True) is not False and "ra" in Z and "paint" in Z}
-    pot = lambda X: X["poss"]["steal"][1] + X["poss"]["dto"][1]
     ev = {t: collections.Counter() for t in TEAMS}
     for d in events:
         for t, X in d["teams"].items():
@@ -102,12 +98,6 @@ def season(games, events, shots, players, TEAMS):
             if t in ev and X.get("ok") and O and O[0].get("ok"):
                 ev[t]["g"] += 1; ev[t]["tr"] += X["trans"][1]; ev[t]["sc"] += X["sc"][1]
                 ev[t]["otr"] += O[0]["trans"][1]; ev[t]["osc"] += O[0]["sc"][1]
-                ev[t]["pot"] += pot(X); ev[t]["opot"] += pot(O[0])
-                u = [u for u in d["teams"] if u != t][0]
-                pa = zp.get((d["espnId"], t), sum(r[0] for r in X["px"]) if X.get("px") else None)
-                pb = zp.get((d["espnId"], u), sum(r[0] for r in O[0]["px"]) if O[0].get("px") else None)
-                if pa is not None and pb is not None:
-                    ev[t]["pg"] += 1; ev[t]["pitp"] += pa; ev[t]["opitp"] += pb
     zn = {t: collections.Counter() for t in TEAMS}
     for d in shots:
         for t, Z in d["teams"].items():
@@ -148,8 +138,7 @@ def season(games, events, shots, players, TEAMS):
                 "ftr": div(s["fta"], s["fga"]), "oftr": div(o["fta"], o["fga"]), "tpar": div(s["tpa"], s["fga"]),
                 "otpar": div(o["tpa"], o["fga"]), "tpp": div(s["tpm"], s["tpa"]), "otpp": div(o["tpm"], o["tpa"]),
                 "rim": div(zn[t]["ra"], zn[t]["fga"]), "orim": div(zn[t]["ora"], zn[t]["ofga"]),
-                "trans": div(e["tr"], e["g"]), "otrans": div(e["otr"], e["g"]), "sc": div(e["sc"], e["g"]), "osc": div(e["osc"], e["g"]),
-                "pitp": div(e["pitp"], e["pg"]), "opitp": div(e["opitp"], e["pg"]), "pot": div(e["pot"], e["g"]), "opot": div(e["opot"], e["g"])}
+                "trans": div(e["tr"], e["g"]), "otrans": div(e["otr"], e["g"]), "sc": div(e["sc"], e["g"]), "osc": div(e["osc"], e["g"])}
     # ladder position now: win %, then points difference
     have = [t for t in TEAMS if S[t]["gp"]]
     lad = sorted(have, key=lambda t: (-S[t]["wl"][0] / S[t]["gp"], -S[t]["margin"]))
@@ -372,10 +361,7 @@ def snapshot(g, fx, games_before, S, R, hca, gsd, P, inj, state, asof, p=None, m
 
 
 RATE3 = ("efg", "oefg", "tov", "otov", "orb", "drb", "ftr", "oftr", "tpar", "tpp", "otpp", "rim")
-PER1 = ("ppg", "oppg", "margin", "pace", "ortg", "drtg", "net", "trans", "otrans", "sc", "osc", "pitp", "opitp", "pot", "opot")
-# tape numbers added after some games were already frozen: filled in for those games as they stood before each game
-# (only the games before its date), never changing anything a snapshot already holds
-LATER = ("pitp", "opitp", "pot", "opot")
+PER1 = ("ppg", "oppg", "margin", "pace", "ortg", "drtg", "net", "trans", "otrans", "sc", "osc")
 
 
 def team_part(t, S, R, P, inj):
@@ -464,28 +450,6 @@ def build(root):
             snap["teams"] = {t: team_part(t, Sd, Rd, Pd, None) for t in (x["home"], x["away"])}
             out[x["id"]] = snap
             n["backtest"] += 1
-    fill, scache = 0, {}
-    for x in fx:
-        v = out.get(x["id"])
-        if not v or not v.get("teams") or all(k in ((v["teams"].get(t) or {}).get("tape") or {}) for t in v["teams"] for k in LATER):
-            continue
-        g = gid.get(x["id"])
-        d = g["date"] if g else x["date"]
-        if d not in scache:
-            scache[d] = season([y for y in games if y["date"] < d], [y for y in events if y["date"] < d],
-                               [y for y in shots if y["date"] < d], [y for y in players if y["date"] < d], TEAMS)
-        for t, part in v["teams"].items():
-            tape, s = (part or {}).get("tape"), scache[d].get(t) or {}
-            if tape is None:
-                continue
-            for k in LATER:
-                if k not in tape:
-                    tape[k] = round(s[k], 1) if s.get(k) is not None else None
-                    if (s.get("rk") or {}).get(k) is not None:
-                        tape.setdefault("rk", {})[k] = s["rk"][k]
-        fill += 1
-    if fill:
-        n["new tape numbers filled in"] = fill
     st = {"computedAt": now, "games": len(out), "counts": dict(n), "injuriesRead": (injd or {}).get("status", {}).get("listRead")}
     # two files: games still to play (with today's team numbers, read when the tab opens a game) and games played
     # (frozen or back-tested, each with its own team numbers; read only when a played game is opened)
