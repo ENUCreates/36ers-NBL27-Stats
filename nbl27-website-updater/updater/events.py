@@ -81,7 +81,8 @@ def events_doc(eid, d, pdoc, swap):
     T = {c: {"rot": collections.defaultdict(list),
              "clutch": {"sec": 0, "f": collections.Counter(), "a": collections.Counter(), "p": collections.defaultdict(collections.Counter)},
              "poss": {k: [0, 0] for k in ("steal", "dto", "dreb", "make", "other")},
-             "trans": [0, 0], "sc": [0, 0], "fg": collections.Counter(), "pts": 0} for c in clubs}
+             "trans": [0, 0], "sc": [0, 0], "fg": collections.Counter(), "pts": 0,
+             "px": collections.defaultdict(lambda: [0, 0, 0])} for c in clubs}
     last_per = max(r[1] for r in HOOK) if HOOK else 4
     # ---- time-based: rotations + clutch seconds ----
     score = {home: 0, away: 0}
@@ -196,8 +197,11 @@ def events_doc(eid, d, pdoc, swap):
             T[c]["pts"] += dv
             if pos and pos["team"] == c:
                 pos["pts"] += dv
-                if pos["oreb"]: pos["sc_pts"] += dv
+                if pos["oreb"]:
+                    pos["sc_pts"] += dv; T[c]["px"][per][1] += dv      # second-chance points, by period
                 elif pos["trans"]: pos["tr_pts"] += dv
+                if pos["type"] in ("steal", "dto"):
+                    T[c]["px"][per][2] += dv                           # points off turnovers, by period
         # clutch box
         if clutch:
             for c, dv in ((home, dh), (away, da)):
@@ -236,11 +240,14 @@ def events_doc(eid, d, pdoc, swap):
             prev_ft_nonfinal = bool(mm and mm.group(1) != mm.group(2))
         elif kind:
             prev_ft_nonfinal = False
-        # made-FG log for assist network
-        if kind == "fg" and made and tm in T and parts and not voided(i):
+        # made field goals: points in the paint (restricted area or the key), and the assist network
+        if kind == "fg" and made and tm in T and not voided(i):
             z = zone(pl)
-            ast = parts[1] if ("assist" in txt and len(parts) > 1) else ""
-            T[tm]["fg"][(parts[0], ast, ZI[z], 3 if "three point" in txt else 2)] += 1
+            if z in ("ra", "paint") and "three point" not in txt:
+                T[tm]["px"][per][0] += 2
+            if parts:
+                ast = parts[1] if ("assist" in txt and len(parts) > 1) else ""
+                T[tm]["fg"][(parts[0], ast, ZI[z], 3 if "three point" in txt else 2)] += 1
     close(pos)
     out = {}
     for c in clubs:
@@ -254,6 +261,8 @@ def events_doc(eid, d, pdoc, swap):
             "clutch": {"sec": round(X["clutch"]["sec"]), "f": dict(X["clutch"]["f"]), "a": dict(X["clutch"]["a"]),
                        "p": {a: {k: int(v) for k, v in s.items() if v} for a, s in X["clutch"]["p"].items()}},
             "poss": X["poss"], "trans": X["trans"], "sc": X["sc"], "pts": X["pts"], "ok": okt,
+            # by period (1-4, then each overtime): [points in the paint, second-chance points, points off turnovers]
+            "px": [list(X["px"][q]) for q in range(1, max(4, last_per) + 1)],
             "fg": [[s, a, z, v, n] for (s, a, z, v), n in sorted(X["fg"].items())],
         }
     ev = {"espnId": eid, "date": doc["date"], "home": home, "away": away, "periods": last_per,
