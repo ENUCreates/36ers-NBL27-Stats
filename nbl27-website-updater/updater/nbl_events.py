@@ -329,7 +329,13 @@ def apply(events, games, players, off, pairs, index, prev=None):
             px = (pv.get("teams") or {}).get(t)
             if bad and (pv.get("src") or {}).get(t) == "nbl" and px and px.get("ok") and px.get("pts") == b["pts"] \
                     and sum(r[4] for r in px.get("fg") or []) == b["fgm"]:
-                # this run's NBL data doesn't add up but last run's did: keep last run's
+                # this run's NBL data doesn't add up but last run's did: keep last run's - with this run's by-period
+                # figures when last run's has none and they add up to its own totals
+                if "px" not in px and X.get("px"):
+                    tot = lambda j: sum(r[j] for r in X["px"])
+                    paint = sum(2 * r[4] for r in px.get("fg") or [] if r[2] in (0, 1) and r[3] == 2)
+                    if tot(1) == px["sc"][1] and tot(2) == px["poss"]["steal"][1] + px["poss"]["dto"][1] and tot(0) == paint:
+                        px = dict(px, px=X["px"])
                 doc["teams"][t] = px
                 src[t] = "nbl"
                 doc["names"].update({k: v for k, v in (pv.get("names") or {}).items() if k not in doc["names"]})

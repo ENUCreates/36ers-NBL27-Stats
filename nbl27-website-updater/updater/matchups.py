@@ -91,7 +91,7 @@ def season(games, events, shots, players, TEAMS):
             for k in K:
                 t["own"][k] += s.get(k) or 0; t["opp"][k] += o.get(k) or 0
             t["log"].append({"date": g["date"], "opp": o["team"], "home": home, "pts": s["pts"], "opts": o["pts"]})
-    # points in the paint from shot zones where a team-game's events have no by-period figures
+    # points in the paint from the shot zones (the NBL's shot locations), the events' own count where a team-game has none
     zp = {(d["espnId"], t): 2 * (Z["ra"]["m"] + Z["paint"]["m"]) for d in shots for t, Z in d["teams"].items()
           if Z.get("ok", True) is not False and "ra" in Z and "paint" in Z}
     pot = lambda X: X["poss"]["steal"][1] + X["poss"]["dto"][1]
@@ -104,8 +104,8 @@ def season(games, events, shots, players, TEAMS):
                 ev[t]["otr"] += O[0]["trans"][1]; ev[t]["osc"] += O[0]["sc"][1]
                 ev[t]["pot"] += pot(X); ev[t]["opot"] += pot(O[0])
                 u = [u for u in d["teams"] if u != t][0]
-                pa = sum(r[0] for r in X["px"]) if X.get("px") else zp.get((d["espnId"], t))
-                pb = sum(r[0] for r in O[0]["px"]) if O[0].get("px") else zp.get((d["espnId"], u))
+                pa = zp.get((d["espnId"], t), sum(r[0] for r in X["px"]) if X.get("px") else None)
+                pb = zp.get((d["espnId"], u), sum(r[0] for r in O[0]["px"]) if O[0].get("px") else None)
                 if pa is not None and pb is not None:
                     ev[t]["pg"] += 1; ev[t]["pitp"] += pa; ev[t]["opitp"] += pb
     zn = {t: collections.Counter() for t in TEAMS}
