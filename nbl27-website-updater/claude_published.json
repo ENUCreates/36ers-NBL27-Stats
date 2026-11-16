@@ -1,5 +1,5 @@
 {
-"data/bios.json": "7618a709a2828967431fbf62b0023b6d7e935c19563344d6caa6c2755b639fa3",
+"data/bios.json": "f7b14935b94e4b7a568ff14d91e7856c9256ab39ef2fd92ec3fdf22e5deb3bfd",
 "data/coachheads/adam-forde.webp": "118e08a73f28def9176c87baaa2c456fe2a1bacfebe24fc6a989b79e568aa209",
 "data/coachheads/brian-goorjian.webp": "929ce43493297c4dd0d9a74a3c4e6499abca1195354a8a3d7d6c588c5022600d",
 "data/coachheads/gordon-herbert.webp": "d88683257077c33b6afd77f9cc25cb835efb52226261bed5c934365e73e1cfee",
@@ -284,15 +284,15 @@
 "data/coachphotos/fba4982c4f1333aeb891fe3ab4fc7a11.webp": "5e56d7006e7df310c0f05c79fc79155ec744239ded88b9a631077b90393e9f58",
 "data/coachphotos/ff245e06eed2aba14fb491820b86178a.webp": "18e003f6bf2a4236210ff0097f15c08b1c802916d488bc8cb8aed3c5cc2d0bfa",
 "data/coachphotos/ff800ae5280e13ea72a2710af5dabe4c.webp": "eb2dfc9315d0f602aabb57baad59084faddabd93a1c79f0e15adb6d4dbcac909",
-"data/events.json": "d05b1727b3ca6efafd3518b44eb9f598e4b021277771e5af1c161c630749e7d2",
+"data/events.json": "fa4018a22fe4d9d0dde98e8111a4a3342483786243c560128876aba5d43afc04",
 "data/games.json": "323143598d1dc6691a0229db1e9567bd9a231c4fac5325a0a1d9bdea3da98810",
-"data/impact.json": "4abf9bb709ab6453d3c6bc55b7b064647f51fd320c5758530ee96ea0e31b7e6c",
+"data/impact.json": "bbd67da29b9d7f2024439f544718a377863ecb5ebf696805277bd8c1c67fbd22",
 "data/injuries.json": "512c5820571ba764eeb6fefa2c921351026b91dce4b60f613295a45e46849ff0",
-"data/ladder.json": "a1e312842f34748d575e6c4f6918834288c99acaf76f8319eea396bbd196f38e",
+"data/ladder.json": "4c2aadf3b22289d6deb2b653e1a9d00ca04135e4bfcb80f7d09e02b042be7dbb",
 "data/lineups.json": "278882d83850af96af63cb5e81e281a313fe29f6b221cc50d7242a4a860fbb4b",
-"data/matchups.json": "7d26d913470c56b0c6745eabcf41b48f0ecc79fa28784f6af1c4f3770bdf7992",
-"data/matchups_played.json": "5069d2459498c9d34bf1d0f79379b5da3d8c885ecb1b2af585607159502895f3",
-"data/meta.json": "73a6e7f512e47ca4549d39285737a31b4f1929790b54098a464cb24f0fe7aea4",
+"data/matchups.json": "ad2e477331ab1d958c1dcfeb99267110cf51f28aeebfb563b8a7efc530d2e8e6",
+"data/matchups_played.json": "986f9d042576ca8a0210ceb9ad7d485bf262416354e44258eab4d1ed575bbc81",
+"data/meta.json": "b3a0d46180df2f0658df3d9ab6c0352e5f0b7e4b8e36d9a631cb7327cb9a2ea4",
 "data/photos.json": "30b70d4776eefbdc6d962f97c5a0deb97b9add33799d6fdff0e55c2b07fd0ef4",
 "data/photos/2451257.webp": "d76f896fc784c353e95d6aba9ab4ab8920329a5aaca095cb19b8de2049eae8bf",
 "data/photos/2488721.webp": "49ab1b869ef040b967ba2a75e389c04be75ec5d176a2e5ee97a1bfef3c20f944",
@@ -444,5 +444,5 @@
 "data/players.json": "faf87b16d2cb417ebf892f17c0275603fa981591a5f9ef8e452340d48faabcdb",
 "data/pshots.json": "c13ad04356cff953eaa4a4cd21e7ce78bdc736350eecbd0bb5e52d4844fb6a7b",
 "data/shots.json": "93c7000f98eb3cfdc26cc2f249636b41e781b86b39a378d50ee972cc5f04848e",
-"page": "85a8070e28da6a18f6326e53d1cc4202e93becd67c3d7d57a77a38b3047941b6"
+"page": "30393a46a3f8120e200182b57b579418aba0c31c60e2fe2c4d515a815223412b"
 }
