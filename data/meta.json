@@ -2,14 +2,9 @@
  "status": {
   "lastGameDate": "2026-11-15",
   "source": "ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where it doesn't add up); full rebuild once a day",
-  "updatedAt": "2026-11-17T08:59:23+11:00",
+  "updatedAt": "2026-11-18T08:59:24+11:00",
   "games": 68,
-  "changes": [
-   "shots: 1 game(s) updated",
-   "lineups: 1 game(s) updated",
-   "pshots: 1 game(s) updated",
-   "events: 1 game(s) updated"
-  ],
+  "changes": [],
   "official": {
    "games": 68,
    "pending": 0,
@@ -694,7 +689,7 @@
     "2026-10-21 Tasmania JackJumpers: official box has Jed Richardson (00:21, 0 pts), ESPN's box score does not - added from the official box score",
     "2026-11-08 South East Melbourne Phoenix: official box has Patrick Ryan (00:16, 0 pts), ESPN's box score does not - added from the official box score"
    ],
-   "checkedAt": "2026-11-17T08:59:23+11:00"
+   "checkedAt": "2026-11-18T08:59:24+11:00"
   }
  },
  "shots_status": {
@@ -702,7 +697,7 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-11-17T08:59:23+11:00",
+  "checkedAt": "2026-11-18T08:59:24+11:00",
   "games": 68,
   "medianErr": 0.24,
   "mismatches": 1,
@@ -712,12 +707,12 @@
   }
  },
  "players_status": {
-  "checkedAt": "2026-11-17T08:59:23+11:00",
+  "checkedAt": "2026-11-18T08:59:24+11:00",
   "games": 68,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-11-17T08:59:23+11:00",
+  "checkedAt": "2026-11-18T08:59:24+11:00",
   "games": 68,
   "invalid": 1,
   "method": "Who is on the floor: the NBL's own play-by-play (every substitution recorded) wherever it reproduces the official box score - every player's minutes and plus-minus (nbl_lineups.py); otherwise solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
@@ -746,7 +741,7 @@
   ]
  },
  "pshots_status": {
-  "checkedAt": "2026-11-17T08:59:23+11:00",
+  "checkedAt": "2026-11-18T08:59:24+11:00",
   "games": 68,
   "basket": {
    "x": 25,
@@ -765,7 +760,7 @@
   "frame": "x across the court 0-50 ft with the basket at 25, y = feet from the basket toward halfway"
  },
  "events_status": {
-  "checkedAt": "2026-11-17T08:59:23+11:00",
+  "checkedAt": "2026-11-18T08:59:24+11:00",
   "games": 68,
   "badTeamGames": 1,
   "sources": {
@@ -788,7 +783,7 @@
   "method": "Rotations, clutch, possessions and assists from the NBL's own play-by-play wherever its lineups reproduce the official box score (nbl_events.py); otherwise from ESPN's (events.py)"
  },
  "periods_status": {
-  "checkedAt": "2026-11-17T08:59:23+11:00",
+  "checkedAt": "2026-11-18T08:59:24+11:00",
   "games": 68,
   "notes": [
    "team stats by period: 67 by period, 1 last run's kept",
