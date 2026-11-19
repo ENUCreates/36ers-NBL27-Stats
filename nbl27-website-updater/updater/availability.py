@@ -26,8 +26,15 @@ Chance he plays, from the injury list (data/injuries.json) for each game to come
   day-to-day                            1/2 for his team's next game, then 1
   not listed, but missed his team's last 3+ games    0 for its next 3 games, then as below (reason unknown)
   otherwise                             the share of his team's last 5 games he played
+
+Who is on each club's list now, from the NBL's own squads (data/roster.json, saved by the daily update):
+  no longer on the club's list, and missed its latest game     0 (released, or moved clubs)
+  moved clubs this season (now on the new club's list)          for the new club: the share of its games he has
+      played since his first one for it, and his value on all his games this season (both clubs) - not just the
+      few he has played for it
+A player who played his club's latest game always counts as with it, whatever the list says.
 """
-import collections, datetime, re
+import collections, datetime, re, unicodedata
 
 B_GS, B_REPL, K = 0.616, 1.654, 200.0
 MONTHS = {m: i + 1 for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"])}
@@ -38,14 +45,23 @@ def game_score(x):
             + x["stl"] + 0.7 * x["ast"] + 0.7 * x["blk"] - 0.4 * (x.get("pf") or 0) - x["tov"])
 
 
-def values(games, players):
+def norm(name):
+    """a name to match the NBL's squad lists with this site's (accents, punctuation and Jr / III etc. dropped)"""
+    s = unicodedata.normalize("NFKD", re.sub(r"\(.*?\)", " ", name or "")).encode("ascii", "ignore").decode().lower()
+    return " ".join(t for t in re.sub(r"[^a-z ]", " ", s.replace("-", " ").replace("'", "")).split()
+                    if t not in ("jr", "sr", "ii", "iii", "iv"))
+
+
+def values(games, players, roster=None):
     """Per team: its games (dates) and, per player who has played for it, games, minutes a game, value per 40,
-    and how many of the team's games in a row he has missed up to now."""
+    and how many of the team's games in a row he has missed up to now. roster: data/roster.json (the NBL's current
+    squads), or None to leave squads out."""
     tg = collections.defaultdict(list)
     for g in games:
         for s in ("home", "away"):
             tg[g[s]["team"]].append(g["date"])
     P = collections.defaultdict(dict)
+    A = collections.defaultdict(lambda: {"min": 0.0, "gs": 0.0, "gp": 0, "teams": set()})   # per player, every club
     gs_all = min_all = 0.0
     for d in players:
         for t, L in d["teams"].items():
@@ -56,8 +72,10 @@ def values(games, players):
                 p = P[t].setdefault(x["id"], {"id": x["id"], "name": x["name"], "gp": 0, "min": 0.0, "gs": 0.0, "dates": []})
                 gs = game_score(x)
                 p["gp"] += 1; p["min"] += m; p["gs"] += gs; p["dates"].append(d["date"])
+                a = A[x["id"]]; a["min"] += m; a["gs"] += gs; a["gp"] += 1; a["teams"].add(t)
                 gs_all += gs; min_all += m
     lg40 = 40 * gs_all / min_all if min_all else 0.0
+    listed = {t: {norm(r.get("name")) for r in L} for t, L in ((roster or {}).get("teams") or {}).items() if L}
     out = {}
     for t, dates in tg.items():
         dates = sorted(dates)
@@ -72,6 +90,18 @@ def values(games, players):
             p["missedRun"] = sum(1 for d in dates if d > last)
             recent = dates[-5:]                 # how often he has played lately (rest, coach's decisions, niggles)
             p["recent"] = sum(1 for d in recent if d in set(p["dates"])) / len(recent) if recent else 1.0
+            if t in listed:
+                on = norm(p["name"]) in listed[t]
+                if not on and p["missedRun"] >= 1:
+                    p["left"] = True            # not on the club's list now, and missed its latest game
+                a = A[p["id"]]
+                if on and len(a["teams"]) > 1:
+                    # moved clubs this season: his games for this club since his first, and his value on all of them
+                    since = [d for d in dates if d >= min(p["dates"])][-5:]
+                    p["recent"] = sum(1 for d in since if d in set(p["dates"])) / len(since)
+                    p["joined"] = {"from": sorted(a["teams"] - {t}), "since": len(since), "played": round(p["recent"] * len(since))}
+                    p["gs40"] = 40 * a["gs"] / a["min"]
+                    p["value"] = B_GS * a["min"] / (a["min"] + K) * (p["gs40"] - lg40) + B_REPL
         out[t] = {"G": G, "players": P.get(t, {})}
     return out, lg40
 
@@ -100,6 +130,8 @@ def return_date(text, season_start_year=2026):
 
 def chance(p, row, game, k):
     """Chance player p plays this game (k = how many of his team's games come before it from now)."""
+    if p.get("left"):
+        return 0.0
     if row is not None:
         cls, ret = row.get("cls"), (row.get("ret") or "")
         if cls in ("season", "retired"):
@@ -140,10 +172,13 @@ def adjust(V, injuries, sched):
                 tot += v
                 if abs(v) >= 0.25:
                     nrec = min(5, p["G"])
-                    why = ("injury list: " + (row.get("status") or "out") + (f", {row['injury']}" if row.get("injury") else "")
-                           + (f", back {row['ret']}" if row.get("ret") and row["ret"].upper() != "TBC" else ", return TBC")) if row is not None \
+                    J = p.get("joined")
+                    why = ("no longer on the club's list (the NBL's squads)" if p.get("left") else
+                           ("injury list: " + (row.get("status") or "out") + (f", {row['injury']}" if row.get("injury") else "")
+                           + (f", back {row['ret']}" if row.get("ret") and row["ret"].upper() != "TBC" else ", return TBC")) if row is not None
+                        else "joined from %s: played %d of %d games since" % (" and ".join(J["from"]), J["played"], J["since"]) if J
                         else ("not on the injury list but hasn't played the last %d games" % p["missedRun"] if c < 1 and p["missedRun"] >= 3 else
-                              "played %d of the last %d games, %d of %d this season" % (round(p["recent"] * nrec), nrec, p["gp"], p["G"]))
+                              "played %d of the last %d games, %d of %d this season" % (round(p["recent"] * nrec), nrec, p["gp"], p["G"])))
                     det.append({"id": p["id"], "name": p["name"], "pts": round(v, 2), "chance": c, "why": why})
             side[s] = (round(tot, 2), sorted(det, key=lambda z: z["pts"]))
             k[t] += 1

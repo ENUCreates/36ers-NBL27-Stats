@@ -223,9 +223,12 @@ def rounds():
     return out
 
 
-def others(listed, tg, pl):
-    """Rotation players who didn't play in their team's latest game and aren't on the injury list."""
+def others(listed, tg, pl, root=None):
+    """Rotation players who didn't play in their team's latest game and aren't on the injury list (nor have left the
+    club: no longer on its list in the NBL's squads, data/roster.json)."""
     out = []
+    fr = os.path.join(root, "data", "roster.json") if root else None
+    sq = {t: {norm(r.get("name")) for r in L} for t, L in ((json.load(open(fr)).get("teams") or {}) if fr and os.path.exists(fr) else {}).items() if L}
     on = {(r["team"], r["id"]) for r in listed if r.get("id")} | {(r.get("boxTeam"), r["id"]) for r in listed if r.get("id")}
     for t, P in pl.items():
         dates = tg.get(t, [])
@@ -235,6 +238,8 @@ def others(listed, tg, pl):
             if (t, pid) in on or p["gp"] < ROT_GP or p["min"] / p["gp"] < ROT_MPG:
                 continue
             last = max(p["dates"])
+            if t in sq and norm(p["name"]) not in sq[t]:
+                continue                        # left the club
             if last < dates[-1]:
                 out.append({"team": t, "name": p["name"], "id": pid, "gp": p["gp"], "mpg": round(p["min"] / p["gp"], 1),
                             "ppg": round(p["pts"] / p["gp"], 1), "lastPlayed": last, "missed": sum(1 for d in dates if d > last),
@@ -280,7 +285,7 @@ def main():
     st["lastGame"] = max((d for v in tg.values() for d in v), default=None)
     order = {"season": 2, "retired": 3, "out": 0, "dtd": 1}
     rows.sort(key=lambda r: (CLUBS.index(r["team"]), order.get(r["cls"], 0), -(r.get("mpg") or 0), r["name"]))
-    doc = {"status": st, "players": rows, "others": others(rows, tg, pl)}
+    doc = {"status": st, "players": rows, "others": others(rows, tg, pl, root)}
     write(root, doc)
     # the tips (ladder.py: who's available) and the matchup facts use the injury list: redo both with this one
     import subprocess

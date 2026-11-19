@@ -363,6 +363,21 @@ def main():
     for c in COLS:
         json.dump(data[c], open(os.path.join(root, "data", c + ".json"), "w"), separators=(",", ":"), sort_keys=True)
     json.dump(meta, open(os.path.join(root, "data", "meta.json"), "w"), indent=1)
+    # the NBL's current squads (its own API): who is on each club's list now. availability.py (the tips) and
+    # injuries.py use it: a player no longer on his club's list is left out for it, and one who has moved clubs counts
+    # with his new one. Last run's file stays when this run couldn't read the NBL's API or got fewer than ten clubs.
+    if off_ok and off.get("live") and off.get("roster"):
+        sq = collections.defaultdict(list)
+        for x in off["roster"]:
+            pl, tn = x.get("player") or {}, (x.get("team") or {}).get("name")
+            t = O.TEAMNAME.get(tn, tn)
+            if t and pl.get("full_name"):
+                sq[t].append({"name": pl["full_name"], "nbl": pl.get("id"), "no": x.get("jersey_number"),
+                              "pos": x.get("playing_position")})
+        if len(sq) == 10:
+            json.dump({"asOf": nowiso, "source": "the NBL's own API (prod.rosetta.nbl.com.au, nbl/players/in/season)",
+                       "teams": {t: sorted(L, key=lambda r: r["name"]) for t, L in sorted(sq.items())}},
+                      open(os.path.join(root, "data", "roster.json"), "w"), separators=(",", ":"), ensure_ascii=False)
     print(json.dumps({"games": len(data["games"]), "held": held, "pending": pending, "warnings": warnings,
                       "changes": changes, "lineups": lu_rep, "shots": sh_rep, "events": ev_rep}, indent=1))
     # Player cards: bios + NBA/NCAA history (bios.py; refreshes new players and a few stale ones per run).

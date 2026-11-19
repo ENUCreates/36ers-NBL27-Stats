@@ -225,7 +225,7 @@ def predict(M, home, away, extra=0.0, f=1.0):
     return p, m
 
 
-def build(games, players, bios, fx, prev=None, injuries=None):
+def build(games, players, bios, fx, prev=None, injuries=None, roster=None):
     TEAMS = sorted({t for r in fx for t in (r["home"], r["away"])})
     ix = {t: i for i, t in enumerate(TEAMS)}
     N = len(TEAMS)
@@ -272,7 +272,7 @@ def build(games, players, bios, fx, prev=None, injuries=None):
             R[sel] = rng.multivariate_normal(POST[k][0], POST[k][1], size=len(sel))
     R[:, N] = rng.normal(hca, hca_sd, size=SIMS)
     # who's available for each game to come (availability.py): points added to each side's strength
-    V, _lg40 = AV.values(games, players)
+    V, _lg40 = AV.values(games, players, roster)
     ADJ = AV.adjust(V, injuries, sched)
     adjd = np.array([a["h"][0] - a["a"][0] for a in ADJ], float)
     sh = np.array([ix[r["home"]] for r in sched], int); sa = np.array([ix[r["away"]] for r in sched], int)
@@ -437,7 +437,9 @@ def main():
         prev = json.load(open(fp)) if os.path.exists(fp) else None
         fi = os.path.join(root, "data", "injuries.json")
         injuries = json.load(open(fi)) if os.path.exists(fi) else None
-        doc = build(load(root, "games"), load(root, "players"), {b["id"]: b for b in load(root, "bios")}, fixture(), prev, injuries)
+        fr = os.path.join(root, "data", "roster.json")          # the NBL's current squads (saved by the daily update)
+        roster = json.load(open(fr)) if os.path.exists(fr) else None
+        doc = build(load(root, "games"), load(root, "players"), {b["id"]: b for b in load(root, "bios")}, fixture(), prev, injuries, roster)
     except Exception as ex:
         print("ladder: not rebuilt, previous projection kept:", repr(ex))
         sys.exit(1)
