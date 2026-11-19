@@ -173,7 +173,7 @@ def adjust(V, injuries, sched):
                 if abs(v) >= 0.25:
                     nrec = min(5, p["G"])
                     J = p.get("joined")
-                    why = ("no longer on the club's list (the NBL's squads)" if p.get("left") else
+                    why = ("no longer in the club's NBL squad" if p.get("left") else
                            ("injury list: " + (row.get("status") or "out") + (f", {row['injury']}" if row.get("injury") else "")
                            + (f", back {row['ret']}" if row.get("ret") and row["ret"].upper() != "TBC" else ", return TBC")) if row is not None
                         else "joined from %s: played %d of %d games since" % (" and ".join(J["from"]), J["played"], J["since"]) if J
