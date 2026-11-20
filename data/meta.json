@@ -1,17 +1,17 @@
 {
  "status": {
-  "lastGameDate": "2026-11-19",
+  "lastGameDate": "2026-11-20",
   "source": "ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where it doesn't add up); full rebuild once a day",
-  "updatedAt": "2026-11-20T08:58:46+11:00",
-  "games": 70,
+  "updatedAt": "2026-11-21T08:59:07+11:00",
+  "games": 71,
   "changes": [
-   "added 2026-11-19 Adelaide 36ers 97 at Illawarra Hawks 103",
+   "added 2026-11-20 Perth Wildcats 90 at Cairns Taipans 98",
    "lineups: 1 game(s) updated",
    "pshots: 1 game(s) updated",
    "events: 1 game(s) updated"
   ],
   "official": {
-   "games": 70,
+   "games": 71,
    "pending": 0,
    "names": {
     "4278777": "Shaun Bruce",
@@ -694,7 +694,7 @@
     "2026-10-21 Tasmania JackJumpers: official box has Jed Richardson (00:21, 0 pts), ESPN's box score does not - added from the official box score",
     "2026-11-08 South East Melbourne Phoenix: official box has Patrick Ryan (00:16, 0 pts), ESPN's box score does not - added from the official box score"
    ],
-   "checkedAt": "2026-11-20T08:58:46+11:00"
+   "checkedAt": "2026-11-21T08:59:07+11:00"
   }
  },
  "shots_status": {
@@ -702,38 +702,38 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-11-20T08:58:46+11:00",
-  "games": 70,
+  "checkedAt": "2026-11-21T08:59:07+11:00",
+  "games": 71,
   "medianErr": 0.24,
   "mismatches": 1,
   "sources": {
-   "nbl": 140,
+   "nbl": 142,
    "espn": 0
   }
  },
  "players_status": {
-  "checkedAt": "2026-11-20T08:58:46+11:00",
-  "games": 70,
+  "checkedAt": "2026-11-21T08:59:07+11:00",
+  "games": 71,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-11-20T08:58:46+11:00",
-  "games": 70,
-  "invalid": 1,
+  "checkedAt": "2026-11-21T08:59:07+11:00",
+  "games": 71,
+  "invalid": 2,
   "method": "Who is on the floor: the NBL's own play-by-play (every substitution recorded) wherever it reproduces the official box score - every player's minutes and plus-minus (nbl_lineups.py); otherwise solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
   "fit": {
-   "teamGames": 140,
-   "minutesOver30s": 1,
+   "teamGames": 142,
+   "minutesOver30s": 2,
    "plusMinusOff": 3,
    "actionsOffCourt": 0,
-   "unrecordedSwapsPerTeamGame": 0.4
+   "unrecordedSwapsPerTeamGame": 0.5
   },
   "sources": {
-   "nbl": 133,
+   "nbl": 135,
    "espn": 7
   },
   "notes": [
-   "lineups by team-game: espn 7, nbl 129, nbl (last run's) 4",
+   "lineups by team-game: espn 7, nbl 131, nbl (last run's) 4",
    "2026-10-03 Tasmania JackJumpers at Brisbane Bullets Brisbane Bullets: this run's NBL play-by-play doesn't add up (floor time 2700s, game 5700s) - last run's NBL lineups kept",
    "2026-10-03 Tasmania JackJumpers at Brisbane Bullets Tasmania JackJumpers: this run's NBL play-by-play doesn't add up (floor time 2700s, game 5700s) - last run's NBL lineups kept",
    "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL play-by-play not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)",
@@ -741,42 +741,41 @@
    "2026-11-15 New Zealand Breakers at Sydney Kings New Zealand Breakers: NBL play-by-play not used (floor time 3000s, game 6000s)",
    "2026-11-14 Illawarra Hawks at Perth Wildcats Perth Wildcats: NBL play-by-play not used (floor time 2700s, game 5700s)",
    "2026-11-14 Illawarra Hawks at Perth Wildcats Illawarra Hawks: NBL play-by-play not used (floor time 2700s, game 5700s)",
-   "2026-11-19 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL play-by-play not used (Todd Blanchfield +3, official +1; Tyler Harvey +9, official +7; Sam Froling -4, official -2)",
-   "2026-11-19 Adelaide 36ers at Illawarra Hawks Adelaide 36ers: NBL play-by-play not used (Keanu Rasmussen +2, official +4; Zylan Cheatham +5, official +3; Jacob Rigoni -6, official -4)",
    "2026-11-13 Brisbane Bullets at New Zealand Breakers New Zealand Breakers: this run's NBL play-by-play doesn't add up (floor time 2700s, game 5700s) - last run's NBL lineups kept",
-   "2026-11-13 Brisbane Bullets at New Zealand Breakers Brisbane Bullets: this run's NBL play-by-play doesn't add up (floor time 2700s, game 5700s) - last run's NBL lineups kept"
+   "2026-11-13 Brisbane Bullets at New Zealand Breakers Brisbane Bullets: this run's NBL play-by-play doesn't add up (floor time 2700s, game 5700s) - last run's NBL lineups kept",
+   "2026-11-20 Perth Wildcats at Cairns Taipans Cairns Taipans: NBL play-by-play not used (Cairns Taipans: 6 on the floor in period 4 with 0s left; Cairns Taipans: 6 on the floor in period 4 with 0s left; Cairns Taipans: 6 on the floor in period 4 with 0s left)",
+   "2026-11-20 Perth Wildcats at Cairns Taipans Perth Wildcats: NBL play-by-play not used (Perth Wildcats: 6 on the floor in period 1 with 170s left; Perth Wildcats: 6 on the floor in period 1 with 152s left; Perth Wildcats: 6 on the floor in period 1 with 152s left)"
   ]
  },
  "pshots_status": {
-  "checkedAt": "2026-11-20T08:58:46+11:00",
-  "games": 70,
+  "checkedAt": "2026-11-21T08:59:07+11:00",
+  "games": 71,
   "basket": {
    "x": 25,
    "y": 0
   },
   "sources": {
-   "nbl": 140,
+   "nbl": 142,
    "espn": 0
   },
   "badTeamGames": 0,
   "notes": [
-   "shots by team-game: nbl 140",
-   "2026-11-19 Adelaide 36ers at Illawarra Hawks: Johny Narkle: 1 shot(s) the official box score doesn't count left out",
+   "shots by team-game: nbl 142",
    "2026-11-13 Brisbane Bullets at New Zealand Breakers New Zealand Breakers: NBL shots FGM-FGA 33-78 3P 11-32 FT 17-24, box 33-79 3P 11-32 FT 17-24; players: Carlin Davison [7, 16] vs box [7, 17]"
   ],
   "method": "Every shot from the NBL's own play-by-play (position, shooter, two or three) wherever it reproduces this site's box score (nbl_shots.py); otherwise ESPN's play-by-play (pshots.py)",
   "frame": "x across the court 0-50 ft with the basket at 25, y = feet from the basket toward halfway"
  },
  "events_status": {
-  "checkedAt": "2026-11-20T08:58:46+11:00",
-  "games": 70,
-  "badTeamGames": 1,
+  "checkedAt": "2026-11-21T08:59:07+11:00",
+  "games": 71,
+  "badTeamGames": 3,
   "sources": {
-   "nbl": 133,
+   "nbl": 135,
    "espn": 7
   },
   "notes": [
-   "events by team-game: espn 7, nbl 129, nbl (last run's) 4",
+   "events by team-game: espn 7, nbl 131, nbl (last run's) 4",
    "2026-10-03 Tasmania JackJumpers at Brisbane Bullets Brisbane Bullets: this run's NBL play-by-play doesn't add up (floor time 2700s, game 5700s) - last run's NBL events kept",
    "2026-10-03 Tasmania JackJumpers at Brisbane Bullets Tasmania JackJumpers: this run's NBL play-by-play doesn't add up (floor time 2700s, game 5700s) - last run's NBL events kept",
    "2026-10-02 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL events not used (Illawarra Hawks: 4 on the floor in period 1 with 361s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left; Illawarra Hawks: 4 on the floor in period 1 with 358s left)",
@@ -784,21 +783,21 @@
    "2026-11-15 New Zealand Breakers at Sydney Kings New Zealand Breakers: NBL events not used (floor time 3000s, game 6000s)",
    "2026-11-14 Illawarra Hawks at Perth Wildcats Perth Wildcats: NBL events not used (floor time 2700s, game 5700s)",
    "2026-11-14 Illawarra Hawks at Perth Wildcats Illawarra Hawks: NBL events not used (floor time 2700s, game 5700s)",
-   "2026-11-19 Adelaide 36ers at Illawarra Hawks Illawarra Hawks: NBL events not used (Todd Blanchfield +3, official +1; Tyler Harvey +9, official +7; Sam Froling -4, official -2)",
-   "2026-11-19 Adelaide 36ers at Illawarra Hawks Adelaide 36ers: NBL events not used (Keanu Rasmussen +2, official +4; Zylan Cheatham +5, official +3; Jacob Rigoni -6, official -4)",
    "2026-11-13 Brisbane Bullets at New Zealand Breakers New Zealand Breakers: this run's NBL play-by-play doesn't add up (floor time 2700s, game 5700s) - last run's NBL events kept",
    "2026-11-13 Brisbane Bullets at New Zealand Breakers Brisbane Bullets: this run's NBL play-by-play doesn't add up (floor time 2700s, game 5700s) - last run's NBL events kept",
-   "left out (don't reconcile with the box score): 2026-11-15 New Zealand Breakers"
+   "2026-11-20 Perth Wildcats at Cairns Taipans Cairns Taipans: NBL events not used (Cairns Taipans: 6 on the floor in period 4 with 0s left; Cairns Taipans: 6 on the floor in period 4 with 0s left; Cairns Taipans: 6 on the floor in period 4 with 0s left)",
+   "2026-11-20 Perth Wildcats at Cairns Taipans Perth Wildcats: NBL events not used (Perth Wildcats: 6 on the floor in period 1 with 170s left; Perth Wildcats: 6 on the floor in period 1 with 152s left; Perth Wildcats: 6 on the floor in period 1 with 152s left)",
+   "left out (don't reconcile with the box score): 2026-11-15 New Zealand Breakers, 2026-11-20 Cairns Taipans, 2026-11-20 Perth Wildcats"
   ],
   "method": "Rotations, clutch, possessions and assists from the NBL's own play-by-play wherever its lineups reproduce the official box score (nbl_events.py); otherwise from ESPN's (events.py)"
  },
  "periods_status": {
-  "checkedAt": "2026-11-20T08:58:46+11:00",
-  "games": 70,
+  "checkedAt": "2026-11-21T08:59:07+11:00",
+  "games": 71,
   "notes": [
-   "team stats by period: 69 by period, 1 last run's kept",
+   "team stats by period: 70 by period, 1 last run's kept",
    "2026-11-13 Brisbane Bullets at New Zealand Breakers: this run's team stats by period don't add up (New Zealand Breakers fga differs from this site's box score) - last run's kept",
-   "players by period: 54 every player adds up, 16 some fields left out; fields left out: {'tov': 2, 'ast': 5, 'dreb': 5, 'oreb': 10, 'min': 4, 'pts': 2, 'ftm': 2, 'fta': 2, 'pm': 10, 'fga': 1}",
+   "players by period: 55 every player adds up, 16 some fields left out; fields left out: {'tov': 2, 'ast': 5, 'dreb': 5, 'oreb': 10, 'min': 20, 'pts': 2, 'ftm': 2, 'fta': 2, 'fga': 1, 'pm': 14}",
    "2026-09-20 Andrew Carr: by quarter doesn't add up to the box score for tov",
    "2026-09-20 Matthew Dellavedova: by quarter doesn't add up to the box score for tov",
    "2026-10-04 Sam Mennenga: by quarter doesn't add up to the box score for ast",
@@ -826,16 +825,16 @@
    "2026-11-15 Matthew Dellavedova: by quarter doesn't add up to the box score for min",
    "2026-11-15 New Zealand Breakers at Sydney Kings: the substitutions don't add up, so minutes and +/- aren't split by quarter",
    "2026-11-14 Cameron Huefner: by quarter doesn't add up to the box score for oreb",
-   "2026-11-19 Zylan Cheatham: by quarter doesn't add up to the box score for pm",
-   "2026-11-19 Keanu Rasmussen: by quarter doesn't add up to the box score for pm",
-   "2026-11-19 Matt Kenyon: by quarter doesn't add up to the box score for pm",
-   "2026-11-19 Bryce Cotton: by quarter doesn't add up to the box score for pm",
-   "2026-11-19 Jacob Rigoni: by quarter doesn't add up to the box score for pm",
-   "2026-11-19 John Jenkins: by quarter doesn't add up to the box score for pm",
-   "2026-11-19 Tyler Harvey: by quarter doesn't add up to the box score for pm",
-   "2026-11-19 Sam Froling: by quarter doesn't add up to the box score for pm",
-   "2026-11-19 Johny Narkle: by quarter doesn't add up to the box score for pm",
-   "2026-11-19 Todd Blanchfield: by quarter doesn't add up to the box score for pm"
+   "2026-11-13 Carlin Davison: by quarter doesn't add up to the box score for fga",
+   "2026-11-13 Sam Mennenga: by quarter doesn't add up to the box score for dreb",
+   "2026-11-12 Nick Rakocevic: by quarter doesn't add up to the box score for oreb",
+   "2026-11-12 Keanu Rasmussen: by quarter doesn't add up to the box score for oreb",
+   "2026-11-20 Alex Higgins-Titsha: by quarter doesn't add up to the box score for min",
+   "2026-11-20 Kristian Doolittle: by quarter doesn't add up to the box score for min, pm",
+   "2026-11-20 Cameron Huefner: by quarter doesn't add up to the box score for min, pm",
+   "2026-11-20 Jaron Rillie: by quarter doesn't add up to the box score for min, pm",
+   "2026-11-20 Dylan Windler: by quarter doesn't add up to the box score for min, pm",
+   "2026-11-20 Jesse Wagstaff: by quarter doesn't add up to the box score for min, pm"
   ],
   "method": "Each team's stats by quarter (and overtime) from the NBL's own feed, kept only where they add up to its full-game row and to this site's box score; each player's from the NBL's play-by-play, any field that doesn't add up to his box score line left out (nbl_periods.py)"
  }
