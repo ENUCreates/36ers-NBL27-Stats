@@ -273,7 +273,11 @@ def build(games, players, bios, fx, prev=None, injuries=None, roster=None):
     R[:, N] = rng.normal(hca, hca_sd, size=SIMS)
     # who's available for each game to come (availability.py): points added to each side's strength
     V, _lg40 = AV.values(games, players, roster)
-    ADJ = AV.adjust(V, injuries, sched)
+    tdates = collections.defaultdict(list)
+    for g in games:
+        for s in ("home", "away"):
+            tdates[g[s]["team"]].append(g["date"])
+    ADJ = AV.adjust(V, injuries, sched, tdates)
     adjd = np.array([a["h"][0] - a["a"][0] for a in ADJ], float)
     sh = np.array([ix[r["home"]] for r in sched], int); sa = np.array([ix[r["away"]] for r in sched], int)
     wins = np.tile(np.array([W[t] for t in TEAMS], float), (SIMS, 1))

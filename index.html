@@ -528,6 +528,7 @@ table.heat tbody tr:hover td.h{background:color-mix(in srgb,var(--accent) calc(v
 .ist.season{color:var(--bad)}
 .ist.retired{color:var(--muted)}
 .flag{display:block;margin-top:4px;font:600 11.5px/1.3 var(--body);color:var(--warn)}
+.flag.back{color:var(--good)}
 .warnline{margin:0 0 12px;padding:9px 12px;border-left:3px solid var(--warn);background:var(--warn-bg);color:var(--warn);font-size:11.5px;text-transform:uppercase;letter-spacing:.02em}
 
 /* Notes (in capitals), formulas and sources */
@@ -2783,13 +2784,14 @@ function renderInjuries(){
     h+=`<div class="panel injt"><div class="injteam">${code(team)}<span>${disp(team)}</span><span class="mut">${R.length?`${R.length} listed`:"Nobody listed"}</span></div>${R.length?`<div class="scroll"><table>${head}<tbody>${R.map(injRow).join("")}</tbody></table></div>`:""}</div>`});
   const OO=(INJ.others||[]).filter(r=>teams.includes(r.team));
   h+=`<h3 class="sech">Also missed their team's latest game</h3>`+(OO.length?`<div class="panel scroll"><table><thead><tr><th class="tm">Player</th><th class="tl">Team</th><th>Games missed</th><th>Last played</th><th>MPG</th><th>PPG</th></tr></thead><tbody>${
-    OO.map(r=>`<tr><td class="tm">${pname(r.id,r.name,r.team)}</td><td class="tl">${disp(r.team)}</td><td>${r.missed} in a row</td><td>${dShort(r.lastPlayed)}</td><td>${f1(r.mpg)}</td><td>${f1(r.ppg)}</td></tr>`).join("")}</tbody></table></div>`
+    OO.map(r=>`<tr><td class="tm">${pname(r.id,r.name,r.team)}${r.off?`<span class="flag back" title="The league took him off its injury list on ${dShort(r.off)}, so the tips count him as back">Off the list ${dShort(r.off)}</span>`:""}</td><td class="tl">${disp(r.team)}</td><td>${r.missed} in a row</td><td>${dShort(r.lastPlayed)}</td><td>${f1(r.mpg)}</td><td>${f1(r.ppg)}</td></tr>`).join("")}</tbody></table></div>`
     :`<div class="panel"><div class="empty" style="padding:18px 16px">Every regular rotation player who isn't on the list played in his team's latest game.</div></div>`);
   h+=`<div class="notes fblock"><b>NOTES</b>
     <span>Source: the league's injury list as <a href="${S.source||"#"}" target="_blank" rel="noopener">basketball.com.au</a> publishes it, checked once a day by the daily update. "As of" is the date that page says it last took the league's list. Status, injury and expected return are copied exactly as listed there.</span>
     <span>Games missed (in a row, up to the team's latest game), last played, MPG and PPG come from this site's box scores. "Played last game" means he played in his team's latest game, so the list may not have caught up yet.</span>
     <span>"Round N" returns show the day that round starts in the NBL's fixture.</span>
     <span>Also missed = players averaging 10+ minutes over 3+ games who sat out their team's latest game but aren't on the list (rest, coach's decision, or not listed yet).</span>
+    <span>"Off the list" = the league has taken him off its injury list since he last played. The tips count him as back until he plays, or until his team plays 2 games without him.</span>
     <span>Checked ${S.checkedAt?new Date(S.checkedAt).toLocaleString("en-AU",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}):"–"} with games through ${dShort(S.lastGame)}.</span></div>`;
   el.innerHTML=h;
 }

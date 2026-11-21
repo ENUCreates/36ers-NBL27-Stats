@@ -247,6 +247,29 @@ def others(listed, tg, pl, root=None):
     return sorted(out, key=lambda r: (CLUBS.index(r["team"]) if r["team"] in CLUBS else 99, -r["mpg"]))
 
 
+def cleared(prev, rows, tg, pl, today):
+    """Players the league has taken off its list since they last played (the tips count them as back: availability.py),
+    kept while they haven't played since and their team has played fewer than 2 games since they came off it.
+    prev: the previous data/injuries.json; rows: today's list; today: the date this list was read."""
+    now = {(r["team"], r["id"]) for r in rows if r.get("id")}
+    cand = {(c["team"], c["id"]): c for c in (prev or {}).get("cleared") or [] if c.get("id")}
+    for r in (prev or {}).get("players") or []:
+        k = (r["team"], r.get("id"))
+        if today and r.get("id") and k not in now and k not in cand and r.get("cls") != "retired":
+            cand[k] = {"team": r["team"], "name": r["name"], "id": r["id"], "off": today,
+                       "was": ", ".join(x for x in (r.get("status"), r.get("injury")) if x)}
+    out = []
+    for (t, pid), c in cand.items():
+        p = pl.get(t, {}).get(pid)
+        if (t, pid) in now or not p or not p["dates"]:
+            continue                        # back on the list, or hasn't played for the club this season
+        last, dates = max(p["dates"]), tg.get(t, [])
+        if not dates or last >= dates[-1] or last >= c["off"] or sum(1 for d in dates if d >= c["off"]) >= 2:
+            continue                        # has played since, or his team has played 2 games without him since
+        out.append(dict(c, lastPlayed=last, missed=sum(1 for d in dates if d > last)))
+    return sorted(out, key=lambda c: (CLUBS.index(c["team"]) if c["team"] in CLUBS else 99, c["name"]))
+
+
 def write(root, doc):
     json.dump(doc, open(os.path.join(root, "data", "injuries.json"), "w"), separators=(",", ":"), ensure_ascii=False)
 
@@ -256,11 +279,12 @@ def main():
     now = datetime.datetime.now(SYD)
     tg, pl = box(root)
     rd = rounds()
+    fp = os.path.join(root, "data", "injuries.json")
+    prev = json.load(open(fp)) if os.path.exists(fp) else None
+    today = None                            # the day a new list was read (None: kept the previous list)
     if sys.argv[2] == "--keep":
-        fp = os.path.join(root, "data", "injuries.json")
-        if not os.path.exists(fp):
+        if not prev:
             print("injuries: no previous list to keep"); sys.exit(1)
-        prev = json.load(open(fp))
         reason = " ".join(sys.argv[3:]).strip() or "the page could not be read reliably"
         rows = [enrich(r, tg, pl) for r in prev["players"]]
         st = prev["status"]
@@ -274,6 +298,7 @@ def main():
             print("injuries: transcription failed the checks, nothing written:\n  " + "\n  ".join(probs))
             sys.exit(3)
         rows = [enrich(r, tg, pl) for r in rows_raw]
+        today = now.strftime("%Y-%m-%d")
         st = {"checkedAt": now.isoformat(timespec="seconds"), "listRead": now.strftime("%Y-%m-%d"), "stale": False,
               "source": SOURCE, "sourceName": SOURCE_NAME, "counts": meta["counts"], "pageUpdated": meta["updated"],
               "asOf": as_of(meta["updated"], now.date())}
@@ -285,7 +310,13 @@ def main():
     st["lastGame"] = max((d for v in tg.values() for d in v), default=None)
     order = {"season": 2, "retired": 3, "out": 0, "dtd": 1}
     rows.sort(key=lambda r: (CLUBS.index(r["team"]), order.get(r["cls"], 0), -(r.get("mpg") or 0), r["name"]))
-    doc = {"status": st, "players": rows, "others": others(rows, tg, pl, root)}
+    cl = cleared(prev, rows, tg, pl, today)
+    oth = others(rows, tg, pl, root)
+    off = {(c["team"], c["id"]): c["off"] for c in cl}
+    for o in oth:
+        if (o["team"], o["id"]) in off:
+            o["off"] = off[(o["team"], o["id"])]
+    doc = {"status": st, "players": rows, "others": oth, "cleared": cl}
     write(root, doc)
     # the tips (ladder.py: who's available) and the matchup facts use the injury list: redo both with this one
     import subprocess
@@ -297,6 +328,7 @@ def main():
     print(f"injuries: {len(rows)} listed ({by.get('out', 0)} out, {by.get('dtd', 0)} day-to-day, {by.get('season', 0)} for the season, "
           f"{by.get('retired', 0)} retired){' - KEPT FROM ' + str(st.get('listRead')) if st.get('stale') else ''}; "
           f"{len(doc['others'])} more rotation players missed their team's latest game; "
+          f"{len(cl)} taken off the list and not played since (counted as back); "
           f"{len(st['unmatched'])} listed players haven't played this season")
 
 

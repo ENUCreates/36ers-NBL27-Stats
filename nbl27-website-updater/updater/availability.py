@@ -24,14 +24,23 @@ Chance he plays, from the injury list (data/injuries.json) for each game to come
   out, back by a date ("Early December", "Mid-December", "8 November")   0 before it, then 1 ("possibly": 1/2 that week)
   out, "TBC" or anything else           0 for his team's next 2 games, 1/2 for the next 2, then 1
   day-to-day                            1/2 for his team's next game, then 1
+  taken off the list since he last played ("cleared" in injuries.json)   back: as below, with the games he has just
+                                        missed not counted - until he plays, or his team plays 2 games without him
   not listed, but missed his team's last 3+ games    0 for its next 3 games, then as below (reason unknown)
-  otherwise                             the share of his team's last 5 games he played
+  otherwise                             the share of his team's games he has played since his first one for it, not
+                                        counting any absence of 3+ games in a row that is over (he has played since)
+
+That last share replaced "the share of his team's last 5 games" on 21 Nov 2026. Tested on every NBL regular season
+2015-16 to 2025-26 (181,525 cases of a rotation player - 10+ minutes a game over 3+ games - who played his team's
+latest game, each scored on whether he played each of its next 10 games): Brier score 0.1059 with the last 5 games,
+0.0990 with this share (0.1015 if every such player were assumed to play); for players back from an absence of 3+
+games in the last 5, 0.2925 -> 0.1633, because the last 5 games kept counting the absence against them all season.
 
 Who is on each club's list now, from the NBL's own squads (data/roster.json, saved by the daily update):
   no longer on the club's list, and missed its latest game     0 (released, or moved clubs)
-  moved clubs this season (now on the new club's list)          for the new club: the share of its games he has
-      played since his first one for it, and his value on all his games this season (both clubs) - not just the
-      few he has played for it
+  moved clubs this season (now on the new club's list)          for the new club: the share above, counted from his
+      first game for it, and his value on all his games this season (both clubs) - not just the few he has played
+      for it
 A player who played his club's latest game always counts as with it, whatever the list says.
 """
 import collections, datetime, re, unicodedata
@@ -52,10 +61,38 @@ def norm(name):
                     if t not in ("jr", "sr", "ii", "iii", "iv"))
 
 
+def fit_share(seq):
+    """seq: did he play each of his team's games, from his first for it. -> (share of games played, not counting
+    absences of 3+ in a row that are over; the same with the absence he is in now also counted as over; games
+    played; games counted; games left out; how many absences they make)"""
+    out = [False] * len(seq)
+    runs = 0
+    i = 0
+    while i < len(seq):
+        if seq[i]:
+            i += 1
+            continue
+        j = i
+        while j < len(seq) and not seq[j]:
+            j += 1
+        if j - i >= 3 and j < len(seq):          # 3+ in a row, and he has played since
+            out[i:j] = [True] * (j - i)
+            runs += 1
+        i = j
+    n = sum(1 for o in out if not o)
+    gp = sum(seq)
+    cur = 0
+    while cur < len(seq) and not seq[len(seq) - 1 - cur]:
+        cur += 1
+    fit = gp / n if n else 1.0
+    back = gp / (n - cur) if n - cur > 0 else 1.0
+    return fit, back, gp, n, sum(out), runs
+
+
 def values(games, players, roster=None):
     """Per team: its games (dates) and, per player who has played for it, games, minutes a game, value per 40,
-    and how many of the team's games in a row he has missed up to now. roster: data/roster.json (the NBL's current
-    squads), or None to leave squads out."""
+    how many of the team's games in a row he has missed up to now, and how often he plays (fit_share). roster:
+    data/roster.json (the NBL's current squads), or None to leave squads out."""
     tg = collections.defaultdict(list)
     for g in games:
         for s in ("home", "away"):
@@ -88,18 +125,19 @@ def values(games, players, roster=None):
             w = p["min"] / (p["min"] + K)
             p["value"] = B_GS * w * (p["gs40"] - lg40) + B_REPL
             p["missedRun"] = sum(1 for d in dates if d > last)
-            recent = dates[-5:]                 # how often he has played lately (rest, coach's decisions, niggles)
-            p["recent"] = sum(1 for d in recent if d in set(p["dates"])) / len(recent) if recent else 1.0
+            mine = set(p["dates"])
+            seq = [d in mine for d in dates if d >= min(p["dates"])]      # his team's games from his first for it
+            # how often he plays (rest, coach's decisions, niggles), absences of 3+ games that are over left out
+            p["fit"], p["fitBack"], p["fitGp"], p["fitN"], p["fitOut"], p["fitRuns"] = fit_share(seq)
             if t in listed:
                 on = norm(p["name"]) in listed[t]
                 if not on and p["missedRun"] >= 1:
                     p["left"] = True            # not on the club's list now, and missed its latest game
                 a = A[p["id"]]
                 if on and len(a["teams"]) > 1:
-                    # moved clubs this season: his games for this club since his first, and his value on all of them
-                    since = [d for d in dates if d >= min(p["dates"])][-5:]
-                    p["recent"] = sum(1 for d in since if d in set(p["dates"])) / len(since)
-                    p["joined"] = {"from": sorted(a["teams"] - {t}), "since": len(since), "played": round(p["recent"] * len(since))}
+                    # moved clubs this season: how often he has played for this club (counted from his first game for
+                    # it, above), and his value on all his games this season
+                    p["joined"] = {"from": sorted(a["teams"] - {t}), "since": len(seq), "played": sum(seq)}
                     p["gs40"] = 40 * a["gs"] / a["min"]
                     p["value"] = B_GS * a["min"] / (a["min"] + K) * (p["gs40"] - lg40) + B_REPL
         out[t] = {"G": G, "players": P.get(t, {})}
@@ -128,8 +166,17 @@ def return_date(text, season_start_year=2026):
         return None
 
 
-def chance(p, row, game, k):
-    """Chance player p plays this game (k = how many of his team's games come before it from now)."""
+def is_cleared(p, c, team_dates):
+    """c: his entry in injuries.json "cleared" (taken off the league's list since he last played): still counts while
+    he hasn't played since and his team has played fewer than 2 games since he came off it."""
+    if not c or p["missedRun"] == 0 or max(p["dates"]) >= c.get("off", ""):
+        return False
+    return sum(1 for d in team_dates if d >= c.get("off", "")) < 2
+
+
+def chance(p, row, game, k, cleared=False):
+    """Chance player p plays this game (k = how many of his team's games come before it from now; cleared: he has
+    been taken off the injury list since he last played, is_cleared)."""
     if p.get("left"):
         return 0.0
     if row is not None:
@@ -148,14 +195,23 @@ def chance(p, row, game, k):
                 return 0.0 if gd < d else 0.5 if (gd - d).days <= 6 else 1.0
             return 0.0 if gd < d else 1.0
         return 0.0 if k < 2 else 0.5 if k < 4 else 1.0
+    if cleared:
+        return p["fitBack"]
     if p["missedRun"] >= 3:
-        return 0.0 if k < 3 else p["recent"]
-    return p["recent"]
+        return 0.0 if k < 3 else p["fit"]
+    return p["fit"]
 
 
-def adjust(V, injuries, sched):
-    """For each game to come (sorted by tip-off): each side's adjustment in points and the players behind it."""
+def day(iso):
+    d = datetime.date.fromisoformat(iso[:10])
+    return f"{d.day} {d:%b}"
+
+
+def adjust(V, injuries, sched, team_dates=None):
+    """For each game to come (sorted by tip-off): each side's adjustment in points and the players behind it.
+    team_dates: {team: dates of its games so far} (for players taken off the injury list, is_cleared)."""
     inj = {r["id"]: r for r in (injuries or {}).get("players", []) if r.get("id")}
+    clr = {(c.get("team"), c["id"]): c for c in (injuries or {}).get("cleared", []) if c.get("id")}
     k = collections.Counter()
     out = []
     for g in sched:
@@ -166,20 +222,28 @@ def adjust(V, injuries, sched):
                 row = inj.get(p["id"])
                 if row is not None and row.get("team") not in (t, None):
                     row = None                      # listed for another club now: leave him to that club
-                c = chance(p, row, g, k[t])
+                cc = clr.get((t, p["id"]))
+                cl = row is None and is_cleared(p, cc, (team_dates or {}).get(t, []))
+                c = chance(p, row, g, k[t], cl)
                 x = (c - p["share"]) * p["mpg"] / 40
                 v = x * p["value"]
                 tot += v
                 if abs(v) >= 0.25:
-                    nrec = min(5, p["G"])
                     J = p.get("joined")
+                    pre = p["G"] - (p["fitN"] + p["fitOut"])          # the team's games before his first for it
+                    skip = [f"the {pre} before his first" if pre else "",
+                            "" if not p["fitOut"] else f"{p['fitOut']} missed in a row" if p["fitRuns"] == 1
+                            else f"{p['fitOut']} missed in {p['fitRuns']} runs of 3+"]
+                    skip = " and ".join(x for x in skip if x)
+                    left_out = f", {p['fitGp']} of {p['fitN']} leaving out {skip}" if skip else ""
                     why = ("no longer in the club's NBL squad" if p.get("left") else
                            ("injury list: " + (row.get("status") or "out") + (f", {row['injury']}" if row.get("injury") else "")
                            + (f", back {row['ret']}" if row.get("ret") and row["ret"].upper() != "TBC" else ", return TBC")) if row is not None
+                        else "back: taken off the injury list on %s, after missing %d games" % (day(cc["off"]), p["missedRun"]) if cl
                         else "joined from %s: played %d of %d games since" % (" and ".join(J["from"]), J["played"], J["since"]) if J
                         else ("not on the injury list but hasn't played the last %d games" % p["missedRun"] if c < 1 and p["missedRun"] >= 3 else
-                              "played %d of the last %d games, %d of %d this season" % (round(p["recent"] * nrec), nrec, p["gp"], p["G"])))
-                    det.append({"id": p["id"], "name": p["name"], "pts": round(v, 2), "chance": c, "why": why})
+                              "played %d of %d games this season%s" % (p["gp"], p["G"], left_out)))
+                    det.append({"id": p["id"], "name": p["name"], "pts": round(v, 2), "chance": round(c, 3), "why": why})
             side[s] = (round(tot, 2), sorted(det, key=lambda z: z["pts"]))
             k[t] += 1
         out.append(side)
