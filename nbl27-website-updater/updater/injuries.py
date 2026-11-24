@@ -226,9 +226,14 @@ def rounds():
 def others(listed, tg, pl, root=None):
     """Rotation players who didn't play in their team's latest game and aren't on the injury list (nor have left the
     club: no longer on its list in the NBL's squads, data/roster.json)."""
+    import availability as AV
     out = []
     fr = os.path.join(root, "data", "roster.json") if root else None
-    sq = {t: {norm(r.get("name")) for r in L} for t, L in ((json.load(open(fr)).get("teams") or {}) if fr and os.path.exists(fr) else {}).items() if L}
+    played = collections.defaultdict(set)
+    for t, P in pl.items():
+        for p in P.values():
+            played[AV.norm(p["name"])].add(t)
+    sq = AV.squads(json.load(open(fr)) if fr and os.path.exists(fr) else None, played)
     on = {(r["team"], r["id"]) for r in listed if r.get("id")} | {(r.get("boxTeam"), r["id"]) for r in listed if r.get("id")}
     for t, P in pl.items():
         dates = tg.get(t, [])
@@ -238,7 +243,7 @@ def others(listed, tg, pl, root=None):
             if (t, pid) in on or p["gp"] < ROT_GP or p["min"] / p["gp"] < ROT_MPG:
                 continue
             last = max(p["dates"])
-            if t in sq and norm(p["name"]) not in sq[t]:
+            if t in sq and AV.norm(p["name"]) not in sq[t]:
                 continue                        # left the club
             if last < dates[-1]:
                 out.append({"team": t, "name": p["name"], "id": pid, "gp": p["gp"], "mpg": round(p["min"] / p["gp"], 1),
