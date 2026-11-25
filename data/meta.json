@@ -2,7 +2,7 @@
  "status": {
   "lastGameDate": "2026-11-22",
   "source": "ESPN box scores, checked against the NBL's official box scores; lineups, shots, rotations, clutch and assists from the NBL's own play-by-play (ESPN's where it doesn't add up); full rebuild once a day",
-  "updatedAt": "2026-11-25T08:59:22+11:00",
+  "updatedAt": "2026-11-26T08:58:40+11:00",
   "games": 75,
   "changes": [],
   "official": {
@@ -783,7 +783,7 @@
     "2026-11-21 Tasmania JackJumpers: official box has Ryley Haywood (00:01, 0 pts), ESPN's box score does not - added from the official box score",
     "2026-11-21 Tasmania JackJumpers: official box has Jed Richardson (00:01, 0 pts), ESPN's box score does not - added from the official box score"
    ],
-   "checkedAt": "2026-11-25T08:59:22+11:00"
+   "checkedAt": "2026-11-26T08:58:40+11:00"
   }
  },
  "shots_status": {
@@ -791,7 +791,7 @@
    "x": 25,
    "y": 0
   },
-  "checkedAt": "2026-11-25T08:59:22+11:00",
+  "checkedAt": "2026-11-26T08:58:40+11:00",
   "games": 75,
   "medianErr": 0.24,
   "mismatches": 1,
@@ -801,12 +801,12 @@
   }
  },
  "players_status": {
-  "checkedAt": "2026-11-25T08:59:22+11:00",
+  "checkedAt": "2026-11-26T08:58:40+11:00",
   "games": 75,
   "mismatches": 0
  },
  "lineups_status": {
-  "checkedAt": "2026-11-25T08:59:22+11:00",
+  "checkedAt": "2026-11-26T08:58:40+11:00",
   "games": 75,
   "invalid": 1,
   "method": "Who is on the floor: the NBL's own play-by-play (every substitution recorded) wherever it reproduces the official box score - every player's minutes and plus-minus (nbl_lineups.py); otherwise solved from ESPN play-by-play and matched to each player's official minutes and plus-minus (oncourt.py)",
@@ -835,7 +835,7 @@
   ]
  },
  "pshots_status": {
-  "checkedAt": "2026-11-25T08:59:22+11:00",
+  "checkedAt": "2026-11-26T08:58:40+11:00",
   "games": 75,
   "basket": {
    "x": 25,
@@ -854,7 +854,7 @@
   "frame": "x across the court 0-50 ft with the basket at 25, y = feet from the basket toward halfway"
  },
  "events_status": {
-  "checkedAt": "2026-11-25T08:59:22+11:00",
+  "checkedAt": "2026-11-26T08:58:40+11:00",
   "games": 75,
   "badTeamGames": 1,
   "sources": {
@@ -877,7 +877,7 @@
   "method": "Rotations, clutch, possessions and assists from the NBL's own play-by-play wherever its lineups reproduce the official box score (nbl_events.py); otherwise from ESPN's (events.py)"
  },
  "periods_status": {
-  "checkedAt": "2026-11-25T08:59:22+11:00",
+  "checkedAt": "2026-11-26T08:58:40+11:00",
   "games": 75,
   "notes": [
    "team stats by period: 74 by period, 1 last run's kept",
