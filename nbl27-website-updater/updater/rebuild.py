@@ -19,7 +19,8 @@ however old, is picked up. Steps:
   8. Refresh the Player cards (bios.py), then the projected ladder (ladder.py -> data/ladder.json) and the matchup
      facts (matchups.py -> data/matchups.json, data/matchups_played.json), then what happened in each newly played
      game (recaps.py -> the game's 'recap' in data/matchups_played.json), then every player's impact rating
-     (impact.py -> data/impact.json), then each NBL27 player's archetype (archetypes.py -> data/archetypes.json).
+     (impact.py -> data/impact.json), then each NBL27 player's archetype (archetypes.py -> data/archetypes.json),
+     then the RAPM split (factors.py -> data/factors.json).
      The injury list (injuries.py -> data/injuries.json) is a separate step of the daily update, after this one.
 
 Usage: python3 rebuild.py <repo_root> [settle_hours=8]
@@ -433,6 +434,18 @@ def main():
             print("archetypes step failed: previous archetypes kept:", repr(ex)[:300])
     else:
         print("archetypes step skipped (the official data couldn't be read): previous archetypes kept")
+    # The RAPM split (factors.py -> data/factors.json, the Impact tab's "RAPM split" view): every player-season since
+    # 2015-16 rated from the floor alone and split into six factors, from the same stints as the impact step. If the
+    # official data couldn't be read, or it fails, the previous data/factors.json stays (its status.computedAt shows when).
+    if off_ok:
+        try:
+            import factors as FA
+            for line in FA.run(root, off, cmp["pairs"], O.nbl27_index(off)):
+                print(line)
+        except Exception as ex:
+            print("factors step failed: previous RAPM split kept:", repr(ex)[:300])
+    else:
+        print("factors step skipped (the official data couldn't be read): previous RAPM split kept")
 
 
 if __name__ == "__main__":
