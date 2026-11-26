@@ -19,7 +19,7 @@ however old, is picked up. Steps:
   8. Refresh the Player cards (bios.py), then the projected ladder (ladder.py -> data/ladder.json) and the matchup
      facts (matchups.py -> data/matchups.json, data/matchups_played.json), then what happened in each newly played
      game (recaps.py -> the game's 'recap' in data/matchups_played.json), then every player's impact rating
-     (impact.py -> data/impact.json).
+     (impact.py -> data/impact.json), then each NBL27 player's archetype (archetypes.py -> data/archetypes.json).
      The injury list (injuries.py -> data/injuries.json) is a separate step of the daily update, after this one.
 
 Usage: python3 rebuild.py <repo_root> [settle_hours=8]
@@ -420,6 +420,19 @@ def main():
             print("impact step failed: previous ratings kept:", repr(ex)[:300])
     else:
         print("impact step skipped (the official data couldn't be read): previous ratings kept")
+    # Player archetypes (archetypes.py -> data/archetypes.json, the Archetypes tab): every NBL27 player with 100+ minutes
+    # placed in one of the fixed archetypes (archetypes_model.json, fitted on NBL19-NBL26) from this run's NBL
+    # play-by-play and data/impact.json's rates. If the official data couldn't be read, or it fails, the previous
+    # data/archetypes.json stays (its status.computedAt shows when).
+    if off_ok:
+        try:
+            import archetypes as AR
+            for line in AR.run(root, off, cmp["pairs"]):
+                print(line)
+        except Exception as ex:
+            print("archetypes step failed: previous archetypes kept:", repr(ex)[:300])
+    else:
+        print("archetypes step skipped (the official data couldn't be read): previous archetypes kept")
 
 
 if __name__ == "__main__":
