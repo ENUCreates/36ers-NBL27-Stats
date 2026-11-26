@@ -20,6 +20,7 @@
   --good:#6edaa8; --good-bg:#15443e; --bad:#ff9aa6; --bad-bg:#582238;
   --miss:#ff9aa6; --made:#57d39b; --made-edge:#06231a; --midc:#7f95bd;
   --warn:#ffd27a; --warn-bg:#3b3111; --pill-bg:transparent;
+  --big:#f2bb4b; --per:#6aa7ff;
   --body:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --display:"Archivo","Arial Narrow",system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
   --mono:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -34,6 +35,7 @@
   --good:#0e7446; --good-bg:#dbf1e4; --bad:#bd2037; --bad-bg:#fbe0e4;
   --miss:#bd2037; --made:#17935a; --made-edge:#ffffff; --midc:#8fa3c4;
   --warn:#855600; --warn-bg:#fdf1d8;
+  --big:#a86a00; --per:#1d5fc7;
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -617,6 +619,38 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
 .imp-f{display:flex;flex-direction:column;gap:5px}
 .imp-f .k{font:600 11.5px/1 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .imp-f select{font:500 13px var(--body);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:7px 8px}
+/* Archetypes tab: one row per group (name, top player, a strip on the shared impact axis); a phone stacks the strip
+   under the name, a wide screen puts the three side by side */
+.arc-legend{display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--muted);font:600 11px/1.4 var(--body);text-transform:uppercase;letter-spacing:.03em;margin:0 0 6px}
+.arc-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.arc-row{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l r" "s s";gap:2px 10px;align-items:center;padding:9px 0 7px;border-top:1px solid var(--line-soft)}
+.arc-row.axis{border-top:0;padding:0}
+.arc-row.axis .arc-l,.arc-row.axis .arc-r{display:none}
+.arc-l{grid-area:l;display:flex;gap:9px;align-items:stretch;min-width:0;cursor:pointer;border-radius:2px}
+.arc-l:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.arc-k{flex:0 0 4px;border-radius:2px}
+.arc-name{font:800 condensed 16px/1.15 var(--display);display:flex;align-items:center;gap:6px}
+.arc-name .chev{font:600 11px var(--body);color:var(--faint)}
+.arc-med{color:var(--muted);font-size:12px;line-height:1.35}
+.arc-s{grid-area:s;min-width:0}
+.arc-strip{display:block;width:100%;height:auto;overflow:visible}
+.arc-r{grid-area:r;display:flex;align-items:center;gap:8px;justify-content:flex-end;text-align:right;min-width:0;font-size:12px;line-height:1.3}
+.arc-r b{display:block;font-size:12.5px;color:var(--ink)}
+.arc-r span.v{color:var(--muted)}
+.arc-det{padding:4px 0 14px 13px;border-left:0}
+.arc-desc{margin:0 0 8px;color:var(--ink);font-size:13px;max-width:80ch}
+.arc-sig{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.arc-sig span{border:1px solid var(--line);border-radius:3px;padding:4px 8px;font-size:12px;color:var(--muted)}
+.arc-sig b{color:var(--ink);margin-right:4px}
+table.arc-t{border-collapse:collapse;width:100%;font-size:12.5px}
+table.arc-t th{font:600 11px/1.2 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.03em;text-align:right;padding:4px 6px;border-bottom:1px solid var(--line)}
+table.arc-t td{text-align:right;padding:5px 6px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+table.arc-t th.tm,table.arc-t td.tm{text-align:left}
+table.arc-t td.tm small{display:block;color:var(--faint);font-size:11px;white-space:normal}
+table.arc-t tr.hl td{background:var(--soft)}
+.arc-more{margin-top:8px}
+@media (min-width:861px){.arc-row{grid-template-columns:220px minmax(0,1fr) 210px;grid-template-areas:"l s r";gap:0 16px}
+  .arc-r{justify-content:flex-start;text-align:left}.arc-row.axis .arc-l,.arc-row.axis .arc-r{display:block}}
 .imp-teams{margin-top:12px;display:flex;flex-wrap:wrap;gap:4px}
 .imp-teams .chip{padding:6px 9px;font-size:12px}
 table.imp td.tm{min-width:200px}
@@ -685,6 +719,7 @@ tr.imp-det:hover>td{background:var(--bg)}
     <button class="tab" role="tab" id="tab-players" aria-selected="false">Players</button>
     <button class="tab" role="tab" id="tab-cards" aria-selected="false">Player cards</button>
     <button class="tab" role="tab" id="tab-impact" aria-selected="false">Impact</button>
+    <button class="tab" role="tab" id="tab-arch" aria-selected="false">Archetypes</button>
     <button class="tab" role="tab" id="tab-injuries" aria-selected="false">Injuries</button>
     <button class="tab" role="tab" id="tab-coaches" aria-selected="false">Head coaches</button>
     <button class="tab" role="tab" id="tab-lineups" aria-selected="false">Lineups</button>
@@ -821,6 +856,10 @@ tr.imp-det:hover>td{background:var(--bg)}
 
   <section id="view-impact" hidden>
     <div id="impact"></div>
+  </section>
+
+  <section id="view-arch" hidden>
+    <div id="arch"></div>
   </section>
 
   <section id="view-sim" hidden>
@@ -2798,7 +2837,7 @@ function renderInjuries(){
 
 // re-draw the open tab (used when the headshots arrive)
 function renderVisible(){const on=x=>!document.getElementById("view-"+x).hidden;
-  if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("h2h"))renderH2H();if(on("rotations"))renderRotations();if(on("cards"))renderCards();if(on("coaches"))renderCoaches();if(on("ladder"))renderLadder();if(on("injuries"))renderInjuries();if(on("impact")&&IMP)renderImpact()}
+  if(on("team"))renderTeam();if(on("players"))renderPlayers();if(on("lineups"))renderLineups();if(on("h2h"))renderH2H();if(on("rotations"))renderRotations();if(on("cards"))renderCards();if(on("coaches"))renderCoaches();if(on("ladder"))renderLadder();if(on("injuries"))renderInjuries();if(on("impact")&&IMP)renderImpact();if(on("arch")&&ARC)renderArch()}
 /*SIM-ENGINE-START*/
 // Game simulator engine (Simulator tab). No DOM, so the same code runs in the page and in the checks
 // (nbl27-website-updater/updater/simcheck.js).
@@ -3454,11 +3493,131 @@ function impNotes(cur,st){
     <span>± = one standard deviation of the estimate: players within about 2 points of each other aren't reliably different. ${impLab(impS)}: the on-court part uses the ${cur.used} of ${cur.games} games whose play-by-play adds up; the box score uses every game. Rebuilt every morning; past seasons move a little as new games sharpen each player's career numbers. Updated ${st.computedAt?dShort(st.computedAt.slice(0,10)):"–"}.</span>
   </div>`;
 }
+// ---------- Archetypes tab: data/archetypes.json (archetypes.py: each player-season's group) with data/impact.json ----------
+let ARC=null,arcS=null,arcMin=15,arcTeam="Adelaide 36ers",arcOpen=null,arcMore={},arcRT=null;
+try{const v=localStorage.getItem("nbl27-arct");if(v!==null)arcTeam=v}catch(e){}
+const ARCF={usage:["Usage","shots + 0.44 × free throws + turnovers per 100 possessions","n"],ast:["Ast","assists per 100 possessions","n"],
+  tov:["TO","turnovers per 100 possessions","n"],tpar:["3PA","threes as a share of his shots","p"],ftr:["FT rate","free-throw attempts per shot","p"],
+  oreb:["OReb","offensive rebounds per 100 possessions","n"],dreb:["DReb","defensive rebounds per 100 possessions","n"],
+  blk:["Blk","blocks per 100 possessions","n"],stl:["Stl","steals per 100 possessions","n"],pf:["Fouls","fouls per 100 possessions","n"],
+  ra:["Rim","shots at the rim (the restricted area)","p"],paint:["Paint","shots in the paint outside the restricted area","p"],
+  mid:["Mid","mid-range shots","p"],c3of3:["Corner 3","his threes taken from the corners","p"],fin:["Dunks","dunks and lobs, as a share of his shots","p"],
+  hook2:["Hooks","hook shots, as a share of his twos","p"],ast2:["Ast'd 2s","his made twos that were assisted","p"],ast3:["Ast'd 3s","his made threes that were assisted","p"]};
+const arcV=(f,v)=>v==null||!isFinite(v)?"–":ARCF[f][2]==="p"?Math.round(100*v)+"%":v.toFixed(1);
+const arcQ=(a,q)=>{if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),i=(s.length-1)*q,lo=Math.floor(i),hi=Math.ceil(i);return s[lo]+(s[hi]-s[lo])*(i-lo)};
+const arcEsc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function impLoad(){if(IMP)return IMP;const d=await jget("impact.json");
+  if(d&&d.seasons){IMP=d;IMPP={};Object.entries(IMP.seasons).forEach(([s,v])=>v.players.forEach(r=>{(IMPP[r.k]=IMPP[r.k]||[]).push([s,r])}))}return IMP}
+// one group's strip: this season = every player as a dot (packed so none overlap) over the group's middle half and
+// median; all seasons = the shape of the group's player-seasons (a smoothed density), middle half, median, top player
+function arcStrip(row,all,sx,W,lo,hi,ticks,kcol){
+  const r=4.6,pts=row.L,grid=ticks.map(t=>`<line x1="${sx(t)}" x2="${sx(t)}" y1="0" y2="H" stroke="var(--line-soft)" stroke-width="1"${t===0?' stroke-dasharray="3 3" stroke="var(--faint)"':""}/>`).join("");
+  let body="",h;
+  if(!pts.length){h=24;return `<svg class="arc-strip" viewBox="0 0 ${W} ${h}" role="img" aria-label="No players">${grid.replace(/H/g,h)}<text x="${W/2}" y="16" text-anchor="middle" fill="var(--faint)" font-size="11">no players</text></svg>`}
+  const q=(y)=>`<line x1="${sx(row.q1)}" x2="${sx(row.q3)}" y1="${y}" y2="${y}" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" opacity=".85"/><circle cx="${sx(row.med)}" cy="${y}" r="4.6" fill="var(--bg)" stroke="var(--ink)" stroke-width="2"/>`;
+  if(!all){
+    // pack the dots: each goes as close to the middle line as it can without touching one already placed
+    const placed=[],ord=[...pts].sort((a,b)=>hl(a)-hl(b)||a.T-b.T);
+    ord.forEach(p=>{const x=sx(p.T);let y=0;for(let k=0;k<40;k++){const off=(k%2?1:-1)*Math.ceil(k/2)*(2*r+1);if(placed.every(o=>Math.hypot(o.x-x,o.y-off)>=2*r+0.6)){y=off;break}}placed.push({x,y,p})});
+    // highlighted players' surnames above their dots, a level higher wherever two would overlap
+    const lab=placed.filter(o=>hl(o.p)).sort((a,b)=>a.x-b.x).map(o=>({o,t:o.p.r.n.split(" ").slice(-1)[0]}));
+    const lv=[];lab.forEach(L=>{const w=L.t.length*5.6+6;L.x0=L.o.x-w/2;L.x1=L.o.x+w/2;let k=0;
+      while(lv[k]&&lv[k].some(M=>L.x0<M.x1&&M.x0<L.x1&&true))k++;(lv[k]=lv[k]||[]).push(L);L.k=k});
+    // labels stand on one line just above the whole swarm (a level higher, 12 px, wherever two would overlap), each with
+    // a thin line down to its dot when it isn't right on top of it
+    const sTop=Math.min(...placed.map(o=>o.y-r)),kmax=lab.length?Math.max(...lab.map(L=>L.k)):-1;
+    const top=Math.max(r+4,-sTop+2,lab.length?-(sTop-3-12*kmax)+10:0),bot=Math.max(r+2,...placed.map(o=>o.y+r+2));
+    const cy=top;h=Math.ceil(top+bot+16);
+    body=placed.map(o=>{const H=hl(o.p),c=H?"var(--accent)":kcol;
+      return `<circle cx="${o.x.toFixed(1)}" cy="${(cy+o.y).toFixed(1)}" r="${r}" fill="${c}" stroke="${H?"var(--ink)":"var(--bg)"}" stroke-width="${H?1.4:1}"><title>${arcEsc(o.p.r.n)} (${arcEsc(disp(o.p.r.t))}) ${isg(o.p.T)}</title></circle>`}).join("")
+      +lab.map(L=>{const yd=cy+L.o.y-r,yt=cy+sTop-3-12*L.k;
+        return (yd-yt>6?`<line x1="${L.o.x.toFixed(1)}" x2="${L.o.x.toFixed(1)}" y1="${(yt+2).toFixed(1)}" y2="${(yd-1).toFixed(1)}" stroke="var(--faint)" stroke-width=".8"/>`:"")
+          +`<text x="${L.o.x.toFixed(1)}" y="${yt.toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">${arcEsc(L.t)}</text>`}).join("")
+      +q(h-8);
+  }else{
+    // a Gaussian density of the group's impact (Silverman's bandwidth), each group scaled to the same height
+    const T=pts.map(p=>p.T),n=T.length,m=T.reduce((a,b)=>a+b,0)/n,sd=Math.sqrt(T.reduce((a,b)=>a+(b-m)*(b-m),0)/Math.max(1,n-1))||1;
+    const bw=Math.max(.45,1.06*sd*Math.pow(n,-.2)),a0=Math.max(lo,Math.min(...T)-2*bw),a1=Math.min(hi,Math.max(...T)+2*bw),N=90;
+    const dens=[];for(let i=0;i<=N;i++){const x=a0+(a1-a0)*i/N;let d=0;T.forEach(t=>{const z=(x-t)/bw;d+=Math.exp(-.5*z*z)});dens.push([x,d])}
+    const dm=Math.max(...dens.map(d=>d[1])),Hh=13;h=2*Hh+14;const cy=h/2;
+    const up=dens.map(([x,d])=>`${sx(x).toFixed(1)},${(cy-Hh*d/dm).toFixed(1)}`),dn=dens.map(([x,d])=>`${sx(x).toFixed(1)},${(cy+Hh*d/dm).toFixed(1)}`).reverse();
+    body=`<polygon points="${up.concat(dn).join(" ")}" fill="${kcol}" fill-opacity=".32" stroke="${kcol}" stroke-width="1.2"/>`
+      +pts.filter(hl).map((p,i)=>`<circle cx="${sx(p.T).toFixed(1)}" cy="${(cy+((i*7)%11-5)).toFixed(1)}" r="2.6" fill="var(--accent)"><title>${arcEsc(p.r.n)} ${impLab(p.s)} ${isg(p.T)}</title></circle>`).join("")
+      +q(cy)+`<circle cx="${sx(row.top.T)}" cy="${cy}" r="4.2" fill="var(--ink)"><title>${arcEsc(row.top.r.n)} ${impLab(row.top.s)} ${isg(row.top.T)}</title></circle>`;
+  }
+  return `<svg class="arc-strip" viewBox="0 0 ${W} ${h}" role="img" aria-label="${arcEsc(row.g.name)}: median ${isg(row.med)}">${grid.replace(/H/g,h)}${body}</svg>`;
+  function hl(p){return arcTeam&&p.ts.includes(arcTeam)}
+}
+async function renderArch(){
+  const el=document.getElementById("arch");
+  if(!ARC||!IMP){
+    el.innerHTML=`<div class="panel"><div class="empty"><strong>Loading the archetypes…</strong></div></div>`;
+    const [a]=await Promise.all([ARC||jget("archetypes.json"),impLoad()]);
+    if(a&&Array.isArray(a.groups)&&a.seasons)ARC=a;
+    if(!ARC||!IMP){el.innerHTML=`<div class="panel"><div class="empty"><strong>Archetypes unavailable</strong>The archetypes file couldn't be loaded. It is rebuilt every morning.</div></div>`;return}
+  }
+  const keys=Object.keys(ARC.seasons).filter(s=>IMP.seasons[s]).sort(),cur=keys[keys.length-1],G=ARC.groups,st=ARC.status||{};
+  if(!arcS||(arcS!=="all"&&!keys.includes(arcS)))arcS=cur;
+  const all=arcS==="all",first=impLab(keys[0]),last=impLab(cur);
+  const P=[];
+  (all?keys:[arcS]).forEach(s=>{const A=ARC.seasons[s]||{};(IMP.seasons[s]?.players||[]).forEach(r=>{const a=A[r.k];if(!a)return;
+    const mpg=r.g?r.mn/r.g:0;if(mpg<arcMin)return;P.push({s,r,g:a[0],g2:a[1],fit:a[2],x:a[3],T:r.o+r.d,mpg,ts:r.ts||[r.t]})})});
+  const teams=[...new Set(P.flatMap(p=>p.ts))].sort((a,b)=>disp(a).localeCompare(disp(b)));
+  const rows=G.map(g=>{const L=P.filter(p=>p.g===g.id).sort((a,b)=>b.T-a.T),T=L.map(p=>p.T);
+    return {g,L,med:arcQ(T,.5),q1:arcQ(T,.25),q3:arcQ(T,.75),top:L[0]}}).sort((a,b)=>(b.med??-99)-(a.med??-99));
+  const xs=P.map(p=>p.T),lo=Math.min(-5,Math.floor(Math.min(0,...xs)/2.5)*2.5),hi=Math.max(5,Math.ceil(Math.max(0,...xs)/2.5)*2.5);
+  const ticks=[];for(let t=Math.ceil(lo/5)*5;t<=hi;t+=5)ticks.push(t);
+  const cw=el.clientWidth||document.documentElement.clientWidth-24,W=Math.max(220,Math.round(innerWidth>860?cw-462:cw)),pad=8;
+  const sx=v=>pad+(W-2*pad)*(v-lo)/(hi-lo);
+  const kc=g=>g.kind==="big"?"var(--big)":"var(--per)",unit=all?"player-seasons":"players";
+  const axis=(lab)=>`<div class="arc-row axis"><div class="arc-l"></div><div class="arc-s"><svg class="arc-strip" viewBox="0 0 ${W} ${lab?30:16}" aria-hidden="true">${ticks.map(t=>`<text x="${sx(t)}" y="12" text-anchor="middle" font-size="11" fill="var(--muted)">${t>0?"+"+t:t===0?"0":"−"+Math.abs(t)}</text>`).join("")}${lab?`<text x="${W/2}" y="27" text-anchor="middle" font-size="10.5" fill="var(--faint)">IMPACT: POINTS PER 100 POSSESSIONS VS AN AVERAGE NBL PLAYER</text>`:""}</svg></div><div class="arc-r"></div></div>`;
+  const topBlock=row=>{const t=row.top;if(!t)return "";
+    return `${avatar({id:t.r.e||("imp:"+t.r.k),name:t.r.n},t.r.t)}<div><b>${arcEsc(t.r.n)}</b><span class="v">${t.ts.map(itc).join("/")}${all?" "+impLab(t.s):""} · ${isg(t.T)}</span></div>`};
+  const det=row=>{const g=row.g,more=arcMore[g.id],L=more?row.L:row.L.slice(0,12),sig=g.sig||[];
+    return `<div class="arc-det" id="arcd-${g.id}"><p class="arc-desc">${arcEsc(g.desc)}</p>
+      <div class="arc-sig">${sig.map((f,i)=>`<span title="${ARCF[f][1]}"><b>${arcV(f,g.profile[f])}</b>${ARCF[f][0]} ${(g.sigDir||[])[i]>0?"▲":"▼"}</span>`).join("")}<span>typical of the ${g.n} player-seasons it was built on, NBL19–NBL26</span></div>
+      <div class="scroll"><table class="arc-t"><thead><tr><th class="tm">Player</th>${all?"<th>Season</th>":""}<th>Team</th><th title="Overall impact">Impact</th><th>MPG</th>${sig.map(f=>`<th title="${ARCF[f][1]}">${ARCF[f][0]}</th>`).join("")}</tr></thead><tbody>
+      ${L.map(p=>`<tr${arcTeam&&p.ts.includes(arcTeam)?' class="hl"':""}><td class="tm">${ppname(p.r.e||("imp:"+p.r.k),p.r.n,p.r.t)}${p.fit<.08?`<small>also close to ${arcEsc(G[p.g2].name)}</small>`:""}</td>${all?`<td>${impLab(p.s)}</td>`:""}<td>${p.ts.map(itc).join("/")}</td><td><b>${isg(p.T)}</b></td><td>${p.mpg.toFixed(1)}</td>${sig.map(f=>`<td>${arcV(f,p.x[ARC.feats.indexOf(f)])}</td>`).join("")}</tr>`).join("")}
+      </tbody></table></div>${row.L.length>12?`<button class="chip arc-more" data-arcmore="${g.id}">${more?"Show the top 12":"Show all "+row.L.length}</button>`:""}</div>`};
+  const head=`<div class="panel imp-top">
+    <div class="imp-ctl">
+      <label class="imp-f"><span class="k">Season</span><select id="arcSeason" aria-label="Season"><option value="all"${all?" selected":""}>All seasons (${first}–${last})</option>${[...keys].reverse().map(s=>`<option value="${s}"${s===arcS?" selected":""}>${impLab(s)} (${s})</option>`).join("")}</select></label>
+      <label class="imp-f"><span class="k">Minutes a game</span><select id="arcMin" aria-label="Minimum minutes a game">${[10,15,20,25].map(m=>`<option value="${m}"${m===arcMin?" selected":""}>${m}+</option>`).join("")}</select></label>
+    </div>
+    <div class="chips imp-teams" role="group" aria-label="Highlight a team"><button class="chip" data-arct="" aria-pressed="${!arcTeam}">No highlight</button>${teams.map(t=>`<button class="chip" data-arct="${t}" aria-pressed="${arcTeam===t}" title="${disp(t)}">${itc(t)}</button>`).join("")}</div>
+  </div>`;
+  const through=!all&&arcS===cur&&st.through?` · games to ${dShort(st.through)}`:"";
+  el.innerHTML=head+`<div class="panel">
+    <div class="team-head"><h2>${all?`${first}–${last}`:impLab(arcS)}: impact by archetype</h2><span class="rec">${P.length} ${unit} averaging ${arcMin}+ minutes${through} · sorted by median impact · tap a group for its players</span></div>
+    <div class="arc-legend"><span><i style="background:var(--big)"></i>Big</span><span><i style="background:var(--per)"></i>Perimeter</span>${arcTeam?`<span><i style="background:var(--accent)"></i>${arcEsc(disp(arcTeam))}</span>`:""}<span>${all?"Shape = where the group's player-seasons fall · ":"Dot = a player · "}bar = middle half · ring = median${all?" · dot = top player-season":""}</span></div>
+    ${axis(false)}
+    ${rows.map(row=>{const g=row.g,open=arcOpen===g.id;
+      return `<div class="arc-row"><div class="arc-l" role="button" tabindex="0" aria-expanded="${open}" aria-controls="arcd-${g.id}" data-arcg="${g.id}"><span class="arc-k" style="background:${kc(g)}"></span><div><div class="arc-name">${arcEsc(g.name)}<span class="chev">${open?"▲":"▼"}</span></div><div class="arc-med">${row.L.length?`median ${isg(row.med)} · ${row.L.length} ${row.L.length===1?unit.replace(/s$/,""):unit}`:`no ${unit}`}</div></div></div>
+        <div class="arc-s">${arcStrip(row,all,sx,W,lo,hi,ticks,kc(g))}</div><div class="arc-r">${topBlock(row)}</div></div>${open?det(row):""}`}).join("")}
+    ${axis(true)}
+  </div>`+arcNotes(st,first,last);
+  el.querySelector("#arcSeason").onchange=e=>{arcS=e.target.value;arcOpen=null;arcMore={};renderArch()};
+  el.querySelector("#arcMin").onchange=e=>{arcMin=+e.target.value;renderArch()};
+  el.querySelectorAll("[data-arct]").forEach(b=>b.onclick=()=>{arcTeam=b.dataset.arct;try{localStorage.setItem("nbl27-arct",arcTeam)}catch(e){}renderArch()});
+  el.querySelectorAll("[data-arcg]").forEach(b=>{const go=()=>{const id=+b.dataset.arcg;arcOpen=arcOpen===id?null:id;renderArch()};
+    b.onclick=go;b.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});
+  el.querySelectorAll("[data-arcmore]").forEach(b=>b.onclick=()=>{const id=+b.dataset.arcmore;arcMore[id]=!arcMore[id];renderArch()});
+}
+function arcNotes(st,first,last){
+  return `<div class="notes imp-notes">
+    <span>Archetypes group players by how they play, never by how well: where their shots come from (at the rim, in the paint, mid-range, corner and above-the-break threes), dunks and lobs, hooks, how many of their made twos and threes were assisted, usage, assists, turnovers, free-throw rate, rebounds, blocks, steals and fouls. Each is measured against that season's players averaging ${st.minMpg||15}+ minutes, and weighted so each idea counts about once.</span>
+    <span>The ten groups were fitted once on every player-season from ${first} to NBL26 (${(st.trained||661).toLocaleString()} averaging ${st.minMpg||15}+ minutes): ${first} is when the league's play-by-play started logging shot types such as pull-ups, drives and hooks. Every morning each ${last} player with ${st.minMinutes||100}+ minutes is placed in the nearest group from his numbers this season, so a player can move as his season settles.</span>
+    <span>Styles run into each other rather than falling into boxes: refitted on resampled seasons, the groups came out about half the same (agreement ${(st.stability??0.51).toFixed(2)}, where 1 = identical groups and 0 = no better than chance), so read the edges loosely. "Also close to" marks a player nearly as close to a second group.</span>
+    <span>Impact = the Impact tab's overall rating: the points per 100 possessions a player adds against an average NBL player, offence plus defence. Bar = the middle half of the group; ring = its median; groups are sorted by median. Gold = the four groups that rebound and protect the rim most (bigs and forwards); blue = perimeter players. ▲▼ = what sets a group apart from the others of its kind.</span>
+    <span>Data: the official NBL play-by-play and shot positions (for ${last} the NBL's own feed, read each morning; for earlier seasons the official files republished by nblR). Updated ${st.computedAt?dShort(st.computedAt.slice(0,10)):"–"}.</span>
+  </div>`;
+}
+addEventListener("resize",()=>{clearTimeout(arcRT);arcRT=setTimeout(()=>{if(ARC&&!document.getElementById("view-arch").hidden)renderArch()},200)});
 function show(v){
   try{document.getElementById("tab-"+v).scrollIntoView({block:"nearest",inline:"nearest"})}catch(e){}
-  ["league","ladder","team","players","cards","impact","injuries","coaches","lineups","h2h","rotations","sim"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
+  ["league","ladder","team","players","cards","impact","arch","injuries","coaches","lineups","h2h","rotations","sim"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
   if(v!=="league"&&v!=="ladder"&&v!=="injuries"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
-  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="sim")renderSim();if(v==="impact")renderImpact();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();if(v==="ladder")renderLadder();if(v==="injuries")renderInjuries();
+  if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="sim")renderSim();if(v==="impact")renderImpact();if(v==="arch")renderArch();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();if(v==="ladder")renderLadder();if(v==="injuries")renderInjuries();
 }
 document.getElementById("tab-ladder").onclick=()=>show("ladder");
 document.getElementById("tab-injuries").onclick=()=>show("injuries");
@@ -3467,6 +3626,7 @@ document.getElementById("tab-coaches").onclick=()=>show("coaches");
 document.getElementById("tab-rotations").onclick=()=>show("rotations");
 document.getElementById("tab-sim").onclick=()=>show("sim");
 document.getElementById("tab-impact").onclick=()=>show("impact");
+document.getElementById("tab-arch").onclick=()=>show("arch");
 document.getElementById("tab-league").onclick=()=>show("league");
 document.getElementById("tab-team").onclick=()=>show("team");
 document.getElementById("tab-players").onclick=()=>show("players");
