@@ -6,13 +6,14 @@ published, so the daily update republishes only those, and checks a published fi
   python3 claudepub.py plan <repo_root> <plan.json>     files to publish -> plan.json, and prints the Artifact `files` map
   python3 claudepub.py done <repo_root> <plan.json>     after a successful publish: record those files as published
   python3 claudepub.py verify <repo_root> <published path> <downloaded copy>   same bytes as the repo's file?
+  python3 claudepub.py check <repo_root> <list_files result>   does the page serve every file as the repo has it?
 
 The record of what was published is nbl27-website-updater/claude_published.json ({published path: sha256}), kept in
 the repo so every run starts from it. Paths in the `files` map are relative to the repo root (publish with
 `root` = the repo folder). The page itself is nbl27-website-updater/claude_page.html (published as the artifact's
 page, not as a file); plan.json says whether it changed.
 """
-import hashlib, json, os, sys
+import hashlib, json, os, re, sys
 
 MANIFEST = "nbl27-website-updater/claude_published.json"
 PAGE = "nbl27-website-updater/claude_page.html"
@@ -94,6 +95,37 @@ def done(root, planfile):
     print(f"recorded {len(pl['record'])} file(s) and the page as published")
 
 
+def check(root, listing):
+    """Compare everything the Claude page serves with the repo: listing = mcp__claude-artifacts__list_files's result
+    saved to a file (as the tool result, or just its JSON). Every data file and headshot the page should have, and
+    the page itself (claude_index.html), must have the repo's sha256. Exit 1 if any differs or is missing."""
+    txt = open(listing, encoding="utf-8").read()
+    served = {}
+    try:
+        raw = json.loads(txt)
+        if isinstance(raw, list):           # a saved tool result: [{"type": "text", "text": "{...}"}, ...]
+            raw = json.loads("".join(x.get("text", "") for x in raw if isinstance(x, dict)))
+        served = {f["path"]: f.get("sha256") for f in raw.get("files", [])}
+    except (ValueError, AttributeError, TypeError):
+        pass
+    if not served:                          # anything else: pick the entries out of the text
+        for p, s in re.findall(r'\\?"path\\?":\s*\\?"([^"\\]+)\\?"[^{}]*?\\?"sha256\\?":\s*\\?"([0-9a-f]{64})', txt):
+            served[p] = s
+    if not served:
+        sys.exit("check: no files found in " + listing)
+    want = wanted(root)
+    want["index.html"] = sha(os.path.join(root, "nbl27-website-updater", "claude_index.html"))
+    bad = [p for p in sorted(want) if served.get(p) != want[p]]
+    print(f"{len(want) - len(bad)} of {len(want)} files match the repo" + ("" if bad else ": the Claude page is current"))
+    for p in bad:
+        print(("MISSING " if p not in served else "DIFFERS ") + p)
+    if bad:
+        src = lambda p: os.path.abspath(os.path.join(root, "nbl27-website-updater/claude_index.html" if p == "index.html" else p))
+        print("--- publish_files `files` to publish them again:")
+        print(json.dumps([{"as": p, "path": src(p)} for p in bad]))
+    sys.exit(1 if bad else 0)
+
+
 def verify(root, path, copy):
     a, b = sha(os.path.join(root, path)), sha(copy)
     print(("OK " if a == b else "MISMATCH ") + path + f" (repo {a[:12]}, published {b[:12]})")
@@ -108,5 +140,7 @@ if __name__ == "__main__":
         done(sys.argv[2], sys.argv[3])
     elif cmd == "verify":
         verify(sys.argv[2], sys.argv[3], sys.argv[4])
+    elif cmd == "check":
+        check(sys.argv[2], sys.argv[3])
     else:
         sys.exit(__doc__)
