@@ -651,6 +651,24 @@ table.arc-t tr.hl td{background:var(--soft)}
 .arc-more{margin-top:8px}
 @media (min-width:861px){.arc-row{grid-template-columns:220px minmax(0,1fr) 210px;grid-template-areas:"l s r";gap:0 16px}
   .arc-r{justify-content:flex-start;text-align:left}.arc-row.axis .arc-l,.arc-row.axis .arc-r{display:block}}
+.imp-mode{margin-bottom:12px}
+table.fac td.fc{line-height:1.1;min-width:46px}
+table.fac td.fc b{display:block;font-weight:600;color:var(--ink)}
+table.fac td.fc small{display:block;color:var(--faint);font-size:10.5px;margin-top:2px}
+table.fac td.fc.on b{font-weight:800}
+table.fac td.fc.up b{color:var(--good)}table.fac td.fc.dn b{color:var(--bad)}
+table.fac td.na{color:var(--faint)}
+table.fac tr.fgrp th{font:700 10.5px var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.07em;text-align:center;border-bottom:1px solid var(--line);padding:7px 4px 3px}
+table.fac .gs{border-left:1px solid var(--line)}
+@media (max-width:600px){
+  table.imp.fac td.tm{min-width:0;padding-left:2px;padding-right:6px}
+  table.imp.fac .irk{min-width:18px;margin-right:4px}
+  table.imp.fac td.tm .pn>.av{margin-right:6px}
+  table.imp.fac td.tm .pn>span:last-child{white-space:normal;min-width:120px;max-width:128px;line-height:1.2}
+  table.imp.fac td.tm .pn>span:last-child small{display:block;margin:2px 0 0}
+  table.imp.fac td.fc,table.imp.fac thead th:not(.tm){padding-left:5px;padding-right:5px}
+  table.imp.fac td.fc{min-width:40px}
+}
 .imp-teams{margin-top:12px;display:flex;flex-wrap:wrap;gap:4px}
 .imp-teams .chip{padding:6px 9px;font-size:12px}
 table.imp td.tm{min-width:200px}
@@ -3381,6 +3399,15 @@ function simPbp(g){
 // the formula's weights and each season's averages, so a player's breakdown below is the formula worked through.
 let IMP=null,IMPP=null,impS=null,impV="T",impMin=null,impTeam="",impSort=null,impOpen=null;
 try{const v=localStorage.getItem("nbl27-impv");if(["T","O","D"].includes(v))impV=v}catch(e){}
+// the RAPM split view (data/factors.json, factors.py): on-court RAPM split into six factors, databallr-style
+let FAC=null,impMode="ratings",facSort={k:"rapm",d:-1};
+try{if(localStorage.getItem("nbl27-impm")==="split")impMode="split"}catch(e){}
+const FACC=[["rapm","RAPM","Impact: points per 100 possessions his team gains with him on, against an average NBL player (offence + defence)"],
+  ["orapm","ORAPM","Offensive RAPM"],["drapm","DRAPM","Defensive RAPM"],
+  ["oTS","oTS","Shooting efficiency: his team's true shooting (luck-adjusted) with him on, in points"],["oTOV","oTOV","Ball security: fewer turnovers by his team, in points"],["oREB","oREB","Extra possessions: his team's offensive rebounding, in points"],
+  ["dTS","dTS","Shot suppression: opponents' true shooting held down, in points"],["dTOV","dTOV","Turnovers forced, in points"],["dREB","dREB","Stop completion: opponents' offensive rebounds denied, in points"],
+  ["resid","RESID","RAPM minus the six factors: what the split doesn't account for"],["pval","PVAL","Possession value: oTOV + oREB + dTOV + dREB"]];
+const FACG=[["Impact",3],["Offence",3],["Defence",3],["Other",2]];
 const IMPF={pts_x:"Points",fga:"Shot attempts",tpa:"3-point attempts",fta:"Free-throw attempts",ast:"Assists",tov:"Turnovers",
   oreb:"Offensive rebounds",dreb:"Defensive rebounds",stl:"Steals",blk:"Blocks",pf:"Fouls",mpg:"Minutes a game"};
 const IMPS={pts_x:"Points",fga:"Shot attempts",tpa:"3PT attempts",fta:"FT attempts",ast:"Assists",tov:"Turnovers",
@@ -3406,6 +3433,11 @@ async function renderImpact(){
     if(!IMP){el.innerHTML=`<div class="panel"><div class="empty"><strong>Impact ratings unavailable</strong>The ratings file couldn't be loaded. It is rebuilt every morning.</div></div>`;return}
     IMPP={};Object.entries(IMP.seasons).forEach(([s,v])=>v.players.forEach(r=>{(IMPP[r.k]=IMPP[r.k]||[]).push([s,r])}));
   }
+  if(impMode==="split"&&!FAC){
+    el.innerHTML=`<div class="panel"><div class="empty"><strong>Loading the RAPM split…</strong></div></div>`;
+    const f=await jget("factors.json");
+    if(f&&f.seasons&&f.cols)FAC=f;else impMode="ratings";
+  }
   const S=IMP.seasons,keys=Object.keys(S).sort().reverse(),st=IMP.status||{};
   if(!impS||!S[impS])impS=keys[0];
   const cur=S[impS],latest=impS===keys[0],min=impMin??(latest?100:400);
@@ -3423,15 +3455,24 @@ async function renderImpact(){
   // the value columns, the one being ranked by first (on a phone it's the one in view)
   const lead=["T","o","d"].includes(sk)?sk:"T",VC=[lead,...["T","o","d"].filter(k=>k!==lead)];
   const VL={T:"Overall",o:"Offence",d:"Defence"};
+  const split=impMode==="split";
   const head=`<div class="panel imp-top">
+    <div class="seg imp-mode" role="group" aria-label="View"><button class="chip" data-impm="ratings" aria-pressed="${!split}">Ratings</button><button class="chip" data-impm="split" aria-pressed="${split}">RAPM split</button></div>
     <div class="imp-ctl">
       <label class="imp-f"><span class="k">Season</span><select id="impSeason" aria-label="Season">${keys.map(s=>`<option value="${s}"${s===impS?" selected":""}>${impLab(s)} (${s})</option>`).join("")}</select></label>
-      <div class="seg" role="group" aria-label="Rank by">${[["T","Overall"],["O","Offence"],["D","Defence"]].map(([k,l])=>`<button class="chip" data-impv="${k}" aria-pressed="${!impSort&&impV===k}">${l}</button>`).join("")}</div>
+      ${split?"":`<div class="seg" role="group" aria-label="Rank by">${[["T","Overall"],["O","Offence"],["D","Defence"]].map(([k,l])=>`<button class="chip" data-impv="${k}" aria-pressed="${!impSort&&impV===k}">${l}</button>`).join("")}</div>`}
       <label class="imp-f"><span class="k">Minutes</span><select id="impMin" aria-label="Minimum minutes">${MINS.map(m=>`<option value="${m}"${m===min?" selected":""}>${m?m+"+":"All"}</option>`).join("")}</select></label>
     </div>
     <div class="chips imp-teams" role="group" aria-label="Team"><button class="chip" data-impt="" aria-pressed="${!impTeam}">All teams</button>${teams.map(t=>`<button class="chip" data-impt="${t}" aria-pressed="${impTeam===t}" title="${disp(t)}">${TEAMS[t]?.c||t.slice(0,3).toUpperCase()}</button>`).join("")}</div>
   </div>`;
   const through=latest&&st.through?` · games to ${dShort(st.through)}`:"";
+  if(split){
+    el.innerHTML=head+facTable(cur,min,latest)+facNotes(cur);
+    impWire(el,sk,sd);
+    el.querySelectorAll("table.fac th button").forEach(b=>b.onclick=()=>{const k=b.dataset.fk;
+      facSort=k===facSort.k?{k,d:-facSort.d}:{k,d:["n","t"].includes(k)?1:-1};renderImpact()});
+    return;
+  }
   const body=rows.map(r=>{const T=impT(r),open=impOpen===r.k;
     return `<tr class="imp-row${r.mn<100?" low":""}" data-k="${r.k}" tabindex="0" role="button" aria-expanded="${open}">
       <td class="tm pl"><span class="irk">${R[r.k]?.[impSort?"T":impV]??"–"}</span>${ppname(r.e||("imp:"+r.k),r.n,r.t)}<small>${(r.ts||[r.t]).map(itc).join("/")}</small></td>
@@ -3442,16 +3483,61 @@ async function renderImpact(){
     <div class="scroll"><table class="imp"><thead><tr><th class="tm"><button data-k="n"${arrow("n")}>Player</button></th>${VC.map(k=>`<th><button data-k="${k}"${arrow(k)}>${VL[k]}</button></th>`).join("")}<th><button data-k="pg"${arrow("pg")} title="Points a game: overall × his possessions a game on the floor">Pts/g</button></th><th><button data-k="g"${arrow("g")}>GP</button></th><th><button data-k="mpg"${arrow("mpg")}>MPG</button></th></tr></thead>
     <tbody>${body||`<tr><td class="tm" colspan="7" style="text-align:left;color:var(--muted)">No players with ${min}+ minutes${impTeam?" for "+disp(impTeam):""}.</td></tr>`}</tbody></table></div>
   </div>`+impNotes(cur,st);
-  el.querySelector("#impSeason").onchange=e=>{impS=e.target.value;impOpen=null;impMin=null;renderImpact()};
-  el.querySelector("#impMin").onchange=e=>{impMin=+e.target.value;renderImpact()};
-  el.querySelectorAll("[data-impv]").forEach(b=>b.onclick=()=>{impV=b.dataset.impv;impSort=null;try{localStorage.setItem("nbl27-impv",impV)}catch(e){}renderImpact()});
-  el.querySelectorAll("[data-impt]").forEach(b=>b.onclick=()=>{impTeam=b.dataset.impt;renderImpact()});
+  impWire(el,sk,sd);
   el.querySelectorAll("table.imp th button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;
     impSort=k===sk?{k,d:-sd}:{k,d:["n","t"].includes(k)?1:-1};renderImpact()});
   el.querySelectorAll(".imp-row").forEach(tr=>{const go=()=>{impOpen=impOpen===tr.dataset.k?null:tr.dataset.k;renderImpact()};
     tr.onclick=e=>{if(e.target.closest("a"))return;go()};tr.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});
   el.querySelectorAll("[data-imps]").forEach(b=>b.onclick=e=>{e.stopPropagation();impS=b.dataset.imps;impMin=null;impTeam="";impOpen=b.dataset.impk;renderImpact();
     requestAnimationFrame(()=>{const r=el.querySelector(`.imp-row[data-k="${b.dataset.impk}"]`);if(r)r.scrollIntoView({block:"center"})})});
+}
+function impWire(el){
+  el.querySelector("#impSeason").onchange=e=>{impS=e.target.value;impOpen=null;impMin=null;renderImpact()};
+  el.querySelector("#impMin").onchange=e=>{impMin=+e.target.value;renderImpact()};
+  el.querySelectorAll("[data-impv]").forEach(b=>b.onclick=()=>{impV=b.dataset.impv;impSort=null;try{localStorage.setItem("nbl27-impv",impV)}catch(e){}renderImpact()});
+  el.querySelectorAll("[data-impt]").forEach(b=>b.onclick=()=>{impTeam=b.dataset.impt;renderImpact()});
+  el.querySelectorAll("[data-impm]").forEach(b=>b.onclick=()=>{impMode=b.dataset.impm;try{localStorage.setItem("nbl27-impm",impMode)}catch(e){}renderImpact()});
+}
+// the split table: every player with min+ minutes that season, his six factors from data/factors.json, each with its
+// percentile among that season's players with min+ minutes (every team, so picking a team doesn't move them)
+function facTable(cur,min,latest){
+  const F=FAC.seasons[impS]||{},ci=Object.fromEntries(FAC.cols.map((c,i)=>[c,i])),fst=FAC.status||{};
+  const v=(r,c)=>{const a=F[r.k];return a?a[ci[c]]:null};
+  const all=cur.players.filter(r=>r.mn>=min);
+  const pools={};FACC.forEach(([c])=>{pools[c]=all.map(r=>v(r,c)).filter(x=>x!=null).sort((a,b)=>a-b)});
+  const pct=(c,x)=>{const p=pools[c];if(x==null||p.length<2)return "";let lo=0,eq=0;for(const y of p){if(y<x)lo++;else if(y===x)eq++}return Math.round(100*(lo+(eq-1)/2)/(p.length-1))};
+  const rows=all.filter(r=>!impTeam||(r.ts||[r.t]).includes(impTeam));
+  const val=(r,k)=>k==="n"?r.n:k==="g"?r.g:k==="mpg"?impMpg(r):v(r,k);
+  rows.sort((a,b)=>{const x=val(a,facSort.k),y=val(b,facSort.k);if(typeof x==="string")return facSort.d*x.localeCompare(y);
+    if(x==null)return y==null?0:1;if(y==null)return -1;return facSort.d*(x-y)});
+  const arrow=k=>facSort.k===k?` data-dir="${facSort.d>0?'▲':'▼'}"`:"";
+  // the first column of each group (Impact, Offence, Defence, Other) and GP get a divider
+  const GS=new Set(["rapm","oTS","dTS","resid"]);
+  const cell=(r,c)=>{const x=v(r,c),gs=GS.has(c)?" gs":"";if(x==null)return `<td class="fc na${gs}">–</td>`;const p=c==="resid"?"":pct(c,x);
+    const big=c==="rapm"?2:c==="orapm"||c==="drapm"?1.5:c==="resid"?99:0.75;
+    return `<td class="fc${gs}${facSort.k===c?" on":""}${x>=big?" up":x<=-big?" dn":""}"><b>${isg(x)}</b>${p===""?"":`<small>${p}</small>`}</td>`};
+  const games=fst.games?.[impS],asof=latest&&fst.through?` · games to ${dShort(fst.through)}`:"";
+  // the team code sits inside the name (beside it on a computer, under it on a phone, where the name column has to stay narrow)
+  const who=r=>ppname(r.e||("imp:"+r.k),r.n,r.t,`${r.n}<small>${(r.ts||[r.t]).map(itc).join("/")}</small>`);
+  return `<div class="panel">
+    <div class="team-head"><h2>${impLab(impS)} RAPM split</h2><span class="rec">${rows.length} players${min?` with ${min}+ minutes`:""}${impTeam?` · ${disp(impTeam)}`:""}${asof}${games?` · stints from ${games} games this season`:""} · small numbers = percentile</span></div>
+    <div class="scroll"><table class="imp fac"><thead>
+      <tr class="fgrp"><th class="tm"></th>${FACG.map(([l,n])=>`<th class="gs" colspan="${n}">${l}</th>`).join("")}<th class="gs" colspan="2"></th></tr>
+      <tr><th class="tm"><button data-fk="n"${arrow("n")}>Player</button></th>
+      ${FACC.map(([c,l,t])=>`<th${GS.has(c)?` class="gs"`:""}><button data-fk="${c}"${arrow(c)} title="${t}">${l}</button></th>`).join("")}<th class="gs"><button data-fk="g"${arrow("g")}>GP</button></th><th><button data-fk="mpg"${arrow("mpg")}>MPG</button></th></tr></thead>
+    <tbody>${rows.map((r,i)=>`<tr><td class="tm pl"><span class="irk">${i+1}</span>${who(r)}</td>${FACC.map(([c])=>cell(r,c)).join("")}<td class="gs">${r.g}</td><td>${impMpg(r).toFixed(1)}</td></tr>`).join("")
+      ||`<tr><td class="tm" colspan="14" style="text-align:left;color:var(--muted)">No players with ${min}+ minutes${impTeam?" for "+disp(impTeam):""}.</td></tr>`}</tbody></table></div>
+  </div>`;
+}
+function facNotes(cur){
+  const fs=FAC.status||{},cv=fs.conv?.[impS]?.slope||{},f1=x=>x==null?"–":Math.abs(x).toFixed(1),half=fs.half||2;
+  return `<div class="notes imp-notes">
+    <span>RAPM split = each player's impact from the floor alone: how many more points per 100 possessions his team scores than it allows with him on, against an average NBL player, adjusted for every teammate and opponent he shared the floor with (ridge regression on every stint, no box score). It is then split six ways, the way databallr splits NBA RAPM.</span>
+    <span>Offence: oTS = his team's shooting efficiency (true shooting, luck-adjusted: every three and free throw at the shooter's expected percentage); oTOV = ball security (fewer turnovers); oREB = offensive rebounding. Defence: dTS = opponents' shooting held down; dTOV = turnovers forced; dREB = opponents' second chances denied. All in points per 100 possessions; positive = good.</span>
+    <span>Each factor is its own regression on the same stints (true shooting, turnover rate, offensive rebound rate), turned into points with that season's league averages (${impLab(impS)}: ${f1(cv.ts)} points per point of true shooting %, ${f1(cv.tov)} per point of turnover rate, ${f1(cv.oreb)} per point of offensive rebound rate), calibrated so the six add up: across every player-season they explain ${fs.r2?Math.round(100*fs.r2):99}% of RAPM. RESID = RAPM minus the six. PVAL = possession value: oTOV + oREB + dTOV + dREB, the value from winning extra possessions rather than from shooting.</span>
+    <span>A season's numbers use that season's stints plus earlier seasons', fading with age (${half} seasons back counts half as much, ${2*half} seasons back a quarter), because one NBL season is too few games to split reliably on its own; NBL16 has nothing earlier to lean on. Every player is pulled toward average by ${(fs.lam||2500).toLocaleString()} possessions' worth of data, so NBL numbers run smaller than the NBA's. That pull was chosen by predicting each season from NBL20 to NBL26 from the ones before it; a longer memory predicted slightly better but would blur one season into the next.</span>
+    <span>Small numbers = percentile among that season's players with the minutes chosen, all teams (100 = best). This view is on-court only; the Ratings view adds the box score, so the two can rank a player differently. Stints come from games whose play-by-play adds up to the official box score: ${fs.games?.[impS]??"–"} of ${cur.games} games in ${impLab(impS)}. Updated ${fs.computedAt?dShort(fs.computedAt.slice(0,10)):"–"}.</span>
+  </div>`;
 }
 function impDetail(r){
   const st=IMP.status,S=IMP.seasons[impS],F=st.feats,wO=st.weights.O,wD=st.weights.D,lab=impLab(impS);
