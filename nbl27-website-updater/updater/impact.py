@@ -37,7 +37,10 @@ Checked when it was built:
   - forward (impactcheck.py, which repeats it): in each of eight seasons (2018-19 to 2025-26) fitted on every game
     before mid-season, then used to predict the rest of that season (541 games) from who was on the floor - right
     winner 63.6% (box score alone 61.6%, plus-minus alone 63.0%, team ratings alone 59.1%, the home team 53.8%),
-    average miss on the margin 13.9 points (box score alone 14.2, plus-minus alone 14.1, team ratings 14.2).
+    average miss on the margin 13.9 points (box score alone 14.2, plus-minus alone 14.1, team ratings 14.2);
+  - against the RAPM split (factors.py, on-court only) in the same forward test, 27 Nov 2026: right winner 62.3%,
+    average miss 14.2. Mixing the two (the ratings' share from 0 to 100%) only made the average miss larger: the best
+    mix was all ratings, and chosen on seven seasons and tested on the eighth it stayed all ratings in seven of eight.
 
     python3 impact.py <repo_root>        (standalone: reads the official data itself; rebuild.py calls run())
 """
@@ -61,7 +64,8 @@ K_SHR = 200.0                        # possessions of league-average rates mixed
 W3, WFT = 2.6, 0.95                  # luck: points per make above expectation (as ladder.py)
 LAM = {"b": 3000.0, "uO": 2000.0, "uD": 3000.0, "vD": 64000.0}
 FORWARD = {"games": 541, "seasons": "2018-19 to 2025-26", "winner": 63.6, "teamOnly": 59.1, "boxOnly": 61.6,
-           "pmOnly": 63.0, "homeOnly": 53.8, "rmse": 13.9, "rmseTeam": 14.2}       # impactcheck.py, 14 Nov 2026
+           "pmOnly": 63.0, "homeOnly": 53.8, "rmse": 13.9, "rmseTeam": 14.2,       # impactcheck.py, 14 Nov 2026
+           "rapmOnly": 62.3, "rmseRapm": 14.2, "mixBest": 100}                       # the RAPM split and the mix, 27 Nov 2026
 
 
 def nkey(name):
