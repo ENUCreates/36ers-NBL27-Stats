@@ -605,6 +605,9 @@ footer .fblock span{display:block;break-inside:avoid;margin-bottom:6px}
 .simpbp td{color:var(--muted)}
 .simone .sc-pick select{max-width:100%}
 #view-sim .notes span{display:block;margin-bottom:6px}
+.impx{max-width:68ch}.impx .sech{margin-top:6px}.impx p{margin:0 0 16px;color:var(--muted);font-size:14.5px;line-height:1.55}
+.impbtn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;background:var(--accent);color:#fff;font:700 15px var(--body);text-decoration:none;border-radius:3px}
+.impbtn:hover{filter:brightness(1.08)}.impbtn:focus-visible{outline:3px solid var(--per);outline-offset:2px}
 :root{--simaway:#8aa0c8}
 :root[data-bg="white"]{--simaway:#5a6f96}
 .rbx{margin-top:18px}
@@ -746,6 +749,7 @@ tr.imp-det:hover>td{background:var(--bg)}
     <button class="tab" role="tab" id="tab-h2h" aria-selected="false">H2H Lineups</button>
     <button class="tab" role="tab" id="tab-rotations" aria-selected="false">Rotations</button>
     <button class="tab" role="tab" id="tab-sim" aria-selected="false">Simulator</button>
+    <button class="tab" role="tab" id="tab-imports" aria-selected="false">Import shopping</button>
   </nav>
 
   <section id="view-league">
@@ -898,6 +902,15 @@ tr.imp-det:hover>td{background:var(--bg)}
       <span>Taking a player out costs his team his own numbers, and the strain on the rest: a five that has to use more possessions than it usually does takes worse shots and turns it over more. Sized so that sitting a regular costs about what the tips' injury adjustment says he is worth.</span>
       <span>Checked against the season: every game played so far, re-played with the players who played it, comes out like the real games on average (possessions, points, shooting, free throws, rebounds, assists, turnovers, steals, blocks, fouls) and gives each player about his real minutes. For the games to come, its win chances are close to the round-by-round tips; they differ most where the tips take out a team's luck shooting threes and free throws, which the simulator does not.</span>
       <span>Home court is worth the tip model's home edge at a club's own venue (<b class="simhe">+2.6</b> points a game): the simulator has no shared or neutral venues. Simulated play-by-play and shots are made up from these numbers: they are not real events, and the same five players are not assumed to play any better or worse together than their own numbers say.</span>
+    </div>
+  </section>
+
+  <section id="view-imports" hidden>
+    <div class="impx">
+      <h3 class="sech">Import shopping</h3>
+      <p>The private recruiting board: every player with enough minutes in fifteen leagues (EuroLeague, EuroCup, ABA, ACB, LBA, BSL, LNB, BBL, CBA, B.League, KBL, BSN, NZNBL, the G League and NCAA), projected to next season's NBL on the Impact tab's Rating scale, with filters for position, style, league, age, height and import or local.</p>
+      <a class="impbtn" href="https://claude.ai/artifact/JHD5JuRJL4jBxEqLBzTGkX" target="_blank" rel="noopener">Open import shopping <span aria-hidden="true">↗</span></a>
+      <div class="notes"><span>Private: the board is its own Claude page, and only people with access can open it; anyone else sees a sign-in screen. None of its players or projections are on this site.</span></div>
     </div>
   </section>
 
@@ -3725,8 +3738,8 @@ function arcNotes(st,first,last){
 addEventListener("resize",()=>{clearTimeout(arcRT);arcRT=setTimeout(()=>{if(ARC&&!document.getElementById("view-arch").hidden)renderArch()},200)});
 function show(v){
   try{document.getElementById("tab-"+v).scrollIntoView({block:"nearest",inline:"nearest"})}catch(e){}
-  ["league","ladder","team","players","cards","impact","arch","injuries","coaches","lineups","h2h","rotations","sim"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
-  if(v!=="league"&&v!=="ladder"&&v!=="injuries"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
+  ["league","ladder","team","players","cards","impact","arch","injuries","coaches","lineups","h2h","rotations","sim","imports"].forEach(x=>{document.getElementById("tab-"+x).setAttribute("aria-selected",x===v);document.getElementById("view-"+x).hidden=x!==v});
+  if(v!=="league"&&v!=="ladder"&&v!=="injuries"&&v!=="imports"){try{localStorage.setItem("nbl27-team",current)}catch(e){}}
   if(v==="team")renderTeam();if(v==="players")renderPlayers();if(v==="lineups")renderLineups();if(v==="h2h")renderH2H();if(v==="rotations")renderRotations();if(v==="sim")renderSim();if(v==="impact")renderImpact();if(v==="arch")renderArch();if(v==="cards")renderCards();if(v==="coaches")renderCoaches();if(v==="ladder")renderLadder();if(v==="injuries")renderInjuries();
 }
 document.getElementById("tab-ladder").onclick=()=>show("ladder");
@@ -3735,6 +3748,7 @@ document.getElementById("tab-cards").onclick=()=>show("cards");
 document.getElementById("tab-coaches").onclick=()=>show("coaches");
 document.getElementById("tab-rotations").onclick=()=>show("rotations");
 document.getElementById("tab-sim").onclick=()=>show("sim");
+document.getElementById("tab-imports").onclick=()=>show("imports");
 document.getElementById("tab-impact").onclick=()=>show("impact");
 document.getElementById("tab-arch").onclick=()=>show("arch");
 document.getElementById("tab-league").onclick=()=>show("league");
